@@ -1,0 +1,2 @@
+# Pasta para migrações do banco de dados (Alembic/Flask-Migrate)
+# Os arquivos de migração serão gerados automaticamente.

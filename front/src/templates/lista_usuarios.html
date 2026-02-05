@@ -1,0 +1,343 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto space-y-8 animate-fade-in-up">
+
+    <!-- CABEÇALHO -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+        <div>
+            <h1 class="text-3xl font-extrabold text-brand-900 dark:text-brand-500 mb-2 transition-colors">
+                Gestão de Usuários
+            </h1>
+            <p class="text-gray-500 dark:text-gray-400 max-w-2xl transition-colors font-medium">
+                Controle o acesso ao sistema, gerencie perfis e monitore o status de cada conta administrativa.
+            </p>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <button onclick="exportToExcel()"
+                class="inline-flex items-center justify-center gap-2 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300 px-6 py-3.5 rounded-2xl font-bold border border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all active:scale-95 group shadow-soft">
+                <i data-lucide="download"
+                    class="w-5 h-5 group-hover:translate-y-0.5 transition-transform text-green-600"></i>
+                Exportar Excel
+            </button>
+            <a href="{{ url_for('usuarios.cadastro_usuario') }}"
+                class="inline-flex items-center justify-center gap-2 bg-brand-900 text-white px-6 py-3.5 rounded-2xl font-bold hover:bg-brand-800 shadow-lg shadow-brand-900/20 transition-all active:scale-95 group">
+                <i data-lucide="user-cog" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
+                Novo Usuário
+            </a>
+        </div>
+    </div>
+
+    <!-- FILTROS E BUSCA -->
+    <div
+        class="bg-white dark:bg-gray-900/50 p-6 rounded-3xl shadow-soft border border-gray-100 dark:border-gray-800 transition-all">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+            <div class="relative group">
+                <i data-lucide="user"
+                    class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
+                <input id="filterNome" placeholder="Nome"
+                    class="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 font-medium transition-all dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 placeholder:text-gray-400"
+                    onkeyup="filterUsuariosTable()">
+            </div>
+
+            <div class="relative group">
+                <i data-lucide="credit-card"
+                    class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
+                <input id="filterCPF" placeholder="CPF"
+                    class="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 font-medium transition-all dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
+                    onkeyup="filterUsuariosTable()">
+            </div>
+
+            <div class="relative group">
+                <i data-lucide="mail"
+                    class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
+                <input id="filterEmail" placeholder="Email"
+                    class="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 font-medium transition-all dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
+                    onkeyup="filterUsuariosTable()">
+            </div>
+
+            <div class="relative group">
+                <i data-lucide="shield-check"
+                    class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
+                <input id="filterPerfil" placeholder="Perfil"
+                    class="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 font-medium transition-all dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
+                    onkeyup="filterUsuariosTable()">
+            </div>
+
+            <div class="relative group">
+                <i data-lucide="hash"
+                    class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
+                <input id="filterNumFuncVinculo" placeholder="Matrícula"
+                    class="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 font-medium transition-all dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
+                    onkeyup="filterUsuariosTable()">
+            </div>
+
+            <div class="relative group">
+                <i data-lucide="toggle-right"
+                    class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
+                <select id="filterStatus" onchange="filterUsuariosTable()"
+                    class="w-full pl-11 pr-10 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 font-bold transition-all dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 appearance-none">
+                    <option value="">Status</option>
+                    <option value="ativo">Ativo</option>
+                    <option value="inativo">Inativo</option>
+                </select>
+                <i data-lucide="chevron-down"
+                    class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOTAL E INFO -->
+    <div class="flex items-center gap-3 px-2">
+        <div class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
+        <span class="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest transition-colors">
+            Total de Usuários: <span id="totalRegistros" class="text-brand-600 dark:text-brand-500 font-extrabold">{{
+                usuarios|length }}</span>
+        </span>
+    </div>
+
+    <!-- TABELA -->
+    <div
+        class="bg-white dark:bg-gray-900/50 rounded-3xl shadow-soft border border-gray-100 dark:border-gray-800 overflow-hidden transition-all">
+        <div class="overflow-x-auto custom-scrollbar">
+            <table class="w-full text-left">
+                <thead>
+                    <tr
+                        class="bg-gray-50/50 dark:bg-gray-800/30 border-b border-gray-100 dark:border-gray-800 transition-colors">
+                        <th
+                            class="px-6 py-5 text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
+                            Informações do Usuário</th>
+                        <th
+                            class="px-6 py-5 text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
+                            Contato e Matrícula</th>
+                        <th
+                            class="px-6 py-5 text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
+                            Acesso / Perfil</th>
+                        <th
+                            class="px-6 py-5 text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
+                            Status</th>
+                        <th
+                            class="px-6 py-5 text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest text-center">
+                            Ações</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50 dark:divide-gray-800">
+                    {% for user in usuarios %}
+                    <tr class="usuario-row hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors"
+                        data-status="{{ 'ativo' if user.ativo else 'inativo' }}">
+                        <td class="px-6 py-5">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-10 h-10 bg-brand-50 dark:bg-brand-900/20 rounded-xl flex items-center justify-center text-brand-600 dark:text-brand-400 font-bold text-sm">
+                                    {{ user.nome[:1] }}
+                                </div>
+                                <div class="flex flex-col">
+                                    <span class="font-bold text-gray-800 dark:text-gray-200">{{ user.nome }}</span>
+                                    <span class="text-[10px] text-gray-400 font-medium">CPF: {{ user.cpf }}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-5">
+                            <div class="flex flex-col">
+                                <span class="text-xs font-bold text-gray-700 dark:text-gray-300">{{ user.email }}</span>
+                                <span class="text-[10px] text-gray-400 font-medium tracking-tight">Matrícula: {{
+                                    user.num_func_vinculo or '-' }}</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-5">
+                            <span
+                                class="inline-flex items-center px-3 py-1 bg-brand-50 dark:bg-brand-900/20 text-brand-600 dark:text-brand-400 text-[10px] font-extrabold rounded-full uppercase tracking-tight">
+                                {{ user.tipo }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-5">
+                            <select onchange="alterarStatusUsuario(this.getAttribute('data-user-id'), this.value)"
+                                data-user-id="{{ user.id }}" class="text-[10px] font-bold px-3 py-1.5 rounded-xl border-none ring-1 ring-gray-100 dark:ring-gray-800 focus:ring-2 focus:ring-brand-500/20 bg-white dark:bg-gray-800 outline-none cursor-pointer transition-all
+                                           {% if user.ativo %} text-green-600 {% else %} text-red-500 {% endif %}">
+                                <option value="ativo" {% if user.ativo %}selected{% endif %}>Ativo</option>
+                                <option value="inativo" {% if not user.ativo %}selected{% endif %}>Inativo</option>
+                            </select>
+                        </td>
+                        <td class="px-6 py-5">
+                            <div class="flex justify-center">
+                                <button type="button"
+                                    class="btn-edit-user w-9 h-9 flex items-center justify-center rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-400 hover:text-brand-600 hover:bg-brand-50 dark:hover:bg-brand-900/30 transition-all"
+                                    data-user='{{ user | tojson | forceescape }}'>
+                                    <i data-lucide="edit-3" class="w-4.5 h-4.5"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL EDICAO -->
+<div id="editUsuarioModal"
+    class="fixed inset-0 bg-gray-950/80 backdrop-blur-md hidden items-center justify-center z-50 p-4 transition-all duration-300">
+    <div
+        class="bg-white dark:bg-gray-900 rounded-[2.5rem] shadow-2xl w-full max-w-lg overflow-hidden border border-gray-100 dark:border-gray-800 animate-fade-in-up">
+
+        <!-- Header -->
+        <div
+            class="p-8 border-b border-gray-50 dark:border-gray-800 flex justify-between items-center bg-gray-50/30 dark:bg-gray-900/30">
+            <div>
+                <h2 class="text-2xl font-bold text-brand-900 dark:text-brand-500">Editar Usuário</h2>
+                <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Gerencie as credenciais e perfil de acesso.</p>
+            </div>
+            <button onclick="closeEditUsuarioModal()"
+                class="w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/20 transition-all">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+        </div>
+
+        <form method="POST" id="editUsuarioForm" class="p-8 space-y-6">
+            <input type="hidden" id="editUsuarioId">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="md:col-span-2">
+                    <label
+                        class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Nome
+                        Completo</label>
+                    <input id="editUsuarioNome" name="nome"
+                        class="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 dark:text-gray-100 transition-all">
+                </div>
+
+                <div>
+                    <label
+                        class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">CPF</label>
+                    <input id="editUsuarioCPF" name="cpf" maxlength="14" oninput="maskCPF(this)"
+                        class="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 dark:text-gray-100 transition-all">
+                </div>
+
+                <div>
+                    <label
+                        class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Matrícula</label>
+                    <input id="editUsuarioNumFuncVinculo" name="num_func_vinculo"
+                        class="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 dark:text-gray-100 transition-all">
+                </div>
+
+                <div class="md:col-span-2">
+                    <label
+                        class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Email
+                        de Acesso</label>
+                    <input id="editUsuarioEmail" name="email"
+                        class="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 dark:text-gray-100 transition-all">
+                </div>
+
+                <div class="md:col-span-2">
+                    <label
+                        class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Perfil
+                        / Tipo de Acesso</label>
+                    <div class="relative">
+                        <select id="editUsuarioTipo" name="tipo"
+                            class="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 dark:text-gray-100 transition-all appearance-none cursor-pointer">
+                            <option value="admin">Administrador</option>
+                            <option value="usuario">Operador Comum</option>
+                        </select>
+                        <i data-lucide="chevron-down"
+                            class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-end items-center gap-4 pt-4">
+                <button type="button" onclick="closeEditUsuarioModal()"
+                    class="px-6 py-3 font-bold text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">Cancelar</button>
+                <button type="submit"
+                    class="bg-brand-900 text-white px-10 py-3.5 rounded-2xl font-extrabold hover:bg-brand-800 shadow-xl shadow-brand-900/20 transition-all active:scale-95">
+                    Salvar Usuário
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    const editUsuarioModal = document.getElementById('editUsuarioModal');
+    const editUsuarioForm = document.getElementById('editUsuarioForm');
+    const totalRegistros = document.getElementById('totalRegistros');
+
+    function exportToExcel() {
+        const table = document.querySelector('table');
+        const wb = XLSX.utils.table_to_book(table, { sheet: "Usuarios" });
+        XLSX.writeFile(wb, "usuarios_qualivida.xlsx");
+        showToast("Planilha exportada com sucesso!", "success");
+    }
+
+    function openEditUsuarioModal(user) {
+        document.getElementById('editUsuarioId').value = user.id;
+        document.getElementById('editUsuarioNome').value = user.nome;
+        document.getElementById('editUsuarioCPF').value = user.cpf;
+        document.getElementById('editUsuarioNumFuncVinculo').value = user.num_func_vinculo;
+        document.getElementById('editUsuarioEmail').value = user.email;
+        document.getElementById('editUsuarioTipo').value = user.tipo;
+        editUsuarioForm.action = `/usuarios/editar/${user.id}`;
+
+        editUsuarioModal.classList.remove('hidden');
+        editUsuarioModal.classList.add('flex');
+    }
+
+    function closeEditUsuarioModal() {
+        editUsuarioModal.classList.add('hidden');
+        editUsuarioModal.classList.remove('flex');
+    }
+
+    function alterarStatusUsuario(id, status) {
+        fetch(`/usuarios/status/${id}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status })
+        }).then(() => window.location.reload());
+    }
+
+    function filterUsuariosTable() {
+        const filters = {
+            nome: document.getElementById('filterNome').value.toLowerCase(),
+            cpf: document.getElementById('filterCPF').value.toLowerCase(),
+            email: document.getElementById('filterEmail').value.toLowerCase(),
+            perfil: document.getElementById('filterPerfil').value.toLowerCase(),
+            numFuncVinculo: document.getElementById('filterNumFuncVinculo').value.toLowerCase(),
+            status: document.getElementById('filterStatus').value
+        };
+
+        let total = 0;
+        document.querySelectorAll(".usuario-row").forEach(row => {
+            const text = row.innerText.toLowerCase();
+            const rowStatus = row.dataset.status;
+            const match =
+                (filters.nome === "" || text.includes(filters.nome)) &&
+                (filters.cpf === "" || text.includes(filters.cpf)) &&
+                (filters.email === "" || text.includes(filters.email)) &&
+                (filters.perfil === "" || text.includes(filters.perfil)) &&
+                (filters.numFuncVinculo === "" || text.includes(filters.numFuncVinculo)) &&
+                (filters.status === "" || rowStatus === filters.status);
+
+            row.style.display = match ? "" : "none";
+            if (match) total++;
+        });
+        totalRegistros.innerText = total;
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+
+        // Event listener for edit buttons
+        document.querySelectorAll('.btn-edit-user').forEach(btn => {
+            btn.addEventListener('click', () => {
+                try {
+                    const userData = JSON.parse(btn.getAttribute('data-user'));
+                    openEditUsuarioModal(userData);
+                } catch (e) {
+                    console.error('Error parsing user data:', e);
+                }
+            });
+        });
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto space-y-8 animate-fade-in-up pb-12">
+
+  <!-- Header -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+    <div class="flex items-center gap-4">
+      <div class="bg-brand-50 dark:bg-brand-900/20 p-3 rounded-2xl text-brand-600 dark:text-brand-400">
+        <i data-lucide="user-plus" class="w-8 h-8"></i>
+      </div>
+      <div>
+        <h1 class="text-3xl font-extrabold text-brand-900 dark:text-brand-500 transition-colors">Cadastro de Funcionário
+        </h1>
+        <p class="text-gray-500 dark:text-gray-400 font-medium transition-colors">Registre novos profissionais de saúde
+          no ecossistema Qualivita.</p>
+      </div>
+    </div>
+
+    <a href="{{ url_for('servidor.lista_funcionarios') }}"
+      class="inline-flex items-center justify-center gap-2 text-gray-400 hover:text-brand-600 font-bold transition-all px-4 py-2 hover:bg-brand-50 dark:hover:bg-brand-900/20 rounded-xl">
+      <i data-lucide="arrow-left" class="w-5 h-5"></i>
+      Voltar para Lista
+    </a>
+  </div>
+
+  <!-- Form Card -->
+  <div
+    class="bg-white dark:bg-gray-900/50 rounded-[2.5rem] shadow-soft border border-gray-100 dark:border-gray-800 p-8 sm:p-12 transition-all">
+
+    <div
+      class="mb-10 flex items-center gap-3 text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 px-5 py-3 rounded-2xl border border-red-100 dark:border-red-900/30 w-fit font-bold">
+      <i data-lucide="info" class="w-5 h-5"></i>
+      <span>Campos marcados com <span class="text-red-500">*</span> são de preenchimento obrigatório.</span>
+    </div>
+
+    <form method="POST" action="{{ url_for('servidor.adicionar_funcionario') }}"
+      class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+      <!-- Nome -->
+      <div class="space-y-2">
+        <label
+          class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">Nome
+          Completo *</label>
+        <div class="relative group">
+          <i data-lucide="user"
+            class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
+          <input name="nome" type="text" required
+            class="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-medium transition-all"
+            placeholder="Ex: João da Silva Santos">
+        </div>
+      </div>
+
+      <!-- CPF -->
+      <div class="space-y-2">
+        <label
+          class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">CPF
+          *</label>
+        <div class="relative group">
+          <i data-lucide="credit-card"
+            class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
+          <input name="cpf" type="text" required oninput="maskCPF(this)" maxlength="14"
+            class="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-bold transition-all"
+            placeholder="000.000.000-00">
+        </div>
+      </div>
+
+      <!-- Matricula -->
+      <div class="space-y-2">
+        <label
+          class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">ID
+          Funcional / Vínculo *</label>
+        <div class="relative group">
+          <i data-lucide="hash"
+            class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
+          <input name="num_func_vinculo" type="text" required
+            class="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-bold transition-all"
+            placeholder="Ex: 123456/1">
+        </div>
+      </div>
+
+      <!-- Nascimento -->
+      <div class="space-y-2">
+        <label
+          class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">Data
+          de Nascimento *</label>
+        <div class="relative group">
+          <input name="data_nascimento" type="date" required
+            class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-bold transition-all cursor-pointer">
+        </div>
+      </div>
+
+      <!-- Especialidade -->
+      <div class="space-y-2">
+        <label
+          class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">Especialidade
+          / Cargo *</label>
+        <div class="relative group">
+          <i data-lucide="briefcase"
+            class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
+          <input name="especialidade" type="text" required
+            class="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-medium transition-all"
+            placeholder="Ex: Médico Perito">
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div class="space-y-2">
+        <label
+          class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">E-mail
+          Institucional *</label>
+        <div class="relative group">
+          <i data-lucide="mail"
+            class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
+          <input name="email" type="email" required
+            class="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-medium transition-all"
+            placeholder="nome@saude.pe.gov.br">
+        </div>
+      </div>
+
+      <!-- Telefone -->
+      <div class="space-y-2">
+        <label
+          class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">Telefone
+          de Contato *</label>
+        <div class="relative group">
+          <i data-lucide="phone"
+            class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
+          <input name="telefone" type="text" required oninput="maskPhone(this)"
+            class="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-bold transition-all"
+            placeholder="(81) 99999-0000">
+        </div>
+      </div>
+
+      <!-- Unidade -->
+      <div class="space-y-2">
+        <label
+          class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">Unidade
+          de Lotação</label>
+        <div class="relative group">
+          <i data-lucide="building"
+            class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
+          <input name="unidade" type="text" value="{{ funcionario.unidade_atendimento if funcionario else '' }}"
+            class="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-medium transition-all"
+            placeholder="Ex: Qualivida - Recife">
+        </div>
+      </div>
+
+      <!-- Atendimento Checkbox -->
+      <div
+        class="md:col-span-2 flex items-center gap-4 bg-brand-50/50 dark:bg-brand-900/10 p-5 rounded-2xl border border-brand-100 dark:border-brand-900/30">
+        <div class="relative inline-flex items-center cursor-pointer group">
+          <input type="checkbox" name="atendimento" id="atendimento" class="sr-only peer" {% if not funcionario or
+            funcionario.atendimento %}checked{% endif %}>
+          <div
+            class="w-14 h-7 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brand-300 dark:peer-focus:ring-brand-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all dark:border-gray-600 peer-checked:bg-brand-600">
+          </div>
+        </div>
+        <div>
+          <label for="atendimento" class="text-sm font-bold text-brand-900 dark:text-brand-400 cursor-pointer">Realiza
+            Atendimento?</label>
+          <p class="text-xs text-gray-500 dark:text-gray-500">Se marcado, este profissional aparecerá na lista de
+            agendamentos para pacientes.</p>
+        </div>
+      </div>
+      <!-- Actions -->
+      <div
+        class="md:col-span-2 pt-10 flex flex-col sm:flex-row justify-end items-center gap-6 border-t border-gray-50 dark:border-gray-800 mt-6 transition-colors">
+        <button type="reset"
+          class="px-8 py-4 rounded-2xl font-bold text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors uppercase text-[10px] tracking-widest">
+          Limpar Formulário
+        </button>
+        <button type="submit"
+          class="w-full sm:w-auto px-12 py-4 rounded-2xl bg-brand-900 text-white font-black hover:bg-brand-800 shadow-xl shadow-brand-900/20 transition-all active:scale-95 flex items-center justify-center gap-2 uppercase text-xs tracking-widest">
+          <i data-lucide="save" class="w-5 h-5"></i>
+          Salvar Cadastro
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<script>
+  function maskCPF(el) {
+    el.value = el.value.replace(/\D/g, '')
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+  }
+
+  function maskPhone(el) {
+    el.value = el.value.replace(/\D/g, '')
+      .replace(/^(\d{2})(\d)/g, '($1) $2')
+      .replace(/(\d{5})(\d{4})$/, '$1-$2');
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  });
+</script>
+{% endblock %}

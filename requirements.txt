@@ -1,0 +1,5 @@
+# requirements.txt para backend Flask
+Flask
+Flask-SQLAlchemy
+Flask-Migrate
+python-dotenv

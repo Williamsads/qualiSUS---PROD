@@ -1,0 +1,8 @@
+nohup: ignoring input
+[2026-01-13 14:46:22 -0300] [2355] [INFO] Starting gunicorn 23.0.0
+[2026-01-13 14:46:22 -0300] [2355] [INFO] Listening at: http://0.0.0.0:5000 (2355)
+[2026-01-13 14:46:22 -0300] [2355] [INFO] Using worker: sync
+[2026-01-13 14:46:22 -0300] [2356] [INFO] Booting worker with pid: 2356
+[2026-01-13 14:46:22 -0300] [2357] [INFO] Booting worker with pid: 2357
+[2026-01-16 08:43:16 -0300] [2357] [WARNING] Invalid request from ip=10.24.64.2: Invalid HTTP request line: 'ÿôÿý\x06'
+[2026-01-16 08:46:26 -0300] [2357] [WARNING] Invalid request from ip=10.24.64.2: Invalid HTTP request line: ''

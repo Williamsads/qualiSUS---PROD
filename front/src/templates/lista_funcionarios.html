@@ -1,0 +1,421 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto space-y-8 animate-fade-in-up">
+
+  <!-- CABEÇALHO -->
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+    <div>
+      <h1 class="text-3xl font-extrabold text-brand-900 dark:text-brand-500 mb-2 transition-colors">
+        Equipe de Especialistas
+      </h1>
+      <p class="text-gray-500 dark:text-gray-400 max-w-2xl transition-colors font-medium">
+        Gerencie os profissionais de saúde cadastrados no sistema, suas especialidades e lotações.
+      </p>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <button onclick="exportToExcel()"
+        class="inline-flex items-center justify-center gap-2 bg-green-600 text-white px-6 py-3.5 rounded-2xl font-bold hover:bg-green-700 shadow-lg shadow-green-600/20 transition-all active:scale-95 group">
+        <i data-lucide="file-spreadsheet" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
+        Exportar Excel
+      </button>
+
+      <a href="{{ url_for('servidor.adicionar_funcionario') }}"
+        class="inline-flex items-center justify-center gap-2 bg-red-600 text-white px-6 py-3.5 rounded-2xl font-bold hover:bg-red-700 shadow-lg shadow-red-600/20 transition-all active:scale-95 group">
+        <i data-lucide="user-plus" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
+        Novo Profissional
+      </a>
+    </div>
+  </div>
+
+  <!-- FILTROS E BUSCA -->
+  <div
+    class="bg-white dark:bg-gray-900/50 p-6 rounded-3xl shadow-soft border border-gray-100 dark:border-gray-800 transition-all">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+      <div class="relative group">
+        <i data-lucide="user"
+          class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
+        <input id="filterNome" placeholder="Nome"
+          class="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 font-medium transition-all dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 placeholder:text-gray-400"
+          onkeyup="filterTable()">
+      </div>
+
+      <div class="relative group">
+        <i data-lucide="credit-card"
+          class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
+        <input id="filterCPF" placeholder="CPF"
+          class="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 font-medium transition-all dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
+          onkeyup="filterTable()">
+      </div>
+
+      <div class="relative group">
+        <i data-lucide="id-card"
+          class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
+        <input id="filterMatricula" placeholder="Matrícula"
+          class="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 font-medium transition-all dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
+          onkeyup="filterTable()">
+      </div>
+
+      <div class="relative group">
+        <i data-lucide="activity"
+          class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
+        <input id="filterEspecialidade" placeholder="Especialidade"
+          class="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 font-medium transition-all dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
+          onkeyup="filterTable()">
+      </div>
+
+      <div class="relative group">
+        <i data-lucide="building"
+          class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
+        <input id="filterUnidade" placeholder="Unidade"
+          class="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 font-medium transition-all dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
+          onkeyup="filterTable()">
+      </div>
+
+      <div class="relative group">
+        <i data-lucide="check-circle"
+          class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
+        <select id="filterStatus" onchange="filterTable()"
+          class="w-full pl-11 pr-10 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 font-bold transition-all dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 appearance-none">
+          <option value="">Todos</option>
+          <option value="ativo">Ativo</option>
+          <option value="inativo">Inativo</option>
+        </select>
+        <i data-lucide="chevron-down"
+          class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"></i>
+      </div>
+
+      <div class="relative group">
+        <i data-lucide="calendar-check"
+          class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
+        <select id="filterAtendimento" onchange="filterTable()"
+          class="w-full pl-11 pr-10 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 font-bold transition-all dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 appearance-none">
+          <option value="">Atendimento?</option>
+          <option value="sim">Sim</option>
+          <option value="não">Não</option>
+        </select>
+        <i data-lucide="chevron-down"
+          class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOTAL E INFO -->
+  <div class="flex items-center gap-3 px-2">
+    <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+    <span class="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest transition-colors">
+      Total Encontrado: <span id="totalRegistros" class="text-brand-600 dark:text-brand-500">{{ funcionarios|length
+        }}</span>
+    </span>
+  </div>
+
+  <!-- TABELA -->
+  <div
+    class="bg-white dark:bg-gray-900/50 rounded-3xl shadow-soft border border-gray-100 dark:border-gray-800 overflow-hidden transition-all">
+    <div class="overflow-x-auto custom-scrollbar">
+      <table class="w-full text-left">
+        <thead>
+          <tr class="bg-gray-50/50 dark:bg-gray-800/30 border-b border-gray-100 dark:border-gray-800 transition-colors">
+            <th class="px-6 py-5 text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
+              Nome do Profissional</th>
+            <th class="px-6 py-5 text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
+              CPF / Matrícula</th>
+            <th class="px-6 py-5 text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
+              Especialidade</th>
+            <th scope="col"
+              class="px-6 py-5 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              Unidade
+            </th>
+            <th scope="col"
+              class="px-6 py-5 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              Atendimento
+            </th>
+            <th class="px-6 py-5 text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
+              Situação</th>
+            <th
+              class="px-6 py-5 text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest text-center">
+              Ações</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody" class="divide-y divide-gray-50 dark:divide-gray-800">
+          {% for f in funcionarios %}
+          <tr class="funcionario-row hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors"
+            data-status="{{ 'ativo' if f.ativo else 'inativo' }}"
+            data-atendimento="{{ 'sim' if f.atendimento else 'não' }}">
+            <td class="px-6 py-5">
+              <div class="flex items-center gap-3">
+                <div
+                  class="w-10 h-10 bg-brand-50 dark:bg-brand-900/20 rounded-xl flex items-center justify-center text-brand-600 dark:text-brand-400 font-bold text-sm">
+                  {{ f.nome[:1] }}
+                </div>
+                <span class="font-bold text-gray-800 dark:text-gray-200">{{ f.nome }}</span>
+              </div>
+            </td>
+            <td class="px-6 py-5">
+              <div class="flex flex-col">
+                <span class="text-xs font-bold text-gray-700 dark:text-gray-300">{{ f.cpf }}</span>
+                <span class="text-[10px] text-gray-400 font-medium">{{ f.num_func_num_vinc }}</span>
+              </div>
+            </td>
+            <td class="px-6 py-5">
+              <span
+                class="inline-flex items-center px-3 py-1 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-[10px] font-extrabold rounded-full uppercase tracking-tight">
+                {{ f.especialidade }}
+              </span>
+            </td>
+            <td class="px-6 py-5 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 font-medium">
+              {{ f.unidade_atendimento or '-' }}
+            </td>
+            <td class="px-6 py-5 whitespace-nowrap">
+              {% if f.atendimento %}
+              <span
+                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 transition-all border border-blue-200 dark:border-blue-800">
+                <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                Sim
+              </span>
+              {% else %}
+              <span
+                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400 transition-all border border-gray-200 dark:border-gray-700">
+                <span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span>
+                Não
+              </span>
+              {% endif %}
+            </td>
+            <td class="px-6 py-5">
+              <select onchange="alterarStatus(this.getAttribute('data-id'), this.value)" data-id="{{ f.id }}" class="text-[10px] font-bold px-3 py-1.5 rounded-xl border-none ring-1 ring-gray-100 dark:ring-gray-800 focus:ring-2 focus:ring-brand-500/20 bg-white dark:bg-gray-800 outline-none cursor-pointer transition-all
+                                           {{ 'text-green-600' if f.ativo else 'text-red-500' }}">
+                <option value="ativo" {% if f.ativo %}selected{% endif %}>Ativo</option>
+                <option value="inativo" {% if not f.ativo %}selected{% endif %}>Inativo</option>
+              </select>
+            </td>
+            <td class="px-6 py-5">
+              <div class="flex justify-center">
+                <button type="button"
+                  class="btn-edit-funcionario w-9 h-9 flex items-center justify-center rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-400 hover:text-brand-600 hover:bg-brand-50 dark:hover:bg-brand-900/30 transition-all"
+                  data-funcionario='{{ f | tojson | forceescape }}'>
+                  <i data-lucide="edit-3" class="w-4.5 h-4.5"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+          {% if not funcionarios %}
+          <tr>
+            <td colspan="7" class="px-6 py-20 text-center">
+              <div class="flex flex-col items-center">
+                <div
+                  class="w-16 h-16 bg-gray-50 dark:bg-gray-800 rounded-2xl flex items-center justify-center mb-4 text-gray-300">
+                  <i data-lucide="users" class="w-8 h-8"></i>
+                </div>
+                <h3 class="font-bold text-gray-800 dark:text-gray-200">Nenhum profissional listado</h3>
+                <p class="text-sm text-gray-400 max-w-xs mx-auto mt-1">A lista de profissionais está vazia ou os filtros
+                  aplicados não retornaram resultados.</p>
+              </div>
+            </td>
+          </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EDICAO -->
+<div id="editModal"
+  class="fixed inset-0 bg-gray-950/80 backdrop-blur-md hidden items-center justify-center z-50 p-4 transition-all duration-300">
+  <div
+    class="bg-white dark:bg-gray-900 rounded-[2.5rem] shadow-2xl w-full max-w-lg overflow-hidden border border-gray-100 dark:border-gray-800 animate-fade-in-up">
+
+    <!-- Header -->
+    <div
+      class="p-8 border-b border-gray-50 dark:border-gray-800 flex justify-between items-center bg-gray-50/30 dark:bg-gray-900/30">
+      <div>
+        <h2 class="text-2xl font-bold text-brand-900 dark:text-brand-500">Editar Cadastro</h2>
+        <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Atualize as informações do profissional.</p>
+      </div>
+      <button onclick="closeEditModal()"
+        class="w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/20 transition-all">
+        <i data-lucide="x" class="w-6 h-6"></i>
+      </button>
+    </div>
+
+    <form method="POST" id="editForm" class="p-8 space-y-6">
+      <input type="hidden" id="editId">
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="md:col-span-2">
+          <label
+            class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Nome
+            Completo</label>
+          <input id="editNome" name="nome"
+            class="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 dark:text-gray-100 transition-all">
+        </div>
+
+        <div>
+          <label
+            class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">CPF</label>
+          <input id="editCPF" name="cpf"
+            class="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 dark:text-gray-100 transition-all">
+        </div>
+
+        <div>
+          <label
+            class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Matrícula</label>
+          <input id="editMatriculaField" name="num_func_vinculo"
+            class="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 dark:text-gray-100 transition-all">
+        </div>
+
+        <div>
+          <label
+            class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Especialidade</label>
+          <input id="editEspecialidadeField" name="especialidade"
+            class="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 dark:text-gray-100 transition-all">
+        </div>
+
+        <div>
+          <label
+            class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Unidade</label>
+          <div class="relative group">
+            <select id="editUnidadeField" name="unidade_atendimento"
+              class="w-full pl-5 pr-10 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 dark:text-gray-100 transition-all appearance-none cursor-pointer">
+              <option value="">Selecione...</option>
+              {% for u in unidades %}
+              <option value="{{ u.nome }}">{{ u.nome }}</option>
+              {% endfor %}
+            </select>
+            <i data-lucide="chevron-down"
+              class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"></i>
+          </div>
+        </div>
+
+        <label
+          class="md:col-span-2 flex items-center gap-4 bg-brand-50/50 dark:bg-brand-900/10 p-5 rounded-2xl border border-brand-100 dark:border-brand-900/30">
+          <div class="relative inline-flex items-center cursor-pointer group">
+            <input type="checkbox" name="atendimento" id="editAtendimento" class="sr-only peer">
+            <div
+              class="w-14 h-7 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brand-300 dark:peer-focus:ring-brand-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all dark:border-gray-600 peer-checked:bg-brand-600">
+            </div>
+          </div>
+          <div>
+            <label class="text-sm font-bold text-brand-900 dark:text-brand-400 cursor-pointer">Realiza
+              Atendimento?</label>
+            <p class="text-xs text-gray-500 dark:text-gray-500">Se marcado, este profissional aparecerá na lista de
+              agendamentos.</p>
+          </div>
+      </div>
+
+      <div
+        class="md:col-span-2 flex justify-end items-center gap-4 pt-4 border-t border-gray-50 dark:border-gray-800 mt-2">
+        <button type="button" onclick="closeEditModal()"
+          class="px-6 py-3 font-bold text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors uppercase text-xs tracking-widest">Cancelar</button>
+        <button type="submit"
+          class="bg-brand-900 text-white px-8 py-3.5 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-brand-800 shadow-xl shadow-brand-900/20 transition-all active:scale-95">
+          Salvar Alterações
+        </button>
+      </div>
+  </div>
+  </form>
+</div>
+</div>
+
+<script>
+  function exportToExcel() {
+    const table = document.querySelector('table');
+    const wb = XLSX.utils.table_to_book(table, { sheet: "Equipe" });
+    XLSX.writeFile(wb, "equipe_qualivida.xlsx");
+    showToast("Planilha exportada com sucesso!", "success");
+  }
+
+  function openEditModal(f) {
+    document.getElementById('editId').value = f.id;
+    document.getElementById('editNome').value = f.nome;
+    document.getElementById('editCPF').value = f.cpf;
+    document.getElementById('editMatriculaField').value = f.num_func_num_vinc;
+    document.getElementById('editEspecialidadeField').value = f.especialidade;
+    document.getElementById('editUnidadeField').value = f.unidade_atendimento || "";
+    document.getElementById('editAtendimento').checked = f.atendimento;
+    document.getElementById('editForm').action = `/funcionario/editar/${f.id}`;
+
+    const modal = document.getElementById('editModal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  }
+
+  function closeEditModal() {
+    const modal = document.getElementById('editModal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+
+  function alterarStatus(id, status) {
+    fetch(`/funcionario/status/${id}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status })
+    }).then(() => {
+      // Optional: Refresh UI state classes
+      window.location.reload();
+    });
+  }
+
+  function filterTable() {
+    const filterNome = document.getElementById('filterNome').value.toLowerCase();
+    const filterCPF = document.getElementById('filterCPF').value.toLowerCase();
+    const filterMatricula = document.getElementById('filterMatricula').value.toLowerCase();
+    const filterEspecialidade = document.getElementById('filterEspecialidade').value.toLowerCase();
+    const filterUnidade = document.getElementById('filterUnidade').value.toLowerCase();
+    const filterStatus = document.getElementById('filterStatus').value.toLowerCase();
+    const filterAtendimento = document.getElementById('filterAtendimento').value.toLowerCase();
+
+    const tbody = document.getElementById('tableBody');
+    const tr = tbody.getElementsByTagName('tr');
+    let count = 0;
+
+    for (let i = 0; i < tr.length; i++) {
+      // Ensure these indices match the actual column order in your HTML table
+      const tdNome = tr[i].cells[0].textContent.toLowerCase();
+      const tdCPF = tr[i].cells[1].textContent.toLowerCase();
+      const tdMatricula = tr[i].cells[1].textContent.toLowerCase(); // CPF and Matricula are in the same cell, need to adjust
+      const tdEspecialidade = tr[i].cells[2].textContent.toLowerCase();
+      const tdUnidade = tr[i].cells[3].textContent.toLowerCase();
+      const tdAtendimento = tr[i].cells[4].textContent.toLowerCase();
+      const tdStatus = tr[i].cells[5].textContent.toLowerCase().includes('ativo') ? 'ativo' : 'inativo';
+
+      const matchesNome = tdNome.indexOf(filterNome) > -1;
+      const matchesCPF = tdCPF.indexOf(filterCPF) > -1;
+      const matchesMatricula = tdMatricula.indexOf(filterMatricula) > -1; // This will check both CPF and Matricula in the same cell
+      const matchesEspecialidade = tdEspecialidade.indexOf(filterEspecialidade) > -1;
+      const matchesUnidade = tdUnidade.indexOf(filterUnidade) > -1;
+      const matchesStatus = filterStatus === '' || tdStatus === filterStatus;
+      const matchesAtendimento = filterAtendimento === '' || tdAtendimento.trim() === filterAtendimento;
+
+      if (matchesNome && matchesCPF && matchesMatricula && matchesEspecialidade && matchesUnidade && matchesStatus && matchesAtendimento) {
+        tr[i].style.display = "";
+        count++;
+      } else {
+        tr[i].style.display = "none";
+      }
+    }
+    document.getElementById('totalRegistros').innerText = count;
+  }
+
+  // Initial icon create
+  window.addEventListener('DOMContentLoaded', () => {
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+
+    // Event listener for edit buttons
+    document.querySelectorAll('.btn-edit-funcionario').forEach(btn => {
+      btn.addEventListener('click', () => {
+        try {
+          const funcData = JSON.parse(btn.getAttribute('data-funcionario'));
+          openEditModal(funcData);
+        } catch (e) {
+          console.error('Error parsing funcionario data:', e);
+        }
+      });
+    });
+  });
+</script>
+
+{% endblock %}

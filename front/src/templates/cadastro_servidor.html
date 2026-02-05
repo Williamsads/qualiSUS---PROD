@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}Cadastro de Servidor{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto space-y-8 animate-fade-in-up pb-12">
+
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div class="flex items-center gap-4">
+            <div class="bg-brand-50 dark:bg-brand-900/20 p-3 rounded-2xl text-brand-600 dark:text-brand-400">
+                <i data-lucide="user-plus" class="w-8 h-8"></i>
+            </div>
+            <div>
+                <h1 class="text-3xl font-extrabold text-brand-900 dark:text-brand-500 transition-colors">Cadastro de
+                    Servidor</h1>
+                <p class="text-gray-500 dark:text-gray-400 font-medium transition-colors">Registre novos servidores
+                    públicos no ecossistema Qualivita.</p>
+            </div>
+        </div>
+
+        <a href="javascript:history.back()"
+            class="inline-flex items-center justify-center gap-2 text-gray-400 hover:text-brand-600 font-bold transition-all px-4 py-2 hover:bg-brand-50 dark:hover:bg-brand-900/20 rounded-xl">
+            <i data-lucide="arrow-left" class="w-5 h-5"></i>
+            Voltar
+        </a>
+    </div>
+
+    <!-- Form Card -->
+    <div
+        class="bg-white dark:bg-gray-900/50 rounded-[2.5rem] shadow-soft border border-gray-100 dark:border-gray-800 p-8 sm:p-12 transition-all">
+
+        <form class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+            <!-- Nome -->
+            <div class="space-y-2">
+                <label
+                    class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">Nome
+                    Completo</label>
+                <div class="relative group">
+                    <i data-lucide="user"
+                        class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
+                    <input type="text"
+                        class="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-medium transition-all"
+                        placeholder="Ex: João da Silva Santos">
+                </div>
+            </div>
+
+            <!-- CPF -->
+            <div class="space-y-2">
+                <label
+                    class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">CPF</label>
+                <div class="relative group">
+                    <i data-lucide="credit-card"
+                        class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
+                    <input type="text"
+                        class="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-bold transition-all"
+                        placeholder="000.000.000-00">
+                </div>
+            </div>
+
+            <!-- Matricula -->
+            <div class="space-y-2">
+                <label
+                    class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">Matrícula</label>
+                <div class="relative group">
+                    <i data-lucide="hash"
+                        class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
+                    <input type="text"
+                        class="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-bold transition-all"
+                        placeholder="Ex: 123456-7">
+                </div>
+            </div>
+
+            <!-- Nascimento -->
+            <div class="space-y-2">
+                <label
+                    class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">Data
+                    de Nascimento</label>
+                <input type="date"
+                    class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-bold transition-all cursor-pointer">
+            </div>
+
+            <!-- Especialidade -->
+            <div class="space-y-2">
+                <label
+                    class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">Especialidade
+                    / Cargo</label>
+                <div class="relative group">
+                    <i data-lucide="briefcase"
+                        class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
+                    <input type="text"
+                        class="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-medium transition-all"
+                        placeholder="Ex: Analista Legislativo">
+                </div>
+            </div>
+
+            <!-- Email -->
+            <div class="space-y-2 md:col-span-2">
+                <label
+                    class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">E-mail
+                    Institucional</label>
+                <div class="relative group">
+                    <i data-lucide="mail"
+                        class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
+                    <input type="email"
+                        class="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-medium transition-all"
+                        placeholder="nome@pe.gov.br">
+                </div>
+            </div>
+
+            <!-- Telefone -->
+            <div class="space-y-2 md:col-span-2">
+                <label
+                    class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">Telefone</label>
+                <div class="relative group">
+                    <i data-lucide="phone"
+                        class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
+                    <input type="text"
+                        class="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-bold transition-all"
+                        placeholder="(81) 99999-0000">
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div
+                class="md:col-span-2 pt-10 flex flex-col sm:flex-row justify-end items-center gap-6 border-t border-gray-50 dark:border-gray-800 mt-6 transition-colors">
+                <button type="button" onclick="javascript:history.back()"
+                    class="px-8 py-4 rounded-2xl font-bold text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors uppercase text-[10px] tracking-widest">
+                    Cancelar
+                </button>
+                <button type="submit"
+                    class="w-full sm:w-auto px-12 py-4 rounded-2xl bg-brand-900 text-white font-black hover:bg-brand-800 shadow-xl shadow-brand-900/20 transition-all active:scale-95 flex items-center justify-center gap-2 uppercase text-xs tracking-widest">
+                    <i data-lucide="save" class="w-5 h-5"></i>
+                    Salvar Cadastro
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+    });
+</script>
+{% endblock %}

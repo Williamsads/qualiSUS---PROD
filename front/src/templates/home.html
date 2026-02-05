@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="space-y-8 animate-fade-in pb-10">
+
+    <!-- HERO SECTION -->
+    <section
+        class="relative bg-gradient-to-br from-pe-blue via-brand-800 to-brand-600 rounded-4xl p-8 sm:p-12 shadow-xl-premium text-white overflow-hidden">
+        <div class="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-white/10 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-64 h-64 bg-pe-gold/20 rounded-full blur-3xl"></div>
+
+        <div class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div>
+                <div class="flex items-center gap-3 mb-2 opacity-90">
+                    <span
+                        class="px-3 py-1 rounded-full bg-white/10 border border-white/20 text-xs font-semibold uppercase tracking-wider">
+                        Painel Principal
+                    </span>
+                    <span class="text-sm font-medium">{{ session.get('data', '') }}</span>
+                </div>
+
+                <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-2">
+                    Olá, {{ session.get('nome', 'Servidor') }}
+                </h2>
+                <p class="text-blue-100 max-w-2xl text-lg font-light leading-relaxed">
+                    Bem-vindo ao sistema de gestão de saúde do trabalhador.
+                </p>
+            </div>
+
+            <!-- Hero Stats -->
+            <div class="flex gap-4">
+                <div
+                    class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 flex flex-col items-center min-w-[110px]">
+                    <span class="text-3xl font-bold">{{ total_trabalhadores }}</span>
+                    <span class="text-xs text-blue-200 font-medium uppercase mt-1">Trabalhadores</span>
+                </div>
+                <div
+                    class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 flex flex-col items-center min-w-[110px]">
+                    <span class="text-3xl font-bold text-green-300">98%</span>
+                    <span class="text-xs text-blue-200 font-medium uppercase mt-1">Cobertura</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- QUICK ACTIONS (Full Width) -->
+    <section>
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2 dark:text-gray-200">
+                <i data-lucide="zap" class="w-5 h-5 text-yellow-500 fill-current"></i>
+                Acesso Rápido
+            </h3>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+
+            <a href="{{ url_for('servidor.adicionar_funcionario') }}"
+                class="flex flex-col items-center justify-center p-6 bg-white border border-gray-100 rounded-3xl transition-all group text-center h-48 cursor-pointer dark:bg-gray-900 dark:border-gray-800 hover-lift shadow-premium">
+                <div
+                    class="w-16 h-16 bg-brand-50 text-brand-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-sm dark:bg-blue-900/20 dark:text-brand-400">
+                    <i data-lucide="user-plus" class="w-8 h-8"></i>
+                </div>
+                <span
+                    class="font-extrabold text-gray-800 text-sm group-hover:text-brand-600 dark:text-gray-200 dark:group-hover:text-brand-400">Novo
+                    Funcionário</span>
+                <span
+                    class="text-[11px] text-gray-400 mt-1 dark:text-gray-500 uppercase font-semibold tracking-wider">Cadastrar
+                    servidor</span>
+            </a>
+
+            <a href="{{ url_for('agendamento_bp.pagina_agendamento') }}"
+                class="flex flex-col items-center justify-center p-6 bg-white border border-gray-100 rounded-3xl transition-all group text-center h-48 cursor-pointer dark:bg-gray-900 dark:border-gray-800 hover-lift shadow-premium">
+                <div
+                    class="w-16 h-16 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-sm dark:bg-green-900/20 dark:text-green-400">
+                    <i data-lucide="calendar-plus" class="w-8 h-8"></i>
+                </div>
+                <span
+                    class="font-extrabold text-gray-800 text-sm group-hover:text-green-600 dark:text-gray-200 dark:group-hover:text-green-400">Agendar
+                    Exame</span>
+                <span
+                    class="text-[11px] text-gray-400 mt-1 dark:text-gray-500 uppercase font-semibold tracking-wider">Marcar
+                    consulta</span>
+            </a>
+
+            <a href="{{ url_for('trabalhadores.lista_trabalhadores') }}"
+                class="flex flex-col items-center justify-center p-6 bg-white border border-gray-100 rounded-3xl transition-all group text-center h-48 cursor-pointer dark:bg-gray-900 dark:border-gray-800 hover-lift shadow-premium">
+                <div
+                    class="w-16 h-16 bg-pe-gold/10 text-pe-gold rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-sm dark:bg-amber-900/20 dark:text-pe-gold">
+                    <i data-lucide="users" class="w-8 h-8"></i>
+                </div>
+                <span
+                    class="font-extrabold text-gray-800 text-sm group-hover:text-pe-gold dark:text-gray-200 dark:group-hover:text-pe-gold">Trabalhadores</span>
+                <span
+                    class="text-[11px] text-gray-400 mt-1 dark:text-gray-500 uppercase font-semibold tracking-wider">Busca
+                    completa</span>
+            </a>
+
+            <a href="{{ url_for('log_agendamento.index') }}"
+                class="flex flex-col items-center justify-center p-6 bg-white border border-gray-100 rounded-3xl transition-all group text-center h-48 cursor-pointer dark:bg-gray-900 dark:border-gray-800 hover-lift shadow-premium">
+                <div
+                    class="w-16 h-16 bg-accent-50 text-accent-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-sm dark:bg-accent-900/20 dark:text-accent-400">
+                    <i data-lucide="calendar" class="w-8 h-8"></i>
+                </div>
+                <span
+                    class="font-extrabold text-gray-800 text-sm group-hover:text-accent-600 dark:text-gray-200 dark:group-hover:text-accent-400">Relatórios</span>
+                <span
+                    class="text-[11px] text-gray-400 mt-1 dark:text-gray-500 uppercase font-semibold tracking-wider">Ver
+                    Agendamentos</span>
+            </a>
+
+        </div>
+    </section>
+
+    <!-- MODULES GRID (Replacing Sidebar List) -->
+    <section>
+        <div class="flex items-center justify-between mb-4 mt-8">
+            <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2 dark:text-gray-200">
+                <i data-lucide="grid" class="w-5 h-5 text-gray-400"></i>
+                Módulos do Sistema
+            </h3>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+            <!-- Module 1 -->
+            <div
+                class="bg-white p-5 rounded-2xl border border-gray-200 hover:border-brand-200 hover:shadow-md transition-all cursor-pointer group flex items-start gap-4 dark:bg-gray-900 dark:border-gray-800 dark:hover:border-brand-600">
+                <div
+                    class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-brand-600 group-hover:scale-110 transition-transform flex-shrink-0 dark:bg-gray-800 dark:text-brand-400">
+                    <i data-lucide="users" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h4
+                        class="font-bold text-gray-800 text-sm group-hover:text-brand-700 dark:text-gray-200 dark:group-hover:text-brand-400">
+                        Gestão de Servidores</h4>
+                    <p class="text-xs text-gray-500 mt-1 leading-relaxed dark:text-gray-500 uppercase tracking-tighter">
+                        Administração de fichas funcionais e dados
+                        cadastrais.</p>
+                </div>
+            </div>
+
+            <!-- Module 2 -->
+            <div
+                class="bg-white p-5 rounded-2xl border border-gray-200 hover:border-green-200 hover:shadow-md transition-all cursor-pointer group flex items-start gap-4 dark:bg-gray-900 dark:border-gray-800 dark:hover:border-green-600">
+                <div
+                    class="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center text-green-600 group-hover:scale-110 transition-transform flex-shrink-0 dark:bg-gray-800 dark:text-green-400">
+                    <i data-lucide="activity" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h4
+                        class="font-bold text-gray-800 text-sm group-hover:text-green-700 dark:text-gray-200 dark:group-hover:text-green-400">
+                        Saúde e Perícia</h4>
+                    <p class="text-xs text-gray-500 mt-1 leading-relaxed dark:text-gray-500 uppercase tracking-tighter">
+                        Agendamento de ASO, perícias e exames
+                        periódicos.</p>
+                </div>
+            </div>
+
+            <!-- Module 3 -->
+            <div
+                class="bg-white p-5 rounded-2xl border border-gray-200 hover:border-yellow-200 hover:shadow-md transition-all cursor-pointer group flex items-start gap-4 dark:bg-gray-900 dark:border-gray-800 dark:hover:border-yellow-600">
+                <div
+                    class="w-12 h-12 rounded-xl bg-yellow-50 flex items-center justify-center text-yellow-600 group-hover:scale-110 transition-transform flex-shrink-0 dark:bg-gray-800 dark:text-yellow-400">
+                    <i data-lucide="briefcase" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h4
+                        class="font-bold text-gray-800 text-sm group-hover:text-yellow-700 dark:text-gray-200 dark:group-hover:text-yellow-400">
+                        Equipes e Unidades</h4>
+                    <p class="text-xs text-gray-500 mt-1 leading-relaxed dark:text-gray-500 uppercase tracking-tighter">
+                        Gerenciamento de setores e equipes
+                        multiprofissionais.</p>
+                </div>
+            </div>
+
+            <!-- Module 4 -->
+            <div
+                class="bg-white p-5 rounded-2xl border border-gray-200 hover:border-red-200 hover:shadow-md transition-all cursor-pointer group flex items-start gap-4 dark:bg-gray-900 dark:border-gray-800 dark:hover:border-red-600">
+                <div
+                    class="w-12 h-12 rounded-xl bg-red-50 flex items-center justify-center text-red-600 group-hover:scale-110 transition-transform flex-shrink-0 dark:bg-gray-800 dark:text-red-400">
+                    <i data-lucide="bar-chart-2" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h4
+                        class="font-bold text-gray-800 text-sm group-hover:text-red-700 dark:text-gray-200 dark:group-hover:text-red-400">
+                        Indicadores</h4>
+                    <p class="text-xs text-gray-500 mt-1 leading-relaxed dark:text-gray-500 uppercase tracking-tighter">
+                        Relatórios de absenteísmo e inteligência de
+                        dados.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+</div>
+{% endblock %}

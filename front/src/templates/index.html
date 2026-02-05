@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png"
+        href="{{ url_for('static', filename='img/Logo da QualiSUS com pinwheel colorido.png') }}">
+    <title>QualiSUS</title>
+    <meta name="description" content="Acesse o Sistema Qualivida da Secretaria da Saúde de Pernambuco.">
+
+    <!-- Google Fonts: Inter for a modern look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f6fc',
+                            100: '#e1edf8',
+                            200: '#bcd9f1',
+                            300: '#82b9e7',
+                            400: '#4097da',
+                            500: '#004b90', // Gov PE Blue
+                            600: '#003e78',
+                            700: '#003261',
+                            800: '#00264a',
+                            900: '#001931', // Base Blue
+                        },
+                        pe: {
+                            blue: '#0099FF',  // Azul mais "Slick" (Céu)
+                            gold: '#FFCC00',
+                            red: '#E30613',
+                            green: '#009639'
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
+                        'slide-up': 'slideUp 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+
+<body
+    class="bg-gray-50 dark:bg-gray-950 min-h-screen w-full flex font-sans text-gray-800 dark:text-gray-100 transition-colors duration-500">
+
+    <!-- ======================= LEFT: LOGIN FORM ======================= -->
+    <div
+        class="w-full md:w-[480px] lg:w-[550px] bg-white dark:bg-gray-900 min-h-screen flex flex-col relative z-20 shadow-[0_0_50px_rgba(0,0,0,0.1)] dark:shadow-[0_0_50px_rgba(0,0,0,0.5)] border-r-2 border-gray-900 dark:border-gray-800 flex-shrink-0 animate-fade-in transition-colors duration-500">
+
+        <!-- Header / Logo -->
+        <div class="px-10 py-8 flex flex-col items-center flex-none">
+            <!-- Logo Light Mode -->
+            <img src="{{ url_for('static', filename='img/Logo_QUALISUS_COR_PRETO.png') }}" alt="Logo QualiSUS"
+                class="h-20 md:h-28 mb-4 drop-shadow-xl hover:scale-105 transition-all duration-500 w-auto object-contain block dark:hidden">
+
+            <!-- Logo Dark Mode -->
+            <img src="{{ url_for('static', filename='img/Logo da QualiSUS com pinwheel colorido.png') }}"
+                alt="Logo QualiSUS"
+                class="h-20 md:h-28 mb-4 drop-shadow-xl hover:scale-105 transition-all duration-500 w-auto object-contain hidden dark:block">
+            <!-- Arco-íris da Bandeira de PE -->
+            <div class="flex h-1.5 w-24 rounded-full overflow-hidden shadow-sm">
+                <div class="flex-1 bg-pe-blue"></div>
+                <div class="flex-1 bg-pe-gold"></div>
+                <div class="flex-1 bg-pe-red"></div>
+                <div class="flex-1 bg-pe-green"></div>
+            </div>
+            <span
+                class="mt-4 px-3 py-1 bg-amber-100 text-amber-700 text-[10px] font-black uppercase rounded-full border border-amber-200">
+                Ambiente de Homologação
+            </span>
+        </div>
+
+        <!-- Scrollable Content Area -->
+        <div class="flex-1 px-10 flex flex-col justify-center">
+
+            <div class="w-full max-w-sm mx-auto space-y-8">
+
+                <div class="text-center space-y-2 animate-slide-up" style="animation-delay: 0.1s;">
+                    <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">Bem-vindo de volta
+                    </h2>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">
+                        Acesse sua conta para gerenciar agendamentos e serviços.
+                    </p>
+                </div>
+
+                <!-- Flash Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                <div class="space-y-3 animate-slide-up" style="animation-delay: 0.2s;">
+                    {% for categoria, mensagem in messages %}
+                    <div
+                        class="flex items-center gap-3 p-4 rounded-2xl border text-sm font-bold shadow-sm backdrop-blur-md
+                                    {% if categoria == 'erro' %} bg-red-50/80 border-red-200 text-red-700 dark:bg-red-900/20 dark:border-red-800 dark:text-red-400
+                                    {% elif categoria == 'sucesso' %} bg-green-50/80 border-green-200 text-green-700 dark:bg-green-900/20 dark:border-green-800 dark:text-green-400
+                                    {% else %} bg-blue-50/80 border-blue-200 text-blue-700 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-400 {% endif %}">
+                        <i data-lucide="{% if categoria == 'erro' %}alert-circle{% elif categoria == 'sucesso' %}check-circle{% else %}info{% endif %}"
+                            class="w-5 h-5"></i>
+                        <span>{{ mensagem }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% endwith %}
+
+                <!-- Form -->
+                <form id="formLogin" autocomplete="off" method="POST" action="/index" class="space-y-6">
+
+                    <!-- Email -->
+                    <div class="space-y-2 animate-slide-up" style="animation-delay: 0.3s;">
+                        <label for="email"
+                            class="block text-xs font-black uppercase tracking-widest text-gray-500 dark:text-gray-400 ml-1">Email
+                            Corporativo</label>
+                        <div class="relative group">
+                            <div
+                                class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-brand-600 dark:group-focus-within:text-brand-400 transition-colors">
+                                <i data-lucide="mail" class="w-5 h-5"></i>
+                            </div>
+                            <input type="email" id="email" name="email" placeholder="usuario@saude.pe.gov.br" required
+                                class="w-full pl-12 pr-4 py-4 bg-white dark:bg-gray-800/50 border-2 border-gray-900 dark:border-gray-700 rounded-2xl focus:bg-white dark:focus:bg-gray-800 focus:ring-4 focus:ring-pe-blue/10 focus:border-pe-blue outline-none transition-all duration-300 text-gray-900 dark:text-white placeholder-gray-400 font-semibold shadow-sm">
+                        </div>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="space-y-2 animate-slide-up" style="animation-delay: 0.4s;">
+                        <!-- Label -->
+                        <div class="ml-1">
+                            <label for="senha"
+                                class="block text-xs font-black uppercase tracking-widest text-gray-500 dark:text-gray-400">Senha</label>
+                        </div>
+
+                        <!-- Input Group -->
+                        <div class="relative group">
+                            <div
+                                class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-brand-600 dark:group-focus-within:text-brand-400 transition-colors">
+                                <i data-lucide="lock" class="w-5 h-5"></i>
+                            </div>
+                            <input type="password" id="senha" name="senha" placeholder="••••••••" required
+                                class="w-full pl-12 pr-12 py-4 bg-white dark:bg-gray-800/50 border-2 border-gray-900 dark:border-gray-700 rounded-2xl focus:bg-white dark:focus:bg-gray-800 focus:ring-4 focus:ring-pe-blue/10 focus:border-pe-blue outline-none transition-all duration-300 text-gray-900 dark:text-white placeholder-gray-400 font-semibold shadow-sm">
+
+                            <button type="button" id="toggleSenha"
+                                class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-brand-600 dark:hover:text-brand-400 cursor-pointer transition-colors"
+                                tabindex="-1">
+                                <i data-lucide="eye" id="iconEyeOpen" class="w-5 h-5 hidden"></i>
+                                <i data-lucide="eye-off" id="iconEyeClosed" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+
+                        <!-- Forgot Password Link -->
+                        <div class="flex justify-end pt-1 pr-1">
+                            <button type="button" onclick="abrirModalSenha()"
+                                class="text-[10px] font-black uppercase tracking-widest text-brand-600 hover:text-brand-800 dark:text-brand-400 dark:hover:text-brand-300 transition-all">
+                                Esqueceu a senha?
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="pt-4 animate-slide-up" style="animation-delay: 0.5s;">
+                        <button type="submit" id="btnSubmit"
+                            class="group w-full bg-pe-blue hover:brightness-110 text-white py-4 rounded-2xl font-black text-lg shadow-lg shadow-pe-blue/20 hover:shadow-xl hover:shadow-pe-blue/30 hover:-translate-y-1 active:scale-95 transition-all duration-300 flex items-center justify-center gap-3">
+                            <span id="btnText">Entrar no Sistema</span>
+                            <div id="btnLoader"
+                                class="hidden w-6 h-6 border-4 border-white/30 border-t-white rounded-full animate-spin">
+                            </div>
+                            <i id="btnIcon" data-lucide="arrow-right"
+                                class="w-6 h-6 group-hover:translate-x-1 transition-transform"></i>
+                        </button>
+                    </div>
+
+                    {% if error %}
+                    <div
+                        class="p-3 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 animate-pulse">
+                        <p
+                            class="text-red-600 dark:text-red-400 text-xs text-center font-bold uppercase tracking-tight">
+                            {{ error }}
+                        </p>
+                    </div>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="p-10 text-center flex-none">
+            <div
+                class="flex items-center justify-center gap-4 mb-4 opacity-30 grayscale transition-all hover:grayscale-0 hover:opacity-100 duration-500">
+                <img src="{{ url_for('static', filename='img/GOV-JPG-1024x452-removebg-preview.png') }}"
+                    class="h-8 dark:brightness-0 dark:invert" alt="Gov PE">
+            </div>
+            <p
+                class="text-[10px] text-gray-400 dark:text-gray-500 font-black uppercase tracking-[0.3em] leading-relaxed">
+                © 2025 • QualiSUS PE<br>
+                <span class="font-medium normal-case tracking-normal opacity-50">Secretaria Estadual de Saúde</span>
+            </p>
+        </div>
+    </div>
+
+    <!-- ======================= RIGHT: IMAGE SLIDER ======================= -->
+    <div class="fixed inset-0 md:relative md:block z-0 md:flex-1 min-h-screen bg-brand-900 overflow-hidden">
+
+        <!-- Overlay Gradient -->
+        <div
+            class="absolute inset-0 bg-gradient-to-t from-brand-900 via-brand-900/60 to-transparent z-10 pointer-events-none">
+        </div>
+
+        <!-- Images -->
+        <div id="sliderWrapper" class="relative w-full h-full">
+            <img id="imgSlide" src="{{ url_for('static', filename='img/Rua_do_Bom_Jesus,_Recife_antigo.jpg') }}"
+                class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out opacity-100 z-0 scale-105 animate-[kenburns_20s_infinite]">
+        </div>
+
+        <!-- Caption Area -->
+        <div class="absolute bottom-0 left-0 w-full p-12 z-20 text-white hidden md:block">
+            <div class="max-w-xl animate-slide-up" style="animation-delay: 0.3s;">
+                <span
+                    class="inline-block px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-semibold tracking-wide uppercase mb-3 border border-white/30">
+                    Pernambuco
+                </span>
+                <h2 id="captionTitle" class="text-4xl lg:text-5xl font-bold leading-tight mb-2 drop-shadow-lg">
+                    Cuidando de quem cuida da nossa gente.
+                </h2>
+                <p id="captionDesc" class="text-lg text-blue-100/90 font-light max-w-md drop-shadow-md">
+                    Sistema integrado para gestão e acompanhamento da saúde dos servidores estaduais.
+                </p>
+
+                <!-- Dots -->
+                <div class="flex gap-2 mt-8">
+                    <button class="w-10 h-1.5 rounded-full bg-white transition-all duration-300 opacity-100"
+                        data-slide="0"></button>
+                    <button class="w-2 h-2 rounded-full bg-white/50 hover:bg-white transition-all duration-300"
+                        data-slide="1"></button>
+                    <button class="w-2 h-2 rounded-full bg-white/50 hover:bg-white transition-all duration-300"
+                        data-slide="2"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================= MODAL: RECOVERY ======================= -->
+    <div id="modalSenha" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog"
+        aria-modal="true">
+        <!-- Backdrop -->
+        <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity opacity-0" id="modalBackdrop">
+        </div>
+
+        <div class="fixed inset-0 z-10 overflow-y-auto">
+            <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+
+                <div class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-md opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                    id="modalPanel">
+
+                    <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                        <div class="sm:flex sm:items-start">
+                            <div
+                                class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-brand-100 sm:mx-0 sm:h-10 sm:w-10">
+                                <i data-lucide="key-round" class="w-6 h-6 text-brand-600"></i>
+                            </div>
+                            <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left w-full">
+                                <h3 class="text-lg font-semibold leading-6 text-gray-900" id="modal-title">Recuperar
+                                    Senha</h3>
+                                <div class="mt-2 text-sm text-gray-500">
+                                    <p class="mb-4">Digite seu email institucional para receber as instruções de
+                                        redefinição de senha.</p>
+
+                                    <form method="POST" action="/recuperar-senha" id="formRecovery"
+                                        class="mt-4 space-y-4">
+                                        <div>
+                                            <label class="sr-only">Email</label>
+                                            <div class="relative">
+                                                <div
+                                                    class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                                                    <i data-lucide="at-sign" class="w-4 h-4"></i>
+                                                </div>
+                                                <input type="email" name="email" required
+                                                    class="block w-full rounded-lg border-gray-300 pl-10 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-brand-600 sm:text-sm sm:leading-6 outline-none"
+                                                    placeholder="seu.email@saude.pe.gov.br">
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 gap-2">
+                        <button type="submit" form="formRecovery"
+                            class="inline-flex w-full justify-center rounded-xl bg-brand-900 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-800 sm:w-auto transition-colors">
+                            Enviar Link
+                        </button>
+                        <button type="button" onclick="fecharModalSenha()"
+                            class="mt-3 inline-flex w-full justify-center rounded-xl bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto transition-colors">
+                            Cancelar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================= SCRIPTS ======================= -->
+    <script>
+        // Init Icons
+        lucide.createIcons();
+
+        // Staggered Animations Logic
+        document.querySelectorAll('.animate-slide-up').forEach((el, i) => {
+            el.style.animationDelay = `${0.1 + (i * 0.08)}s`;
+        });
+
+        // Form Submit Loading Logic
+        const formLogin = document.getElementById('formLogin');
+        const btnSubmit = document.getElementById('btnSubmit');
+        const btnText = document.getElementById('btnText');
+        const btnLoader = document.getElementById('btnLoader');
+        const btnIcon = document.getElementById('btnIcon');
+
+        if (formLogin) {
+            formLogin.addEventListener('submit', () => {
+                btnSubmit.disabled = true;
+                btnSubmit.classList.add('opacity-80', 'cursor-not-allowed');
+                btnText.innerText = "Verificando...";
+                btnLoader.classList.remove('hidden');
+                btnIcon.classList.add('hidden');
+            });
+        }
+
+        // --- Slider Logic ---
+        const slides = [
+            {
+                img: "{{ url_for('static', filename='img/Rua_do_Bom_Jesus,_Recife_antigo.jpg') }}",
+                title: "Cuidando de quem cuida.",
+                desc: "Sistema integrado para gestão e acompanhamento da saúde dos servidores."
+            },
+            {
+                img: "{{ url_for('static', filename='img/bairros-mais-caros-de-recife.jpg') }}",
+                title: "Modernidade e Eficiência.",
+                desc: "Acesso rápido e seguro a todas as informações que você precisa."
+            },
+            {
+                img: "{{ url_for('static', filename='img/centro_recife.jpg') }}",
+                title: "Pernambuco Mais Forte.",
+                desc: "Tecnologia a serviço da saúde pública do nosso estado."
+            },
+        ];
+
+        let currentSlide = 0;
+        const imgSlide = document.getElementById("imgSlide");
+        const captionTitle = document.getElementById("captionTitle");
+        const captionDesc = document.getElementById("captionDesc");
+        const dots = document.querySelectorAll("[data-slide]");
+
+        function showSlide(i) {
+            currentSlide = i;
+
+            // Cross-fade effect simulation
+            imgSlide.style.opacity = '0';
+
+            setTimeout(() => {
+                imgSlide.src = slides[i].img;
+                imgSlide.style.opacity = '1';
+
+                // Update Text with fade effect
+                // (Simplified for vanilla JS without too much complexity)
+                if (captionTitle) captionTitle.innerText = slides[i].title;
+                if (captionDesc) captionDesc.innerText = slides[i].desc;
+
+                dots.forEach((d, idx) => {
+                    if (idx === i) {
+                        d.classList.remove("w-2", "bg-white/50", "hover:bg-white");
+                        d.classList.add("w-10", "bg-white");
+                    } else {
+                        d.classList.add("w-2", "bg-white/50", "hover:bg-white");
+                        d.classList.remove("w-10", "bg-white");
+                    }
+                });
+            }, 200); // Wait for opacity fade out
+        }
+
+        dots.forEach((dot, i) => dot.addEventListener("click", () => showSlide(i)));
+
+        // Auto slide
+        setInterval(() => showSlide((currentSlide + 1) % slides.length), 6000);
+
+
+        // --- Password Toggle ---
+        const toggleBtn = document.getElementById("toggleSenha");
+        const passInput = document.getElementById("senha");
+        const iconOpen = document.getElementById("iconEyeOpen");
+        const iconClosed = document.getElementById("iconEyeClosed");
+
+        toggleBtn.addEventListener("click", () => {
+            const isPassword = passInput.type === "password";
+            passInput.type = isPassword ? "text" : "password";
+
+            if (isPassword) {
+                iconOpen.classList.remove("hidden");
+                iconClosed.classList.add("hidden");
+            } else {
+                iconOpen.classList.add("hidden");
+                iconClosed.classList.remove("hidden");
+            }
+        });
+
+
+        // --- Modal Logic ---
+        const modal = document.getElementById("modalSenha");
+        const backdrop = document.getElementById("modalBackdrop");
+        const panel = document.getElementById("modalPanel");
+
+        function abrirModalSenha() {
+            modal.classList.remove("hidden");
+            // Small delay to allow display:block to apply before opacity transition
+            setTimeout(() => {
+                backdrop.classList.remove("opacity-0");
+                panel.classList.remove("opacity-0", "translate-y-4", "sm:translate-y-0", "sm:scale-95");
+                panel.classList.add("opacity-100", "translate-y-0", "sm:scale-100");
+            }, 10);
+        }
+
+        function fecharModalSenha() {
+            backdrop.classList.add("opacity-0");
+            panel.classList.remove("opacity-100", "translate-y-0", "sm:scale-100");
+            panel.classList.add("opacity-0", "translate-y-4", "sm:translate-y-0", "sm:scale-95");
+
+            setTimeout(() => {
+                modal.classList.add("hidden");
+            }, 300); // Wait for transition
+        }
+    </script>
+</body>
+
+</html>
