@@ -1,0 +1,1008 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="animate-fade-in-up">
+    <!-- Header Page -->
+    <div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+            <h1 class="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Gerenciamento de Agendamento
+            </h1>
+            <p class="text-gray-500 dark:text-gray-400 mt-1">Controle especialidades, profissionais, unidades e horários
+                do sistema.</p>
+        </div>
+    </div>
+
+    <!-- Tabs Navigation -->
+    <div class="flex border-b border-gray-200 dark:border-gray-800 mb-8 overflow-x-auto">
+        <button onclick="switchTab('especialidades')" id="tab-btn-especialidades"
+            class="px-6 py-3 text-sm font-bold border-b-2 transition-all tab-btn active-tab border-brand-600 text-brand-600 dark:border-brand-400 dark:text-brand-400">
+            Especialidades
+        </button>
+        <button onclick="switchTab('profissionais')" id="tab-btn-profissionais"
+            class="px-6 py-3 text-sm font-bold border-b-2 transition-all tab-btn border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+            Profissionais
+        </button>
+        <button onclick="switchTab('unidades')" id="tab-btn-unidades"
+            class="px-6 py-3 text-sm font-bold border-b-2 transition-all tab-btn border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+            Unidades
+        </button>
+    </div>
+
+    <!-- Tab: Especialidades -->
+    <div id="tab-especialidades" class="tab-content transition-all duration-300">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Form Card -->
+            <div class="lg:col-span-1">
+                <div
+                    class="bg-white dark:bg-gray-900 rounded-3xl p-6 shadow-soft border border-gray-100 dark:border-gray-800 sticky top-28">
+                    <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+                        <i data-lucide="plus-circle" class="w-5 h-5 text-brand-600"></i>
+                        Nova Especialidade
+                    </h2>
+                    <form id="form-especialidade" onsubmit="saveEspecialidade(event)">
+                        <input type="hidden" id="esp-id">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-semibold mb-1 text-gray-700 dark:text-gray-300">Nome da
+                                    Especialidade</label>
+                                <input type="text" id="esp-nome" required
+                                    class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800 focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none transition-all font-medium">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold mb-1 text-gray-700 dark:text-gray-300">Ícone
+                                    (Lucide Code)</label>
+                                <input type="text" id="esp-icone" value="stethoscope"
+                                    class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800 focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none transition-all font-medium">
+                                <p class="text-xs text-gray-400 mt-1">
+                                    Ex: stethoscope, brain, heart, user-md.
+                                    <a href="https://lucide.dev/icons" target="_blank"
+                                        class="text-brand-500 hover:text-brand-700 underline ml-1">
+                                        Ver lista de ícones
+                                    </a>
+                                </p>
+                            </div>
+
+                            <!-- Checkbox para vincular a todas as unidades -->
+                            <div class="flex items-center gap-2 py-1" id="div-vincular-todas">
+                                <input type="checkbox" id="esp-vincular-todas" checked
+                                    class="w-5 h-5 rounded text-brand-600 focus:ring-brand-500 border-gray-300 dark:border-gray-600 dark:bg-gray-700">
+                                <label for="esp-vincular-todas"
+                                    class="text-sm font-bold text-gray-700 dark:text-gray-300">
+                                    Disponibilizar em todas as unidades
+                                </label>
+                            </div>
+                            <p class="text-[10px] text-gray-500 -mt-2 mb-2">Se marcado, esta especialidade aparecerá
+                                para agendamento em todas as unidades.</p>
+                            <div class="pt-4 flex gap-2">
+                                <button type="submit" id="btn-save-esp"
+                                    class="flex-1 bg-brand-600 text-white font-bold py-3 rounded-xl hover:bg-brand-700 shadow-lg shadow-brand-600/20 active:scale-95 transition-all">
+                                    Adicionar
+                                </button>
+                                <button type="button" onclick="resetEspForm()" id="btn-cancel-esp"
+                                    class="hidden px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 transition-all font-bold">
+                                    Cancelar
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- List Card -->
+            <div class="lg:col-span-2">
+                <div
+                    class="bg-white dark:bg-gray-900 rounded-3xl shadow-soft border border-gray-100 dark:border-gray-800 overflow-hidden">
+                    <!-- Search Bar -->
+                    <div
+                        class="px-6 py-4 border-b border-gray-100 dark:border-gray-800 flex items-center gap-3 bg-gray-50/30 dark:bg-gray-800/20">
+                        <i data-lucide="search" class="w-5 h-5 text-gray-400"></i>
+                        <input type="text" id="search-especialidades" placeholder="Buscar especialidades..."
+                            onkeyup="filterEspecialidades()"
+                            class="w-full bg-transparent border-none focus:ring-0 text-sm font-medium text-gray-600 dark:text-gray-300 placeholder-gray-400 outline-none">
+                    </div>
+                    <table class="w-full text-left">
+                        <thead class="bg-gray-50/50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-800">
+                            <tr>
+                                <th class="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest">Ícone
+                                </th>
+                                <th class="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest">Nome
+                                </th>
+                                <th
+                                    class="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest text-right">
+                                    Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lista-especialidades" class="divide-y divide-gray-50 dark:divide-gray-800">
+                            <tr>
+                                <td colspan="3" class="px-6 py-8 text-center text-gray-500">Carregando especialidades...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab: Profissionais -->
+    <div id="tab-profissionais" class="tab-content hidden transition-all duration-300">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Form Card -->
+            <div class="lg:col-span-1">
+                <div
+                    class="bg-white dark:bg-gray-900 rounded-3xl p-6 shadow-soft border border-gray-100 dark:border-gray-800 sticky top-28">
+                    <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+                        <i data-lucide="user-plus" class="w-5 h-5 text-indigo-600"></i>
+                        Novo Profissional
+                    </h2>
+                    <form id="form-profissional" onsubmit="saveProfissional(event)">
+                        <input type="hidden" id="prof-id">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-semibold mb-1 text-gray-700 dark:text-gray-300">Nome
+                                    Completo</label>
+                                <input type="text" id="prof-nome" required
+                                    class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800 focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none transition-all font-medium">
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-sm font-semibold mb-1 text-gray-700 dark:text-gray-300">Especialidades</label>
+                                <div id="prof-especialidades-container"
+                                    class="max-h-40 overflow-y-auto p-4 rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800 space-y-2">
+                                    <!-- Checkboxes will be rendered here -->
+                                </div>
+                                <p class="text-[10px] text-gray-400 mt-1">Selecione uma ou mais especialidades.</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold mb-1 text-gray-700 dark:text-gray-300">Unidade
+                                    de Atendimento</label>
+                                <select id="prof-unidade" required
+                                    class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800 focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none transition-all font-medium appearance-none">
+                                    <option value="">Selecione...</option>
+                                </select>
+                            </div>
+                            <div class="flex items-center gap-2 py-2">
+                                <input type="checkbox" id="prof-ativo" checked
+                                    class="w-5 h-5 rounded text-brand-600 focus:ring-brand-500">
+                                <label for="prof-ativo"
+                                    class="text-sm font-bold text-gray-700 dark:text-gray-300">Profissional
+                                    Ativo</label>
+                            </div>
+                            <div class="pt-4 flex gap-2">
+                                <button type="submit" id="btn-save-prof"
+                                    class="flex-1 bg-indigo-600 text-white font-bold py-3 rounded-xl hover:bg-indigo-700 shadow-lg shadow-indigo-600/20 active:scale-95 transition-all">
+                                    Adicionar
+                                </button>
+                                <button type="button" onclick="resetProfForm()" id="btn-cancel-prof"
+                                    class="hidden px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 transition-all font-bold">
+                                    Cancelar
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- List Card -->
+            <div class="lg:col-span-2">
+                <div
+                    class="bg-white dark:bg-gray-900 rounded-3xl shadow-soft border border-gray-100 dark:border-gray-800 overflow-hidden">
+                    <!-- Search Bar -->
+                    <div
+                        class="px-6 py-4 border-b border-gray-100 dark:border-gray-800 flex items-center gap-3 bg-gray-50/30 dark:bg-gray-800/20">
+                        <i data-lucide="search" class="w-5 h-5 text-gray-400"></i>
+                        <input type="text" id="search-profissionais"
+                            placeholder="Buscar profissionais (nome, especialidade, unidade)..."
+                            onkeyup="filterProfissionais()"
+                            class="w-full bg-transparent border-none focus:ring-0 text-sm font-medium text-gray-600 dark:text-gray-300 placeholder-gray-400 outline-none">
+                    </div>
+                    <table class="w-full text-left">
+                        <thead class="bg-gray-50/50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-800">
+                            <tr>
+                                <th class="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest">Nome
+                                </th>
+                                <th class="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest">
+                                    Especialidades</th>
+                                <th
+                                    class="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest text-right">
+                                    Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lista-profissionais" class="divide-y divide-gray-50 dark:divide-gray-800">
+                            <tr>
+                                <td colspan="3" class="px-6 py-8 text-center text-gray-500">Carregando profissionais...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab: Unidades -->
+    <div id="tab-unidades" class="tab-content hidden transition-all duration-300">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Form Card -->
+            <div class="lg:col-span-1">
+                <div
+                    class="bg-white dark:bg-gray-900 rounded-3xl p-6 shadow-soft border border-gray-100 dark:border-gray-800 sticky top-28">
+                    <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+                        <i data-lucide="map-pin" class="w-5 h-5 text-rose-600"></i>
+                        Nova Unidade
+                    </h2>
+                    <form id="form-unidade" onsubmit="saveUnidade(event)">
+                        <input type="hidden" id="uni-id">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-semibold mb-1 text-gray-700 dark:text-gray-300">Nome da
+                                    Unidade</label>
+                                <input type="text" id="uni-nome" required
+                                    class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800 focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none transition-all font-medium">
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-sm font-semibold mb-1 text-gray-700 dark:text-gray-300">Endereço
+                                    Completo</label>
+                                <textarea id="uni-endereco" rows="3"
+                                    class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800 focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none transition-all font-medium"></textarea>
+                            </div>
+                            <div class="pt-4 flex gap-2">
+                                <button type="submit" id="btn-save-uni"
+                                    class="flex-1 bg-rose-600 text-white font-bold py-3 rounded-xl hover:bg-rose-700 shadow-lg shadow-rose-600/20 active:scale-95 transition-all">
+                                    Adicionar
+                                </button>
+                                <button type="button" onclick="resetUniForm()" id="btn-cancel-uni"
+                                    class="hidden px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 transition-all font-bold">
+                                    Cancelar
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- List Card -->
+            <div class="lg:col-span-2">
+                <div
+                    class="bg-white dark:bg-gray-900 rounded-3xl shadow-soft border border-gray-100 dark:border-gray-800 overflow-hidden">
+                    <!-- Search Bar -->
+                    <div
+                        class="px-6 py-4 border-b border-gray-100 dark:border-gray-800 flex items-center gap-3 bg-gray-50/30 dark:bg-gray-800/20">
+                        <i data-lucide="search" class="w-5 h-5 text-gray-400"></i>
+                        <input type="text" id="search-unidades" placeholder="Buscar unidades..."
+                            onkeyup="filterUnidades()"
+                            class="w-full bg-transparent border-none focus:ring-0 text-sm font-medium text-gray-600 dark:text-gray-300 placeholder-gray-400 outline-none">
+                    </div>
+                    <table class="w-full text-left">
+                        <thead class="bg-gray-50/50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-800">
+                            <tr>
+                                <th class="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest">Nome
+                                </th>
+                                <th class="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest">
+                                    Endereço</th>
+                                <th
+                                    class="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest text-right">
+                                    Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lista-unidades" class="divide-y divide-gray-50 dark:divide-gray-800">
+                            <tr>
+                                <td colspan="3" class="px-6 py-8 text-center text-gray-500">Carregando unidades...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Horários -->
+<div id="modal-horarios"
+    class="fixed inset-0 bg-black/60 hidden items-center justify-center z-[60] p-4 backdrop-blur-sm">
+    <div
+        class="bg-white dark:bg-gray-900 rounded-3xl w-full max-w-md shadow-2xl flex flex-col max-h-[85vh] animate-fade-in-up">
+        <div class="p-6 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center">
+            <div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white" id="modal-hours-title">Horários</h3>
+                <p class="text-sm text-gray-500">Adicione ou remova turnos de atendimento.</p>
+            </div>
+            <button onclick="closeHoursModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+        </div>
+
+        <div class="p-6 overflow-y-auto">
+            <form onsubmit="addHour(event)" class="space-y-4 mb-6">
+                <div class="flex gap-2">
+                    <select id="new-day" required
+                        class="flex-1 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800 focus:ring-4 focus:ring-brand-500/10 outline-none font-bold">
+                        <option value="1">Segunda-feira</option>
+                        <option value="2">Terça-feira</option>
+                        <option value="3">Quarta-feira</option>
+                        <option value="4">Quinta-feira</option>
+                        <option value="5">Sexta-feira</option>
+                        <option value="6">Sábado</option>
+                        <option value="0">Domingo</option>
+                    </select>
+                    <input type="time" id="new-hour" required
+                        class="w-32 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800 focus:ring-4 focus:ring-brand-500/10 outline-none font-bold">
+                </div>
+                <button type="submit"
+                    class="w-full bg-brand-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-brand-700 transition-all">
+                    Adicionar Horário
+                </button>
+            </form>
+
+            <div id="hours-list" class="space-y-2">
+                <!-- Horários injetados aqui -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Especialidades da Unidade -->
+<div id="modal-unit-specs"
+    class="fixed inset-0 bg-black/60 hidden items-center justify-center z-[70] p-4 backdrop-blur-sm">
+    <div
+        class="bg-white dark:bg-gray-900 rounded-3xl w-full max-w-md shadow-2xl flex flex-col max-h-[85vh] animate-fade-in-up">
+        <div class="p-6 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center">
+            <div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white" id="modal-unit-specs-title">Especialidades
+                </h3>
+                <p class="text-sm text-gray-500">Lista de especialidades atendidas nesta unidade.</p>
+            </div>
+            <button onclick="closeUnitSpecsModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+        </div>
+        <div class="p-6 overflow-y-auto">
+            <div id="unit-specs-list" class="space-y-2">
+                <!-- Injetado via JS -->
+            </div>
+            <div class="mt-6 flex gap-3">
+                <button onclick="saveUnitSpecs()"
+                    class="flex-1 bg-brand-600 text-white font-bold py-3 rounded-xl hover:bg-brand-700 shadow-lg shadow-brand-600/20 active:scale-95 transition-all">
+                    Salvar
+                </button>
+                <button onclick="closeUnitSpecsModal()"
+                    class="px-6 py-3 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 font-bold rounded-xl hover:bg-gray-200 dark:hover:bg-gray-700 transition-all">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .active-tab {
+        border-bottom-color: #004b90;
+        color: #004b90;
+    }
+
+    .dark .active-tab {
+        border-bottom-color: #4097da;
+        color: #4097da;
+    }
+
+    .tab-btn {
+        outline: none;
+    }
+</style>
+
+<script>
+    let especialidades = [];
+    let profissionais = [];
+    let unidades = [];
+
+    async function loadData() {
+        console.log("Iniciando carregamento de dados...");
+        try {
+            // Fetch em paralelo
+            const [respEsp, respProf, respUni] = await Promise.all([
+                fetch('/api/gerenciamento/especialidades'),
+                fetch('/api/gerenciamento/profissionais'),
+                fetch('/api/gerenciamento/unidades')
+            ]);
+
+            // Validar respostas
+            if (!respEsp.ok) console.error("Erro especialidades:", respEsp.status);
+            if (!respProf.ok) console.error("Erro profissionais:", respProf.status);
+            if (!respUni.ok) console.error("Erro unidades:", respUni.status);
+
+            // Converter JSON com tratamento de erro
+            especialidades = respEsp.ok ? await respEsp.json() : [];
+            profissionais = respProf.ok ? await respProf.json() : [];
+            unidades = respUni.ok ? await respUni.json() : [];
+
+            console.log("Dados carregados:", { esp: especialidades.length, prof: profissionais.length, uni: unidades.length });
+
+            renderEspecialidades();
+            renderProfissionais();
+            renderUnidades();
+            renderProfSpecsList();
+            renderUniSelect();
+
+            lucide.createIcons();
+        } catch (err) {
+            console.error("Erro no loadData:", err);
+            document.querySelectorAll('tbody').forEach(tb => {
+                tb.innerHTML = `<tr><td colspan="3" class="px-6 py-8 text-center text-red-500 font-bold">Erro ao carregar dados. Verifique a conexão.</td></tr>`;
+            });
+        }
+    }
+
+    function renderEspecialidades(list = especialidades) {
+        const tbody = document.getElementById('lista-especialidades');
+        if (!tbody) return;
+        if (!Array.isArray(list) || list.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="3" class="px-6 py-8 text-center text-gray-500">Nenhuma especialidade encontrada.</td></tr>';
+            return;
+        }
+        tbody.innerHTML = list.map(e => `
+            <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors">
+                <td class="px-6 py-4">
+                    <div class="w-10 h-10 bg-brand-50 dark:bg-brand-900/20 rounded-xl flex items-center justify-center text-brand-600 dark:text-brand-400">
+                        <i data-lucide="${e.icone || 'stethoscope'}" class="w-5 h-5"></i>
+                    </div>
+                </td>
+                <td class="px-6 py-4">
+                    <span class="font-bold text-gray-800 dark:text-gray-200">${e.nome}</span>
+                </td>
+                <td class="px-6 py-4 text-right">
+                    <div class="flex justify-end gap-2">
+                        <button onclick="editEsp(${e.id})" class="p-2 text-gray-400 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition">
+                            <i data-lucide="edit-3" class="w-4.5 h-4.5"></i>
+                        </button>
+                        <button onclick="deleteEsp(${e.id})" class="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition">
+                            <i data-lucide="trash-2" class="w-4.5 h-4.5"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    function renderProfissionais(list = profissionais) {
+        const tbody = document.getElementById('lista-profissionais');
+        if (!tbody) return;
+        if (!Array.isArray(list) || list.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="3" class="px-6 py-8 text-center text-gray-500">Nenhum profissional encontrado.</td></tr>';
+            return;
+        }
+        tbody.innerHTML = list.map(p => {
+            const specs = p.especialidades || [];
+            const specsHtml = specs.map(s => `
+                <span class="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 rounded-lg text-[9px] font-black uppercase text-gray-500 whitespace-nowrap">
+                    ${s.nome}
+                </span>
+            `).join(' ');
+
+            return `
+                <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors">
+                    <td class="px-6 py-4 text-sm">
+                        <div class="flex flex-col">
+                            <span class="font-bold text-gray-800 dark:text-gray-200">${p.nome}</span>
+                            <span class="text-xs text-gray-500">${p.unidade_atendimento || 'Sem unidade'}</span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="flex flex-wrap gap-1">
+                            ${specsHtml || '<span class="text-xs text-gray-400 italic">Nenhuma</span>'}
+                        </div>
+                        ${!p.ativo ? '<div class="mt-1"><span class="px-2 py-0.5 bg-red-100 dark:bg-red-900/20 rounded-lg text-[9px] font-black uppercase text-red-500">Inativo</span></div>' : ''}
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <div class="flex justify-end gap-2">
+                            <button onclick="openHoursModal(${p.id}, '${p.nome}')" class="p-2 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition" title="Gerenciar Horários">
+                                <i data-lucide="clock" class="w-4.5 h-4.5"></i>
+                            </button>
+                            <button onclick="editProf(${p.id})" class="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition">
+                                <i data-lucide="edit-3" class="w-4.5 h-4.5"></i>
+                            </button>
+                            <button onclick="deleteProf(${p.id})" class="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition">
+                                <i data-lucide="trash-2" class="w-4.5 h-4.5"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    function renderUnidades(list = unidades) {
+        const tbody = document.getElementById('lista-unidades');
+        if (!tbody) return;
+        if (!Array.isArray(list) || list.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="3" class="px-6 py-8 text-center text-gray-500">Nenhuma unidade encontrada.</td></tr>';
+            return;
+        }
+        tbody.innerHTML = list.map(u => `
+            <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors">
+                <td class="px-6 py-4">
+                    <span class="font-bold text-gray-800 dark:text-gray-200">${u.nome}</span>
+                </td>
+                <td class="px-6 py-4">
+                    <span class="text-sm text-gray-500">${u.endereco || 'Sem endereço'}</span>
+                </td>
+                <td class="px-6 py-4 text-right">
+                    <div class="flex justify-end gap-2">
+                        <button onclick="showUnitSpecialties('${u.nome}', ${u.id})" class="p-2 text-gray-400 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition" title="Configurar Especialidades">
+                            <i data-lucide="settings-2" class="w-4.5 h-4.5"></i>
+                        </button>
+                        <button onclick="editUni(${u.id})" class="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition">
+                            <i data-lucide="edit-3" class="w-4.5 h-4.5"></i>
+                        </button>
+                        <button onclick="deleteUni(${u.id})" class="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition">
+                            <i data-lucide="trash-2" class="w-4.5 h-4.5"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    function renderProfSpecsList() {
+        const container = document.getElementById('prof-especialidades-container');
+        if (!container) return;
+        container.innerHTML = especialidades.map(e => `
+            <label class="flex items-center gap-3 cursor-pointer group">
+                <input type="checkbox" name="prof-specs" value="${e.id}" class="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500">
+                <span class="text-sm text-gray-600 dark:text-gray-300 group-hover:text-indigo-600 transition-colors">${e.nome}</span>
+            </label>
+        `).join('');
+    }
+
+    function renderUniSelect() {
+        const select = document.getElementById('prof-unidade');
+        if (!select) return;
+        const val = select.value;
+        select.innerHTML = '<option value="">Selecione...</option>' +
+            unidades.map(u => `<option value="${u.nome}">${u.nome}</option>`).join('');
+        if (val) select.value = val;
+    }
+
+    function switchTab(tab) {
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+        document.querySelectorAll('.tab-btn').forEach(b => {
+            b.classList.remove('active-tab', 'border-brand-600', 'text-brand-600', 'dark:border-brand-400', 'dark:text-brand-400');
+            b.classList.add('border-transparent', 'text-gray-500');
+        });
+
+        document.getElementById(`tab-${tab}`).classList.remove('hidden');
+        const btn = document.getElementById(`tab-btn-${tab}`);
+        if (btn) {
+            btn.classList.add('active-tab', 'border-brand-600', 'text-brand-600', 'dark:border-brand-400', 'dark:text-brand-400');
+            btn.classList.remove('border-transparent', 'text-gray-500');
+        }
+    }
+
+    // --- Filters ---
+    function filterEspecialidades() {
+        const term = document.getElementById('search-especialidades').value.toLowerCase();
+        const filtered = especialidades.filter(e => e.nome.toLowerCase().includes(term));
+        renderEspecialidades(filtered);
+        lucide.createIcons();
+    }
+
+    function filterProfissionais() {
+        const term = document.getElementById('search-profissionais').value.toLowerCase();
+        const filtered = profissionais.filter(p => {
+            const specMatch = (p.especialidades || []).some(s => s.nome.toLowerCase().includes(term));
+            return p.nome.toLowerCase().includes(term) ||
+                specMatch ||
+                (p.unidade_atendimento && p.unidade_atendimento.toLowerCase().includes(term));
+        });
+        renderProfissionais(filtered);
+        lucide.createIcons();
+    }
+
+    function filterUnidades() {
+        const term = document.getElementById('search-unidades').value.toLowerCase();
+        const filtered = unidades.filter(u =>
+            u.nome.toLowerCase().includes(term) ||
+            (u.endereco && u.endereco.toLowerCase().includes(term))
+        );
+        renderUnidades(filtered);
+        lucide.createIcons();
+    }
+
+    // --- Actions Especialidade ---
+    async function saveEspecialidade(e) {
+        e.preventDefault();
+        const id = document.getElementById('esp-id').value;
+        const payload = {
+            nome: document.getElementById('esp-nome').value,
+            icone: document.getElementById('esp-icone').value,
+            vincular_todas: document.getElementById('esp-vincular-todas').checked
+        };
+
+        const method = id ? 'PUT' : 'POST';
+        const url = id ? `/api/gerenciamento/especialidades/${id}` : '/api/gerenciamento/especialidades';
+
+        try {
+            const res = await fetch(url, {
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (data.success) {
+                showToast(id ? 'Alterações salvas com sucesso!' : 'Especialidade adicionada com sucesso!', 'success');
+                resetEspForm();
+                loadData();
+            } else showToast(data.error, 'error');
+        } catch (err) {
+            console.error(err);
+            showToast('Erro ao processar solicitação.', 'error');
+        }
+    }
+
+    function editEsp(id) {
+        const item = especialidades.find(e => e.id === id);
+        if (!item) return;
+        document.getElementById('esp-id').value = item.id;
+        document.getElementById('esp-nome').value = item.nome;
+        document.getElementById('esp-icone').value = item.icone;
+        document.getElementById('btn-save-esp').innerText = 'Salvar Alterações';
+        document.getElementById('btn-cancel-esp').classList.remove('hidden');
+        // Hide checkbox on edit because logic is complex (would require checking all units)
+        document.getElementById('div-vincular-todas').classList.add('hidden');
+        document.querySelector('#div-vincular-todas + p').classList.add('hidden');
+    }
+
+    function resetEspForm() {
+        document.getElementById('esp-id').value = '';
+        document.getElementById('esp-nome').value = '';
+        document.getElementById('esp-icone').value = 'stethoscope';
+        document.getElementById('esp-vincular-todas').checked = true;
+        document.getElementById('div-vincular-todas').classList.remove('hidden');
+        document.querySelector('#div-vincular-todas + p').classList.remove('hidden');
+        document.getElementById('btn-save-esp').innerText = 'Adicionar';
+        document.getElementById('btn-cancel-esp').classList.add('hidden');
+    }
+
+    async function deleteEsp(id) {
+        confirmAction({
+            title: 'Excluir Especialidade',
+            message: 'Tem certeza que deseja excluir esta especialidade? Isso pode afetar médicos vinculados.',
+            onConfirm: async () => {
+                try {
+                    const res = await fetch(`/api/gerenciamento/especialidades/${id}`, { method: 'DELETE' });
+                    const data = await res.json();
+                    if (data.success) {
+                        showToast('Especialidade excluída com sucesso!', 'success');
+                        loadData();
+                    } else showToast(data.error, 'error');
+                } catch (err) {
+                    console.error(err);
+                    showToast('Erro ao excluir especialidade.', 'error');
+                }
+            }
+        });
+    }
+
+    // --- Actions Profissional ---
+    async function saveProfissional(e) {
+        e.preventDefault();
+        const id = document.getElementById('prof-id').value;
+        const specIds = Array.from(document.querySelectorAll('input[name="prof-specs"]:checked')).map(cb => parseInt(cb.value));
+        if (specIds.length === 0) return showToast('Selecione pelo menos uma especialidade.', 'warning');
+
+        const payload = {
+            nome: document.getElementById('prof-nome').value,
+            especialidade_ids: specIds,
+            unidade_atendimento: document.getElementById('prof-unidade').value,
+            ativo: document.getElementById('prof-ativo').checked
+        };
+
+        const method = id ? 'PUT' : 'POST';
+        const url = id ? `/api/gerenciamento/profissionais/${id}` : '/api/gerenciamento/profissionais';
+
+        try {
+            const res = await fetch(url, {
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (data.success) {
+                showToast(id ? 'Profissional atualizado!' : 'Profissional cadastrado com sucesso!', 'success');
+                resetProfForm();
+                loadData();
+            } else showToast(data.error, 'error');
+        } catch (err) {
+            console.error(err);
+            showToast('Erro ao salvar profissional.', 'error');
+        }
+    }
+
+    function editProf(id) {
+        const item = profissionais.find(p => p.id === id);
+        if (!item) return;
+        document.getElementById('prof-id').value = item.id;
+        document.getElementById('prof-nome').value = item.nome;
+
+        // Reset and check checkboxes
+        document.querySelectorAll('input[name="prof-specs"]').forEach(cb => {
+            cb.checked = (item.especialidades || []).some(s => s.id === parseInt(cb.value));
+        });
+
+        document.getElementById('prof-unidade').value = item.unidade_atendimento;
+        document.getElementById('prof-ativo').checked = item.ativo;
+        document.getElementById('btn-save-prof').innerText = 'Salvar Alterações';
+        document.getElementById('btn-cancel-prof').classList.remove('hidden');
+    }
+
+    function resetProfForm() {
+        document.getElementById('prof-id').value = '';
+        document.getElementById('prof-nome').value = '';
+        document.querySelectorAll('input[name="prof-specs"]').forEach(cb => cb.checked = false);
+        document.getElementById('prof-unidade').value = '';
+        document.getElementById('prof-ativo').checked = true;
+        document.getElementById('btn-save-prof').innerText = 'Adicionar';
+        document.getElementById('btn-cancel-prof').classList.add('hidden');
+    }
+
+    async function deleteProf(id) {
+        confirmAction({
+            title: 'Excluir Profissional',
+            message: 'Tem certeza que deseja remover este profissional do sistema?',
+            onConfirm: async () => {
+                try {
+                    const res = await fetch(`/api/gerenciamento/profissionais/${id}`, { method: 'DELETE' });
+                    const data = await res.json();
+                    if (data.success) {
+                        showToast('Profissional removido com sucesso!', 'success');
+                        loadData();
+                    } else showToast(data.error, 'error');
+                } catch (err) {
+                    console.error(err);
+                    showToast('Erro ao remover profissional.', 'error');
+                }
+            }
+        });
+    }
+
+    // --- Actions Unidade ---
+    async function saveUnidade(e) {
+        e.preventDefault();
+        const id = document.getElementById('uni-id').value;
+        const payload = {
+            nome: document.getElementById('uni-nome').value,
+            endereco: document.getElementById('uni-endereco').value
+        };
+
+        const method = id ? 'PUT' : 'POST';
+        const url = id ? `/api/gerenciamento/unidades/${id}` : '/api/gerenciamento/unidades';
+
+        try {
+            const res = await fetch(url, {
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (data.success) {
+                showToast(id ? 'Unidade atualizada!' : 'Unidade cadastrada com sucesso!', 'success');
+                resetUniForm();
+                loadData();
+            } else showToast(data.error, 'error');
+        } catch (err) {
+            console.error(err);
+            showToast('Erro ao salvar unidade.', 'error');
+        }
+    }
+
+    function editUni(id) {
+        const item = unidades.find(u => u.id === id);
+        if (!item) return;
+        document.getElementById('uni-id').value = item.id;
+        document.getElementById('uni-nome').value = item.nome;
+        document.getElementById('uni-endereco').value = item.endereco || '';
+        document.getElementById('btn-save-uni').innerText = 'Salvar Alterações';
+        document.getElementById('btn-cancel-uni').classList.remove('hidden');
+    }
+
+    function resetUniForm() {
+        document.getElementById('uni-id').value = '';
+        document.getElementById('uni-nome').value = '';
+        document.getElementById('uni-endereco').value = '';
+        document.getElementById('btn-save-uni').innerText = 'Adicionar';
+        document.getElementById('btn-cancel-uni').classList.add('hidden');
+    }
+
+    async function deleteUni(id) {
+        confirmAction({
+            title: 'Excluir Unidade',
+            message: 'Tem certeza que deseja remover esta unidade? Médicos vinculados podem ser afetados.',
+            onConfirm: async () => {
+                try {
+                    const res = await fetch(`/api/gerenciamento/unidades/${id}`, { method: 'DELETE' });
+                    const data = await res.json();
+                    if (data.success) {
+                        showToast('Unidade excluída com sucesso!', 'success');
+                        loadData();
+                    } else showToast(data.error, 'error');
+                } catch (err) {
+                    console.error(err);
+                    showToast('Erro ao excluir unidade.', 'error');
+                }
+            }
+        });
+    }
+
+    // --- Actions Ver Especialidades por Unidade ---
+    let currentUnitIdForSpecs = null;
+
+    async function showUnitSpecialties(nome, id) {
+        currentUnitIdForSpecs = id;
+        document.getElementById('modal-unit-specs').classList.remove('hidden');
+        document.getElementById('modal-unit-specs').classList.add('flex');
+        document.getElementById('modal-unit-specs-title').innerText = `Especialidades: ${nome}`;
+
+        const container = document.getElementById('unit-specs-list');
+        container.innerHTML = '<p class="text-gray-500 text-center py-4">Carregando...</p>';
+
+        try {
+            // Buscar IDs vinculados e todas as especialidades
+            const res = await fetch(`/api/gerenciamento/unidades/${id}/especialidades`);
+            const linkedIds = await res.json(); // Array de IDs [1, 5, ...]
+
+            if (!Array.isArray(especialidades) || especialidades.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center py-4">Nenhuma especialidade cadastrada no sistema.</p>';
+                return;
+            }
+
+            container.innerHTML = especialidades.map(esp => {
+                const isChecked = linkedIds.includes(esp.id) ? 'checked' : '';
+                return `
+                <label class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-xl border border-transparent hover:border-brand-200 cursor-pointer transition-all">
+                    <input type="checkbox" value="${esp.id}" ${isChecked} class="w-5 h-5 rounded text-brand-600 focus:ring-brand-500 border-gray-300 dark:border-gray-600 dark:bg-gray-700">
+                    <div class="w-8 h-8 bg-brand-100 dark:bg-brand-900/30 rounded-lg flex items-center justify-center text-brand-600 dark:text-brand-400 flex-shrink-0">
+                        <i data-lucide="${esp.icone || 'stethoscope'}" class="w-4 h-4"></i>
+                    </div>
+                    <span class="font-bold text-gray-700 dark:text-gray-300 select-none">${esp.nome}</span>
+                </label>
+                `;
+            }).join('');
+
+            lucide.createIcons();
+
+        } catch (err) {
+            console.error(err);
+            container.innerHTML = '<p class="text-red-500 text-center py-4">Erro ao carregar configurações.</p>';
+        }
+    }
+
+    async function saveUnitSpecs() {
+        if (!currentUnitIdForSpecs) return;
+
+        const checkboxes = document.querySelectorAll('#unit-specs-list input[type="checkbox"]:checked');
+        const ids = Array.from(checkboxes).map(cb => parseInt(cb.value));
+
+        try {
+            const res = await fetch(`/api/gerenciamento/unidades/${currentUnitIdForSpecs}/especialidades`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ especialidade_ids: ids })
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                showToast('Especialidades da unidade atualizadas!', 'success');
+                closeUnitSpecsModal();
+            } else {
+                showToast(data.error || 'Erro ao salvar.', 'error');
+            }
+        } catch (err) {
+            console.error(err);
+            showToast('Erro de conexão.', 'error');
+        }
+    }
+
+    function closeUnitSpecsModal() {
+        document.getElementById('modal-unit-specs').classList.add('hidden');
+        document.getElementById('modal-unit-specs').classList.remove('flex');
+        currentUnitIdForSpecs = null;
+    }
+
+    // --- Actions Horários ---
+    let currentProfId = null;
+    let currentHours = [];
+
+    async function openHoursModal(id, nome) {
+        currentProfId = id;
+        document.getElementById('modal-hours-title').innerText = `Horários: ${nome}`;
+        document.getElementById('modal-horarios').classList.remove('hidden');
+        document.getElementById('modal-horarios').classList.add('flex');
+        loadHours();
+    }
+
+    function closeHoursModal() {
+        document.getElementById('modal-horarios').classList.add('hidden');
+        document.getElementById('modal-horarios').classList.remove('flex');
+    }
+
+    async function loadHours() {
+        try {
+            const res = await fetch(`/api/gerenciamento/horarios/${currentProfId}`);
+            if (!res.ok) throw new Error("Falha ao carregar horários");
+            currentHours = await res.json();
+            renderHours();
+        } catch (err) { console.error(err); }
+    }
+
+    function renderHours() {
+        const diasNome = {
+            '1': 'Segunda', '2': 'Terça', '3': 'Quarta', '4': 'Quinta', '5': 'Sexta', '6': 'Sábado', '0': 'Domingo'
+        };
+        const container = document.getElementById('hours-list');
+        if (!container) return;
+        if (!Array.isArray(currentHours) || currentHours.length === 0) {
+            container.innerHTML = '<p class="text-center text-gray-500 py-4">Nenhum horário cadastrado.</p>';
+            return;
+        }
+        container.innerHTML = currentHours.map(h => `
+            <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-xl group border border-transparent hover:border-brand-200 transition-all">
+                <div class="flex items-center gap-3">
+                    <span class="px-2 py-1 bg-brand-100 dark:bg-brand-900/30 text-brand-700 dark:text-brand-400 rounded-md text-[10px] font-black uppercase w-16 text-center">
+                        ${diasNome[h.dia_semana] || 'Sem dia'}
+                    </span>
+                    <span class="text-sm font-bold text-gray-700 dark:text-gray-300">${h.horario}</span>
+                </div>
+                <button onclick="deleteHour(${h.id})" class="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all opacity-0 group-hover:opacity-100">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
+            </div>
+        `).join('');
+        lucide.createIcons();
+    }
+
+    async function addHour(e) {
+        e.preventDefault();
+        const horario = document.getElementById('new-hour').value;
+        const dia_semana = document.getElementById('new-day').value;
+        try {
+            const res = await fetch('/api/gerenciamento/horarios', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ funcionario_id: currentProfId, horario, dia_semana })
+            });
+            const data = await res.json();
+            if (data.success) {
+                showToast('Horário adicionado!', 'success');
+                document.getElementById('new-hour').value = '';
+                loadHours();
+            } else showToast(data.error, 'error');
+        } catch (err) {
+            console.error(err);
+            showToast('Erro ao adicionar horário.', 'error');
+        }
+    }
+
+    async function deleteHour(id) {
+        confirmAction({
+            title: 'Remover Horário',
+            message: 'Deseja realmente excluir este horário de atendimento?',
+            onConfirm: async () => {
+                try {
+                    const res = await fetch(`/api/gerenciamento/horarios/${id}`, { method: 'DELETE' });
+                    const data = await res.json();
+                    if (data.success) {
+                        showToast('Horário removido.', 'success');
+                        loadHours();
+                    } else showToast(data.error, 'error');
+                } catch (err) {
+                    console.error(err);
+                    showToast('Erro ao remover horário.', 'error');
+                }
+            }
+        });
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', loadData);
+</script>
+{% endblock %}

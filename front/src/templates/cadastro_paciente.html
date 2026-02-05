@@ -1,0 +1,479 @@
+{% extends "base.html" %}
+
+{% block title %}Cadastro de Paciente{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto space-y-8 animate-fade-in-up pb-12">
+
+  <!-- Header -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+    <div class="flex items-center gap-4">
+      <div
+        class="bg-brand-50 dark:bg-brand-900/20 p-3 rounded-2xl text-brand-600 dark:text-brand-400 transition-colors">
+        <i data-lucide="user-plus" class="w-8 h-8"></i>
+      </div>
+      <div>
+        <h1 class="text-3xl font-extrabold text-brand-900 dark:text-brand-500 transition-colors">
+          {% if trabalhador %}Editar Trabalhador{% else %}Cadastro do Trabalhador{% endif %}
+        </h1>
+        <p class="text-gray-500 dark:text-gray-400 font-medium transition-colors">Sistema Integrado de Gestão do
+          Trabalhador (Pacientes).</p>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <a href="{{ url_for('trabalhadores.lista_trabalhadores') }}"
+        class="inline-flex items-center justify-center gap-2 text-gray-400 hover:text-brand-600 font-bold transition-all px-4 py-2 hover:bg-brand-50 dark:hover:bg-brand-900/20 rounded-xl">
+        <i data-lucide="arrow-left" class="w-5 h-5"></i>
+        Listagem
+      </a>
+    </div>
+  </div>
+
+  <div
+    class="bg-white dark:bg-gray-900/50 rounded-[2.5rem] shadow-soft border border-gray-100 dark:border-gray-800 p-8 sm:p-12 transition-all">
+
+    <div
+      class="mb-10 flex items-center gap-3 text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 px-5 py-3 rounded-2xl border border-red-100 dark:border-red-900/30 w-fit font-bold">
+      <i data-lucide="alert-circle" class="w-5 h-5"></i>
+      <span>Campos marcados com <span class="text-red-500">*</span> são de preenchimento obrigatório.</span>
+    </div>
+
+    <form method="POST" class="space-y-12">
+      {% if trabalhador %}
+      <input type="hidden" name="trabalhador_id" value="{{ trabalhador.id }}">
+      {% endif %}
+
+      <!-- SEÇÃO 1: DADOS PESSOAIS -->
+      <section class="space-y-8">
+        <div class="flex items-center gap-3 border-b border-gray-50 dark:border-gray-800 pb-4">
+          <div class="w-1.5 h-6 bg-brand-600 rounded-full"></div>
+          <h3 class="text-xl font-black text-brand-900 dark:text-brand-500 uppercase tracking-tight">1. Dados Pessoais
+          </h3>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div class="md:col-span-2 space-y-2">
+            <label
+              class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">Nome
+              Completo *</label>
+            <div class="relative group">
+              <i data-lucide="user"
+                class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
+              <input name="nome" type="text" required placeholder="Digite o nome completo do trabalhador"
+                value="{{ trabalhador.nome_completo if trabalhador else '' }}"
+                class="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-medium transition-all">
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <label
+              class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">CPF
+              *</label>
+            <div class="relative group">
+              <i data-lucide="credit-card"
+                class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
+              <input name="cpf" type="text" inputmode="numeric" placeholder="Apenas números (Ex: 12345678900)"
+                maxlength="14" oninput="maskCPF(this)" value="{{ trabalhador.cpf if trabalhador else '' }}"
+                class="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-bold transition-all">
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <label
+              class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">Cartão
+              SUS (CNS) *</label>
+            <div class="relative group">
+              <i data-lucide="hash"
+                class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
+              <input name="cns" type="text" inputmode="numeric" placeholder="Ex: 123 4567 8901 2345"
+                value="{{ trabalhador.cns if trabalhador else '' }}"
+                class="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-bold transition-all">
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <label
+              class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">Data
+              de Nascimento *</label>
+            <input name="data_nascimento" type="date" required
+              value="{{ trabalhador.data_nascimento if trabalhador else '' }}"
+              class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-bold transition-all cursor-pointer">
+          </div>
+
+          <div class="space-y-2">
+            <label
+              class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">Telefone
+              Móvel *</label>
+            <div class="relative group">
+              <i data-lucide="phone"
+                class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
+              <input name="telefone" type="text" placeholder="(81) 99999-9999"
+                value="{{ trabalhador.telefone if trabalhador else '' }}"
+                class="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-bold transition-all">
+            </div>
+          </div>
+
+          <div class="md:col-span-2 space-y-2">
+            <label
+              class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">E-mail
+              para Contato *</label>
+            <div class="relative group">
+              <i data-lucide="mail"
+                class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
+              <input name="email" type="email" placeholder="exemplo@email.com"
+                value="{{ trabalhador.email if trabalhador else '' }}"
+                class="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-medium transition-all">
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- SEÇÃO 2: ENDEREÇO -->
+      <section class="space-y-8">
+        <div class="flex items-center gap-3 border-b border-gray-50 dark:border-gray-800 pb-4">
+          <div class="w-1.5 h-6 bg-brand-600 rounded-full"></div>
+          <h3 class="text-xl font-black text-brand-900 dark:text-brand-500 uppercase tracking-tight">2. Localização</h3>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="md:col-span-1 space-y-2">
+            <label
+              class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">CEP</label>
+            <div class="flex gap-3">
+              <div class="relative group flex-1">
+                <i data-lucide="map-pin"
+                  class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-brand-600 transition-colors transition-all"></i>
+                <input id="cep" name="cep" type="text" placeholder="00000-000"
+                  value="{{ trabalhador.cep if trabalhador else '' }}"
+                  class="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-bold transition-all">
+              </div>
+              <button type="button" onclick="buscarCep()"
+                class="bg-brand-900 text-white px-6 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-brand-800 transition-all shadow-lg shadow-brand-900/20 active:scale-95">
+                Buscar
+              </button>
+            </div>
+            <p id="cepStatus" class="text-[10px] mt-1.5 font-bold uppercase tracking-widest px-2 transition-all"></p>
+          </div>
+
+          <div class="md:col-span-2 space-y-2">
+            <label
+              class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">Logradouro
+              / Rua</label>
+            <input id="logradouro" name="logradouro" type="text"
+              value="{{ trabalhador.logradouro if trabalhador else '' }}"
+              class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-medium transition-all">
+          </div>
+
+          <div class="space-y-2">
+            <label
+              class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">Número</label>
+            <input name="numero" type="text" placeholder="Ex: 123"
+              value="{{ trabalhador.numero if trabalhador else '' }}"
+              class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-bold transition-all">
+          </div>
+
+          <div class="space-y-2">
+            <label
+              class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">Bairro</label>
+            <input id="bairro" name="bairro" type="text" value="{{ trabalhador.bairro if trabalhador else '' }}"
+              class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-medium transition-all">
+          </div>
+
+          <div class="grid grid-cols-2 gap-4 md:col-span-1">
+            <div class="space-y-2">
+              <label
+                class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">Cidade</label>
+              <input id="cidade" name="cidade" type="text" value="{{ trabalhador.cidade if trabalhador else '' }}"
+                class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-medium transition-all">
+            </div>
+            <div class="space-y-2">
+              <label
+                class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">UF</label>
+              <input id="uf" name="uf" type="text" placeholder="PE" value="{{ trabalhador.uf if trabalhador else '' }}"
+                class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-bold transition-all uppercase text-center">
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- SEÇÃO 3: VINCULOS -->
+      <section class="space-y-8">
+        <div class="flex items-center gap-3 border-b border-gray-50 dark:border-gray-800 pb-4">
+          <div class="w-1.5 h-6 bg-brand-600 rounded-full"></div>
+          <h3 class="text-xl font-black text-brand-900 dark:text-brand-500 uppercase tracking-tight">3. Vida
+            Profissional</h3>
+          <div
+            class="ml-auto flex items-center gap-2 px-4 py-1.5 bg-brand-50 dark:bg-brand-900/20 text-brand-600 dark:text-brand-400 rounded-full text-[10px] font-black uppercase tracking-widest transition-colors">
+            <i data-lucide="info" class="w-3.5 h-3.5"></i> Mínimo de 1 vínculo
+          </div>
+        </div>
+
+        <div id="vinculosContainer" class="space-y-8">
+          {% if trabalhador and trabalhador.vinculos %}
+          {% for v in trabalhador.vinculos %}
+          <div
+            class="p-8 bg-gray-50/50 dark:bg-gray-800/30 rounded-[2rem] border border-gray-100 dark:border-gray-800 relative group transition-all">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div class="space-y-2">
+                <label
+                  class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">ID
+                  Funcional / Vínculo</label>
+                <input name="num_func_vinculo[]" type="text" placeholder="Ex: 154892/1" value="{{ v.numero_funcional }}"
+                  class="w-full px-5 py-3.5 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-bold transition-all shadow-sm">
+              </div>
+
+              <div class="space-y-2">
+                <label
+                  class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">Tipo
+                  de Vínculo</label>
+                <div class="relative group">
+                  <select name="tipo_vinculo[]"
+                    class="w-full pl-5 pr-10 py-3.5 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-bold transition-all appearance-none cursor-pointer shadow-sm">
+                    <option value="">Selecione...</option>
+                    {% for t in tipos_vinculo %}
+                    <option value="{{ t.nome }}" {% if v.tipo_vinculo==t.nome %}selected{% endif %}>{{ t.nome }}
+                    </option>
+                    {% endfor %}
+                  </select>
+                  <i data-lucide="chevron-down"
+                    class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"></i>
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                <label
+                  class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">Especialidade
+                  / Lotação</label>
+                <div class="relative group">
+                  <select name="especialidade[]"
+                    class="w-full pl-5 pr-10 py-3.5 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-bold transition-all appearance-none cursor-pointer shadow-sm">
+                    <option value="">Selecione...</option>
+                    {% for e in especialidades %}
+                    <option value="{{ e.nome }}" {% if v.especialidade==e.nome %}selected{% endif %}>{{ e.nome }}
+                    </option>
+                    {% endfor %}
+                  </select>
+                  <i data-lucide="chevron-down"
+                    class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"></i>
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                <label
+                  class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">Unidade
+                  / Lotação</label>
+                <div class="relative group">
+                  <select name="lotacao[]"
+                    class="w-full pl-5 pr-10 py-3.5 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-bold transition-all appearance-none cursor-pointer shadow-sm">
+                    <option value="">Selecione...</option>
+                    {% for u in unidades %}
+                    <option value="{{ u.nome }}" {% if v.unidade_lotacao==u.nome %}selected{% endif %}>{{ u.nome }}
+                    </option>
+                    {% endfor %}
+                  </select>
+                  <i data-lucide="chevron-down"
+                    class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"></i>
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                <label
+                  class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">Data
+                  de Admissão</label>
+                <input name="data_admissao[]" type="date" value="{{ v.data_admissao }}"
+                  class="w-full px-5 py-3 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-bold transition-all cursor-pointer shadow-sm">
+              </div>
+
+              <div class="space-y-2">
+                <label
+                  class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">Data
+                  de Desligamento</label>
+                <input name="data_desligamento[]" type="date" value="{{ v.data_desligamento }}"
+                  class="w-full px-5 py-3 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-bold transition-all cursor-pointer shadow-sm">
+              </div>
+            </div>
+
+            <!-- Remove Button -->
+            <button type="button" onclick="this.closest('.relative').remove()"
+              class="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-red-500 text-white shadow-lg shadow-red-500/40 items-center justify-center {% if loop.first %}hidden{% else %}flex{% endif %} group-hover:flex hover:scale-110 transition-transform">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+          </div>
+          {% endfor %}
+          {% else %}
+          <!-- VINCULO ITEM (EMPTY STATE FOR NEW) -->
+          <div
+            class="p-8 bg-gray-50/50 dark:bg-gray-800/30 rounded-[2rem] border border-gray-100 dark:border-gray-800 relative group transition-all">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div class="space-y-2">
+                <label
+                  class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">ID
+                  Funcional / Vínculo</label>
+                <input name="num_func_vinculo[]" type="text" placeholder="Ex: 154892/1"
+                  class="w-full px-5 py-3.5 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-bold transition-all shadow-sm">
+              </div>
+
+              <div class="space-y-2">
+                <label
+                  class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">Tipo
+                  de Vínculo</label>
+                <div class="relative group">
+                  <select name="tipo_vinculo[]"
+                    class="w-full pl-5 pr-10 py-3.5 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-bold transition-all appearance-none cursor-pointer shadow-sm">
+                    <option value="">Selecione...</option>
+                    {% for t in tipos_vinculo %}
+                    <option value="{{ t.nome }}">{{ t.nome }}</option>
+                    {% endfor %}
+                  </select>
+                  <i data-lucide="chevron-down"
+                    class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"></i>
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                <label
+                  class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">Especialidade
+                  / Lotação</label>
+                <div class="relative group">
+                  <select name="especialidade[]"
+                    class="w-full pl-5 pr-10 py-3.5 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-bold transition-all appearance-none cursor-pointer shadow-sm">
+                    <option value="">Selecione...</option>
+                    {% for e in especialidades %}
+                    <option value="{{ e.nome }}">{{ e.nome }}</option>
+                    {% endfor %}
+                  </select>
+                  <i data-lucide="chevron-down"
+                    class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"></i>
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                <label
+                  class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">Unidade
+                  / Lotação</label>
+                <div class="relative group">
+                  <select name="lotacao[]"
+                    class="w-full pl-5 pr-10 py-3.5 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-bold transition-all appearance-none cursor-pointer shadow-sm">
+                    <option value="">Selecione...</option>
+                    {% for u in unidades %}
+                    <option value="{{ u.nome }}">{{ u.nome }}</option>
+                    {% endfor %}
+                  </select>
+                  <i data-lucide="chevron-down"
+                    class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"></i>
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                <label
+                  class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">Data
+                  de Admissão</label>
+                <input name="data_admissao[]" type="date"
+                  class="w-full px-5 py-3 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-bold transition-all cursor-pointer shadow-sm">
+              </div>
+
+              <div class="space-y-2">
+                <label
+                  class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">Data
+                  de Desligamento</label>
+                <input name="data_desligamento[]" type="date"
+                  class="w-full px-5 py-3 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-bold transition-all cursor-pointer shadow-sm">
+              </div>
+            </div>
+
+            <!-- Remove Button (Hidden for the first one) -->
+            <button type="button" onclick="this.closest('.relative').remove()"
+              class="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-red-500 text-white shadow-lg shadow-red-500/40 items-center justify-center hidden group-hover:flex hover:scale-110 transition-transform">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+          </div>
+          {% endif %}
+        </div>
+
+        <button type="button" onclick="adicionarVinculo()"
+          class="inline-flex items-center gap-2 px-6 py-3.5 bg-white dark:bg-gray-800 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-2xl text-brand-600 dark:text-brand-400 font-black text-xs uppercase tracking-widest hover:border-brand-600 hover:text-brand-800 dark:hover:text-brand-300 transition-all active:scale-95 group">
+          <i data-lucide="plus-circle" class="w-5 h-5 group-hover:rotate-90 transition-transform duration-300"></i>
+          <span>Adicionar outro vínculo profissional</span>
+        </button>
+      </section>
+
+
+      <!-- ACTIONS -->
+      <div
+        class="pt-10 flex flex-col sm:flex-row justify-end items-center gap-6 border-t border-gray-50 dark:border-gray-800 mt-12 transition-colors">
+        <button type="reset"
+          class="px-8 py-4 rounded-2xl font-bold text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors uppercase text-[10px] tracking-widest">
+          Limpar Tudo
+        </button>
+        <button type="submit"
+          class="w-full sm:w-auto px-16 py-4 rounded-2xl bg-brand-900 text-white font-black hover:bg-brand-800 shadow-xl shadow-brand-900/20 transition-all active:scale-95 flex items-center justify-center gap-3 uppercase text-sm tracking-widest">
+          <i data-lucide="save" class="w-5 h-5"></i>
+          {% if trabalhador %}Salvar Alterações{% else %}Finalizar Cadastro{% endif %}
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<script>
+  async function buscarCep() {
+    const cepInput = document.getElementById('cep');
+    const cep = cepInput.value.replace(/\D/g, '');
+    const status = document.getElementById('cepStatus');
+
+    if (cep.length !== 8) {
+      status.textContent = 'CEP INVÁLIDO';
+      status.style.color = '#ef4444';
+      return;
+    }
+
+    status.textContent = 'LOCALIZANDO...';
+    status.style.color = '#94a3b8';
+
+    try {
+      const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+      const data = await res.json();
+
+      if (!data.erro) {
+        document.getElementById('logradouro').value = data.logradouro;
+        document.getElementById('bairro').value = data.bairro;
+        document.getElementById('cidade').value = data.localidade;
+        document.getElementById('uf').value = data.uf;
+        status.textContent = 'ENDEREÇO CARREGADO COM SUCESSO ✔';
+        status.style.color = '#10b981';
+      } else {
+        status.textContent = 'CEP NÃO ENCONTRADO NO BANCO';
+        status.style.color = '#ef4444';
+      }
+    } catch (e) {
+      status.textContent = 'ERRO DE CONEXÃO COM VIA-CEP';
+      status.style.color = '#ef4444';
+    }
+  }
+
+  function adicionarVinculo() {
+    const container = document.getElementById('vinculosContainer');
+    const first = container.querySelector('.p-8');
+    const novo = first.cloneNode(true);
+
+    // Clear fields
+    novo.querySelectorAll('input').forEach(i => i.value = '');
+    novo.querySelectorAll('select').forEach(i => i.selectedIndex = 0);
+
+    // Show delete button for clones
+    const delBtn = novo.querySelector('button[onclick*="remove()"]');
+    if (delBtn) delBtn.classList.remove('hidden');
+
+    container.appendChild(novo);
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  });
+</script>
+{% endblock %}
