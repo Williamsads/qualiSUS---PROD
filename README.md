@@ -1,4 +1,4 @@
-# Sistema Qualivida
+# Sistema qualiSUS
 
 Sistema moderno para gestão de saúde ocupacional dos servidores públicos do Estado de Pernambuco.
 
@@ -14,3 +14,4 @@ Sistema moderno para gestão de saúde ocupacional dos servidores públicos do E
 
 ## Como rodar
 Veja instruções em `docs/` e arquivos de configuração de cada módulo.
+
