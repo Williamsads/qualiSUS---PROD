@@ -245,26 +245,87 @@ def unidades_disponiveis():
 @agendamento_bp.route("/api/agendar_exame/especialidades")
 def especialidades_disponiveis():
     unidade_id = request.args.get("unidade_id")
+    include_hidden = request.args.get("include_hidden", "false").lower() == "true"
+    
     conn = get_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
     
+    visivel_filter = "AND e.visivel = true" if not include_hidden else ""
+    visivel_filter_no_alias = "WHERE visivel = true" if not include_hidden else ""
+
     if unidade_id:
-        # Filtrar especialidades vinculadas à unidade específica
-        cur.execute("""
+        cur.execute(f"""
             SELECT e.id, e.nome, e.icone 
             FROM especialidades e
             JOIN unidades_especialidades ue ON ue.especialidade_id = e.id
-            WHERE ue.unidade_id = %s
+            WHERE ue.unidade_id = %s {visivel_filter}
             ORDER BY e.nome
         """, (unidade_id,))
     else:
-        # Se não houver unidade_id, retorna todas (fallback ou inicialização)
-        cur.execute("SELECT id, nome, icone FROM especialidades ORDER BY nome")
+        # Corrigido: Se não for para incluir ocultos, usa WHERE (ou 1=1 se for para incluir)
+        query = f"SELECT id, nome, icone FROM especialidades {visivel_filter_no_alias} ORDER BY nome"
+        cur.execute(query)
         
     especialidades = cur.fetchall()
     cur.close()
     conn.close()
     return jsonify({"especialidades": especialidades})
+
+# ====================
+# VALIDAR ACOLHIMENTO (Regra de Negócio)
+# ====================
+@agendamento_bp.route("/api/agendar_exame/check-acolhimento")
+def check_acolhimento():
+    trabalhador_id = request.args.get("trabalhador_id")
+    especialidade = request.args.get("especialidade", "")
+    
+    if not trabalhador_id or especialidade not in ["Psicólogo", "Psiquiatra"]:
+        return jsonify({"blocked": False})
+
+    conn = get_connection()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    
+    try:
+        # Regra: Bloqueia se NÃO houver um acolhimento 'Validado'
+        cur.execute("""
+            SELECT id, status, validado_para_psico FROM agendamento_exames 
+            WHERE trabalhador_id = %s 
+              AND especialidade = 'Acolhimento'
+              AND status != 'Cancelado'
+            ORDER BY data_consulta DESC, horario DESC
+            LIMIT 1
+        """, (trabalhador_id,))
+        
+        acolhimento = cur.fetchone()
+        
+        if not acolhimento:
+            return jsonify({
+                "blocked": True, 
+                "reason": "missing",
+                "message": "Antes do atendimento em Psicologia ou Psiquiatria, é necessário passar pelo Acolhimento Presencial e ser validado pelo profissional."
+            })
+            
+        if not acolhimento['validado_para_psico']:
+            if acolhimento['status'] == 'Finalizado':
+                return jsonify({
+                    "blocked": True, 
+                    "reason": "not_eligible",
+                    "message": "Seu acolhimento foi finalizado, mas o profissional indicou que você ainda não está apto para seguir para Psicologia/Psiquiatria neste momento."
+                })
+            else:
+                return jsonify({
+                    "blocked": True, 
+                    "reason": "pending",
+                    "message": "Seu acolhimento ainda não foi realizado ou validado pelo profissional responsável."
+                })
+            
+        return jsonify({"blocked": False})
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    finally:
+        cur.close()
+        conn.close()
 
 # ====================
 # Profissionais por especialidade
@@ -284,7 +345,10 @@ def profissionais_por_especialidade():
         SELECT f.id, f.nome, f.especialidade, f.unidade_atendimento 
         FROM funcionarios f
         JOIN funcionarios_especialidades fe ON fe.funcionario_id = f.id
-        WHERE fe.especialidade_id = %s AND f.ativo = TRUE
+        WHERE fe.especialidade_id = %s 
+          AND f.ativo = TRUE 
+          AND f.atendimento = TRUE 
+          AND COALESCE(f.situacao, 'Ativo') = 'Ativo'
     """
     params = [especialidade_id]
     
@@ -323,17 +387,42 @@ def confirmar_agendamento():
     cur = conn.cursor()
 
     try:
-        # --- BLOQUEIO MENSAL: Validar se a data é do mês atual ---
+        # --- REGRA DE NEGÓCIO: Acolhimento obrigatório e validado para Psicologia/Psiquiatria ---
+        if especialidade in ["Psicólogo", "Psiquiatra"]:
+            cur.execute("""
+                SELECT validado_para_psico FROM agendamento_exames 
+                WHERE trabalhador_id = %s AND especialidade = 'Acolhimento' AND status != 'Cancelado'
+                ORDER BY data_consulta DESC, horario DESC LIMIT 1
+            """, (trabalhador_id,))
+            acolhimento = cur.fetchone()
+            if not acolhimento or not acolhimento[0]:
+                return jsonify({
+                    "success": False, 
+                    "error": "Acolhimento obrigatório não realizado ou não autorizado pelo profissional."
+                }), 403
+
+        # --- VALIDAÇÃO DE DATA E HORA ---
         try:
-            data_obj = datetime.strptime(data_consulta, '%Y-%m-%d')
-            hoje = datetime.now()
-            if data_obj.year != hoje.year or data_obj.month != hoje.month:
+            # Combina data e hora para validação completa
+            agendamento_datetime = datetime.strptime(f"{data_consulta} {horario}", '%Y-%m-%d %H:%M')
+            agora = datetime.now()
+
+            # 1. Bloqueio de passado: não permitir retroativos
+            if agendamento_datetime < agora:
+                return jsonify({
+                    "success": False, 
+                    "error": "Não é possível realizar agendamentos para datas ou horários que já passaram."
+                }), 400
+
+            # 2. Bloqueio mensal: Validar se a data é do mês atual
+            if agendamento_datetime.year != agora.year or agendamento_datetime.month != agora.month:
                 return jsonify({
                     "success": False, 
                     "error": "Agendamentos só podem ser realizados para datas dentro do mês atual."
                 }), 400
+
         except ValueError:
-            return jsonify({"success": False, "error": "Formato de data inválido."}), 400
+            return jsonify({"success": False, "error": "Formato de data ou hora inválido."}), 400
 
         # Verificar duplicidade para o paciente (mesmo horário)
         cur.execute("""

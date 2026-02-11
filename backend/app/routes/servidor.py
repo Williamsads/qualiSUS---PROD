@@ -32,7 +32,10 @@ def lista_funcionarios():
                 especialidade,
                 unidade_atendimento,
                 ativo,
-                atendimento
+                atendimento,
+                situacao,
+                situacao_data_inicio,
+                situacao_data_fim
             FROM funcionarios
             ORDER BY nome
         """)
@@ -79,7 +82,8 @@ def exportar_funcionarios():
                 especialidade as "Especialidade",
                 unidade_atendimento as "Unidade",
                 CASE WHEN atendimento THEN 'Sim' ELSE 'Não' END as "Atendimento",
-                CASE WHEN ativo THEN 'Ativo' ELSE 'Inativo' END as "Situação"
+                situacao as "Situação Atual",
+                CASE WHEN ativo THEN 'Ativo' ELSE 'Inativo' END as "Status"
             FROM funcionarios
             WHERE 1=1
         """
@@ -150,6 +154,9 @@ def adicionar_funcionario():
         email = request.form.get('email')
         telefone = request.form.get('telefone')
         unidade = request.form.get('unidade')
+        situacao = request.form.get('situacao', 'Ativo')
+        situacao_data_inicio = request.form.get('situacao_data_inicio') or None
+        situacao_data_fim = request.form.get('situacao_data_fim') or None
         atendimento = request.form.get('atendimento') == 'on'
         # Normaliza CPF
         if cpf:
@@ -199,8 +206,11 @@ def adicionar_funcionario():
                     telefone,
                     unidade_atendimento,
                     ativo,
-                    atendimento
-                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    atendimento,
+                    situacao,
+                    situacao_data_inicio,
+                    situacao_data_fim
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             """, (
                 nome,
                 cpf,
@@ -211,7 +221,10 @@ def adicionar_funcionario():
                 telefone,
                 unidade or None,
                 True, # Novo funcionário é ativo por padrão
-                atendimento
+                atendimento,
+                situacao,
+                situacao_data_inicio,
+                situacao_data_fim
             ))
 
             conn.commit()
@@ -242,6 +255,9 @@ def editar_funcionario(id):
         num_func_vinculo = request.form['num_func_vinculo']
         especialidade = request.form['especialidade']
         unidade_atendimento = request.form['unidade_atendimento']
+        situacao = request.form.get('situacao', 'Ativo')
+        situacao_data_inicio = request.form.get('situacao_data_inicio') or None
+        situacao_data_fim = request.form.get('situacao_data_fim') or None
         atendimento = request.form.get('atendimento') == 'on'
         # Normaliza CPF
         if cpf:
@@ -254,7 +270,10 @@ def editar_funcionario(id):
                 num_func_num_vinc = %s,
                 especialidade = %s,
                 unidade_atendimento = %s,
-                atendimento = %s
+                atendimento = %s,
+                situacao = %s,
+                situacao_data_inicio = %s,
+                situacao_data_fim = %s
             WHERE id = %s
         """
 
@@ -282,6 +301,9 @@ def editar_funcionario(id):
                 especialidade,
                 unidade_atendimento,
                 atendimento,
+                situacao,
+                situacao_data_inicio,
+                situacao_data_fim,
                 id
             ))
 
@@ -477,12 +499,13 @@ def cadastro_paciente():
             lotacao_list = data.getlist('lotacao[]')
             data_admissao_list = data.getlist('data_admissao[]')
             data_desligamento_list = data.getlist('data_desligamento[]')
+            situacao_list = data.getlist('situacao[]')
 
             sql_vinculo = """
                 INSERT INTO vinculos_trabalhadores (
                     trabalhador_id, numero_funcional, tipo_vinculo, 
-                    especialidade, unidade_lotacao, data_admissao, data_desligamento
-                ) VALUES (%s, %s, %s, %s, %s, %s, %s)
+                    especialidade, unidade_lotacao, data_admissao, data_desligamento, situacao
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
             """
 
             for i in range(len(num_func_vinc_list)):
@@ -494,7 +517,8 @@ def cadastro_paciente():
                         especialidade_list[i],
                         lotacao_list[i],
                         data_admissao_list[i] or None,
-                        data_desligamento_list[i] or None
+                        data_desligamento_list[i] or None,
+                        situacao_list[i] or 'Ativo'
                     ))
 
             conn.commit()

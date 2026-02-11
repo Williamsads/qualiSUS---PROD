@@ -32,7 +32,11 @@ def list_especialidades_por_unidade():
             SELECT DISTINCT e.nome 
             FROM funcionarios f 
             JOIN especialidades e ON f.especialidade_id = e.id 
-            WHERE f.unidade_atendimento = %s AND f.ativo = true
+            WHERE f.unidade_atendimento = %s 
+              AND f.ativo = true 
+              AND f.atendimento = true
+              AND COALESCE(f.situacao, 'Ativo') = 'Ativo'
+              AND e.visivel = true
             ORDER BY e.nome
         """, (unidade,))
         rows = cur.fetchall()
@@ -120,6 +124,24 @@ def list_especialidades():
     cur.close()
     conn.close()
     return jsonify(rows)
+
+@gerenciamento_bp.route("/api/gerenciamento/especialidades/status/<int:id>", methods=["POST"])
+def status_especialidade(id):
+    data = request.get_json()
+    visivel = data.get('visivel', True)
+
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("UPDATE especialidades SET visivel = %s WHERE id = %s", (visivel, id))
+        conn.commit()
+        return jsonify({"success": True})
+    except Exception as e:
+        conn.rollback()
+        return jsonify({"success": False, "error": str(e)}), 500
+    finally:
+        cur.close()
+        conn.close()
 
 @gerenciamento_bp.route("/api/gerenciamento/especialidades", methods=["POST"])
 def add_especialidade():
@@ -258,6 +280,7 @@ def add_profissional():
 
     unidade = data.get("unidade_atendimento")
     ativo = data.get("ativo", True)
+    atendimento = data.get("atendimento", True)
     
     conn = get_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
@@ -277,7 +300,7 @@ def add_profissional():
             RETURNING id
         """, (
             nome, first_id, especialidade_nome, unidade, ativo,
-            '00000000000', '00000', '1980-01-01', 'medico@qualivida.com', '81999999999', True
+            '00000000000', '00000', '1980-01-01', 'medico@qualivida.com', '81999999999', atendimento
         ))
         new_id = cur.fetchone()['id']
 
@@ -304,6 +327,7 @@ def update_profissional(id):
 
     unidade = data.get("unidade_atendimento")
     ativo = data.get("ativo")
+    atendimento = data.get("atendimento")
     
     conn = get_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
@@ -316,9 +340,9 @@ def update_profissional(id):
 
         cur.execute("""
             UPDATE funcionarios 
-            SET nome = %s, especialidade_id = %s, especialidade = %s, unidade_atendimento = %s, ativo = %s 
+            SET nome = %s, especialidade_id = %s, especialidade = %s, unidade_atendimento = %s, ativo = %s, atendimento = %s
             WHERE id = %s
-        """, (nome, first_id, especialidade_nome, unidade, ativo, id))
+        """, (nome, first_id, especialidade_nome, unidade, ativo, atendimento, id))
 
         # Update bridge table
         cur.execute("DELETE FROM funcionarios_especialidades WHERE funcionario_id = %s", (id,))
@@ -381,14 +405,21 @@ def add_horario():
     data = request.json
     prof_id = data.get("funcionario_id")
     horario = data.get("horario")
-    dia_semana = data.get("dia_semana")
+    dia_semana = data.get("dia_semana") # Mantém por compatibilidade (individual)
+    dias_semana = data.get("dias_semana") # Novo formato (múltiplos)
+
+    days_to_add = dias_semana if dias_semana else ([dia_semana] if dia_semana is not None else [])
     
     conn = get_connection()
     cur = conn.cursor()
     try:
-        cur.execute("INSERT INTO horarios_funcionarios (funcionario_id, horario, dia_semana) VALUES (%s, %s, %s)", (prof_id, horario, dia_semana))
-        conn.commit()
-        return jsonify({"success": True})
+        if days_to_add:
+            # Prepara os dados para inserção em lote
+            args = [(prof_id, horario, d) for d in days_to_add]
+            cur.executemany("INSERT INTO horarios_funcionarios (funcionario_id, horario, dia_semana) VALUES (%s, %s, %s)", args)
+            conn.commit()
+            return jsonify({"success": True})
+        return jsonify({"success": False, "error": "Nenhum dia selecionado"}), 400
     except Exception as e:
         conn.rollback()
         return jsonify({"success": False, "error": str(e)}), 500

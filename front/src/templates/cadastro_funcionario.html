@@ -34,7 +34,8 @@
       <span>Campos marcados com <span class="text-red-500">*</span> são de preenchimento obrigatório.</span>
     </div>
 
-    <form method="POST" action="{{ url_for('servidor.adicionar_funcionario') }}"
+    <form method="POST"
+      action="{{ url_for('servidor.editar_funcionario', id=funcionario.id) if funcionario else url_for('servidor.adicionar_funcionario') }}"
       class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
       <!-- Nome -->
@@ -47,7 +48,7 @@
             class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
           <input name="nome" type="text" required
             class="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-medium transition-all"
-            placeholder="Ex: João da Silva Santos">
+            value="{{ funcionario.nome if funcionario else '' }}" placeholder="Ex: João da Silva Santos">
         </div>
       </div>
 
@@ -61,7 +62,7 @@
             class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
           <input name="cpf" type="text" required oninput="maskCPF(this)" maxlength="14"
             class="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-bold transition-all"
-            placeholder="000.000.000-00">
+            value="{{ funcionario.cpf if funcionario else '' }}" placeholder="000.000.000-00">
         </div>
       </div>
 
@@ -75,7 +76,7 @@
             class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
           <input name="num_func_vinculo" type="text" required
             class="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-bold transition-all"
-            placeholder="Ex: 123456/1">
+            value="{{ funcionario.num_func_num_vinc if funcionario else '' }}" placeholder="Ex: 123456/1">
         </div>
       </div>
 
@@ -86,7 +87,8 @@
           de Nascimento *</label>
         <div class="relative group">
           <input name="data_nascimento" type="date" required
-            class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-bold transition-all cursor-pointer">
+            class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-bold transition-all cursor-pointer"
+            value="{{ funcionario.data_nascimento if funcionario else '' }}">
         </div>
       </div>
 
@@ -100,7 +102,7 @@
             class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
           <input name="especialidade" type="text" required
             class="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-medium transition-all"
-            placeholder="Ex: Médico Perito">
+            value="{{ funcionario.especialidade if funcionario else '' }}" placeholder="Ex: Médico Perito">
         </div>
       </div>
 
@@ -114,7 +116,7 @@
             class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
           <input name="email" type="email" required
             class="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-medium transition-all"
-            placeholder="nome@saude.pe.gov.br">
+            value="{{ funcionario.email if funcionario else '' }}" placeholder="nome@saude.pe.gov.br">
         </div>
       </div>
 
@@ -128,7 +130,7 @@
             class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
           <input name="telefone" type="text" required oninput="maskPhone(this)"
             class="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-bold transition-all"
-            placeholder="(81) 99999-0000">
+            value="{{ funcionario.telefone if funcionario else '' }}" placeholder="(81) 99999-0000">
         </div>
       </div>
 
@@ -143,6 +145,32 @@
           <input name="unidade" type="text" value="{{ funcionario.unidade_atendimento if funcionario else '' }}"
             class="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-medium transition-all"
             placeholder="Ex: Qualivida - Recife">
+        </div>
+      </div>
+
+      <!-- Situacao -->
+      <div class="space-y-2">
+        <label
+          class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">Situação
+          Atual</label>
+        <div class="relative group">
+          <i data-lucide="activity"
+            class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
+          <select name="situacao"
+            class="w-full pl-12 pr-10 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-medium transition-all appearance-none cursor-pointer">
+            <option value="Ativo" {% if not funcionario or funcionario.situacao=='Ativo' %}selected{% endif %}>Ativo
+            </option>
+            <option value="Férias" {% if funcionario and funcionario.situacao=='Férias' %}selected{% endif %}>Férias
+            </option>
+            <option value="Licença" {% if funcionario and funcionario.situacao=='Licença' %}selected{% endif %}>Licença
+            </option>
+            <option value="Afastado" {% if funcionario and funcionario.situacao=='Afastado' %}selected{% endif %}>
+              Afastado</option>
+            <option value="Outros" {% if funcionario and funcionario.situacao=='Outros' %}selected{% endif %}>Outros
+            </option>
+          </select>
+          <i data-lucide="chevron-down"
+            class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"></i>
         </div>
       </div>
 

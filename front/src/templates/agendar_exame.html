@@ -495,6 +495,51 @@
       </div>
     </div>
 
+    <!-- MODAL ACOLHIMENTO OBRIGATÓRIO (Regra de Negócio) -->
+    <div id="modalAcolhimento"
+      class="fixed inset-0 bg-black/70 hidden items-center justify-center z-[60] p-4 backdrop-blur-md">
+      <div class="bg-white rounded-3xl w-full max-w-lg shadow-2xl flex flex-col animate-fade-in-up overflow-hidden">
+        <!-- Header Decorativo -->
+        <div class="h-3 bg-gradient-to-r from-amber-400 to-orange-500"></div>
+
+        <div class="p-8 flex flex-col items-center text-center">
+          <div
+            class="w-20 h-20 bg-amber-50 rounded-full flex items-center justify-center mb-6 text-amber-500 ring-8 ring-amber-50/50">
+            <i data-lucide="alert-circle" class="w-10 h-10"></i>
+          </div>
+
+          <h2 class="text-2xl font-black text-gray-900 mb-4 leading-tight">Acolhimento Obrigatório</h2>
+
+          <p class="text-gray-600 mb-8 leading-relaxed font-medium" id="acolhimento-msg">
+            Antes do atendimento em Psicologia ou Psiquiatria, é necessário passar pelo Acolhimento Presencial.
+          </p>
+
+          <div class="bg-gray-50 p-6 rounded-2xl w-full text-left mb-8 border border-gray-100">
+            <div class="flex items-start gap-3">
+              <div class="mt-1 bg-amber-100 p-1 rounded-full text-amber-600">
+                <i data-lucide="info" class="w-3.5 h-3.5"></i>
+              </div>
+              <p class="text-xs text-gray-500 leading-relaxed">
+                O acolhimento é uma triagem clínica para compreender sua dor e direcioná-lo corretamente para a
+                especialidade adequada.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex flex-col w-full gap-3">
+            <button id="btnIrParaAcolhimento"
+              class="w-full py-4 bg-orange-600 text-white font-black rounded-xl hover:bg-orange-700 shadow-xl shadow-orange-600/20 transition-all transform hover:scale-[1.02] active:scale-95">
+              Agendar Acolhimento Agora
+            </button>
+            <button id="btnFecharAcolhimento"
+              class="w-full py-3 text-gray-400 font-bold hover:text-gray-600 transition-colors">
+              Depois eu faço isso
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- STEP 2: Unidade / Data (Redesigned) -->
     <div id="step-2" class="hidden mt-8 w-full max-w-5xl mx-auto">
       <div class="text-center mb-10">
@@ -1256,9 +1301,55 @@
     if (btnStep3Next) {
       btnStep3Next.onclick = async () => {
         const val = document.getElementById('especialidadeIdEscolha').value;
+        const nome = document.getElementById('especialidadeEscolha').value;
+
         if (!val) {
           document.getElementById('step3-error').classList.remove('hidden');
           return;
+        }
+
+        // --- REGRA DE NEGÓCIO: Acolhimento obrigatório ---
+        if (nome === "Psicólogo" || nome === "Psiquiatra") {
+          try {
+            const res = await fetch(`/api/agendar_exame/check-acolhimento?trabalhador_id=${pacienteGlobal.id}&especialidade=${encodeURIComponent(nome)}`);
+            const data = await res.json();
+
+            if (data.blocked) {
+              document.getElementById('acolhimento-msg').innerText = data.message;
+              const modalAcolhimento = document.getElementById('modalAcolhimento');
+              modalAcolhimento.classList.remove('hidden');
+              modalAcolhimento.classList.add('flex');
+
+              // Handler do Botão "Agendar Acolhimento"
+              document.getElementById('btnIrParaAcolhimento').onclick = async () => {
+                modalAcolhimento.classList.add('hidden');
+
+                // Busca o ID da especialidade 'Acolhimento' (pode estar oculta)
+                const resSpec = await fetch('/api/agendar_exame/especialidades?include_hidden=true');
+                const specsData = await resSpec.json();
+                const acolhimentoSpec = (specsData.especialidades || []).find(s => s.nome === 'Acolhimento');
+
+                if (acolhimentoSpec) {
+                  selecionarEspecialidade(acolhimentoSpec.id, acolhimentoSpec.nome);
+                  // Dispara o clique do "Próximo" automaticamente para Acolhimento
+                  btnStep3Next.click();
+                } else {
+                  showToast("Especialidade Acolhimento não encontrada no sistema.", "error");
+                }
+              };
+
+              document.getElementById('btnFecharAcolhimento').onclick = () => {
+                modalAcolhimento.classList.add('hidden');
+                modalAcolhimento.classList.remove('flex');
+              };
+
+              return;
+            }
+          } catch (err) {
+            console.error(err);
+            showToast("Erro ao validar regra de acolhimento.", "error");
+            return;
+          }
         }
 
         // Carrega médicos antes de mudar
@@ -1372,10 +1463,25 @@
       try {
         const res = await fetch(`/api/gerenciamento/horarios/${profId}?dia=${diaSemana}`);
         const data = await res.json();
-        const slots = data || [];
+        let slots = data || [];
+
+        // Filtra horários passados se a data for hoje
+        const agora = new Date();
+        const hojeStr = agora.toISOString().split('T')[0];
+
+        if (dataStr === hojeStr) {
+          const horaAtual = agora.getHours();
+          const minAtual = agora.getMinutes();
+
+          slots = slots.filter(s => {
+            const [h, m] = s.horario.split(':').map(Number);
+            return (h > horaAtual) || (h === horaAtual && m > minAtual);
+          });
+        }
 
         if (slots.length === 0) {
-          container.innerHTML = '<div class="col-span-4 text-center py-4 text-amber-600 bg-amber-50 rounded-xl font-medium">Nenhum horário disponível para este médico neste dia da semana.</div>';
+          const msg = dataStr === hojeStr ? 'Não há mais horários disponíveis para hoje.' : 'Nenhum horário disponível para este médico neste dia da semana.';
+          container.innerHTML = `<div class="col-span-4 text-center py-4 text-amber-600 bg-amber-50 rounded-xl font-medium">${msg}</div>`;
           return;
         }
 
