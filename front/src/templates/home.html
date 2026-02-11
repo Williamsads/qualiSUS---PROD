@@ -1,195 +1,199 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="space-y-8 animate-fade-in pb-10">
+<div class="space-y-12 animate-fade-in pb-12">
+
+    <!-- BREADCRUMBS -->
+    <nav class="flex items-center text-[11px] font-bold uppercase tracking-widest text-gray-400">
+        <a href="{{ url_for('home') }}" class="breadcrumb-item hover:text-clinical-blue transition-colors">QualiSUS</a>
+        <span class="breadcrumb-item text-clinical-blue">Dashboard</span>
+    </nav>
 
     <!-- HERO SECTION -->
     <section
-        class="relative bg-gradient-to-br from-pe-blue via-brand-800 to-brand-600 rounded-4xl p-8 sm:p-12 shadow-xl-premium text-white overflow-hidden">
-        <div class="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-white/10 rounded-full blur-3xl"></div>
-        <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-64 h-64 bg-pe-gold/20 rounded-full blur-3xl"></div>
+        class="relative bg-white rounded-4xl p-8 sm:p-14 border border-clinical-border shadow-sm overflow-hidden transition-all duration-500">
 
-        <div class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-            <div>
-                <div class="flex items-center gap-3 mb-2 opacity-90">
-                    <span
-                        class="px-3 py-1 rounded-full bg-white/10 border border-white/20 text-xs font-semibold uppercase tracking-wider">
-                        Painel Principal
-                    </span>
-                    <span class="text-sm font-medium">{{ session.get('data', '') }}</span>
+        <div class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-10">
+            <div class="flex items-start gap-10">
+                <!-- Dynamic Welcome Block -->
+                <div
+                    class="hidden sm:flex w-24 h-24 rounded-3xl bg-blue-50 items-center justify-center text-clinical-blue flex-shrink-0 relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-clinical-blue opacity-0 group-hover:opacity-10 transition-opacity">
+                    </div>
+                    <i data-lucide="sun" class="w-14 h-14 animate-pulse-slow"></i>
                 </div>
+                <div>
+                    <div class="flex items-center gap-4 mb-3">
+                        <span
+                            class="px-3 py-1 rounded-lg bg-gray-50 text-gray-400 text-[10px] font-black uppercase tracking-[0.2em]">
+                            Bom dia, Gestor
+                        </span>
+                        <span class="text-xs font-semibold text-gray-400/80">{{ session.get('data', '') }}</span>
+                    </div>
 
-                <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-2">
-                    Olá, {{ session.get('nome', 'Servidor') }}
-                </h2>
-                <p class="text-blue-100 max-w-2xl text-lg font-light leading-relaxed">
-                    Bem-vindo ao sistema de gestão de saúde do trabalhador.
-                </p>
+                    <h2 class="text-4xl sm:text-5xl font-black tracking-tight mb-3 text-gray-900 leading-tight">
+                        Olá, {{ session.get('nome', 'Servidor') }}
+                    </h2>
+                    <p class="text-gray-500 max-w-2xl text-xl font-medium leading-relaxed opacity-90">
+                        O sistema QualiSUS está pronto. <span class="text-clinical-blue font-bold">{{ atendimentos_hoje
+                            }} atendimentos</span> previstos para hoje.
+                    </p>
+                </div>
             </div>
 
-            <!-- Hero Stats -->
-            <div class="flex gap-4">
+            <!-- Hero Stats with Sparklines (Green for Action/Status) -->
+            <div class="flex gap-8">
                 <div
-                    class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 flex flex-col items-center min-w-[110px]">
-                    <span class="text-3xl font-bold">{{ total_trabalhadores }}</span>
-                    <span class="text-xs text-blue-200 font-medium uppercase mt-1">Trabalhadores</span>
+                    class="bg-white border border-clinical-border rounded-4xl p-7 flex flex-col items-center min-w-[170px] transition-all hover:border-clinical-green/30 shadow-sm hover:shadow-md group">
+                    <div class="w-full flex justify-between items-end mb-2">
+                        <span class="text-[32px] font-black text-clinical-green leading-none">{{ total_trabalhadores
+                            }}</span>
+                        <svg class="w-12 h-6 text-clinical-green/30" viewBox="0 0 100 40" fill="none">
+                            <path d="M0 35 Q 20 10, 40 30 T 80 15 L 100 25" stroke="currentColor" stroke-width="3"
+                                stroke-linecap="round" />
+                        </svg>
+                    </div>
+                    <span
+                        class="text-[10px] text-gray-400 font-black uppercase tracking-[0.15em] self-start">Trabalhadores</span>
                 </div>
                 <div
-                    class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 flex flex-col items-center min-w-[110px]">
-                    <span class="text-3xl font-bold text-green-300">98%</span>
-                    <span class="text-xs text-blue-200 font-medium uppercase mt-1">Cobertura</span>
+                    class="bg-white border border-clinical-border rounded-4xl p-7 flex flex-col items-center min-w-[170px] transition-all hover:border-clinical-green/30 shadow-sm hover:shadow-md group">
+                    <div class="w-full flex justify-between items-end mb-2">
+                        <span class="text-[32px] font-black text-clinical-green leading-none">98%</span>
+                        <svg class="w-12 h-6 text-clinical-green/30" viewBox="0 0 100 40" fill="none">
+                            <path d="M0 30 Q 30 30, 50 10 T 100 5" stroke="currentColor" stroke-width="3"
+                                stroke-linecap="round" />
+                        </svg>
+                    </div>
+                    <span class="text-[10px] text-gray-400 font-black uppercase tracking-[0.15em] self-start">Cobertura
+                        Total</span>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- QUICK ACTIONS (Full Width) -->
+    <!-- QUICK ACTIONS -->
     <section>
-        <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2 dark:text-gray-200">
-                <i data-lucide="zap" class="w-5 h-5 text-yellow-500 fill-current"></i>
+        <div class="flex items-center justify-between mb-8 px-2">
+            <h3 class="section-title-blue flex items-center gap-3">
+                <i data-lucide="zap" class="w-4 h-4 text-clinical-green"></i>
                 Acesso Rápido
             </h3>
         </div>
 
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
             <a href="{{ url_for('servidor.adicionar_funcionario') }}"
-                class="flex flex-col items-center justify-center p-6 bg-white border border-gray-100 rounded-3xl transition-all group text-center h-48 cursor-pointer dark:bg-gray-900 dark:border-gray-800 hover-lift shadow-premium">
+                class="flex flex-col items-center justify-center p-8 bg-white border border-clinical-border rounded-4xl text-center h-56 cursor-pointer hover:shadow-xl hover:border-clinical-green/20 transition-all group">
                 <div
-                    class="w-16 h-16 bg-brand-50 text-brand-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-sm dark:bg-blue-900/20 dark:text-brand-400">
+                    class="w-16 h-16 bg-green-50 text-clinical-green rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
                     <i data-lucide="user-plus" class="w-8 h-8"></i>
                 </div>
-                <span
-                    class="font-extrabold text-gray-800 text-sm group-hover:text-brand-600 dark:text-gray-200 dark:group-hover:text-brand-400">Novo
-                    Funcionário</span>
-                <span
-                    class="text-[11px] text-gray-400 mt-1 dark:text-gray-500 uppercase font-semibold tracking-wider">Cadastrar
+                <span class="font-black text-gray-800 text-base group-hover:text-clinical-green">Novo Funcionário</span>
+                <span class="text-[11px] text-gray-400 mt-2 uppercase font-bold tracking-wider opacity-60">Cadastrar
                     servidor</span>
             </a>
 
             <a href="{{ url_for('agendamento_bp.pagina_agendamento') }}"
-                class="flex flex-col items-center justify-center p-6 bg-white border border-gray-100 rounded-3xl transition-all group text-center h-48 cursor-pointer dark:bg-gray-900 dark:border-gray-800 hover-lift shadow-premium">
+                class="flex flex-col items-center justify-center p-8 bg-white border border-clinical-border rounded-4xl text-center h-56 cursor-pointer hover:shadow-xl hover:border-clinical-green/20 transition-all group">
                 <div
-                    class="w-16 h-16 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-sm dark:bg-green-900/20 dark:text-green-400">
+                    class="w-16 h-16 bg-green-50 text-clinical-green rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
                     <i data-lucide="calendar-plus" class="w-8 h-8"></i>
                 </div>
-                <span
-                    class="font-extrabold text-gray-800 text-sm group-hover:text-green-600 dark:text-gray-200 dark:group-hover:text-green-400">Agendar
-                    Exame</span>
-                <span
-                    class="text-[11px] text-gray-400 mt-1 dark:text-gray-500 uppercase font-semibold tracking-wider">Marcar
+                <span class="font-black text-gray-800 text-base group-hover:text-clinical-green">Agendar Exame</span>
+                <span class="text-[11px] text-gray-400 mt-2 uppercase font-bold tracking-wider opacity-60">Marcar
                     consulta</span>
             </a>
 
             <a href="{{ url_for('trabalhadores.lista_trabalhadores') }}"
-                class="flex flex-col items-center justify-center p-6 bg-white border border-gray-100 rounded-3xl transition-all group text-center h-48 cursor-pointer dark:bg-gray-900 dark:border-gray-800 hover-lift shadow-premium">
+                class="flex flex-col items-center justify-center p-8 bg-white border border-clinical-border rounded-4xl text-center h-56 cursor-pointer hover:shadow-xl hover:border-clinical-blue/20 transition-all group">
                 <div
-                    class="w-16 h-16 bg-pe-gold/10 text-pe-gold rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-sm dark:bg-amber-900/20 dark:text-pe-gold">
+                    class="w-16 h-16 bg-blue-50 text-clinical-blue rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
                     <i data-lucide="users" class="w-8 h-8"></i>
                 </div>
-                <span
-                    class="font-extrabold text-gray-800 text-sm group-hover:text-pe-gold dark:text-gray-200 dark:group-hover:text-pe-gold">Trabalhadores</span>
-                <span
-                    class="text-[11px] text-gray-400 mt-1 dark:text-gray-500 uppercase font-semibold tracking-wider">Busca
+                <span class="font-black text-gray-800 text-base group-hover:text-clinical-blue">Trabalhadores</span>
+                <span class="text-[11px] text-gray-400 mt-2 uppercase font-bold tracking-wider opacity-60">Busca
                     completa</span>
             </a>
 
             <a href="{{ url_for('log_agendamento.index') }}"
-                class="flex flex-col items-center justify-center p-6 bg-white border border-gray-100 rounded-3xl transition-all group text-center h-48 cursor-pointer dark:bg-gray-900 dark:border-gray-800 hover-lift shadow-premium">
+                class="flex flex-col items-center justify-center p-8 bg-white border border-clinical-border rounded-4xl text-center h-56 cursor-pointer hover:shadow-xl hover:border-clinical-blue/20 transition-all group">
                 <div
-                    class="w-16 h-16 bg-accent-50 text-accent-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-sm dark:bg-accent-900/20 dark:text-accent-400">
+                    class="w-16 h-16 bg-blue-50 text-clinical-blue rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
                     <i data-lucide="calendar" class="w-8 h-8"></i>
                 </div>
-                <span
-                    class="font-extrabold text-gray-800 text-sm group-hover:text-accent-600 dark:text-gray-200 dark:group-hover:text-accent-400">Relatórios</span>
-                <span
-                    class="text-[11px] text-gray-400 mt-1 dark:text-gray-500 uppercase font-semibold tracking-wider">Ver
+                <span class="font-black text-gray-800 text-base group-hover:text-clinical-blue">Relatórios</span>
+                <span class="text-[11px] text-gray-400 mt-2 uppercase font-bold tracking-wider opacity-60">Ver
                     Agendamentos</span>
             </a>
-
         </div>
     </section>
 
-    <!-- MODULES GRID (Replacing Sidebar List) -->
+    <!-- MODULES GRID -->
     <section>
-        <div class="flex items-center justify-between mb-4 mt-8">
-            <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2 dark:text-gray-200">
-                <i data-lucide="grid" class="w-5 h-5 text-gray-400"></i>
+        <div class="flex items-center justify-between mb-8 px-2">
+            <h3 class="section-title-blue flex items-center gap-3">
+                <i data-lucide="grid" class="w-4 h-4"></i>
                 Módulos do Sistema
             </h3>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-
-            <!-- Module 1 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div
-                class="bg-white p-5 rounded-2xl border border-gray-200 hover:border-brand-200 hover:shadow-md transition-all cursor-pointer group flex items-start gap-4 dark:bg-gray-900 dark:border-gray-800 dark:hover:border-brand-600">
+                class="bg-white p-6 rounded-3xl border border-clinical-border hover:border-clinical-blue/30 shadow-sm transition-all cursor-pointer group flex items-start gap-5 card-hospital">
                 <div
-                    class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-brand-600 group-hover:scale-110 transition-transform flex-shrink-0 dark:bg-gray-800 dark:text-brand-400">
-                    <i data-lucide="users" class="w-6 h-6"></i>
+                    class="w-14 h-14 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 transition-all group-hover:scale-110 group-hover:bg-blue-50 group-hover:text-clinical-blue flex-shrink-0">
+                    <i data-lucide="users" class="w-7 h-7"></i>
                 </div>
                 <div>
-                    <h4
-                        class="font-bold text-gray-800 text-sm group-hover:text-brand-700 dark:text-gray-200 dark:group-hover:text-brand-400">
-                        Gestão de Servidores</h4>
-                    <p class="text-xs text-gray-500 mt-1 leading-relaxed dark:text-gray-500 uppercase tracking-tighter">
-                        Administração de fichas funcionais e dados
-                        cadastrais.</p>
+                    <h4 class="font-black text-gray-800 text-sm group-hover:text-clinical-blue">Gestão de Servidores
+                    </h4>
+                    <p
+                        class="text-xs text-gray-500 mt-2 leading-relaxed uppercase tracking-tighter font-bold opacity-70">
+                        Estrutura de fichas funcionais.</p>
                 </div>
             </div>
 
-            <!-- Module 2 -->
             <div
-                class="bg-white p-5 rounded-2xl border border-gray-200 hover:border-green-200 hover:shadow-md transition-all cursor-pointer group flex items-start gap-4 dark:bg-gray-900 dark:border-gray-800 dark:hover:border-green-600">
+                class="bg-white p-6 rounded-3xl border border-clinical-border hover:border-clinical-green/30 shadow-sm transition-all cursor-pointer group flex items-start gap-5 card-hospital">
                 <div
-                    class="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center text-green-600 group-hover:scale-110 transition-transform flex-shrink-0 dark:bg-gray-800 dark:text-green-400">
-                    <i data-lucide="activity" class="w-6 h-6"></i>
+                    class="w-14 h-14 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 transition-all group-hover:scale-110 group-hover:bg-green-50 group-hover:text-clinical-green flex-shrink-0">
+                    <i data-lucide="activity" class="w-7 h-7"></i>
                 </div>
                 <div>
-                    <h4
-                        class="font-bold text-gray-800 text-sm group-hover:text-green-700 dark:text-gray-200 dark:group-hover:text-green-400">
-                        Saúde e Perícia</h4>
-                    <p class="text-xs text-gray-500 mt-1 leading-relaxed dark:text-gray-500 uppercase tracking-tighter">
-                        Agendamento de ASO, perícias e exames
-                        periódicos.</p>
+                    <h4 class="font-black text-gray-800 text-sm group-hover:text-clinical-green">Saúde e Perícia</h4>
+                    <p
+                        class="text-xs text-gray-500 mt-2 leading-relaxed uppercase tracking-tighter font-bold opacity-70">
+                        Ações de agendamento e ASO.</p>
                 </div>
             </div>
 
-            <!-- Module 3 -->
             <div
-                class="bg-white p-5 rounded-2xl border border-gray-200 hover:border-yellow-200 hover:shadow-md transition-all cursor-pointer group flex items-start gap-4 dark:bg-gray-900 dark:border-gray-800 dark:hover:border-yellow-600">
+                class="bg-white p-6 rounded-3xl border border-clinical-border hover:border-clinical-blue/30 shadow-sm transition-all cursor-pointer group flex items-start gap-5 card-hospital">
                 <div
-                    class="w-12 h-12 rounded-xl bg-yellow-50 flex items-center justify-center text-yellow-600 group-hover:scale-110 transition-transform flex-shrink-0 dark:bg-gray-800 dark:text-yellow-400">
-                    <i data-lucide="briefcase" class="w-6 h-6"></i>
+                    class="w-14 h-14 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 transition-all group-hover:scale-110 group-hover:bg-blue-50 group-hover:text-clinical-blue flex-shrink-0">
+                    <i data-lucide="briefcase" class="w-7 h-7"></i>
                 </div>
                 <div>
-                    <h4
-                        class="font-bold text-gray-800 text-sm group-hover:text-yellow-700 dark:text-gray-200 dark:group-hover:text-yellow-400">
-                        Equipes e Unidades</h4>
-                    <p class="text-xs text-gray-500 mt-1 leading-relaxed dark:text-gray-500 uppercase tracking-tighter">
-                        Gerenciamento de setores e equipes
-                        multiprofissionais.</p>
+                    <h4 class="font-black text-gray-800 text-sm group-hover:text-clinical-blue">Equipes e Unidades</h4>
+                    <p
+                        class="text-xs text-gray-500 mt-2 leading-relaxed uppercase tracking-tighter font-bold opacity-70">
+                        Organização de setores e unidades.</p>
                 </div>
             </div>
 
-            <!-- Module 4 -->
             <div
-                class="bg-white p-5 rounded-2xl border border-gray-200 hover:border-red-200 hover:shadow-md transition-all cursor-pointer group flex items-start gap-4 dark:bg-gray-900 dark:border-gray-800 dark:hover:border-red-600">
+                class="bg-white p-6 rounded-3xl border border-clinical-border hover:border-clinical-green/30 shadow-sm transition-all cursor-pointer group flex items-start gap-5 card-hospital">
                 <div
-                    class="w-12 h-12 rounded-xl bg-red-50 flex items-center justify-center text-red-600 group-hover:scale-110 transition-transform flex-shrink-0 dark:bg-gray-800 dark:text-red-400">
-                    <i data-lucide="bar-chart-2" class="w-6 h-6"></i>
+                    class="w-14 h-14 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 transition-all group-hover:scale-110 group-hover:bg-green-50 group-hover:text-clinical-green flex-shrink-0">
+                    <i data-lucide="bar-chart-2" class="w-7 h-7"></i>
                 </div>
                 <div>
-                    <h4
-                        class="font-bold text-gray-800 text-sm group-hover:text-red-700 dark:text-gray-200 dark:group-hover:text-red-400">
-                        Indicadores</h4>
-                    <p class="text-xs text-gray-500 mt-1 leading-relaxed dark:text-gray-500 uppercase tracking-tighter">
-                        Relatórios de absenteísmo e inteligência de
-                        dados.</p>
+                    <h4 class="font-black text-gray-800 text-sm group-hover:text-clinical-green">Indicadores</h4>
+                    <p
+                        class="text-xs text-gray-500 mt-2 leading-relaxed uppercase tracking-tighter font-bold opacity-70">
+                        Inteligência e vida dos dados.</p>
                 </div>
             </div>
-
         </div>
     </section>
 

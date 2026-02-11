@@ -161,9 +161,16 @@
                                     <option value="">Selecione...</option>
                                 </select>
                             </div>
-                            <div class="flex items-center gap-2 py-2">
+                            <div class="flex items-center gap-2 py-0.5">
+                                <input type="checkbox" id="prof-atendimento" checked
+                                    class="w-5 h-5 rounded text-indigo-600 focus:ring-brand-500">
+                                <label for="prof-atendimento"
+                                    class="text-sm font-bold text-gray-700 dark:text-gray-300">Habilitado para
+                                    Atendimento</label>
+                            </div>
+                            <div class="flex items-center gap-2 py-0.5">
                                 <input type="checkbox" id="prof-ativo" checked
-                                    class="w-5 h-5 rounded text-brand-600 focus:ring-brand-500">
+                                    class="w-5 h-5 rounded text-indigo-600 focus:ring-brand-500">
                                 <label for="prof-ativo"
                                     class="text-sm font-bold text-gray-700 dark:text-gray-300">Profissional
                                     Ativo</label>
@@ -315,19 +322,33 @@
 
         <div class="p-6 overflow-y-auto">
             <form onsubmit="addHour(event)" class="space-y-4 mb-6">
-                <div class="flex gap-2">
-                    <select id="new-day" required
-                        class="flex-1 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800 focus:ring-4 focus:ring-brand-500/10 outline-none font-bold">
-                        <option value="1">Segunda-feira</option>
-                        <option value="2">Terça-feira</option>
-                        <option value="3">Quarta-feira</option>
-                        <option value="4">Quinta-feira</option>
-                        <option value="5">Sexta-feira</option>
-                        <option value="6">Sábado</option>
-                        <option value="0">Domingo</option>
-                    </select>
-                    <input type="time" id="new-hour" required
-                        class="w-32 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800 focus:ring-4 focus:ring-brand-500/10 outline-none font-bold">
+                <div class="flex flex-col gap-3">
+                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Dias da Semana</label>
+                    <div class="grid grid-cols-7 gap-1 bg-gray-50 dark:bg-gray-800/50 p-1.5 rounded-2xl border border-gray-100 dark:border-gray-800"
+                        id="day-selector-container">
+                        <button type="button" onclick="toggleDayBtn(this, 1)"
+                            class="day-toggle-btn py-2.5 rounded-xl text-[10px] font-black transition-all border border-transparent">SEG</button>
+                        <button type="button" onclick="toggleDayBtn(this, 2)"
+                            class="day-toggle-btn py-2.5 rounded-xl text-[10px] font-black transition-all border border-transparent">TER</button>
+                        <button type="button" onclick="toggleDayBtn(this, 3)"
+                            class="day-toggle-btn py-2.5 rounded-xl text-[10px] font-black transition-all border border-transparent">QUA</button>
+                        <button type="button" onclick="toggleDayBtn(this, 4)"
+                            class="day-toggle-btn py-2.5 rounded-xl text-[10px] font-black transition-all border border-transparent">QUI</button>
+                        <button type="button" onclick="toggleDayBtn(this, 5)"
+                            class="day-toggle-btn py-2.5 rounded-xl text-[10px] font-black transition-all border border-transparent">SEX</button>
+                        <button type="button" onclick="toggleDayBtn(this, 6)"
+                            class="day-toggle-btn py-2.5 rounded-xl text-[10px] font-black transition-all border border-transparent">SÁB</button>
+                        <button type="button" onclick="toggleDayBtn(this, 0)"
+                            class="day-toggle-btn py-2.5 rounded-xl text-[10px] font-black transition-all border border-transparent">DOM</button>
+                    </div>
+                </div>
+                <div class="flex gap-2 items-end">
+                    <div class="flex-1">
+                        <label
+                            class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-1">Horário</label>
+                        <input type="time" id="new-hour" required
+                            class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800 focus:ring-4 focus:ring-brand-500/10 outline-none font-bold">
+                    </div>
                 </div>
                 <button type="submit"
                     class="w-full bg-brand-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-brand-700 transition-all">
@@ -389,6 +410,27 @@
     .tab-btn {
         outline: none;
     }
+
+    .day-toggle-btn {
+        color: #94a3b8;
+        background: transparent;
+    }
+
+    .day-toggle-btn:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+        color: #64748b;
+    }
+
+    .dark .day-toggle-btn:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+        color: #cbd5e1;
+    }
+
+    .day-toggle-btn.selected {
+        background-color: #004b90;
+        color: white !important;
+        box-shadow: 0 4px 12px -2px rgba(0, 75, 144, 0.3);
+    }
 </style>
 
 <script>
@@ -441,17 +483,25 @@
             return;
         }
         tbody.innerHTML = list.map(e => `
-            <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors">
+            <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors ${!e.visivel ? 'opacity-60 grayscale-[0.5]' : ''}">
                 <td class="px-6 py-4">
                     <div class="w-10 h-10 bg-brand-50 dark:bg-brand-900/20 rounded-xl flex items-center justify-center text-brand-600 dark:text-brand-400">
                         <i data-lucide="${e.icone || 'stethoscope'}" class="w-5 h-5"></i>
                     </div>
                 </td>
                 <td class="px-6 py-4">
-                    <span class="font-bold text-gray-800 dark:text-gray-200">${e.nome}</span>
+                    <div class="flex flex-col">
+                        <span class="font-bold text-gray-800 dark:text-gray-200">${e.nome}</span>
+                        ${!e.visivel ? '<span class="text-[9px] font-black uppercase text-amber-500 tracking-tighter">Oculta no Agendamento</span>' : ''}
+                    </div>
                 </td>
                 <td class="px-6 py-4 text-right">
                     <div class="flex justify-end gap-2">
+                        <button onclick="toggleVisibility(${e.id}, ${e.visivel})" 
+                                class="p-2 ${e.visivel ? 'text-blue-500 hover:bg-blue-50' : 'text-gray-400 hover:bg-gray-100'} rounded-lg transition" 
+                                title="${e.visivel ? 'Ocultar no agendamento' : 'Mostrar no agendamento'}">
+                            <i data-lucide="${e.visivel ? 'eye' : 'eye-off'}" class="w-4.5 h-4.5"></i>
+                        </button>
                         <button onclick="editEsp(${e.id})" class="p-2 text-gray-400 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition">
                             <i data-lucide="edit-3" class="w-4.5 h-4.5"></i>
                         </button>
@@ -462,6 +512,26 @@
                 </td>
             </tr>
         `).join('');
+    }
+
+    async function toggleVisibility(id, currentStatus) {
+        try {
+            const res = await fetch(`/api/gerenciamento/especialidades/status/${id}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ visivel: !currentStatus })
+            });
+            const data = await res.json();
+            if (data.success) {
+                showToast(`Especialidade ${!currentStatus ? 'agora está visível' : 'foi ocultada'} no agendamento.`, 'success');
+                loadData();
+            } else {
+                showToast(data.error || 'Erro ao alterar visibilidade.', 'error');
+            }
+        } catch (err) {
+            console.error(err);
+            showToast('Erro de conexão.', 'error');
+        }
     }
 
     function renderProfissionais(list = profissionais) {
@@ -694,7 +764,8 @@
             nome: document.getElementById('prof-nome').value,
             especialidade_ids: specIds,
             unidade_atendimento: document.getElementById('prof-unidade').value,
-            ativo: document.getElementById('prof-ativo').checked
+            ativo: document.getElementById('prof-ativo').checked,
+            atendimento: document.getElementById('prof-atendimento').checked
         };
 
         const method = id ? 'PUT' : 'POST';
@@ -731,6 +802,7 @@
 
         document.getElementById('prof-unidade').value = item.unidade_atendimento;
         document.getElementById('prof-ativo').checked = item.ativo;
+        document.getElementById('prof-atendimento').checked = item.atendimento;
         document.getElementById('btn-save-prof').innerText = 'Salvar Alterações';
         document.getElementById('btn-cancel-prof').classList.remove('hidden');
     }
@@ -741,6 +813,7 @@
         document.querySelectorAll('input[name="prof-specs"]').forEach(cb => cb.checked = false);
         document.getElementById('prof-unidade').value = '';
         document.getElementById('prof-ativo').checked = true;
+        document.getElementById('prof-atendimento').checked = true;
         document.getElementById('btn-save-prof').innerText = 'Adicionar';
         document.getElementById('btn-cancel-prof').classList.add('hidden');
     }
@@ -960,20 +1033,39 @@
         lucide.createIcons();
     }
 
+    let selectedDays = [];
+    function toggleDayBtn(btn, day) {
+        if (selectedDays.includes(day)) {
+            selectedDays = selectedDays.filter(d => d !== day);
+            btn.classList.remove('selected');
+        } else {
+            selectedDays.push(day);
+            btn.classList.add('selected');
+        }
+    }
+
     async function addHour(e) {
         e.preventDefault();
         const horario = document.getElementById('new-hour').value;
-        const dia_semana = document.getElementById('new-day').value;
+        if (selectedDays.length === 0) {
+            return showToast('Selecione pelo menos um dia da semana.', 'warning');
+        }
+
         try {
             const res = await fetch('/api/gerenciamento/horarios', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ funcionario_id: currentProfId, horario, dia_semana })
+                body: JSON.stringify({
+                    funcionario_id: currentProfId,
+                    horario,
+                    dias_semana: selectedDays
+                })
             });
             const data = await res.json();
             if (data.success) {
-                showToast('Horário adicionado!', 'success');
-                document.getElementById('new-hour').value = '';
+                showToast(selectedDays.length > 1 ? 'Horários adicionados!' : 'Horário adicionado!', 'success');
+                // document.getElementById('new-hour').value = '';
+                // Limpar seleção se desejar
                 loadHours();
             } else showToast(data.error, 'error');
         } catch (err) {

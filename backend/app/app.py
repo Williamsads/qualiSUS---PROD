@@ -6,12 +6,12 @@ import os
 import uuid
 from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
-from app.routes.servidor import servidor_bp
-from app.routes.log_agendamento import bp_agendamento
-from app.routes.agendar_exame import agendamento_bp
-from app.routes.lista_usuario import usuarios_bp
-from app.routes.lista_trabalhador import trabalhadores_bp
-from app.routes.gerenciamento_agendamento import gerenciamento_bp
+from routes.servidor import servidor_bp
+from routes.log_agendamento import bp_agendamento
+from routes.agendar_exame import agendamento_bp
+from routes.lista_usuario import usuarios_bp
+from routes.lista_trabalhador import trabalhadores_bp
+from routes.gerenciamento_agendamento import gerenciamento_bp
 
 
 # --------------------------
@@ -142,13 +142,24 @@ def home():
 
     conn = get_connection()
     cursor = conn.cursor()
+    
+    # Total de Trabalhadores
     cursor.execute("SELECT COUNT(*) FROM trabalhadores")
     total_raw = cursor.fetchone()[0]
     total_trabalhadores = f"{total_raw:,}".replace(",", ".")
+    
+    # Atendimentos de Hoje
+    cursor.execute("SELECT COUNT(*) FROM agendamento_exames WHERE data_consulta = CURRENT_DATE")
+    atendimentos_hoje = cursor.fetchone()[0]
+    
     cursor.close()
     conn.close()
 
-    return render_template("home.html", nome=session["nome"], tipo=session["tipo"], total_trabalhadores=total_trabalhadores)
+    return render_template("home.html", 
+                         nome=session["nome"], 
+                         tipo=session["tipo"], 
+                         total_trabalhadores=total_trabalhadores,
+                         atendimentos_hoje=atendimentos_hoje)
 
 # --------------------------
 # LOGOUT

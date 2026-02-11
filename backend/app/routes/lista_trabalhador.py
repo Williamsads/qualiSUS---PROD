@@ -64,7 +64,8 @@ def lista_trabalhadores():
             v.numero_funcional,
             v.especialidade,
             v.unidade_lotacao,
-            v.data_admissao
+            v.data_admissao,
+            v.situacao
         FROM trabalhadores t
         LEFT JOIN vinculos_trabalhadores v
                ON v.trabalhador_id = t.id
@@ -101,7 +102,8 @@ def lista_trabalhadores():
                 "numero_funcional": r["numero_funcional"],
                 "especialidade": r["especialidade"],
                 "unidade_lotacao": r["unidade_lotacao"],
-                "data_admissao": r["data_admissao"]
+                "data_admissao": r["data_admissao"],
+                "situacao": r["situacao"]
             })
 
     trabalhadores = list(trabalhadores_map.values())

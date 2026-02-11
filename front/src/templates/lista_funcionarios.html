@@ -31,13 +31,13 @@
 
   <!-- FILTROS E BUSCA -->
   <div
-    class="bg-white dark:bg-gray-900/50 p-6 rounded-3xl shadow-soft border border-gray-100 dark:border-gray-800 transition-all">
+    class="bg-white dark:bg-clinical-surface p-6 rounded-3xl shadow-soft border border-gray-100 dark:border-gray-800 transition-all">
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-4">
       <div class="relative group">
         <i data-lucide="user"
           class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
         <input id="filterNome" placeholder="Nome"
-          class="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 font-medium transition-all dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 placeholder:text-gray-400"
+          class="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 font-medium transition-all dark:bg-clinical-bg dark:border-gray-700 dark:text-gray-100 placeholder:text-gray-400"
           onkeyup="filterTable()">
       </div>
 
@@ -112,11 +112,12 @@
 
   <!-- TABELA -->
   <div
-    class="bg-white dark:bg-gray-900/50 rounded-3xl shadow-soft border border-gray-100 dark:border-gray-800 overflow-hidden transition-all">
+    class="bg-white dark:bg-clinical-surface rounded-3xl shadow-soft border border-gray-100 dark:border-gray-800 overflow-hidden transition-all">
     <div class="overflow-x-auto custom-scrollbar">
       <table class="w-full text-left">
         <thead>
-          <tr class="bg-gray-50/50 dark:bg-gray-800/30 border-b border-gray-100 dark:border-gray-800 transition-colors">
+          <tr
+            class="bg-gray-50/50 dark:bg-clinical-bg/30 border-b border-gray-100 dark:border-gray-800 transition-colors">
             <th class="px-6 py-5 text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
               Nome do Profissional</th>
             <th class="px-6 py-5 text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
@@ -133,6 +134,8 @@
             </th>
             <th class="px-6 py-5 text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
               Situação</th>
+            <th class="px-6 py-5 text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
+              Status</th>
             <th
               class="px-6 py-5 text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest text-center">
               Ações</th>
@@ -183,6 +186,24 @@
               {% endif %}
             </td>
             <td class="px-6 py-5">
+              <span class="inline-flex items-center px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider
+                {% if f.situacao == 'Ativo' %} bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400 border border-green-200 dark:border-green-800
+                {% elif f.situacao == 'Férias' %} bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400 border border-purple-200 dark:border-purple-800
+                {% elif f.situacao == 'Licença' %} bg-orange-50 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400 border border-orange-200 dark:border-orange-800
+                {% elif f.situacao == 'Afastado' %} bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400 border border-red-200 dark:border-red-800
+                {% else %} bg-gray-50 text-gray-600 dark:bg-gray-800 dark:text-gray-400 border border-gray-200 dark:border-gray-700
+                {% endif %}">
+                <span class="w-1.5 h-1.5 rounded-full mr-1.5
+                  {% if f.situacao == 'Ativo' %} bg-green-500
+                  {% elif f.situacao == 'Férias' %} bg-purple-500
+                  {% elif f.situacao == 'Licença' %} bg-orange-500
+                  {% elif f.situacao == 'Afastado' %} bg-red-500
+                  {% else %} bg-gray-400
+                  {% endif %}"></span>
+                {{ f.situacao or 'Ativo' }}
+              </span>
+            </td>
+            <td class="px-6 py-5">
               <select onchange="alterarStatus(this.getAttribute('data-id'), this.value)" data-id="{{ f.id }}" class="text-[10px] font-bold px-3 py-1.5 rounded-xl border-none ring-1 ring-gray-100 dark:ring-gray-800 focus:ring-2 focus:ring-brand-500/20 bg-white dark:bg-gray-800 outline-none cursor-pointer transition-all
                                            {{ 'text-green-600' if f.ativo else 'text-red-500' }}">
                 <option value="ativo" {% if f.ativo %}selected{% endif %}>Ativo</option>
@@ -202,7 +223,7 @@
           {% endfor %}
           {% if not funcionarios %}
           <tr>
-            <td colspan="7" class="px-6 py-20 text-center">
+            <td colspan="8" class="px-6 py-20 text-center">
               <div class="flex flex-col items-center">
                 <div
                   class="w-16 h-16 bg-gray-50 dark:bg-gray-800 rounded-2xl flex items-center justify-center mb-4 text-gray-300">
@@ -222,17 +243,19 @@
 </div>
 
 <!-- MODAL EDICAO -->
+<!-- MODAL EDICAO - Updated: 2026-02-11 11:57:36 -->
 <div id="editModal"
   class="fixed inset-0 bg-gray-950/80 backdrop-blur-md hidden items-center justify-center z-50 p-4 transition-all duration-300">
   <div
-    class="bg-white dark:bg-gray-900 rounded-[2.5rem] shadow-2xl w-full max-w-lg overflow-hidden border border-gray-100 dark:border-gray-800 animate-fade-in-up">
+    class="bg-white dark:bg-gray-900 rounded-[2.5rem] shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-y-auto border border-gray-100 dark:border-gray-800 animate-fade-in-up">
 
     <!-- Header -->
     <div
       class="p-8 border-b border-gray-50 dark:border-gray-800 flex justify-between items-center bg-gray-50/30 dark:bg-gray-900/30">
       <div>
         <h2 class="text-2xl font-bold text-brand-900 dark:text-brand-500">Editar Cadastro</h2>
-        <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Atualize as informações do profissional.</p>
+        <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Atualize as informações do profissional de forma rápida
+          e organizada.</p>
       </div>
       <button onclick="closeEditModal()"
         class="w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/20 transition-all">
@@ -240,83 +263,158 @@
       </button>
     </div>
 
-    <form method="POST" id="editForm" class="p-8 space-y-6">
+    <form method="POST" id="editForm" class="p-8">
       <input type="hidden" id="editId">
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="md:col-span-2">
-          <label
-            class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Nome
-            Completo</label>
-          <input id="editNome" name="nome"
-            class="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 dark:text-gray-100 transition-all">
-        </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+        <!-- SEÇÃO: Dados Pessoais -->
+        <div class="space-y-6">
+          <h3
+            class="text-sm font-extrabold text-brand-600 dark:text-brand-400 uppercase tracking-widest flex items-center gap-2">
+            <i data-lucide="user" class="w-4 h-4"></i>
+            Dados Pessoais
+          </h3>
+          <div class="space-y-4">
+            <div class="group/field">
+              <label
+                class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2 group-focus-within/field:text-brand-600 transition-colors">Nome
+                Completo</label>
+              <input id="editNome" name="nome"
+                class="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 dark:text-gray-100 transition-all font-medium">
+            </div>
 
-        <div>
-          <label
-            class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">CPF</label>
-          <input id="editCPF" name="cpf"
-            class="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 dark:text-gray-100 transition-all">
-        </div>
+            <div class="group/field">
+              <label
+                class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2 group-focus-within/field:text-brand-600 transition-colors">CPF</label>
+              <input id="editCPF" name="cpf"
+                class="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 dark:text-gray-100 transition-all font-medium">
+            </div>
 
-        <div>
-          <label
-            class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Matrícula</label>
-          <input id="editMatriculaField" name="num_func_vinculo"
-            class="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 dark:text-gray-100 transition-all">
-        </div>
-
-        <div>
-          <label
-            class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Especialidade</label>
-          <input id="editEspecialidadeField" name="especialidade"
-            class="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 dark:text-gray-100 transition-all">
-        </div>
-
-        <div>
-          <label
-            class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Unidade</label>
-          <div class="relative group">
-            <select id="editUnidadeField" name="unidade_atendimento"
-              class="w-full pl-5 pr-10 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 dark:text-gray-100 transition-all appearance-none cursor-pointer">
-              <option value="">Selecione...</option>
-              {% for u in unidades %}
-              <option value="{{ u.nome }}">{{ u.nome }}</option>
-              {% endfor %}
-            </select>
-            <i data-lucide="chevron-down"
-              class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"></i>
-          </div>
-        </div>
-
-        <label
-          class="md:col-span-2 flex items-center gap-4 bg-brand-50/50 dark:bg-brand-900/10 p-5 rounded-2xl border border-brand-100 dark:border-brand-900/30">
-          <div class="relative inline-flex items-center cursor-pointer group">
-            <input type="checkbox" name="atendimento" id="editAtendimento" class="sr-only peer">
-            <div
-              class="w-14 h-7 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brand-300 dark:peer-focus:ring-brand-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all dark:border-gray-600 peer-checked:bg-brand-600">
+            <div class="group/field">
+              <label
+                class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2 group-focus-within/field:text-brand-600 transition-colors">Matrícula</label>
+              <input id="editMatriculaField" name="num_func_vinculo"
+                class="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 dark:text-gray-100 transition-all font-medium">
             </div>
           </div>
-          <div>
-            <label class="text-sm font-bold text-brand-900 dark:text-brand-400 cursor-pointer">Realiza
-              Atendimento?</label>
-            <p class="text-xs text-gray-500 dark:text-gray-500">Se marcado, este profissional aparecerá na lista de
-              agendamentos.</p>
+        </div>
+
+        <!-- SEÇÃO: Dados Profissionais -->
+        <div class="space-y-6 md:border-l md:border-gray-100 dark:md:border-gray-800 md:pl-10">
+          <h3
+            class="text-sm font-extrabold text-brand-600 dark:text-brand-400 uppercase tracking-widest flex items-center gap-2">
+            <i data-lucide="briefcase" class="w-4 h-4"></i>
+            Dados Profissionais
+          </h3>
+          <div class="space-y-4">
+            <div class="group/field">
+              <label
+                class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2 group-focus-within/field:text-brand-600 transition-colors">Especialidade</label>
+              <input id="editEspecialidadeField" name="especialidade"
+                class="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 dark:text-gray-100 transition-all font-medium">
+            </div>
+            <div class="group/field">
+              <label
+                class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2 group-focus-within/field:text-brand-600 transition-colors">Unidade
+                de Lotação</label>
+              <div class="relative">
+                <select id="editUnidadeField" name="unidade_atendimento"
+                  class="w-full pl-5 pr-10 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 dark:text-gray-100 transition-all appearance-none cursor-pointer font-medium">
+                  <option value="">Selecione...</option>
+                  {% for u in unidades %}
+                  <option value="{{ u.nome }}">{{ u.nome }}</option>
+                  {% endfor %}
+                </select>
+                <i data-lucide="chevron-down"
+                  class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none group-focus-within/field:text-brand-600 transition-colors"></i>
+              </div>
+            </div>
+            <div class="pt-2">
+              <label
+                class="flex items-center gap-4 bg-gray-50/50 dark:bg-gray-800/20 p-5 rounded-[2rem] border border-gray-100 dark:border-gray-800 cursor-pointer transition-all hover:border-brand-500/30 hover:bg-brand-50/5 dark:hover:bg-brand-900/10 group/toggle">
+                <div class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" name="atendimento" id="editAtendimento" class="sr-only peer">
+                  <div
+                    class="w-12 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-brand-600">
+                  </div>
+                </div>
+                <div class="flex-1">
+                  <span
+                    class="text-sm font-bold text-gray-700 dark:text-brand-400 group-hover/toggle:text-brand-600 transition-colors">Atendimento</span>
+                  <p class="text-[10px] text-gray-400 dark:text-gray-500 leading-tight">Incluir em agendamentos</p>
+                </div>
+                <i data-lucide="calendar-check"
+                  class="w-5 h-5 text-gray-300 group-hover/toggle:text-brand-500 transition-all group-hover/toggle:scale-110"></i>
+              </label>
+            </div>
           </div>
+        </div>
+
+        <!-- SEÇÃO: Situação -->
+        <div id="situacaoColumn"
+          class="space-y-6 md:border-l md:border-gray-100 dark:md:border-gray-800 md:pl-10 transition-all duration-500 rounded-3xl p-4 -m-4">
+          <h3
+            class="text-sm font-extrabold text-brand-600 dark:text-brand-400 uppercase tracking-widest flex items-center gap-2">
+            <i data-lucide="calendar-clock" class="w-4 h-4"></i>
+            Situação e Período
+          </h3>
+          <div class="space-y-4">
+            <div class="group/field">
+              <label
+                class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2 group-focus-within/field:text-brand-600 transition-colors">Situação
+                Atual</label>
+              <div class="relative">
+                <select id="editSituacaoField" name="situacao" onchange="updateSituacaoStyle(this.value)"
+                  class="w-full pl-5 pr-10 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 dark:text-gray-100 transition-all appearance-none cursor-pointer font-bold">
+                  <option value="Ativo">✅ Ativo</option>
+                  <option value="Férias">🏖️ Férias</option>
+                  <option value="Licença">📋 Licença</option>
+                  <option value="Afastado">⛔ Afastado</option>
+                  <option value="Outros">📌 Outros</option>
+                </select>
+                <i data-lucide="chevron-down"
+                  class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none group-focus-within/field:text-brand-600 transition-colors"></i>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div class="group/field">
+                <label
+                  class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2 group-focus-within/field:text-brand-600 transition-colors">Início</label>
+                <input id="editSituacaoDataInicio" name="situacao_data_inicio" type="date"
+                  class="w-full px-4 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 dark:text-gray-100 transition-all cursor-pointer text-sm font-medium">
+              </div>
+
+              <div class="group/field">
+                <label
+                  class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2 group-focus-within/field:text-brand-600 transition-colors">Fim</label>
+                <input id="editSituacaoDataFim" name="situacao_data_fim" type="date"
+                  class="w-full px-4 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 dark:text-gray-100 transition-all cursor-pointer text-sm font-medium">
+              </div>
+            </div>
+
+            <div id="situacaoAlert"
+              class="p-4 rounded-2xl border border-transparent transition-all duration-300 hidden">
+              <p class="text-[10px] font-bold uppercase tracking-tight leading-relaxed flex items-center gap-2">
+                <i data-lucide="info" class="w-3.5 h-3.5"></i>
+                <span>O período é obrigatório para situações fora de serviço.</span>
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div
-        class="md:col-span-2 flex justify-end items-center gap-4 pt-4 border-t border-gray-50 dark:border-gray-800 mt-2">
+      <div class="flex justify-end items-center gap-4 pt-10 mt-10 border-t border-gray-100 dark:border-gray-800">
         <button type="button" onclick="closeEditModal()"
           class="px-6 py-3 font-bold text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors uppercase text-xs tracking-widest">Cancelar</button>
         <button type="submit"
-          class="bg-brand-900 text-white px-8 py-3.5 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-brand-800 shadow-xl shadow-brand-900/20 transition-all active:scale-95">
+          class="bg-brand-900 text-white px-10 py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-brand-800 hover:shadow-2xl hover:shadow-brand-900/40 transition-all active:scale-95 flex items-center gap-2 group">
+          <i data-lucide="save" class="w-4 h-4 group-hover:scale-110 transition-transform"></i>
           Salvar Alterações
         </button>
       </div>
+    </form>
   </div>
-  </form>
-</div>
 </div>
 
 <script>
@@ -334,12 +432,46 @@
     document.getElementById('editMatriculaField').value = f.num_func_num_vinc;
     document.getElementById('editEspecialidadeField').value = f.especialidade;
     document.getElementById('editUnidadeField').value = f.unidade_atendimento || "";
+    document.getElementById('editSituacaoField').value = f.situacao || "Ativo";
+    document.getElementById('editSituacaoDataInicio').value = f.situacao_data_inicio || "";
+    document.getElementById('editSituacaoDataFim').value = f.situacao_data_fim || "";
     document.getElementById('editAtendimento').checked = f.atendimento;
     document.getElementById('editForm').action = `/funcionario/editar/${f.id}`;
+
+    // Apply initial situation styling
+    updateSituacaoStyle(f.situacao || "Ativo");
 
     const modal = document.getElementById('editModal');
     modal.classList.remove('hidden');
     modal.classList.add('flex');
+  }
+
+  function updateSituacaoStyle(value) {
+    const col = document.getElementById('situacaoColumn');
+    const alert = document.getElementById('situacaoAlert');
+
+    // Reset styles
+    col.className = col.className.replace(/\bbg-\S+/g, '').replace(/\bborder-\S+/g, '');
+    alert.classList.add('hidden');
+    alert.className = alert.className.replace(/\bbg-\S+/g, '').replace(/\bborder-\S+/g, '').replace(/\btext-\S+/g, '');
+
+    if (value === 'Ativo') {
+      col.classList.add('bg-green-50/30', 'dark:bg-green-900/10', 'border-green-100/50', 'dark:border-green-800/20');
+    } else if (value === 'Férias') {
+      col.classList.add('bg-purple-50/30', 'dark:bg-purple-900/10', 'border-purple-100/50', 'dark:border-purple-800/20');
+      alert.classList.remove('hidden');
+      alert.classList.add('bg-purple-100/50', 'dark:bg-purple-900/30', 'text-purple-700', 'dark:text-purple-300');
+    } else if (value === 'Licença') {
+      col.classList.add('bg-orange-50/30', 'dark:bg-orange-900/10', 'border-orange-100/50', 'dark:border-orange-800/20');
+      alert.classList.remove('hidden');
+      alert.classList.add('bg-orange-100/50', 'dark:bg-orange-900/30', 'text-orange-700', 'dark:text-orange-300');
+    } else if (value === 'Afastado') {
+      col.classList.add('bg-red-50/30', 'dark:bg-red-900/10', 'border-red-100/50', 'dark:border-red-800/20');
+      alert.classList.remove('hidden');
+      alert.classList.add('bg-red-100/50', 'dark:bg-red-900/30', 'text-red-700', 'dark:text-red-300');
+    } else {
+      col.classList.add('bg-gray-50/30', 'dark:bg-gray-900/10', 'border-gray-100/50', 'dark:border-gray-800/20');
+    }
   }
 
   function closeEditModal() {

@@ -294,6 +294,23 @@
                 <input name="data_desligamento[]" type="date" value="{{ v.data_desligamento }}"
                   class="w-full px-5 py-3 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-bold transition-all cursor-pointer shadow-sm">
               </div>
+
+              <div class="space-y-2">
+                <label
+                  class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">Situação</label>
+                <div class="relative group">
+                  <select name="situacao[]"
+                    class="w-full pl-5 pr-10 py-3.5 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-bold transition-all appearance-none cursor-pointer shadow-sm">
+                    <option value="Ativo" {% if v.situacao=='Ativo' %}selected{% endif %}>Ativo</option>
+                    <option value="Férias" {% if v.situacao=='Férias' %}selected{% endif %}>Férias</option>
+                    <option value="Licença" {% if v.situacao=='Licença' %}selected{% endif %}>Licença</option>
+                    <option value="Afastado" {% if v.situacao=='Afastado' %}selected{% endif %}>Afastado</option>
+                    <option value="Outros" {% if v.situacao=='Outros' %}selected{% endif %}>Outros</option>
+                  </select>
+                  <i data-lucide="chevron-down"
+                    class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"></i>
+                </div>
+              </div>
             </div>
 
             <!-- Remove Button -->
@@ -381,6 +398,23 @@
                   de Desligamento</label>
                 <input name="data_desligamento[]" type="date"
                   class="w-full px-5 py-3 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-bold transition-all cursor-pointer shadow-sm">
+              </div>
+
+              <div class="space-y-2">
+                <label
+                  class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-2">Situação</label>
+                <div class="relative group">
+                  <select name="situacao[]"
+                    class="w-full pl-5 pr-10 py-3.5 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-bold transition-all appearance-none cursor-pointer shadow-sm">
+                    <option value="Ativo">Ativo</option>
+                    <option value="Férias">Férias</option>
+                    <option value="Licença">Licença</option>
+                    <option value="Afastado">Afastado</option>
+                    <option value="Outros">Outros</option>
+                  </select>
+                  <i data-lucide="chevron-down"
+                    class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"></i>
+                </div>
               </div>
             </div>
 
