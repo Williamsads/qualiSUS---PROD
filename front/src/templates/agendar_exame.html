@@ -4,6 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png"
+    href="{{ url_for('static', filename='img/Logo da QualiSUS com pinwheel colorido.png') }}">
   <title>Agendamento de Exames</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -404,7 +406,7 @@
               </div>
 
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">CNS*</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Cartão SUS*</label>
                 <input type="text" id="modal_cns"
                   class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none bg-white">
               </div>
@@ -485,7 +487,7 @@
               Cancelar
             </button>
             <button type="submit"
-              class="px-6 py-2.5 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 shadow-lg shadow-red-600/20 transition-all transform hover:scale-[1.02]">
+              class="px-6 py-2.5 bg-blue-900 text-white font-bold rounded-lg hover:bg-blue-800 shadow-lg shadow-blue-900/20 transition-all transform hover:scale-[1.02]">
               Salvar e Continuar
             </button>
           </div>
@@ -1612,6 +1614,38 @@
         e.target.value = v;
       });
       cepInput.addEventListener('blur', buscarCep);
+    }
+
+    // Máscara Telefone
+    const telInput = document.getElementById('modal_telefone');
+    if (telInput) {
+      telInput.addEventListener('input', (e) => {
+        let v = e.target.value.replace(/\D/g, "");
+        if (v.length > 11) v = v.substring(0, 11);
+        if (v.length > 10) {
+          v = v.replace(/^(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
+        } else if (v.length > 5) {
+          v = v.replace(/^(\d{2})(\d{4})(\d{0,4})/, "($1) $2-$3");
+        } else if (v.length > 2) {
+          v = v.replace(/^(\d{2})(\d{0,5})/, "($1) $2");
+        } else if (v.length > 0) {
+          v = v.replace(/^(\d{0,2})/, "($1");
+        }
+        e.target.value = v;
+      });
+    }
+
+    // Máscara CNS (15 dígitos: 000 0000 0000 0000)
+    const cnsInput = document.getElementById('modal_cns');
+    if (cnsInput) {
+      cnsInput.addEventListener('input', (e) => {
+        let v = e.target.value.replace(/\D/g, "");
+        if (v.length > 15) v = v.substring(0, 15);
+        v = v.replace(/^(\d{3})(\d)/, "$1 $2");
+        v = v.replace(/^(\d{3})\s(\d{4})(\d)/, "$1 $2 $3");
+        v = v.replace(/^(\d{3})\s(\d{4})\s(\d{4})(\d)/, "$1 $2 $3 $4");
+        e.target.value = v;
+      });
     }
     if (btnBuscarCep) {
       btnBuscarCep.addEventListener('click', (e) => {
