@@ -8,12 +8,13 @@
   <!-- Header -->
   <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-4">
     <div class="flex items-center gap-5">
-      <div class="bg-blue-600 rounded-2xl p-4 flex items-center justify-center shadow-lg shadow-blue-500/20">
+      <div class="bg-brand-600 rounded-[1.5rem] p-4 flex items-center justify-center shadow-lg shadow-brand-600/20">
         <i data-lucide="calendar-check-2" class="w-8 h-8 text-white"></i>
       </div>
       <div>
-        <h1 class="text-3xl font-black text-slate-900 tracking-tight">Atendimentos</h1>
-        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Gestão de Fila em Tempo Real</p>
+        <h1 class="text-3xl font-black text-slate-900 dark:text-gray-100 tracking-tight">Atendimentos</h1>
+        <p class="text-[10px] font-black text-brand-500 uppercase tracking-[0.2em] mt-1">Gestão de Fila em Tempo Real
+        </p>
       </div>
     </div>
 
@@ -31,99 +32,119 @@
     </div>
   </div>
 
-  <!-- Filtros -->
-  <div class="bg-white rounded-[2rem] shadow-sm border border-slate-100 p-8">
-    <div class="flex items-center gap-2 mb-8">
-      <i data-lucide="sliders-horizontal" class="w-4 h-4 text-blue-600"></i>
-      <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Painel Inteligente de Filtros</h3>
+  <!-- Filtros (Padronizado) -->
+  <div class="bg-white rounded-[2rem] shadow-sm border border-slate-100 p-6 transition-all">
+    <div class="flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <i data-lucide="sliders-horizontal" class="w-4 h-4 text-blue-600"></i>
+        <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Painel Inteligente de Filtros</h3>
+      </div>
+
+      <button onclick="toggleFilters()" id="btnToggleFilters"
+        class="flex items-center gap-2 px-4 py-2 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-xl transition-all text-xs font-bold uppercase tracking-wider">
+        <span id="filterText">Mostrar Filtros</span>
+        <i data-lucide="chevron-down" id="filterIcon" class="w-4 h-4 transition-transform duration-300"></i>
+      </button>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-      <!-- Paciente -->
-      <div class="lg:col-span-1">
-        <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2.5 block ml-1">Paciente</label>
-        <div class="relative group">
-          <i data-lucide="search"
-            class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-blue-600 transition-colors"></i>
-          <input id="filtro-paciente" type="text"
-            class="w-full pl-11 pr-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition-all outline-none text-sm font-medium text-slate-600 placeholder:text-slate-400"
-            placeholder="Nome ou CPF...">
+    <div id="filterArea" class="hidden transition-all duration-300 overflow-hidden">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 pt-6 mt-6 border-t border-slate-100">
+        <!-- Paciente -->
+        <div class="lg:col-span-1">
+          <label
+            class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2.5 block ml-1">Paciente</label>
+          <div class="relative group">
+            <i data-lucide="search"
+              class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-blue-600 transition-colors"></i>
+            <input id="filtro-paciente" type="text"
+              class="w-full pl-11 pr-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition-all outline-none text-sm font-medium text-slate-600 placeholder:text-slate-400"
+              placeholder="Nome ou CPF...">
+          </div>
         </div>
-      </div>
 
-      <!-- Unidade -->
-      <div>
-        <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2.5 block ml-1">Unidade</label>
-        <div class="relative group">
-          <select id="filtro-unidade"
-            class="w-full pl-4 pr-10 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition-all outline-none text-sm font-bold text-slate-600 appearance-none cursor-pointer">
-            <option value="">Todas as Unidades</option>
-            <option>Qualivida Boa Vista</option>
-            <option>Qualivida Santo Amaro</option>
-          </select>
-          <i data-lucide="chevron-down"
-            class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none group-focus-within:rotate-180 transition-transform"></i>
+        <!-- Unidade -->
+        <div>
+          <label
+            class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2.5 block ml-1">Unidade</label>
+          <div class="relative group">
+            <select id="filtro-unidade"
+              class="w-full pl-4 pr-10 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition-all outline-none text-sm font-bold text-slate-600 appearance-none cursor-pointer">
+              <option value="">Todas as Unidades</option>
+              <option>Qualivida Boa Vista</option>
+              <option>Qualivida Santo Amaro</option>
+            </select>
+            <i data-lucide="chevron-down"
+              class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none group-focus-within:rotate-180 transition-transform"></i>
+          </div>
         </div>
-      </div>
 
-      <!-- Especialidade -->
-      <div>
-        <label
-          class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2.5 block ml-1">Especialidade</label>
-        <input id="filtro-especialidade" type="text"
-          class="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition-all outline-none text-sm font-bold text-slate-600 placeholder:text-slate-300"
-          placeholder="Ex: Cardiologia">
-      </div>
+        <!-- Especialidade -->
+        <div>
+          <label
+            class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2.5 block ml-1">Especialidade</label>
+          <input id="filtro-especialidade" type="text"
+            class="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition-all outline-none text-sm font-bold text-slate-600 placeholder:text-slate-300"
+            placeholder="Ex: Cardiologia">
+        </div>
 
-      <!-- Profissional -->
-      <div>
-        <label
-          class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2.5 block ml-1">Profissional</label>
-        <input id="filtro-medico" type="text"
-          class="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition-all outline-none text-sm font-bold text-slate-600 placeholder:text-slate-300"
-          placeholder="Ex: Dr. Silva">
-      </div>
+        <!-- Profissional -->
+        <div>
+          <label
+            class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2.5 block ml-1">Profissional</label>
+          <input id="filtro-medico" type="text"
+            class="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition-all outline-none text-sm font-bold text-slate-600 placeholder:text-slate-300"
+            </div>
+        </div>
 
-      <!-- Data -->
-      <div>
-        <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2.5 block ml-1">Data</label>
-        <input id="filtro-data" type="date"
-          class="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition-all outline-none text-sm font-black text-slate-600 cursor-pointer">
+        <!-- Data -->
+        <div>
+          <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2.5 block ml-1">Data</label>
+          <input id="filtro-data" type="date"
+            class="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-brand-500/10 focus:bg-white transition-all outline-none text-sm font-black text-slate-600 cursor-pointer">
+        </div>
+
+        <div class="flex items-end lg:col-span-5 justify-end pt-2">
+          <button onclick="aplicarFiltros()"
+            class="w-full md:w-auto bg-brand-600 text-white px-8 py-3 rounded-2xl font-black text-[11px] uppercase tracking-wider hover:bg-brand-700 shadow-lg shadow-brand-600/20 transition-all flex items-center justify-center gap-2 group active:scale-95">
+            <i data-lucide="filter" class="w-4 h-4 group-hover:rotate-12 transition-transform"></i>
+            Filtrar
+          </button>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- Sistema de Abas (Tabs) -->
   <div
-    class="flex items-center gap-2 mb-2 p-1 bg-white/50 backdrop-blur-md rounded-2xl border border-slate-100/50 w-fit">
+    class="flex items-center gap-2 mb-6 p-1.5 bg-slate-100/50 dark:bg-gray-800/50 rounded-2xl w-fit border border-slate-200/50 dark:border-gray-700/50">
     <button onclick="setTab('geral')" id="tab-geral"
-      class="flex items-center gap-2.5 px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all tab-btn active-tab bg-blue-600 text-white shadow-lg shadow-blue-500/20">
+      class="flex items-center gap-2.5 px-8 py-3 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all tab-btn active-tab bg-brand-600 text-white shadow-lg shadow-brand-600/20">
       <i data-lucide="layout-list" class="w-4 h-4"></i>
-      Registros Gerais
+      Geral
     </button>
     <button onclick="setTab('acolhimento')" id="tab-acolhimento"
-      class="flex items-center gap-2.5 px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all tab-btn text-slate-400 hover:bg-slate-50 hover:text-slate-600">
+      class="flex items-center gap-2.5 px-8 py-3 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all tab-btn text-slate-500 hover:bg-white hover:shadow-sm hover:text-brand-600 dark:text-gray-400 dark:hover:bg-gray-700">
       <i data-lucide="clipboard-check" class="w-4 h-4"></i>
-      Triagem (Acolhimento)
+      Acolhimento
       <span id="counter-acolhimento"
-        class="ml-1.5 px-2 py-0.5 bg-blue-100 text-blue-600 text-[9px] rounded-lg hidden">0</span>
+        class="ml-2 px-2 py-0.5 bg-brand-100 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 text-[10px] rounded-lg hidden font-black">0</span>
     </button>
   </div>
 
   <!-- Tabela -->
-  <div class="bg-white rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden flex flex-col transition-all">
-    <div class="overflow-x-auto">
-      <table class="w-full text-left border-collapse">
+  <div class="overflow-hidden flex flex-col transition-all">
+    <div class="overflow-x-auto custom-scrollbar pt-2">
+      <table class="w-full text-left border-separate border-spacing-y-3 px-8">
         <thead>
-          <tr class="bg-slate-50/50 border-b border-slate-50 transition-colors">
-            <th class="px-8 py-6 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Status</th>
-            <th class="px-8 py-6 text-[9px) font-black text-slate-400 uppercase tracking-[0.2em]">Paciente</th>
-            <th class="px-8 py-6 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Exame / Médico</th>
-            <th class="px-8 py-6 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Agendamento</th>
-            <th class="px-8 py-6 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] text-center">Ações</th>
+          <tr class="text-slate-400">
+            <th class="pb-4 px-4 text-[10px] font-black uppercase tracking-widest">Situado</th>
+            <th class="pb-4 px-4 text-[10px] font-black uppercase tracking-widest">Paciente</th>
+            <th class="pb-4 px-4 text-[10px] font-black uppercase tracking-widest">Serviço / Profissional</th>
+            <th class="pb-4 px-4 text-[10px] font-black uppercase tracking-widest">Horário</th>
+            <th class="pb-4 px-4 text-[10px] font-black uppercase tracking-widest text-center">Ações</th>
           </tr>
         </thead>
-        <tbody id="table-body" class="divide-y divide-slate-50 text-sm">
+        <tbody id="table-body" class="text-sm">
           <!-- JS Populado -->
         </tbody>
       </table>
@@ -142,16 +163,16 @@
     <!-- Pagination -->
     <div class="px-10 py-6 border-t border-slate-50 bg-slate-50/20 flex items-center justify-between">
       <span class="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">
-        Listando <span class="text-blue-600">10 resultados</span> por página
+        Listando <span class="text-brand-600">10 resultados</span> por página
       </span>
       <div class="flex gap-4">
         <button
-          class="w-11 h-11 flex items-center justify-center rounded-xl bg-white border border-slate-100 text-slate-300 hover:text-blue-600 hover:border-blue-100 transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-sm"
+          class="w-11 h-11 flex items-center justify-center rounded-xl bg-white border border-slate-100 text-slate-300 hover:text-brand-600 hover:border-brand-100 transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-sm"
           disabled>
           <i data-lucide="chevron-left" class="w-5 h-5"></i>
         </button>
         <button
-          class="w-11 h-11 flex items-center justify-center rounded-xl bg-white border border-slate-100 text-slate-300 hover:text-blue-600 hover:border-blue-100 transition-all shadow-sm">
+          class="w-11 h-11 flex items-center justify-center rounded-xl bg-white border border-slate-100 text-slate-300 hover:text-brand-600 hover:border-brand-100 transition-all shadow-sm">
           <i data-lucide="chevron-right" class="w-5 h-5"></i>
         </button>
       </div>
@@ -170,13 +191,14 @@
     <!-- Modal Header -->
     <div class="px-10 py-8 flex items-center justify-between border-b border-slate-50 bg-slate-50/30">
       <div class="flex items-center gap-4">
-        <div class="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600">
-          <i data-lucide="file-text" class="w-6 h-6"></i>
+        <div
+          class="w-16 h-16 bg-brand-500/10 rounded-2xl flex items-center justify-center text-brand-600 shadow-lg shadow-brand-500/5 group-hover:scale-105 transition-transform duration-500">
+          <i data-lucide="calendar-check" class="w-8 h-8"></i>
         </div>
         <div>
-          <h3 class="text-xl font-black text-slate-900 tracking-tight">Ficha de Atendimento</h3>
-          <p class="text-[9px] font-black text-blue-600 uppercase tracking-widest mt-0.5">Detalhes Completos do
-            Agendamento</p>
+          <h1 class="text-3xl font-black text-slate-900 tracking-tight">Atendimentos</h1>
+          <p class="text-[10px] font-black text-brand-500 uppercase tracking-widest mt-1">Gestão de fila em tempo real
+          </p>
         </div>
       </div>
       <button onclick="closeDetails()"
@@ -190,7 +212,7 @@
 
       <div class="flex items-center gap-6">
         <div
-          class="w-20 h-20 rounded-3xl bg-blue-600 text-white flex items-center justify-center font-black text-3xl shadow-xl shadow-blue-500/20">
+          class="w-20 h-20 rounded-3xl bg-brand-600 text-white flex items-center justify-center font-black text-3xl shadow-xl shadow-brand-500/20">
           <span id="det-avatar">A</span>
         </div>
         <div class="space-y-2">
@@ -218,7 +240,7 @@
       </div>
 
       <div class="grid grid-cols-2 gap-5">
-        <div class="p-5 bg-slate-50 rounded-3xl border border-slate-100 group hover:border-blue-200 transition-colors">
+        <div class="p-5 bg-slate-50 rounded-3xl border border-slate-100 group hover:border-brand-200 transition-colors">
           <p class="text-[9px] text-slate-400 uppercase font-black tracking-widest mb-2">Unidade de Saúde</p>
           <p id="det-unidade" class="font-black text-slate-800 tracking-tight">Unidade Central</p>
         </div>
@@ -232,9 +254,9 @@
           <p class="text-[9px] text-slate-400 uppercase font-black tracking-widest mb-2">Especialidade / Exame</p>
           <p id="det-especialidade" class="font-black text-slate-800 tracking-tight">Cardiologia</p>
         </div>
-        <div class="p-5 bg-blue-50/50 rounded-3xl border border-blue-100 group hover:bg-blue-50 transition-colors">
-          <p class="text-[9px] text-blue-400 uppercase font-black tracking-widest mb-2">Data e Horário</p>
-          <p class="font-black text-blue-600 text-lg tracking-tight">
+        <div class="p-5 bg-brand-50/50 rounded-3xl border border-brand-100 group hover:bg-brand-50 transition-colors">
+          <p class="text-[9px] text-brand-400 uppercase font-black tracking-widest mb-2">Data e Horário</p>
+          <p class="font-black text-brand-600 text-lg tracking-tight">
             <span id="det-data"></span> • <span id="det-horario"></span>
           </p>
         </div>
@@ -245,17 +267,17 @@
         <div class="bg-slate-50 rounded-[2.5rem] p-8 border border-slate-100 space-y-8">
           <div class="flex items-center gap-3">
             <div
-              class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-lg shadow-blue-500/20">
+              class="w-10 h-10 rounded-xl bg-brand-600 text-white flex items-center justify-center shadow-lg shadow-brand-500/20">
               <i data-lucide="check-square" class="w-5 h-5"></i>
             </div>
             <h4 class="text-xs font-black text-slate-800 uppercase tracking-widest">Painel de Desfecho Clínico</h4>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <button type="button" onclick="setDesfecho('nao_compareceu')" id="btn-desfecho-nc"
-              class="desfecho-card group relative p-5 rounded-2xl border-2 border-transparent bg-white hover:bg-rose-50 transition-all text-left">
+            <button type="button" id="btn-desfecho-nc"
+              class="desfecho-card group relative p-5 rounded-2xl border-2 border-transparent bg-white transition-all text-left cursor-default">
               <div
-                class="w-10 h-10 rounded-xl bg-rose-500/10 flex items-center justify-center text-rose-500 mb-4 group-hover:scale-110 transition-transform">
+                class="w-10 h-10 rounded-xl bg-rose-500/10 flex items-center justify-center text-rose-500 mb-4 transition-transform">
                 <i data-lucide="user-x" class="w-5 h-5"></i>
               </div>
               <p class="text-[9px] font-black text-rose-500 uppercase mb-1">Ausência</p>
@@ -265,10 +287,10 @@
               </div>
             </button>
 
-            <button type="button" onclick="setDesfecho('reagendar')" id="btn-desfecho-re"
-              class="desfecho-card group relative p-5 rounded-2xl border-2 border-transparent bg-white hover:bg-amber-50 transition-all text-left">
+            <button type="button" id="btn-desfecho-re"
+              class="desfecho-card group relative p-5 rounded-2xl border-2 border-transparent bg-white transition-all text-left cursor-default">
               <div
-                class="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-500 mb-4 group-hover:scale-110 transition-transform">
+                class="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-500 mb-4 transition-transform">
                 <i data-lucide="refresh-ccw" class="w-5 h-5"></i>
               </div>
               <p class="text-[9px] font-black text-amber-500 uppercase mb-1">Pendente</p>
@@ -278,10 +300,10 @@
               </div>
             </button>
 
-            <button type="button" onclick="setDesfecho('atendido')" id="btn-desfecho-at"
-              class="desfecho-card group relative p-5 rounded-2xl border-2 border-transparent bg-white hover:bg-emerald-50 transition-all text-left">
+            <button type="button" id="btn-desfecho-at"
+              class="desfecho-card group relative p-5 rounded-2xl border-2 border-transparent bg-white transition-all text-left cursor-default">
               <div
-                class="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 mb-4 group-hover:scale-110 transition-transform">
+                class="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 mb-4 transition-transform">
                 <i data-lucide="check-circle" class="w-5 h-5"></i>
               </div>
               <p class="text-[9px] font-black text-emerald-500 uppercase mb-1">Sucesso</p>
@@ -297,11 +319,11 @@
             class="hidden pt-8 border-t border-slate-100 animate-fade-in-up text-center space-y-5">
             <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Apto para Saúde Mental?</h4>
             <div class="flex gap-4 max-w-sm mx-auto">
-              <button type="button" onclick="setApto(true)" id="btn-apto-sim"
-                class="apto-btn flex-1 py-4 rounded-2xl border-2 border-slate-200 text-slate-400 font-black text-[10px] hover:border-emerald-500 hover:text-emerald-500 transition-all">SIM,
+              <button type="button" id="btn-apto-sim"
+                class="apto-btn flex-1 py-4 rounded-2xl border-2 border-slate-200 text-slate-400 font-black text-[10px] cursor-default">SIM,
                 ESTÁ APTO</button>
-              <button type="button" onclick="setApto(false)" id="btn-apto-nao"
-                class="apto-btn flex-1 py-4 rounded-2xl border-2 border-slate-200 text-slate-400 font-black text-[10px] hover:border-rose-500 hover:text-rose-500 transition-all">NÃO
+              <button type="button" id="btn-apto-nao"
+                class="apto-btn flex-1 py-4 rounded-2xl border-2 border-slate-200 text-slate-400 font-black text-[10px] cursor-default">NÃO
                 ESTÁ APTO</button>
             </div>
           </div>
@@ -313,8 +335,8 @@
           <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3 block ml-1">Status do
             Registro</label>
           <div class="relative group">
-            <select id="det-status-select"
-              class="w-full pl-4 pr-10 py-3.5 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition-all outline-none text-sm font-black text-slate-800 appearance-none cursor-pointer">
+            <select id="det-status-select" disabled
+              class="w-full pl-4 pr-10 py-3.5 bg-slate-50 border-none rounded-2xl focus:ring-0 transition-all outline-none text-sm font-black text-slate-800 appearance-none cursor-not-allowed opacity-70">
               <option value="Agendado">Agendado</option>
               <option value="No Acolhimento">No Acolhimento</option>
               <option value="Finalizado">Finalizado</option>
@@ -329,8 +351,8 @@
         <div>
           <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3 block ml-1">Notas de
             Evolução</label>
-          <textarea id="det-observacao"
-            class="w-full px-5 py-3.5 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition-all outline-none text-sm font-bold text-slate-600 min-h-[52px] h-[52px] resize-none placeholder:text-slate-300"
+          <textarea id="det-observacao" readonly
+            class="w-full px-5 py-3.5 bg-slate-50 border-none rounded-2xl focus:ring-0 transition-all outline-none text-sm font-bold text-slate-600 min-h-[52px] h-[52px] resize-none placeholder:text-slate-300 cursor-default"
             placeholder="Observações..."></textarea>
         </div>
       </div>
@@ -347,20 +369,13 @@
 
       <div class="flex gap-4 w-full sm:w-auto">
         <button onclick="closeDetails()"
-          class="flex-1 sm:flex-none px-8 py-3.5 font-black text-slate-400 hover:text-slate-600 transition-colors uppercase text-[10px] tracking-widest">
-          Cancelar
-        </button>
-        <button onclick="saveAndClose()"
-          class="flex-1 sm:flex-none px-10 py-3.5 bg-blue-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl shadow-blue-600/20 transition-all active:scale-95">
-          Salvar Dados
+          class="flex-1 sm:flex-none px-8 py-3.5 bg-slate-100 text-slate-600 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-slate-200 transition-colors">
+          Fechar
         </button>
       </div>
     </div>
 
   </div>
-</div>
-
-</div>
 </div>
 
 <script>
@@ -374,18 +389,37 @@
   let aptoAtual = null;
   let currentTab = 'geral';
 
+  function toggleFilters() {
+    const filterArea = document.getElementById('filterArea');
+    const btn = document.getElementById('btnToggleFilters');
+    const icon = document.getElementById('filterIcon');
+    const text = document.getElementById('filterText');
+
+    if (filterArea.classList.contains('hidden')) {
+      filterArea.classList.remove('hidden');
+      icon.classList.add('rotate-180');
+      text.innerText = "Ocultar Filtros";
+      btn.classList.add('bg-brand-50', 'text-brand-600');
+    } else {
+      filterArea.classList.add('hidden');
+      icon.classList.remove('rotate-180');
+      text.innerText = "Mostrar Filtros";
+      btn.classList.remove('bg-brand-50', 'text-brand-600');
+    }
+  }
+
   function setTab(tab) {
     currentTab = tab;
 
     // UI Update
     document.querySelectorAll('.tab-btn').forEach(btn => {
-      btn.classList.remove('bg-blue-600', 'text-white', 'shadow-lg', 'shadow-blue-500/20', 'active-tab');
-      btn.classList.add('text-slate-400', 'hover:bg-slate-50', 'hover:text-slate-600');
+      btn.classList.remove('bg-brand-600', 'text-white', 'shadow-lg', 'shadow-brand-600/20', 'active-tab');
+      btn.classList.add('text-slate-500', 'hover:bg-white', 'hover:shadow-sm', 'hover:text-brand-600', 'dark:text-gray-400', 'dark:hover:bg-gray-700');
     });
 
     const activeBtn = document.getElementById(`tab-${tab}`);
-    activeBtn.classList.add('bg-blue-600', 'text-white', 'shadow-lg', 'shadow-blue-500/20', 'active-tab');
-    activeBtn.classList.remove('text-slate-400', 'hover:bg-slate-50', 'hover:text-slate-600');
+    activeBtn.classList.add('bg-brand-600', 'text-white', 'shadow-lg', 'shadow-brand-600/20', 'active-tab');
+    activeBtn.classList.remove('text-slate-500', 'hover:bg-white', 'hover:shadow-sm', 'hover:text-brand-600', 'dark:text-gray-400', 'dark:hover:bg-gray-700');
 
     filtrar();
   }
@@ -407,7 +441,7 @@
       filtrar(); // Chama filtrar em vez de loadTable para respeitar a aba ativa
     } catch (err) {
       console.error("Erro ao carregar agendamentos:", err);
-      document.getElementById("table-body").innerHTML = `<tr><td colspan="5" class="px-8 py-10 text-center text-rose-500 font-black">Erro: ${err.message}</td></tr>`;
+      document.getElementById("table-body").innerHTML = `<tr><td colspan="5" class="px-8 py-10 text-rose-500 font-black">Erro: ${err.message}</td></tr>`;
     }
   }
 
@@ -440,85 +474,93 @@
     }
 
     listaFiltrada.forEach((a, i) => {
-      let statusClass = "bg-slate-50 text-slate-400 border-slate-100";
+      let statusStyle = "";
       let statusIcon = "clock";
+      let statusLabel = a.status;
 
-      if (a.status === 'No Acolhimento') {
-        statusClass = "bg-indigo-50 text-indigo-600 border-indigo-100/50";
-        statusIcon = "message-square";
-      }
-      else if (a.status === 'Agendado') {
-        statusClass = "bg-blue-50 text-blue-600 border-blue-100/50";
-        statusIcon = "calendar";
-      }
-      else if (a.status === 'Realizado' || a.status === 'Finalizado') {
-        statusClass = "bg-emerald-50 text-emerald-600 border-emerald-100/50";
-        statusIcon = "check-circle";
-      }
-      else if (a.status === 'Cancelado' || a.status === 'NAO_COMPARECEU') {
-        statusClass = "bg-rose-50 text-rose-500 border-rose-100/50";
-        statusIcon = "x-circle";
+      switch (a.status) {
+        case 'Agendado':
+          statusStyle = "bg-brand-50 text-brand-600 border-brand-100 dark:bg-brand-900/10 dark:text-brand-400 dark:border-brand-800/50";
+          statusIcon = "calendar";
+          break;
+        case 'No Acolhimento':
+          statusStyle = "bg-brand-50 text-brand-600 border-brand-100 dark:bg-brand-900/10 dark:text-brand-400 dark:border-brand-800/50";
+          statusIcon = "message-circle";
+          break;
+        case 'Finalizado':
+        case 'Realizado':
+          statusStyle = "bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-900/10 dark:text-emerald-400 dark:border-emerald-800/50";
+          statusIcon = "check-circle";
+          break;
+        case 'Cancelado':
+        case 'NAO_COMPARECEU':
+          statusStyle = "bg-rose-50 text-rose-500 border-rose-100 dark:bg-rose-900/10 dark:text-rose-400 dark:border-rose-800/50";
+          statusIcon = "x-circle";
+          statusLabel = a.status === 'NAO_COMPARECEU' ? 'Faltou' : 'Cancelado';
+          break;
+        default:
+          statusStyle = "bg-slate-50 text-slate-500 border-slate-100";
+          statusIcon = "info";
       }
 
-      tbody.innerHTML += `
-        <tr class="hover:bg-slate-50/50 transition-colors group">
-            <td class="px-8 py-6 whitespace-nowrap">
-                <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest border ${statusClass}">
-                    <i data-lucide="${statusIcon}" class="w-3.5 h-3.5"></i> ${a.status}
+      const rowHtml = `
+        <tr class="group hover:translate-x-1 transition-all duration-300">
+          <td class="px-4 py-4 bg-white dark:bg-gray-900 shadow-sm border-y border-l border-slate-100 dark:border-gray-800 rounded-l-3xl">
+            <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border ${statusStyle}">
+                <i data-lucide="${statusIcon}" class="w-3.5 h-3.5"></i> ${statusLabel}
+            </span>
+          </td>
+          <td class="px-4 py-4 bg-white dark:bg-gray-900 shadow-sm border-y border-slate-100 dark:border-gray-800">
+            <div class="flex items-center gap-3">
+              <div class="w-11 h-11 rounded-2xl bg-slate-50 dark:bg-gray-800 text-slate-400 flex items-center justify-center font-black text-sm group-hover:bg-brand-600 group-hover:text-white transition-all shadow-inner">
+                ${a.paciente.charAt(0)}
+              </div>
+              <div class="flex flex-col">
+                <span class="font-bold text-slate-900 dark:text-gray-100 text-sm tracking-tight leading-tight">${a.paciente}</span>
+                <span class="text-[10px] text-slate-400 font-bold mt-1 flex items-center gap-1.5">
+                  <i data-lucide="smartphone" class="w-3 h-3 text-emerald-500"></i> ${a.telefone}
                 </span>
-            </td>
-            <td class="px-8 py-6">
-                <div class="flex items-center gap-4">
-                    <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-black text-sm transition-colors group-hover:bg-blue-600 group-hover:text-white group-hover:shadow-lg group-hover:shadow-blue-500/20">
-                        ${a.paciente.charAt(0)}
-                    </div>
-                    <div>
-                        <div class="font-black text-slate-900 tracking-tight text-sm">${a.paciente}</div>
-                        <div class="flex flex-col gap-0.5 mt-1">
-                           <span class="text-[9px] text-slate-400 font-bold flex items-center gap-1.5">
-                               <i data-lucide="id-card" class="w-3 h-3 opacity-50"></i> CPF: ${a.cpf_paciente || 'N/A'}
-                           </span>
-                           <div class="flex items-center gap-2 mt-1">
-                               <span class="text-[9px] text-slate-400 font-bold">${a.telefone}</span>
-                               <div class="flex items-center gap-1">
-                                 <button onclick="event.stopPropagation(); enviarConfirmacao(${i})" class="${a.notificado ? 'text-blue-500' : 'text-emerald-500'} hover:opacity-75 transition-colors p-0.5 rounded-md" title="${a.notificado ? 'Reenviar WhatsApp' : 'Enviar WhatsApp'}">
-                                     <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
-                                 </button>
-                                 ${a.notificado ? '<i data-lucide="check" class="w-3.5 h-3.5 text-blue-500" title="Notificação Enviada"></i>' : ''}
-                               </div>
-                           </div>
-                        </div>
-                    </div>
+              </div>
+            </div>
+          </td>
+          <td class="px-4 py-4 bg-white dark:bg-gray-900 shadow-sm border-y border-slate-100 dark:border-gray-800">
+            <div class="flex flex-col">
+              <span class="text-[11px] font-black text-slate-700 dark:text-gray-300 uppercase tracking-wide">${a.especialidade}</span>
+              <span class="text-[10px] text-slate-400 font-bold mt-0.5 flex items-center gap-1.5">
+                <i data-lucide="user-round" class="w-3 h-3 opacity-40"></i> ${a.medico}
+              </span>
+            </div>
+          </td>
+          <td class="px-4 py-4 bg-white dark:bg-gray-900 shadow-sm border-y border-slate-100 dark:border-gray-800">
+             <div class="flex flex-col">
+                <div class="flex items-center gap-2">
+                  <i data-lucide="calendar" class="w-3.5 h-3.5 text-brand-500 opacity-60"></i>
+                  <span class="font-black text-xs text-slate-600 dark:text-gray-200 tracking-tight">${a.data}</span>
                 </div>
-            </td>
-            <td class="px-8 py-6">
-                 <div class="text-[11px] font-black text-slate-700 uppercase tracking-wide">${a.especialidade}</div>
-                 <div class="text-[9px] text-slate-400 font-bold mt-0.5">${a.medico}</div>
-            </td>
-             <td class="px-8 py-6">
-                <div class="flex items-center gap-2 text-slate-600">
-                    <i data-lucide="calendar" class="w-4 h-4 text-blue-600 opacity-50"></i>
-                    <span class="font-black text-[11px] tracking-tight">${a.data}</span>
+                <div class="flex items-center gap-2 mt-1">
+                  <i data-lucide="clock" class="w-3.5 h-3.5 text-slate-300"></i>
+                  <span class="font-bold text-[10px] text-slate-400">${a.horario}</span>
                 </div>
-                 <div class="flex items-center gap-2 text-slate-400 text-[10px] mt-1 pr-6">
-                    <i data-lucide="clock" class="w-3.5 h-3.5 opacity-30"></i>
-                    <span class="font-bold">${a.horario}</span>
-                </div>
-            </td>
-            <td class="px-8 py-6">
-                <div class="flex justify-center gap-3">
-                    <a href="/log_agendamento/atendimento/${a.id}" class="w-10 h-10 flex items-center justify-center text-emerald-500 hover:bg-emerald-50 transition-all rounded-xl border border-transparent hover:border-emerald-100" title="Realizar Atendimento">
-                        <i data-lucide="stethoscope" class="w-5 h-5"></i>
-                    </a>
-                    <button onclick="showDetails(${i})" class="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-all rounded-xl" title="Ver Detalhes">
-                        <i data-lucide="eye" class="w-5 h-5"></i>
-                    </button>
-                    <button onclick="deletarAgendamento(${i})" class="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-all rounded-xl" title="Cancelar Agendamento">
-                        <i data-lucide="trash-2" class="w-5 h-5"></i>
-                    </button>
-                </div>
-            </td>
-        </tr>`;
+             </div>
+          </td>
+          <td class="px-4 py-4 bg-white dark:bg-gray-900 shadow-sm border-y border-r border-slate-100 dark:border-gray-800 rounded-r-3xl">
+            <div class="flex justify-center gap-2">
+              <button onclick="showDetails(${i})" class="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-brand-50 dark:hover:bg-brand-900/20 transition-all rounded-xl" title="Ver Detalhes">
+                <i data-lucide="eye" class="w-4.5 h-4.5"></i>
+              </button>
+              {% if user_tipo in ['admin', 'assistente_social', 'desenvolvedor', 'dev'] %}
+              <a href="/log_agendamento/atendimento/${a.id}" class="w-9 h-9 flex items-center justify-center text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all rounded-xl border border-transparent hover:border-emerald-100" title="Realizar Atendimento">
+                <i data-lucide="stethoscope" class="w-4.5 h-4.5"></i>
+              </a>
+              {% endif %}
+              <button onclick="deletarAgendamento(${i})" class="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-all rounded-xl" title="Cancelar Agendamento">
+                <i data-lucide="trash-2" class="w-4.5 h-4.5"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+      tbody.innerHTML += rowHtml;
     });
     lucide.createIcons();
   }
