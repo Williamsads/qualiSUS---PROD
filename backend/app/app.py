@@ -111,7 +111,7 @@ def login():
             stored_hash = user["senha"]
             is_valid = False
             
-            if stored_hash and stored_hash.startswith('pbkdf2:sha256'):
+            if stored_hash and (':' in stored_hash):
                 is_valid = check_password_hash(stored_hash, senha)
             else:
                 is_valid = hashlib.sha256(senha.encode()).hexdigest() == stored_hash
