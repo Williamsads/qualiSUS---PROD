@@ -174,9 +174,10 @@
               Ações</th>
           </tr>
         </thead>
-        <tbody id="tableBody" class="divide-y divide-gray-50 dark:divide-gray-800">
+        <tbody id="tableBody" class="divide-y divide-slate-200/60 dark:divide-gray-800">
           {% for f in funcionarios %}
-          <tr class="funcionario-row hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors"
+          <tr
+            class="funcionario-row hover:bg-blue-50/40 dark:hover:bg-blue-900/10 even:bg-slate-50/30 dark:even:bg-gray-800/20 transition-all duration-200"
             data-status="{{ 'ativo' if f.ativo else 'inativo' }}"
             data-atendimento="{{ 'sim' if f.atendimento else 'não' }}">
             <td class="px-6 py-5">

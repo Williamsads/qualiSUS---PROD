@@ -181,9 +181,9 @@
                             Ações</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-50 dark:divide-gray-800">
+                <tbody class="divide-y divide-slate-200/60 dark:divide-gray-800">
                     {% for user in usuarios %}
-                    <tr class="usuario-row hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors"
+                    <tr class="usuario-row hover:bg-blue-50/40 dark:hover:bg-blue-900/10 even:bg-slate-50/30 dark:even:bg-gray-800/20 transition-all duration-200"
                         data-status="{{ 'ativo' if user.ativo else 'inativo' }}">
                         <td class="px-6 py-5">
                             <div class="flex items-center gap-3">

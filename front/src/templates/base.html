@@ -279,6 +279,82 @@
             class="fixed inset-0 bg-slate-950/60 z-20 hidden md:hidden backdrop-blur-md transition-opacity opacity-0">
         </div>
 
+        <!-- GLOBAL COMMAND CENTER (CMD+K) -->
+        <div id="commandCenter" class="fixed inset-0 z-[100] hidden items-start justify-center pt-[15vh] px-4 sm:px-6">
+            <div id="commandCenterBackdrop"
+                class="fixed inset-0 bg-slate-900/40 backdrop-blur-xl transition-opacity animate-fade-in"
+                onclick="toggleCommandCenter()"></div>
+
+            <div
+                class="relative w-full max-w-2xl bg-white/80 backdrop-blur-2xl rounded-[2.5rem] shadow-2xl border border-white/20 overflow-hidden transform transition-all animate-scale-in">
+                <!-- Search Header -->
+                <div class="flex items-center px-6 py-5 border-b border-slate-200/50">
+                    <i data-lucide="search" class="h-6 w-6 text-blue-600 mr-4"></i>
+                    <input type="text" id="commandCenterInput"
+                        class="flex-1 bg-transparent border-none outline-none text-lg font-bold text-slate-800 placeholder-slate-400"
+                        placeholder="Pesquisar arquivos, pacientes, ações...">
+                    <button onclick="toggleCommandCenter()"
+                        class="p-2 rounded-xl hover:bg-slate-100 transition-colors text-slate-400">
+                        <span class="text-[10px] font-black tracking-widest uppercase px-2">ESC</span>
+                    </button>
+                </div>
+
+                <!-- Quick Actions / Results -->
+                <div class="max-h-[60vh] overflow-y-auto p-4 custom-scrollbar">
+                    <div class="mb-6">
+                        <h4 class="px-4 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Navegação
+                            Rápida</h4>
+                        <div class="grid grid-cols-1 gap-1">
+                            <a href="{{ url_for('home') }}"
+                                class="flex items-center gap-4 px-4 py-3 rounded-2xl hover:bg-blue-600/5 group transition-all">
+                                <div
+                                    class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-all">
+                                    <i data-lucide="home" class="w-5 h-5"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-black text-slate-800">Ir para Início</p>
+                                    <p class="text-[10px] text-slate-500 font-medium">Dashboard Geral</p>
+                                </div>
+                                <span
+                                    class="text-[10px] font-black text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity">IR
+                                    PARA</span>
+                            </a>
+                            <a href="{{ url_for('trabalhadores.lista_trabalhadores') }}"
+                                class="flex items-center gap-4 px-4 py-3 rounded-2xl hover:bg-blue-600/5 group transition-all">
+                                <div
+                                    class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-all">
+                                    <i data-lucide="users" class="w-5 h-5"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-black text-slate-800">Base de Trabalhadores</p>
+                                    <p class="text-[10px] text-slate-500 font-medium">Gestão de Equipe</p>
+                                </div>
+                                <span
+                                    class="text-[10px] font-black text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity">VER
+                                    TODA LISTA</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Info -->
+                <div class="px-6 py-4 bg-slate-50 border-t border-slate-200/50 flex justify-end gap-6">
+                    <div
+                        class="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        <span
+                            class="w-5 h-5 rounded bg-white shadow-sm flex items-center justify-center border border-slate-200">↵</span>
+                        Escolher
+                    </div>
+                    <div
+                        class="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        <span
+                            class="w-5 h-5 rounded bg-white shadow-sm flex items-center justify-center border border-slate-200">↓↑</span>
+                        Mover
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- CONTENT WRAPPER -->
         <div class="flex-1 flex flex-col overflow-hidden">
 
@@ -363,77 +439,39 @@
         lucide.createIcons();
 
 
-        /* --- Accordion Logic --- */
-        function setupAccordion(btnId, subId, arrowId) {
-            const btn = document.getElementById(btnId);
-            const sub = document.getElementById(subId);
-            const arrow = document.getElementById(arrowId);
-
-            if (!btn) return;
-
-            btn.addEventListener('click', () => {
-                const isHidden = sub.classList.contains('hidden');
-
-                // Close others (Optional - prefer keeping open for utility)
-                // ... 
-
-                if (isHidden) {
-                    sub.classList.remove('hidden');
-                    arrow.classList.add('rotate-180');
-                    btn.classList.add('bg-gray-50', 'text-brand-900', 'dark:bg-gray-800', 'dark:text-brand-400');
-                } else {
-                    sub.classList.add('hidden');
-                    arrow.classList.remove('rotate-180');
-                    btn.classList.remove('bg-gray-50', 'text-brand-900', 'dark:bg-gray-800', 'dark:text-brand-400');
-                }
-            });
-        }
-
-        setupAccordion('btnCadastros', 'subCadastros', 'arrowCadastros');
-        setupAccordion('btnListas', 'subListas', 'arrowListas');
-
-        // Restore Accordion State based on URL (Simple check)
-        const currentPath = window.location.pathname;
-        if (currentPath.includes('cadastro') || currentPath.includes('adicionar')) {
-            document.getElementById('subCadastros').classList.remove('hidden');
-            document.getElementById('arrowCadastros').classList.add('rotate-180');
-            document.getElementById('btnCadastros').classList.add('bg-gray-50', 'text-brand-900', 'dark:bg-gray-800', 'dark:text-brand-400');
-        }
-        if (currentPath.includes('lista')) {
-            document.getElementById('subListas').classList.remove('hidden');
-            document.getElementById('arrowListas').classList.add('rotate-180');
-            document.getElementById('btnListas').classList.add('bg-gray-50', 'text-brand-900', 'dark:bg-gray-800', 'dark:text-brand-400');
-        }
+        /* --- Legacy Accordion Logic Removed --- */
 
         /* --- Dark Mode Toggle Logic Removed --- */
 
-        /* --- Toast Logic --- */
-        window.showToast = function (message, type = 'success') {
+        /* --- Toast System Logic Unified --- */
+        window.showToast = function (title, message, type = 'success') {
+            // Handle single argument call
+            if (arguments.length === 1 || (arguments.length === 2 && !message)) {
+                message = title;
+                title = type === 'success' ? 'Sucesso' : (type === 'error' ? 'Erro' : 'Aviso');
+            }
+
             const container = document.getElementById('toast-container');
             if (!container) return;
 
             const toast = document.createElement('div');
-            toast.className = `toast-item border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-2xl rounded-2xl p-4 flex items-center gap-4 animate-slide-in-right pointer-events-auto transition-all duration-300`;
+            const config = {
+                success: { bg: 'bg-white', text: 'text-clinical-green', icon: 'check-circle', border: 'border-clinical-green/20' },
+                error: { bg: 'bg-white', text: 'text-clinical-red', icon: 'alert-circle', border: 'border-clinical-red/20' },
+                warning: { bg: 'bg-white', text: 'text-clinical-yellow', icon: 'info', border: 'border-clinical-yellow/20' },
+                info: { bg: 'bg-white', text: 'text-blue-600', icon: 'info', border: 'border-blue-200/50' }
+            };
 
-            let icon = 'info';
-            let colorClass = 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400';
-            if (type === 'success') {
-                icon = 'check-circle';
-                colorClass = 'bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400';
-            } else if (type === 'error' || type === 'danger') {
-                icon = 'alert-circle';
-                colorClass = 'bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400';
-            } else if (type === 'warning') {
-                icon = 'alert-triangle';
-                colorClass = 'bg-amber-50 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400';
-            }
+            const s = config[type] || config.info;
+            toast.className = `toast-item border ${s.border} bg-white dark:bg-gray-900 shadow-2xl rounded-2xl p-4 flex items-start gap-4 animate-slide-in-right pointer-events-auto transition-all duration-300 mb-3`;
 
             toast.innerHTML = `
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${colorClass}">
-                    <i data-lucide="${icon}" class="w-5 h-5"></i>
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-slate-50 dark:bg-gray-800 ${s.text}">
+                    <i data-lucide="${s.icon}" class="w-5 h-5"></i>
                 </div>
                 <div class="flex-1">
-                    <p class="text-sm font-bold text-gray-900 dark:text-gray-100 leading-tight">${message}</p>
+                    <h4 class="text-sm font-black text-gray-900 dark:text-gray-100 leading-none mb-1">${title}</h4>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">${message}</p>
                 </div>
                 <button onclick="this.parentElement.remove()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
                     <i data-lucide="x" class="w-4 h-4"></i>
@@ -527,46 +565,103 @@
             });
         });
 
+        // ======================= GLOBAL CMD+K LOGIC =======================
+        function toggleCommandCenter() {
+            const cc = document.getElementById('commandCenter');
+            const input = document.getElementById('commandCenterInput');
+
+            if (cc.classList.contains('hidden')) {
+                cc.classList.remove('hidden');
+                cc.classList.add('flex');
+                setTimeout(() => input.focus(), 100);
+            } else {
+                cc.classList.add('hidden');
+                cc.classList.remove('flex');
+            }
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) {
+                e.preventDefault();
+                toggleCommandCenter();
+            }
+            if (e.key === 'Escape') {
+                const cc = document.getElementById('commandCenter');
+                if (!cc.classList.contains('hidden')) {
+                    toggleCommandCenter();
+                }
+            }
+        });
+
+        // ======================= GLOBAL SIDEBAR LOGIC =======================
+        const sidebar = document.getElementById('sidebar');
+        const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+        const btnToggleSidebar = document.getElementById('btnToggleSidebar');
+        const btnMobileMenu = document.getElementById('btnMobileMenu');
+        const toggleIcon = document.getElementById('toggleIcon');
+
+        // Restore Desktop Sidebar State
+        const isMini = localStorage.getItem('sidebar-mini') === 'true';
+        if (isMini && sidebar && window.innerWidth >= 768) {
+            sidebar.classList.add('sidebar-mini');
+            if (toggleIcon) {
+                toggleIcon.setAttribute('data-lucide', 'chevron-right');
+                lucide.createIcons();
+            }
+        }
+
+        // Desktop Toggle
+        if (btnToggleSidebar) {
+            btnToggleSidebar.addEventListener('click', () => {
+                sidebar.classList.toggle('sidebar-mini');
+                const nowMini = sidebar.classList.contains('sidebar-mini');
+                localStorage.setItem('sidebar-mini', nowMini);
+
+                if (toggleIcon) {
+                    toggleIcon.setAttribute('data-lucide', nowMini ? 'chevron-right' : 'chevron-left');
+                    lucide.createIcons();
+                }
+            });
+        }
+
+        // Mobile Toggle Function
+        function toggleMobileSidebar() {
+            if (!sidebar) return;
+            sidebar.classList.toggle('-translate-x-full');
+            if (sidebarBackdrop) {
+                sidebarBackdrop.classList.toggle('hidden');
+                setTimeout(() => {
+                    sidebarBackdrop.classList.toggle('opacity-100');
+                }, 10);
+            }
+        }
+
+        if (btnMobileMenu) btnMobileMenu.addEventListener('click', toggleMobileSidebar);
+        if (sidebarBackdrop) sidebarBackdrop.addEventListener('click', toggleMobileSidebar);
+
+        // Sidebar Navigation Confirmation
+        function confirmExternalNavigation(url) {
+            if (window.confirmAction) {
+                window.confirmAction({
+                    title: 'Agendar Consulta',
+                    message: 'Você será redirecionado para a plataforma de agendamento externa. Deseja continuar?',
+                    icon: 'external-link',
+                    type: 'info',
+                    onConfirm: () => {
+                        window.location.href = url;
+                    }
+                });
+            } else {
+                if (confirm('Deseja ir para a página de agendamento externa?')) {
+                    window.location.href = url;
+                }
+            }
+        }
+
     </script>
 
     {% block extra_js %}{% endblock %}
 
-    <script>
-        // Global Toast System
-        function showToast(title, message, type = 'success') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-
-            const config = {
-                success: { bg: 'bg-white', text: 'text-clinical-green', icon: 'check-circle', border: 'border-clinical-green/20' },
-                error: { bg: 'bg-white', text: 'text-clinical-red', icon: 'alert-circle', border: 'border-clinical-red/20' },
-                warning: { bg: 'bg-white', text: 'text-clinical-yellow', icon: 'info', border: 'border-clinical-yellow/20' }
-            };
-
-            const s = config[type];
-            toast.className = `toast ${s.bg} border-l-4 ${s.border} p-4 rounded-xl shadow-xl border flex items-start gap-3 transition-all`;
-
-            toast.innerHTML = `
-                <div class="${s.text} mt-0.5">
-                    <i data-lucide="${s.icon}" class="w-5 h-5"></i>
-                </div>
-                <div>
-                    <h4 class="text-sm font-black text-gray-900 leading-none mb-1">${title}</h4>
-                    <p class="text-xs text-gray-500 font-medium">${message}</p>
-                </div>
-            `;
-
-            container.appendChild(toast);
-            lucide.createIcons();
-
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateX(20px)';
-                setTimeout(() => toast.remove(), 300);
-            }, 4000);
-        }
-
-        // Example trigger: showToast('Bem-vindo', 'Sistema QualiSUS operacional.', 'success');
     </script>
 </body>
 

@@ -44,18 +44,54 @@
 
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+    <style>
+        .mesh-gradient {
+            background-color: #0B1120;
+            background-image:
+                radial-gradient(at 0% 0%, rgba(0, 99, 247, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.05) 0px, transparent 50%);
+        }
+
+        .solid-card {
+            background: #0B1120;
+            border: 1px solid #1e293b;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .input-solid {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            transition: all 0.2s ease;
+            color: white;
+        }
+
+        .input-solid:focus {
+            background-color: #0f172a;
+            border-color: #0063F7;
+            box-shadow: 0 0 0 4px rgba(0, 99, 247, 0.2);
+        }
+    </style>
 </head>
 
-<body class="bg-gray-50 h-screen flex items-center justify-center p-4 font-sans text-gray-800">
+<body class="mesh-gradient h-screen flex items-center justify-center p-4 font-sans text-gray-800">
 
-    <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 space-y-8 animate-fade-in border border-gray-100">
+    <div class="w-full max-w-md solid-card rounded-[2.5rem] p-10 space-y-8 animate-fade-in relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-1.5 flex">
+            <div class="flex-1 bg-blue-600"></div>
+            <div class="flex-1 bg-emerald-600"></div>
+        </div>
 
         <!-- Logo -->
         <div class="flex flex-col items-center">
-            <img src="{{ url_for('static', filename='img/Logo da QualiSUS com pinwheel colorido.png') }}"
-                alt="Logo QualiSUS" class="h-16 mb-4">
-            <h2 class="text-2xl font-bold text-gray-800">Redefinir Senha</h2>
-            <p class="text-gray-500 text-sm mt-1 text-center">Crie uma nova senha segura para sua conta.</p>
+            <div
+                class="w-20 h-20 bg-blue-600 rounded-[2rem] flex items-center justify-center shadow-xl shadow-blue-500/30 mb-6">
+                <img src="{{ url_for('static', filename='img/Logo da QualiSUS com pinwheel colorido.png') }}"
+                    alt="Logo QualiSUS" class="h-12 w-12 object-contain brightness-0 invert">
+            </div>
+            <h2 class="text-3xl font-black text-white tracking-tight">Nova Senha</h2>
+            <p class="text-slate-400 text-sm mt-2 text-center font-medium">Crie uma credencial robusta para sua
+                segurança.</p>
         </div>
 
         <!-- Flash Messages -->
@@ -80,39 +116,42 @@
         <form method="POST" class="space-y-6">
             <div class="space-y-4">
                 <!-- New Password -->
-                <div class="space-y-1.5">
-                    <label for="senha" class="block text-sm font-semibold text-gray-700">Nova Senha</label>
+                <div class="space-y-2">
+                    <label for="senha"
+                        class="block text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Nova
+                        Senha</label>
                     <div class="relative group">
                         <div
-                            class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400 group-focus-within:text-brand-600 transition-colors">
+                            class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-600 transition-colors">
                             <i data-lucide="lock" class="w-5 h-5"></i>
                         </div>
                         <input type="password" id="senha" name="senha" placeholder="••••••••" required
-                            class="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all duration-200 text-gray-700 placeholder-gray-400 font-medium shadow-sm">
+                            class="w-full pl-12 pr-4 py-4 input-solid rounded-2xl outline-none text-white placeholder-slate-500 font-bold">
                     </div>
                 </div>
 
                 <!-- Confirm Password -->
-                <div class="space-y-1.5">
-                    <label for="confirmar_senha" class="block text-sm font-semibold text-gray-700">Confirmar Nova
+                <div class="space-y-2">
+                    <label for="confirmar_senha"
+                        class="block text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Confirmar
                         Senha</label>
                     <div class="relative group">
                         <div
-                            class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400 group-focus-within:text-brand-600 transition-colors">
+                            class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-600 transition-colors">
                             <i data-lucide="shield-check" class="w-5 h-5"></i>
                         </div>
                         <input type="password" id="confirmar_senha" name="confirmar_senha" placeholder="••••••••"
                             required
-                            class="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all duration-200 text-gray-700 placeholder-gray-400 font-medium shadow-sm">
+                            class="w-full pl-12 pr-4 py-4 input-solid rounded-2xl outline-none text-white placeholder-slate-500 font-bold">
                     </div>
                 </div>
             </div>
 
             <!-- Submit Button -->
             <button type="submit"
-                class="group w-full bg-gradient-to-r from-brand-900 to-brand-700 hover:from-brand-800 hover:to-brand-600 text-white py-3.5 rounded-xl font-bold text-base shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-center gap-2">
-                <span>Alterar Senha</span>
-                <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+                class="group w-full bg-blue-600 hover:brightness-110 text-white py-4 rounded-2xl font-black text-base shadow-2xl shadow-blue-500/20 hover:shadow-blue-500/40 hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-3">
+                <span>Finalizar Alteração</span>
+                <i data-lucide="check-circle-2" class="w-6 h-6 group-hover:scale-110 transition-transform"></i>
             </button>
 
             <div class="text-center">
