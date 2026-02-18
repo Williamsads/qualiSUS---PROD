@@ -148,6 +148,11 @@ def home():
     total_raw = cursor.fetchone()[0]
     total_trabalhadores = f"{total_raw:,}".replace(",", ".")
     
+    # Cálculo de Tendência (Trabalhadores admitidos nos últimos 30 dias)
+    cursor.execute("SELECT COUNT(*) FROM vinculos_trabalhadores WHERE data_admissao >= CURRENT_DATE - interval '30 days'")
+    novos_30_dias = cursor.fetchone()[0]
+    worker_trend = f"+{((novos_30_dias / total_raw) * 100):.1f}%" if total_raw > 0 else "+0.0%"
+    
     # Atendimentos de Hoje
     cursor.execute("SELECT COUNT(*) FROM agendamento_exames WHERE data_consulta = CURRENT_DATE")
     atendimentos_hoje = cursor.fetchone()[0]
@@ -159,6 +164,7 @@ def home():
                          nome=session["nome"], 
                          tipo=session["tipo"], 
                          total_trabalhadores=total_trabalhadores,
+                         worker_trend=worker_trend,
                          atendimentos_hoje=atendimentos_hoje)
 
 # --------------------------
