@@ -1,2 +1,0 @@
-﻿Columns of agendamento_exames: atualizado_em,trabalhador_id,vinculo_id,funcionario_id,data_consulta,horario,criado_em,id,unidade,especialidade,status,observacao
-Tables: usuarios,recuperacao_senha,funcionarios,especialidades,trabalhadores,horarios_funcionarios,vinculos_trabalhadores,agendamento_exames,unidades_saude,unidades_especialidades,funcionarios_especialidades
