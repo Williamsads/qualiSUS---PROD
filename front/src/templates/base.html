@@ -123,63 +123,112 @@
             border-bottom: 1px solid rgba(226, 232, 240, 0.8);
         }
 
-        /* Premium Dark Sidebar (Modern Enterprise v3) */
-        .sidebar-dark {
-            background: linear-gradient(180deg, #0B1730 0%, #081222 100%);
-            /* Institutional Deep Gradient */
-            border-right: 1px solid rgba(255, 255, 255, 0.04);
-            /* Subtle Right Border */
+        /* Modern Navy Sidebar (Premium SaaS) */
+        .sidebar-royal {
+            background: #0B1120;
+            /* Deep Twilight Navy */
+            border-right: 1px solid rgba(255, 255, 255, 0.03);
             box-shadow: 10px 0 30px rgba(0, 0, 0, 0.2);
             position: relative;
         }
 
-        .sidebar-dark::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            background: radial-gradient(circle at 0% 0%, rgba(0, 99, 247, 0.03) 0%, transparent 50%);
-            pointer-events: none;
+        /* Group Containers - Subtle Dark Mode Style */
+        .nav-group {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            padding: 4px;
+            margin: 0 14px 20px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
         }
 
-        /* Nav Link Precise Interaction */
+        .nav-section-title {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            color: #475569;
+            /* Muted Slate */
+            margin-bottom: 10px;
+            padding-left: 24px;
+            text-transform: uppercase;
+        }
+
+        /* Nav Link Style */
         .nav-link {
-            transition: all 0.18s ease;
-            /* Optimized smooth transition */
-            color: #64748B;
+            display: flex;
+            align-items: center;
+            height: 40px;
+            padding: 0 12px;
+            border-radius: 10px;
+            font-size: 13px;
             font-weight: 500;
+            color: #94A3B8;
+            /* Slate 400 */
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
+            text-decoration: none;
+            gap: 12px;
+        }
+
+        .nav-link i {
+            width: 19px;
+            height: 19px;
+            color: #94A3B8;
+            transition: all 0.2s ease;
         }
 
         .nav-link:hover {
+            background: rgba(255, 255, 255, 0.05);
             color: #FFFFFF;
-            background: rgba(255, 255, 255, 0.025);
-            /* Hover elevation profile */
-            transform: translateX(4px);
         }
 
+        .nav-link:hover i {
+            color: #38BDF8;
+            /* Light blue accent */
+        }
+
+        /* Active State: Vibrant Glow with Gradient */
         .nav-item-active {
+            background: linear-gradient(135deg, #0063F7 0%, #004bb5 100%) !important;
             color: #FFFFFF !important;
-            background: rgba(0, 99, 247, 0.06) !important;
-            /* Discrete active glow */
-            font-weight: 600;
-            border-left: 3px solid #0063F7;
-            border-radius: 0 1rem 1rem 0 !important;
-            margin-left: -1.5rem !important;
-            padding-left: 2.75rem !important;
-            box-shadow: 0 0 8px rgba(59, 130, 246, 0.35), inset 0 0 20px rgba(0, 99, 247, 0.05);
-            /* External glow + Internal depth */
+            font-weight: 600 !important;
+            box-shadow: 0 8px 20px -4px rgba(0, 99, 247, 0.4) !important;
+        }
+
+        .nav-item-active i {
+            color: #FFFFFF !important;
+        }
+
+        .nav-item-active::after {
+            display: none;
+        }
+
+        /* Mini Sidebar Logic */
+        .sidebar-mini .nav-link span,
+        .sidebar-mini .nav-section-title {
+            display: none;
+        }
+
+        .sidebar-mini .nav-link {
+            justify-content: center;
+            padding: 0;
+            width: 40px;
+            margin: 0 auto;
+        }
+
+        .sidebar-mini .nav-group {
+            margin: 0 8px 12px 8px;
+            padding: 6px 0;
+        }
+
+        .sidebar-mini .nav-item-active::before {
+            display: none;
         }
 
         .sidebar-mini .nav-item-active {
-            margin-left: 0 !important;
-            padding-left: 0 !important;
-            border-radius: 1rem !important;
-            border-left-width: 0;
-            background: #0063F7 !important;
-            box-shadow: 0 0 15px rgba(0, 99, 247, 0.3);
+            box-shadow: 0 0 12px rgba(59, 130, 246, 0.2);
         }
 
         /* Loading Button States */
@@ -222,9 +271,10 @@
             transform: scale(0.98);
         }
 
-        /* Custom Scrollbar */
+        /* Custom Scrollbar - Enterprise Elite Style */
         ::-webkit-scrollbar {
-            width: 4px;
+            width: 3px;
+            height: 3px;
         }
 
         ::-webkit-scrollbar-track {
@@ -232,8 +282,29 @@
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #E2E8F0;
+            background: rgba(255, 255, 255, 0.05);
+            /* Very subtle on dark */
             border-radius: 20px;
+            transition: background 0.3s ease;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Target specifically for dark areas if needed */
+        .sidebar-dark::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        /* Utility to hide scrollbar but keep functional */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
 
         /* Skeleton Animation */
@@ -252,6 +323,59 @@
         .animate-skeleton {
             animation: pulse-soft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
             background-color: #F1F5F9;
+        }
+
+        /* ===== SIDEBAR ACCORDION ===== */
+        .nav-accordion {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .nav-accordion-trigger {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            color: #64748B;
+            text-transform: uppercase;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 2px;
+        }
+
+        .nav-accordion-trigger:hover {
+            background: rgba(255, 255, 255, 0.04);
+            color: #94A3B8;
+        }
+
+        .nav-accordion-trigger.is-open {
+            color: #CBD5E1;
+        }
+
+        .acc-chevron {
+            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            flex-shrink: 0;
+        }
+
+        .nav-accordion.is-open .acc-chevron {
+            transform: rotate(90deg);
+        }
+
+        .nav-accordion-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-accordion.is-open .nav-accordion-body {
+            max-height: 400px;
         }
 
         /* Breadcrumb separator */
@@ -565,6 +689,40 @@
             });
         });
 
+        // ======================= SIDEBAR ACCORDION LOGIC =======================
+        function toggleAccordion(id) {
+            const acc = document.getElementById(id);
+            if (!acc) return;
+            const isOpen = acc.classList.contains('is-open');
+            const trigger = acc.querySelector('.nav-accordion-trigger');
+
+            if (isOpen) {
+                acc.classList.remove('is-open');
+                trigger && trigger.classList.remove('is-open');
+                localStorage.setItem('acc-' + id, 'closed');
+            } else {
+                acc.classList.add('is-open');
+                trigger && trigger.classList.add('is-open');
+                localStorage.setItem('acc-' + id, 'open');
+            }
+        }
+
+        // Auto-open: section with active item or previously open state
+        document.addEventListener('DOMContentLoaded', () => {
+            const accordions = document.querySelectorAll('.nav-accordion');
+            accordions.forEach(acc => {
+                const id = acc.id;
+                const hasActive = acc.querySelector('.nav-item-active');
+                const savedState = localStorage.getItem('acc-' + id);
+                const trigger = acc.querySelector('.nav-accordion-trigger');
+
+                if (hasActive || savedState === 'open') {
+                    acc.classList.add('is-open');
+                    trigger && trigger.classList.add('is-open');
+                }
+            });
+        });
+
         // ======================= GLOBAL CMD+K LOGIC =======================
         function toggleCommandCenter() {
             const cc = document.getElementById('commandCenter');
@@ -643,7 +801,7 @@
         function confirmExternalNavigation(url) {
             if (window.confirmAction) {
                 window.confirmAction({
-                    title: 'Agendar Consulta',
+                    title: 'Agendamento de Consultas',
                     message: 'Você será redirecionado para a plataforma de agendamento externa. Deseja continuar?',
                     icon: 'external-link',
                     type: 'info',

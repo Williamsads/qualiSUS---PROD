@@ -1,5 +1,5 @@
 # backend/app/usuarios.py
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from psycopg2.errors import UniqueViolation
@@ -165,10 +165,15 @@ def alterar_status_usuario(id):
     conn.close()
     return {"success": True}
 
-
 # ================= EXCLUIR =================
 @usuarios_bp.route('/usuarios/excluir/<int:id>')
 def excluir_usuario(id):
+    # Trava de Segurança: Apenas desenvolvedores podem excluir
+    user_tipo = str(session.get("tipo", "")).upper()
+    if user_tipo not in ["DESENVOLVEDOR", "DEV"]:
+        flash("Acesso negado: Apenas desenvolvedores podem excluir usuários.", "error")
+        return redirect(url_for('usuarios.lista_usuarios'))
+
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("DELETE FROM usuarios WHERE id=%s", (id,))

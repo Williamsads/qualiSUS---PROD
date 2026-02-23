@@ -6,12 +6,13 @@ import os
 import uuid
 from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
-from routes.servidor import servidor_bp
-from routes.log_agendamento import bp_agendamento
-from routes.agendar_exame import agendamento_bp
-from routes.lista_usuario import usuarios_bp
-from routes.lista_trabalhador import trabalhadores_bp
-from routes.gerenciamento_agendamento import gerenciamento_bp
+from app.routes.servidor import servidor_bp
+from app.routes.log_agendamento import bp_agendamento
+from app.routes.agendar_exame import agendamento_bp
+from app.routes.lista_usuario import usuarios_bp
+from app.routes.lista_trabalhador import trabalhadores_bp
+from app.routes.gerenciamento_agendamento import gerenciamento_bp
+from app.routes.gestao_pacientes import gestao_pacientes_bp
 
 
 # --------------------------
@@ -36,6 +37,7 @@ app.register_blueprint(agendamento_bp)
 app.register_blueprint(usuarios_bp)
 app.register_blueprint(trabalhadores_bp)
 app.register_blueprint(gerenciamento_bp)
+app.register_blueprint(gestao_pacientes_bp)
 
 app.secret_key = "chave_muito_secreta"  # troque depois
 

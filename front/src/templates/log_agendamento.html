@@ -93,7 +93,7 @@
             class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2.5 block ml-1">Profissional</label>
           <input id="filtro-medico" type="text"
             class="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition-all outline-none text-sm font-bold text-slate-600 placeholder:text-slate-300"
-            </div>
+            placeholder="Nome do Médico">
         </div>
 
         <!-- Data -->
@@ -115,36 +115,36 @@
   </div>
 
   <!-- Sistema de Abas (Tabs) -->
-  <div
-    class="flex items-center gap-2 mb-6 p-1.5 bg-slate-100/50 dark:bg-gray-800/50 rounded-2xl w-fit border border-slate-200/50 dark:border-gray-700/50">
+  <div class="flex items-center gap-2 mb-6 p-1 bg-slate-100/80 rounded-2xl w-fit border border-slate-200/50">
     <button onclick="setTab('geral')" id="tab-geral"
-      class="flex items-center gap-2.5 px-8 py-3 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all tab-btn active-tab bg-brand-600 text-white shadow-lg shadow-brand-600/20">
+      class="flex items-center gap-2.5 px-8 py-2.5 rounded-xl text-[11px] font-bold uppercase tracking-widest transition-all tab-btn active-tab bg-white shadow-sm text-brand-600">
       <i data-lucide="layout-list" class="w-4 h-4"></i>
       Geral
     </button>
     <button onclick="setTab('acolhimento')" id="tab-acolhimento"
-      class="flex items-center gap-2.5 px-8 py-3 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all tab-btn text-slate-500 hover:bg-white hover:shadow-sm hover:text-brand-600 dark:text-gray-400 dark:hover:bg-gray-700">
+      class="flex items-center gap-2.5 px-8 py-2.5 rounded-xl text-[11px] font-bold uppercase tracking-widest transition-all tab-btn text-slate-500 hover:text-brand-600">
       <i data-lucide="clipboard-check" class="w-4 h-4"></i>
       Acolhimento
       <span id="counter-acolhimento"
-        class="ml-2 px-2 py-0.5 bg-brand-100 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 text-[10px] rounded-lg hidden font-black">0</span>
+        class="ml-2 px-2 py-0.5 bg-brand-100 text-brand-600 text-[10px] rounded-lg hidden font-black">0</span>
     </button>
   </div>
 
-  <!-- Tabela -->
-  <div class="overflow-hidden flex flex-col transition-all">
-    <div class="overflow-x-auto custom-scrollbar pt-2">
-      <table class="w-full text-left border-separate border-spacing-y-3 px-8">
-        <thead class="bg-gray-50/50 dark:bg-gray-800/50 border-b border-slate-200/60">
-          <tr class="text-slate-400">
-            <th class="px-6 py-5 text-[10px] font-black uppercase tracking-widest">Situado</th>
-            <th class="px-6 py-5 text-[10px] font-black uppercase tracking-widest">Paciente</th>
-            <th class="px-6 py-5 text-[10px] font-black uppercase tracking-widest">Serviço / Profissional</th>
-            <th class="px-6 py-5 text-[10px] font-black uppercase tracking-widest">Horário</th>
-            <th class="px-6 py-5 text-[10px] font-black uppercase tracking-widest text-center">Ações</th>
+  <!-- Tabela Container: Enterprise Card -->
+  <div
+    class="bg-white rounded-xl shadow-sm border border-[rgba(0,0,0,0.06)] overflow-hidden flex flex-col transition-all">
+    <div class="overflow-x-auto custom-scrollbar">
+      <table class="w-full text-left border-collapse">
+        <thead class="bg-[#f8fafc] border-b border-[rgba(0,0,0,0.06)]">
+          <tr class="text-slate-500">
+            <th class="px-6 py-4 text-[12px] font-semibold uppercase tracking-wider">Situação</th>
+            <th class="px-6 py-4 text-[12px] font-semibold uppercase tracking-wider">Paciente</th>
+            <th class="px-6 py-4 text-[12px] font-semibold uppercase tracking-wider">Serviço / Profissional</th>
+            <th class="px-6 py-4 text-[12px] font-semibold uppercase tracking-wider">Horário</th>
+            <th class="px-6 py-4 text-[12px] font-semibold uppercase tracking-wider text-center">Ações</th>
           </tr>
         </thead>
-        <tbody id="table-body" class="divide-y divide-slate-200/60 dark:divide-gray-800">
+        <tbody id="table-body" class="divide-y divide-[rgba(0,0,0,0.04)]">
           <!-- JS Populado -->
         </tbody>
       </table>
@@ -210,30 +210,31 @@
     <!-- Modal Body -->
     <div class="p-10 space-y-10 overflow-y-auto max-h-[75vh] scrollbar-hide">
 
-      <div class="flex items-center gap-6">
+      <div class="flex items-center gap-8">
         <div
-          class="w-20 h-20 rounded-3xl bg-brand-600 text-white flex items-center justify-center font-black text-3xl shadow-xl shadow-brand-500/20">
+          class="w-16 h-16 rounded-2xl bg-brand-600 text-white flex items-center justify-center font-black text-2xl shadow-xl shadow-brand-500/10">
           <span id="det-avatar">A</span>
         </div>
         <div class="space-y-2">
-          <h4 id="det-paciente" class="text-2xl font-black text-slate-900 tracking-tight">Nome do Paciente</h4>
-          <div class="flex flex-wrap items-center gap-4">
-            <span class="text-xs font-bold text-slate-500 flex items-center gap-2">
-              <i data-lucide="smartphone" class="w-4 h-4 text-emerald-500"></i>
-              <span id="det-telefone"></span>
-            </span>
+          <h4 id="det-paciente" class="text-2xl font-black text-slate-900 tracking-tight leading-none mb-1">Nome do
+            Paciente</h4>
+          <div class="flex flex-wrap items-center gap-3">
+            <div class="flex items-center gap-1.5 px-3 py-1 bg-slate-50 rounded-lg border border-slate-100">
+              <i data-lucide="smartphone" class="w-3.5 h-3.5 text-slate-400"></i>
+              <span id="det-telefone" class="text-[11px] font-bold text-slate-500"></span>
+            </div>
             <span id="det-whatsapp-badge"
-              class="px-2.5 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[9px] font-black uppercase tracking-widest hidden">WhatsApp
-              Disponível</span>
-          </div>
-          <div class="flex gap-3">
-            <span
-              class="px-3 py-1.5 bg-slate-50 rounded-xl text-[10px] font-black text-slate-400 tracking-wide flex items-center gap-2 border border-slate-100">
-              <i data-lucide="id-card" class="w-3.5 h-3.5"></i> CPF: <span id="det-cpf"></span>
+              class="px-2.5 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[9px] font-black uppercase tracking-widest hidden items-center gap-1">
+              <i data-lucide="check" class="w-3 h-3"></i> WhatsApp Disponível
             </span>
-            <span
-              class="px-3 py-1.5 bg-slate-50 rounded-xl text-[10px] font-black text-slate-400 tracking-wide flex items-center gap-2 border border-slate-100">
-              <i data-lucide="fingerprint" class="w-3.5 h-3.5"></i> MAT: <span id="det-vinculo"></span>
+          </div>
+          <div class="flex gap-4">
+            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+              <i data-lucide="id-card" class="w-3.5 h-3.5"></i> CPF: <span id="det-cpf" class="text-slate-600"></span>
+            </span>
+            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+              <i data-lucide="fingerprint" class="w-3.5 h-3.5"></i> MAT: <span id="det-vinculo"
+                class="text-slate-600"></span>
             </span>
           </div>
         </div>
@@ -262,119 +263,91 @@
         </div>
       </div>
 
-      <!-- SEÇÃO ESPECIAL: DESFECHO ACOLHIMENTO -->
-      <div id="acolhimento-rules-container" class="hidden animate-fade-in-up">
-        <div class="bg-slate-50 rounded-[2.5rem] p-8 border border-slate-100 space-y-8">
-          <div class="flex items-center gap-3">
-            <div
-              class="w-10 h-10 rounded-xl bg-brand-600 text-white flex items-center justify-center shadow-lg shadow-brand-500/20">
-              <i data-lucide="check-square" class="w-5 h-5"></i>
-            </div>
-            <h4 class="text-xs font-black text-slate-800 uppercase tracking-widest">Painel de Desfecho Clínico</h4>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <button type="button" id="btn-desfecho-nc"
-              class="desfecho-card group relative p-5 rounded-2xl border-2 border-transparent bg-white transition-all text-left cursor-default">
-              <div
-                class="w-10 h-10 rounded-xl bg-rose-500/10 flex items-center justify-center text-rose-500 mb-4 transition-transform">
-                <i data-lucide="user-x" class="w-5 h-5"></i>
-              </div>
-              <p class="text-[9px] font-black text-rose-500 uppercase mb-1">Ausência</p>
-              <p class="text-xs font-black text-slate-700">Faltou</p>
-              <div class="check-indicator absolute top-4 right-4 opacity-0 transition-opacity">
-                <div class="bg-rose-500 text-white p-1 rounded-full"><i data-lucide="check" class="w-3 h-3"></i></div>
-              </div>
-            </button>
-
-            <button type="button" id="btn-desfecho-re"
-              class="desfecho-card group relative p-5 rounded-2xl border-2 border-transparent bg-white transition-all text-left cursor-default">
-              <div
-                class="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-500 mb-4 transition-transform">
-                <i data-lucide="refresh-ccw" class="w-5 h-5"></i>
-              </div>
-              <p class="text-[9px] font-black text-amber-500 uppercase mb-1">Pendente</p>
-              <p class="text-xs font-black text-slate-700">Reagendar</p>
-              <div class="check-indicator absolute top-4 right-4 opacity-0 transition-opacity">
-                <div class="bg-amber-500 text-white p-1 rounded-full"><i data-lucide="check" class="w-3 h-3"></i></div>
-              </div>
-            </button>
-
-            <button type="button" id="btn-desfecho-at"
-              class="desfecho-card group relative p-5 rounded-2xl border-2 border-transparent bg-white transition-all text-left cursor-default">
-              <div
-                class="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 mb-4 transition-transform">
-                <i data-lucide="check-circle" class="w-5 h-5"></i>
-              </div>
-              <p class="text-[9px] font-black text-emerald-500 uppercase mb-1">Sucesso</p>
-              <p class="text-xs font-black text-slate-700">Atendido</p>
-              <div class="check-indicator absolute top-4 right-4 opacity-0 transition-opacity">
-                <div class="bg-emerald-500 text-white p-1 rounded-full"><i data-lucide="check" class="w-3 h-3"></i>
-                </div>
-              </div>
-            </button>
-          </div>
-
-          <div id="psico-validation-container"
-            class="hidden pt-8 border-t border-slate-100 animate-fade-in-up text-center space-y-5">
-            <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Apto para Saúde Mental?</h4>
-            <div class="flex gap-4 max-w-sm mx-auto">
-              <button type="button" id="btn-apto-sim"
-                class="apto-btn flex-1 py-4 rounded-2xl border-2 border-slate-200 text-slate-400 font-black text-[10px] cursor-default">SIM,
-                ESTÁ APTO</button>
-              <button type="button" id="btn-apto-nao"
-                class="apto-btn flex-1 py-4 rounded-2xl border-2 border-slate-200 text-slate-400 font-black text-[10px] cursor-default">NÃO
-                ESTÁ APTO</button>
-            </div>
-          </div>
+      <!-- Rodapé de Informações Adicionais (Notas) -->
+      <div class="pt-6 border-t border-slate-100 space-y-4">
+        <div class="flex items-center gap-2 mb-2">
+          <i data-lucide="message-square-more" class="w-4 h-4 text-slate-400"></i>
+          <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Notas de Evolução / Observações
+          </h4>
         </div>
+        <p id="det-observacao-display"
+          class="text-sm font-medium text-slate-600 bg-slate-50 p-6 rounded-3xl border border-slate-100 leading-relaxed italic">
+          Nenhuma observação registrada para este atendimento.
+        </p>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 items-end">
-        <div id="status-select-container">
-          <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3 block ml-1">Status do
-            Registro</label>
-          <div class="relative group">
-            <select id="det-status-select" disabled
-              class="w-full pl-4 pr-10 py-3.5 bg-slate-50 border-none rounded-2xl focus:ring-0 transition-all outline-none text-sm font-black text-slate-800 appearance-none cursor-not-allowed opacity-70">
-              <option value="Agendado">Agendado</option>
-              <option value="No Acolhimento">No Acolhimento</option>
-              <option value="Finalizado">Finalizado</option>
-              <option value="Cancelado">Cancelado</option>
-              <option value="NAO_COMPARECEU">Não Compareceu</option>
-            </select>
-            <i data-lucide="chevron-down"
-              class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none group-focus-within:rotate-180 transition-transform"></i>
+      <!-- SEÇÃO: DESFECHO CLÍNICO (ACOLHIMENTO) -->
+      <div id="clinical-results-section" class="pt-6 border-t border-slate-100 space-y-6 hidden">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <i data-lucide="clipboard-list" class="w-4 h-4 text-blue-600"></i>
+            <h4 class="text-[10px] font-black text-blue-600 uppercase tracking-widest">Desfecho Clínico / Acolhimento
+            </h4>
           </div>
+          <span id="det-desfecho-label"
+            class="px-3 py-1 bg-blue-50 text-blue-600 rounded-lg text-[9px] font-black uppercase tracking-widest border border-blue-100">FINALIZADO</span>
         </div>
 
-        <div>
-          <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3 block ml-1">Notas de
-            Evolução</label>
-          <textarea id="det-observacao" readonly
-            class="w-full px-5 py-3.5 bg-slate-50 border-none rounded-2xl focus:ring-0 transition-all outline-none text-sm font-bold text-slate-600 min-h-[52px] h-[52px] resize-none placeholder:text-slate-300 cursor-default"
-            placeholder="Observações..."></textarea>
+        <div class="grid grid-cols-1 gap-4">
+          <div class="p-6 bg-blue-50/30 rounded-3xl border border-blue-100/50">
+            <p class="text-[9px] text-blue-400 uppercase font-black tracking-widest mb-3">Conduta Clínica</p>
+            <p id="det-conduta-display" class="text-xs font-bold text-slate-700 leading-relaxed italic"></p>
+          </div>
+          <div class="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl border border-slate-100 w-fit">
+            <p class="text-[9px] text-slate-400 uppercase font-black tracking-widest">CID-10 Principal:</p>
+            <p id="det-cid-display" class="text-xs font-black text-slate-800 tracking-tighter"></p>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Modal Footer -->
     <div
-      class="px-10 py-8 border-t border-slate-50 flex flex-col sm:flex-row justify-between items-center gap-6 bg-slate-50/20">
-      <button onclick="enviarConfirmacao()"
-        class="flex items-center gap-2.5 px-6 py-3 bg-emerald-50 text-emerald-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-500 hover:text-white transition-all group active:scale-95 shadow-sm">
-        <i data-lucide="message-circle" class="w-4 h-4"></i>
-        Confirmar via WhatsApp
-      </button>
+      class="px-10 py-8 border-t border-slate-50 flex flex-col sm:flex-row justify-between items-center gap-4 bg-slate-50/20">
+      <div class="flex flex-wrap gap-3 w-full sm:w-auto">
+        <button onclick="enviarConfirmacao()"
+          class="flex-1 sm:flex-none flex items-center justify-center gap-2.5 px-6 py-4 bg-emerald-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-700 transition-all active:scale-95 shadow-lg shadow-emerald-600/10">
+          <i data-lucide="message-circle" class="w-4 h-4"></i>
+          Confirmar WhatsApp
+        </button>
 
-      <div class="flex gap-4 w-full sm:w-auto">
-        <button onclick="closeDetails()"
-          class="flex-1 sm:flex-none px-8 py-3.5 bg-slate-100 text-slate-600 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-slate-200 transition-colors">
-          Fechar
+        <button onclick="verFluxoDesdeDetalhes()"
+          class="flex-1 sm:flex-none flex items-center justify-center gap-2.5 px-6 py-4 bg-blue-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-700 transition-all active:scale-95 shadow-lg shadow-blue-600/10">
+          <i data-lucide="clock-rewind" class="w-4 h-4"></i>
+          Fluxo do Paciente
         </button>
       </div>
+
+      <button onclick="closeDetails()"
+        class="w-full sm:w-auto px-10 py-4 bg-slate-100 text-slate-500 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-slate-200 transition-colors">
+        Fechar
+      </button>
     </div>
 
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     MODAL: HISTÓRICO / FLUXO DO PACIENTE
+═══════════════════════════════════════════════════════ -->
+<div id="modal-historico"
+  class="fixed inset-0 z-[110] hidden items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+  <div id="modal-historico-content"
+    class="bg-white rounded-[2rem] shadow-2xl w-full max-w-2xl border border-slate-100 flex flex-col transform scale-95 opacity-0 transition-all duration-300 max-h-[80vh]">
+    <div class="flex items-center justify-between px-8 py-6 border-b border-slate-100">
+      <div>
+        <h3 class="text-lg font-black text-slate-900 uppercase tracking-tight">Fluxo de Atendimento</h3>
+        <p class="text-xs text-slate-500 font-medium mt-0.5"><span id="label-nome-historico">—</span> • <span
+            class="text-blue-600 font-bold">Rastreabilidade Clínica</span></p>
+      </div>
+      <button onclick="fecharModalHistorico()"
+        class="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-slate-400 hover:bg-slate-200 transition-all">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+    </div>
+    <div id="historico-body" class="flex-1 overflow-y-auto p-8 space-y-0 relative">
+      <div class="absolute left-10 top-0 bottom-0 w-px bg-slate-100 hidden md:block"></div>
+    </div>
   </div>
 </div>
 
@@ -385,8 +358,6 @@
   let appointments = [];
   let listaFiltrada = [];
   let indexSelecionado = null;
-  let desfechoAtual = null;
-  let aptoAtual = null;
   let currentTab = 'geral';
 
   function toggleFilters() {
@@ -410,17 +381,13 @@
 
   function setTab(tab) {
     currentTab = tab;
-
-    // UI Update
     document.querySelectorAll('.tab-btn').forEach(btn => {
-      btn.classList.remove('bg-brand-600', 'text-white', 'shadow-lg', 'shadow-brand-600/20', 'active-tab');
-      btn.classList.add('text-slate-500', 'hover:bg-white', 'hover:shadow-sm', 'hover:text-brand-600', 'dark:text-gray-400', 'dark:hover:bg-gray-700');
+      btn.classList.remove('bg-white', 'shadow-sm', 'text-brand-600', 'active-tab');
+      btn.classList.add('text-slate-500');
     });
-
     const activeBtn = document.getElementById(`tab-${tab}`);
-    activeBtn.classList.add('bg-brand-600', 'text-white', 'shadow-lg', 'shadow-brand-600/20', 'active-tab');
-    activeBtn.classList.remove('text-slate-500', 'hover:bg-white', 'hover:shadow-sm', 'hover:text-brand-600', 'dark:text-gray-400', 'dark:hover:bg-gray-700');
-
+    activeBtn.classList.add('bg-white', 'shadow-sm', 'text-brand-600', 'active-tab');
+    activeBtn.classList.remove('text-slate-500');
     filtrar();
   }
 
@@ -428,36 +395,44 @@
     try {
       const res = await fetch("/log_agendamento/api/lista");
       const data = await res.json();
-
-      if (!Array.isArray(data)) {
-        console.error("Data is not an array:", data);
-        throw new Error(data.error || "Formato de dados inválido");
-      }
-
-      appointments = data.map(a => Object.assign({}, a, {
-        whatsapp: true,
-        notificado: false
-      }));
-      filtrar(); // Chama filtrar em vez de loadTable para respeitar a aba ativa
+      if (!Array.isArray(data)) throw new Error(data.error || "Formato inválido");
+      appointments = data.map(a => Object.assign({}, a, { whatsapp: true }));
+      filtrar();
     } catch (err) {
-      console.error("Erro ao carregar agendamentos:", err);
-      document.getElementById("table-body").innerHTML = `<tr><td colspan="5" class="px-8 py-10 text-rose-500 font-black">Erro: ${err.message}</td></tr>`;
+      console.error(err);
     }
   }
 
-  // Auto-refresh a cada 5 segundos
-  let autoRefreshInterval;
-  function startAutoRefresh() {
-    autoRefreshInterval = setInterval(() => {
-      fetchAppointments();
-    }, 5000); // 5 segundos
+  function filtrar() {
+    const p = document.getElementById("filtro-paciente").value.toLowerCase();
+    const u = document.getElementById("filtro-unidade").value;
+    const e = document.getElementById("filtro-especialidade").value.toLowerCase();
+    const m = document.getElementById("filtro-medico").value.toLowerCase();
+    const d = document.getElementById("filtro-data").value;
+
+    listaFiltrada = appointments.filter(a => {
+      if (currentTab === 'acolhimento' && a.especialidade !== 'Acolhimento') return false;
+      if (p && !a.paciente.toLowerCase().includes(p) && !a.cpf_paciente.includes(p)) return false;
+      if (u && a.unidade !== u) return false;
+      if (e && !a.especialidade.toLowerCase().includes(e)) return false;
+      if (m && !a.medico.toLowerCase().includes(m)) return false;
+      if (d && a.data !== d) return false;
+      return true;
+    });
+
+    const counter = document.getElementById('counter-acolhimento');
+    const acolhimentoTotal = appointments.filter(a => a.especialidade === 'Acolhimento').length;
+    if (acolhimentoTotal > 0) {
+      counter.textContent = acolhimentoTotal;
+      counter.classList.remove('hidden');
+    } else {
+      counter.classList.add('hidden');
+    }
+
+    loadTable();
   }
 
-  function stopAutoRefresh() {
-    if (autoRefreshInterval) {
-      clearInterval(autoRefreshInterval);
-    }
-  }
+  function AplicarFiltros() { filtrar(); }
 
   function loadTable() {
     const tbody = document.getElementById("table-body");
@@ -468,99 +443,59 @@
       emptyState.classList.remove("hidden");
       emptyState.classList.add("flex");
       return;
-    } else {
-      emptyState.classList.add("hidden");
-      emptyState.classList.remove("flex");
     }
+    emptyState.classList.add("hidden");
+    emptyState.classList.remove("flex");
 
     listaFiltrada.forEach((a, i) => {
-      let statusStyle = "";
+      let statusStyle = "bg-slate-100 text-slate-500";
       let statusIcon = "clock";
-      let statusLabel = a.status;
+      if (a.status === 'Agendado') { statusStyle = "bg-blue-50 text-blue-600"; statusIcon = "calendar"; }
+      if (a.status === 'No Acolhimento') { statusStyle = "bg-blue-50 text-blue-600"; statusIcon = "message-circle"; }
+      if (a.status === 'Finalizado' || a.status === 'Realizado') { statusStyle = "bg-emerald-50 text-emerald-600"; statusIcon = "check-circle"; }
+      if (a.status === 'Cancelado' || a.status === 'NAO_COMPARECEU') { statusStyle = "bg-rose-50 text-rose-500"; statusIcon = "x-circle"; }
 
-      switch (a.status) {
-        case 'Agendado':
-          statusStyle = "bg-brand-50 text-brand-600 border-brand-100 dark:bg-brand-900/10 dark:text-brand-400 dark:border-brand-800/50";
-          statusIcon = "calendar";
-          break;
-        case 'No Acolhimento':
-          statusStyle = "bg-brand-50 text-brand-600 border-brand-100 dark:bg-brand-900/10 dark:text-brand-400 dark:border-brand-800/50";
-          statusIcon = "message-circle";
-          break;
-        case 'Finalizado':
-        case 'Realizado':
-          statusStyle = "bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-900/10 dark:text-emerald-400 dark:border-emerald-800/50";
-          statusIcon = "check-circle";
-          break;
-        case 'Cancelado':
-        case 'NAO_COMPARECEU':
-          statusStyle = "bg-rose-50 text-rose-500 border-rose-100 dark:bg-rose-900/10 dark:text-rose-400 dark:border-rose-800/50";
-          statusIcon = "x-circle";
-          statusLabel = a.status === 'NAO_COMPARECEU' ? 'Faltou' : 'Cancelado';
-          break;
-        default:
-          statusStyle = "bg-slate-50 text-slate-500 border-slate-100";
-          statusIcon = "info";
-      }
-
-      const rowHtml = `
-        <tr class="hover:bg-blue-50/40 dark:hover:bg-blue-900/10 even:bg-slate-50/30 dark:even:bg-gray-800/20 transition-all duration-200 group">
-          <td class="px-6 py-5">
-            <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border ${statusStyle}">
-                <i data-lucide="${statusIcon}" class="w-3.5 h-3.5"></i> ${statusLabel}
+      tbody.innerHTML += `
+        <tr class="hover:bg-slate-50 transition-all border-b border-slate-50">
+          <td class="px-6 py-4">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider ${statusStyle}">
+              <i data-lucide="${statusIcon}" class="w-3.5 h-3.5"></i> ${a.status}
             </span>
           </td>
-          <td class="px-6 py-5">
-            <div class="flex items-center gap-3">
-              <div class="w-11 h-11 rounded-2xl bg-slate-50 dark:bg-gray-800 text-slate-400 flex items-center justify-center font-black text-sm group-hover:bg-brand-600 group-hover:text-white transition-all shadow-inner">
-                ${a.paciente.charAt(0)}
-              </div>
-              <div class="flex flex-col">
-                <span class="font-bold text-slate-900 dark:text-gray-100 text-sm tracking-tight leading-tight">${a.paciente}</span>
-                <span class="text-[10px] text-slate-400 font-bold mt-1 flex items-center gap-1.5">
-                  <i data-lucide="smartphone" class="w-3 h-3 text-emerald-500"></i> ${a.telefone}
-                </span>
-              </div>
-            </div>
-          </td>
-          <td class="px-6 py-5 bg-white dark:bg-gray-900 shadow-sm border-y border-slate-100 dark:border-gray-800">
+          <td class="px-6 py-4">
             <div class="flex flex-col">
-              <span class="text-[11px] font-black text-slate-700 dark:text-gray-300 uppercase tracking-wide">${a.especialidade}</span>
-              <span class="text-[10px] text-slate-400 font-bold mt-0.5 flex items-center gap-1.5">
-                <i data-lucide="user-round" class="w-3 h-3 opacity-40"></i> ${a.medico}
-              </span>
+              <span class="font-black text-slate-900 text-sm tracking-tight">${a.paciente}</span>
+              <span class="text-[10px] text-slate-400 font-bold uppercase tracking-tight">CPF: ${a.cpf_paciente}</span>
             </div>
           </td>
-          <td class="px-6 py-5 bg-white dark:bg-gray-900 shadow-sm border-y border-slate-100 dark:border-gray-800">
-             <div class="flex flex-col">
-                <div class="flex items-center gap-2">
-                  <i data-lucide="calendar" class="w-3.5 h-3.5 text-brand-500 opacity-60"></i>
-                  <span class="font-black text-xs text-slate-600 dark:text-gray-200 tracking-tight">${a.data}</span>
-                </div>
-                <div class="flex items-center gap-2 mt-1">
-                  <i data-lucide="clock" class="w-3.5 h-3.5 text-slate-300"></i>
-                  <span class="font-bold text-[10px] text-slate-400">${a.horario}</span>
-                </div>
-             </div>
+          <td class="px-6 py-4">
+            <div class="flex flex-col">
+              <div class="flex items-center gap-1.5">
+                <span class="text-[10px] font-black text-slate-800 uppercase tracking-tight">${a.especialidade}</span>
+                ${a.especialidade === 'Acolhimento' ? '<i data-lucide="stethoscope" class="w-3.5 h-3.5 text-emerald-500"></i>' : ''}
+              </div>
+              <span class="text-[10px] text-slate-400 font-bold uppercase tracking-tight">${a.medico}</span>
+            </div>
           </td>
-          <td class="px-6 py-5">
+          <td class="px-6 py-4 text-xs font-bold text-slate-600">
+             ${a.data} <br> <span class="text-slate-400">${a.horario}</span>
+          </td>
+          <td class="px-6 py-4 text-center">
             <div class="flex justify-center gap-2">
-              <button onclick="showDetails(${i})" class="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-brand-50 dark:hover:bg-brand-900/20 transition-all rounded-xl" title="Ver Detalhes">
-                <i data-lucide="eye" class="w-4.5 h-4.5"></i>
+              <button onclick="showDetails(${i})" class="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-all rounded-xl" title="Ver Detalhes">
+                <i data-lucide="eye" class="w-4 h-4"></i>
               </button>
-              {% if user_tipo in ['admin', 'assistente_social', 'desenvolvedor', 'dev'] %}
-              <a href="/log_agendamento/atendimento/${a.id}" class="w-9 h-9 flex items-center justify-center text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all rounded-xl border border-transparent hover:border-emerald-100" title="Realizar Atendimento">
-                <i data-lucide="stethoscope" class="w-4.5 h-4.5"></i>
-              </a>
-              {% endif %}
-              <button onclick="deletarAgendamento(${i})" class="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-all rounded-xl" title="Cancelar Agendamento">
-                <i data-lucide="trash-2" class="w-4.5 h-4.5"></i>
+              ${a.especialidade === 'Acolhimento' ? `
+              <button onclick="showDetails(${i})" class="w-9 h-9 flex items-center justify-center text-emerald-500 hover:text-emerald-700 hover:bg-emerald-50 transition-all rounded-xl" title="Ver Acolhimento">
+                <i data-lucide="stethoscope" class="w-4 h-4"></i>
+              </button>
+              ` : ''}
+              <button onclick="deletarAgendamento(${i})" class="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-all rounded-xl" title="Deletar">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
               </button>
             </div>
           </td>
-        </tr>
-      `;
-      tbody.innerHTML += rowHtml;
+        </tr>`;
     });
     lucide.createIcons();
   }
@@ -578,285 +513,129 @@
     document.getElementById("det-telefone").textContent = a.telefone;
     document.getElementById("det-cpf").textContent = a.cpf_paciente || 'N/A';
     document.getElementById("det-vinculo").textContent = a.num_func_vinculo || 'N/A';
-    document.getElementById("det-observacao").value = a.observacao || "";
-    document.getElementById("det-status-select").value = a.status;
+
+    const obsDisplay = document.getElementById("det-observacao-display");
+    obsDisplay.textContent = a.observacao || "Nenhuma observação registrada.";
+
+    const clinicalSection = document.getElementById("clinical-results-section");
+    const condutaDisplay = document.getElementById("det-conduta-display");
+    const cidDisplay = document.getElementById("det-cid-display");
+    const desfechoDisplay = document.getElementById("det-desfecho-label");
+
+    if (a.conduta || a.cid || a.desfecho_clinico) {
+      clinicalSection.classList.remove('hidden');
+      condutaDisplay.textContent = a.conduta || "Não informada";
+      cidDisplay.textContent = a.cid || "N/A";
+      desfechoDisplay.textContent = (a.desfecho_clinico || "Atendido").replace('_', ' ').toUpperCase();
+    } else {
+      clinicalSection.classList.add('hidden');
+    }
 
     const whatsBadge = document.getElementById("det-whatsapp-badge");
-    if (a.whatsapp) { whatsBadge.classList.remove('hidden'); whatsBadge.classList.add('inline-block'); }
+    if (a.whatsapp) whatsBadge.classList.remove('hidden');
     else whatsBadge.classList.add('hidden');
-
 
     const modal = document.getElementById("details-modal");
     modal.classList.remove("invisible", "opacity-0");
-    document.getElementById("modal-content").classList.remove("scale-95");
     document.getElementById("modal-content").classList.add("scale-100");
-
-    // --- LOGICA DE ACOLHIMENTO ---
-    const acolhimentoContainer = document.getElementById('acolhimento-rules-container');
-    const statusContainer = document.getElementById('status-select-container');
-
-    if (a.especialidade === 'Acolhimento') {
-      statusContainer.classList.add('hidden'); // Esconde o select comum
-      acolhimentoContainer.classList.remove('hidden');
-      resetDesfechoUI();
-
-      // Pre-seleção baseada no status atual
-      if (a.status === 'NAO_COMPARECEU') setDesfecho('nao_compareceu');
-      else if (a.status === 'Finalizado') {
-        setDesfecho('atendido');
-        if (a.validado_para_psico) setApto(true);
-        else setApto(false);
-      }
-    } else {
-      statusContainer.classList.remove('hidden');
-      acolhimentoContainer.classList.add('hidden');
-    }
-
-
-  }
-
-  function resetDesfechoUI() {
-    desfechoAtual = null;
-    aptoAtual = null;
-    document.querySelectorAll('.desfecho-card').forEach(b => {
-      b.classList.remove('border-rose-500', 'border-amber-500', 'border-emerald-500', 'ring-4', 'ring-rose-500/10', 'ring-amber-500/10', 'ring-emerald-500/10', 'scale-[1.02]');
-      b.querySelector('.check-indicator').classList.add('opacity-0');
-    });
-    document.getElementById('psico-validation-container').classList.add('hidden');
-    document.querySelectorAll('.apto-btn').forEach(b => b.classList.remove('bg-emerald-600', 'bg-rose-600', 'text-white', 'border-emerald-600', 'border-rose-600'));
-  }
-
-  function setDesfecho(tipo) {
-    desfechoAtual = tipo;
-    document.querySelectorAll('.desfecho-card').forEach(b => {
-      b.classList.remove('border-rose-500', 'border-amber-500', 'border-emerald-500', 'ring-4', 'ring-rose-500/10', 'ring-amber-500/10', 'ring-emerald-500/10', 'scale-[1.02]');
-      b.querySelector('.check-indicator').classList.add('opacity-0');
-    });
-
-    const colors = { 'nao_compareceu': 'rose', 'reagendar': 'amber', 'atendido': 'emerald' };
-    const color = colors[tipo];
-    const btnId = tipo === 'nao_compareceu' ? 'nc' : (tipo === 'reagendar' ? 're' : 'at');
-    const btn = document.getElementById(`btn-desfecho-${btnId}`);
-
-    btn.classList.add(`border-${color}-500`, 'ring-4', `ring-${color}-500/10`, 'scale-[1.02]');
-    btn.querySelector('.check-indicator').classList.remove('opacity-0');
-
-    if (tipo === 'atendido') {
-      document.getElementById('psico-validation-container').classList.remove('hidden');
-    } else {
-      document.getElementById('psico-validation-container').classList.add('hidden');
-      aptoAtual = null;
-    }
-  }
-
-  function setApto(val) {
-    aptoAtual = val;
-    const btnSim = document.getElementById('btn-apto-sim');
-    const btnNao = document.getElementById('btn-apto-nao');
-
-    btnSim.classList.remove('bg-emerald-600', 'text-white', 'border-emerald-600');
-    btnNao.classList.remove('bg-rose-600', 'text-white', 'border-rose-600');
-
-    if (val) {
-      btnSim.classList.add('bg-emerald-600', 'text-white', 'border-emerald-600');
-    } else {
-      btnNao.classList.add('bg-rose-600', 'text-white', 'border-rose-600');
-    }
-  }
-
-  async function saveAndClose() {
-    const a = listaFiltrada[indexSelecionado];
-    if (!a) return;
-
-    const newStatus = document.getElementById("det-status-select").value;
-    const newObs = document.getElementById("det-observacao").value;
-
-    const btn = document.querySelector('button[onclick="saveAndClose()"]');
-    const originalText = btn.innerHTML;
-    btn.innerHTML = "Salvando...";
-    btn.disabled = true;
-
-    try {
-      const res = await fetch(`/log_agendamento/api/atualizar/${a.id}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          status: newStatus,
-          observacao: newObs,
-          desfecho: desfechoAtual,
-          apto_psico: aptoAtual
-        })
-      });
-      const data = await res.json();
-
-      if (data.success) {
-        showToast('Agendamento atualizado com sucesso!', 'success');
-        const originalAppt = appointments.find(ap => ap.id === a.id);
-        if (originalAppt) {
-          const statusChangedToAgendado = (originalAppt.status !== 'Agendado' && newStatus === 'Agendado');
-          originalAppt.status = newStatus;
-          originalAppt.observacao = newObs;
-          if (statusChangedToAgendado) enviarConfirmacao();
-        }
-        filtrar();
-        closeDetails();
-      } else {
-        showToast("Erro ao salvar: " + data.error, 'error');
-      }
-    } catch (err) {
-      console.error(err);
-      showToast("Erro de conexão ao salvar.", 'error');
-    } finally {
-      btn.innerHTML = originalText;
-      btn.disabled = false;
-    }
-  }
-
-
-  function enviarConfirmacao(i) {
-    const idx = (i !== undefined) ? i : indexSelecionado;
-    const a = (i !== undefined) ? listaFiltrada[i] : appointments.find(ap => ap.paciente === listaFiltrada[indexSelecionado].paciente && ap.data === listaFiltrada[indexSelecionado].data);
-
-    if (!a) return;
-
-    // Mapa de Localização das Unidades
-    const mapas = {
-      "Unidade Central": "https://maps.app.goo.gl/UnidadeCentralExemplo",
-      "Unidade Norte": "https://maps.app.goo.gl/UnidadeNorteExemplo",
-      "Unidade Sul": "https://maps.app.goo.gl/UnidadeSulExemplo"
-    };
-
-    const linkMapa = mapas[a.unidade] || "";
-
-    // Limpar o número (manter apenas dígitos)
-    let numero = a.telefone.replace(/\D/g, '');
-
-    // Garantir prefixo do Brasil se necessário
-    if (numero.length <= 11) {
-      numero = '55' + numero;
-    }
-
-    const saudacao = "Olá *" + a.paciente + "*, aqui é do *QualiSUS PE*!";
-    const localizacao = linkMapa ? "\n\nLocalização: " + linkMapa : "";
-
-    const textoBase = saudacao + "\n\n" +
-      "Confirmamos seu agendamento:\n\n" +
-      "*Exame/Consulta:* " + a.especialidade + "\n" +
-      "*Unidade:* " + a.unidade + "\n" +
-      "*Data:* " + a.data + "\n" +
-      "*Horário:* " + a.horario + "\n\n" +
-      "Orientações: Por favor, chegue com 15 min de antecedência e traga seu documento oficial com foto." +
-      localizacao + "\n\n" +
-      "_Este é um aviso automático, não é necessário responder._";
-
-    const mensagem = encodeURIComponent(textoBase);
-    const url = "https://wa.me/" + numero + "?text=" + mensagem;
-
-    // Marcar como notificado
-    a.notificado = true;
-    loadTable();
-
-    window.open(url, '_blank');
-  }
-
-  async function deletarAgendamento(i) {
-    const a = listaFiltrada[i];
-    if (!a) return;
-
-    confirmAction({
-      title: 'Cancelar Agendamento',
-      message: `Tem certeza que deseja cancelar e remover o agendamento de ${a.paciente}?`,
-      onConfirm: async () => {
-        try {
-          const res = await fetch(`/log_agendamento/api/deletar/${a.id}`, {
-            method: "DELETE"
-          });
-          const data = await res.json();
-
-          if (data.success) {
-            showToast('Agendamento cancelado com sucesso!', 'success');
-            appointments = appointments.filter(ap => ap.id !== a.id);
-            filtrar();
-          } else {
-            showToast("Erro ao deletar: " + data.error, 'error');
-          }
-        } catch (err) {
-          console.error(err);
-          showToast("Erro de conexão ao deletar.", 'error');
-        }
-      }
-    });
+    lucide.createIcons();
   }
 
   function closeDetails() {
     const modal = document.getElementById("details-modal");
-    document.getElementById("modal-content").classList.remove("scale-100");
-    document.getElementById("modal-content").classList.add("scale-95");
     modal.classList.add("invisible", "opacity-0");
+    document.getElementById("modal-content").classList.remove("scale-100");
   }
 
+  function verFluxoDesdeDetalhes() {
+    const a = listaFiltrada[indexSelecionado];
+    if (!a) return;
+    abrirHistorico(a.trabalhador_id, a.paciente);
+  }
 
-  function filtrar() {
-    const paciente = document.getElementById("filtro-paciente").value.toLowerCase();
-    const unidade = document.getElementById("filtro-unidade").value;
-    const especialidade = document.getElementById("filtro-especialidade").value.toLowerCase();
-    const medico = document.getElementById("filtro-medico").value.toLowerCase();
-    const data = document.getElementById("filtro-data").value;
+  function abrirModalIn(id) {
+    const modal = document.getElementById(id);
+    const content = document.getElementById(id + '-content');
+    modal.classList.remove('hidden'); modal.classList.add('flex');
+    setTimeout(() => content.classList.add('scale-100', 'opacity-100'), 10);
+  }
 
-    listaFiltrada = appointments.filter(a => {
-      // Filtro de Aba: Filtra apenas 'Acolhimento' (case-insensitive)
-      if (currentTab === 'acolhimento') {
-        return a.especialidade && a.especialidade.toLowerCase().trim() === 'acolhimento';
+  function fecharModalIn(id) {
+    const modal = document.getElementById(id);
+    const content = document.getElementById(id + '-content');
+    content.classList.remove('scale-100', 'opacity-100');
+    setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 250);
+  }
+
+  async function abrirHistorico(trabalhadorId, nome) {
+    document.getElementById('label-nome-historico').textContent = nome;
+    const body = document.getElementById('historico-body');
+    body.innerHTML = '<div class="flex items-center justify-center py-20 animate-spin"><i data-lucide="loader-2" class="w-8 h-8 text-blue-500"></i></div>';
+    abrirModalIn('modal-historico');
+    lucide.createIcons();
+
+    try {
+      const res = await fetch(`/gestao-pacientes/api/paciente/${trabalhadorId}/historico`);
+      const data = await res.json();
+
+      if (data.error) {
+        body.innerHTML = `<p class="text-rose-500 font-bold p-10 text-center">Erro do Servidor: ${data.error}</p>`;
+        return;
       }
 
-      return (
-        (paciente === "" || a.paciente.toLowerCase().includes(paciente)) &&
-        (unidade === "" || a.unidade === unidade) &&
-        (especialidade === "" || a.especialidade.toLowerCase().includes(especialidade)) &&
-        (medico === "" || a.medico.toLowerCase().includes(medico)) &&
-        (data === "" || a.data === data)
-      );
-    });
+      if (!Array.isArray(data) || !data.length) {
+        body.innerHTML = `<p class="text-center text-slate-400 py-10">Nenhum histórico encontrado para o ID [${trabalhadorId}].</p>`;
+        return;
+      }
 
-    updateCounters();
-    loadTable();
-  }
+      // Calcula tempo total com segurança
+      let diffStr = "INICIADO AGORA";
+      try {
+        const oldest = data[data.length - 1];
+        if (oldest && oldest.data) {
+          const [dd, mm, yyyy] = oldest.data.split('/');
+          const start = new Date(yyyy, mm - 1, dd);
+          const diff = Math.ceil(Math.abs(new Date() - start) / (1000 * 60 * 60 * 24));
+          diffStr = `${diff} DIAS DE ACOMPANHAMENTO`;
+        }
+      } catch (e) { console.error("Erro data:", e); }
 
-  function updateCounters() {
-    // Conta acolhimentos pendentes (Hoje)
-    const hoje = new Date().toISOString().split('T')[0];
-    const pendentes = appointments.filter(a =>
-      a.especialidade === 'Acolhimento' &&
-      ['Agendado', 'No Acolhimento'].includes(a.status) &&
-      a.data === hoje
-    ).length;
-
-    const badge = document.getElementById('counter-acolhimento');
-    if (pendentes > 0) {
-      badge.textContent = pendentes;
-      badge.classList.remove('hidden');
-    } else {
-      badge.classList.add('hidden');
+      body.innerHTML = `
+        <div class="relative space-y-8 pl-8 border-l border-slate-100">
+          <div class="absolute -top-4 -left-3 px-4 py-1.5 bg-blue-600 text-white text-[10px] font-black rounded-full shadow-lg uppercase">
+            ${diffStr}
+          </div>
+          ${data.map(e => `
+            <div class="relative group">
+              <div class="absolute -left-[41px] top-1 w-5 h-5 rounded-full bg-white border-4 border-blue-500 shadow-sm z-10 transition-transform group-hover:scale-125"></div>
+              <div class="flex flex-col gap-1">
+                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">${e.data} às ${e.horario}</span>
+                <h4 class="text-xs font-black text-slate-800 uppercase tracking-tight">${e.titulo}</h4>
+                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 mt-2">
+                   <div class="flex items-center gap-2 mb-2">
+                      <div class="w-6 h-6 rounded-full bg-white flex items-center justify-center text-[9px] font-black text-slate-500 border border-slate-200">${e.profissional ? e.profissional[0] : 'S'}</div>
+                      <span class="text-[10px] font-bold text-slate-600">${e.profissional || 'Sistema Automático'}</span>
+                      <span class="ml-auto px-2 py-0.5 bg-white border border-slate-100 text-[8px] font-black uppercase rounded-lg">${e.status}</span>
+                   </div>
+                   ${e.obs ? `<p class="text-[10px] text-slate-500 font-medium italic border-l-2 border-slate-200 pl-3">${e.obs}</p>` : ''}
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>`;
+      lucide.createIcons();
+    } catch (err) {
+      body.innerHTML = '<p class="text-rose-500">Erro ao carregar histórico.</p>';
     }
   }
 
-  ['filtro-paciente', 'filtro-especialidade', 'filtro-medico', 'filtro-unidade', 'filtro-data'].forEach(id => {
-    document.getElementById(id).addEventListener('input', filtrar);
+  function fecharModalHistorico() { fecharModalIn('modal-historico'); }
+
+  window.addEventListener('click', e => {
+    if (e.target.id === 'modal-historico') fecharModalHistorico();
+    if (e.target.id === 'details-modal') closeDetails();
   });
 
-  document.getElementById('details-modal').addEventListener('click', function (e) {
-    if (e.target === this) closeDetails();
-  });
-
-  window.addEventListener('DOMContentLoaded', () => {
-    if (typeof lucide !== 'undefined') lucide.createIcons();
-    fetchAppointments();
-    startAutoRefresh(); // Inicia atualização automática
-  });
-
-  // Para a atualização quando o usuário sai da página
-  window.addEventListener('beforeunload', () => {
-    stopAutoRefresh();
-  });
+  fetchAppointments();
 </script>
 {% endblock %}

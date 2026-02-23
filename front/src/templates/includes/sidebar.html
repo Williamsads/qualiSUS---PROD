@@ -1,121 +1,155 @@
 <!-- SIDEBAR -->
 <aside id="sidebar"
-    class="flex-shrink-0 w-72 sidebar-dark flex flex-col fixed md:relative h-screen z-40 sidebar-transition -translate-x-full md:translate-x-0">
+    class="flex-shrink-0 w-72 sidebar-royal flex flex-col fixed md:relative h-screen z-40 sidebar-transition -translate-x-full md:translate-x-0">
 
     <!-- SIDEBAR LOGO AREA -->
-    <div class="px-8 py-10 flex flex-col gap-1 sidebar-logo-container relative">
-        <div class="flex items-center gap-4 group">
-            <div
-                class="w-20 h-20 bg-blue-500/10 rounded-[2rem] flex items-center justify-center border border-blue-500/20 shadow-lg shadow-blue-500/5 p-3 shrink-0 transition-all duration-300">
-                <img src="{{ url_for('static', filename='img/Logo da QualiSUS com pinwheel colorido.png') }}"
-                    alt="QualiSUS Logo" class="w-full h-full object-contain">
-            </div>
-            <div class="flex flex-col sidebar-header-text">
-                <h2 class="text-2xl font-black text-white tracking-tight leading-none">
-                    Quali<span class="text-blue-500 font-black">SUS</span>
-                </h2>
-                <span
-                    class="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mt-1.5 whitespace-nowrap">Gestão
-                    do Estado</span>
-                <span
-                    class="text-[8px] font-black bg-amber-500/10 text-amber-500 border border-amber-500/20 px-2 py-0.5 rounded-full w-fit mt-1.5 animate-pulse">
-                    HOMOLOGAÇÃO
-                </span>
-            </div>
+    <div class="px-5 pt-6 pb-5 flex flex-col items-center sidebar-logo-container relative border-b border-white/5">
+        <!-- Logo Principal - Destaque Total -->
+        <div class="sidebar-header-text w-full flex flex-col items-center gap-2">
+            <img src="{{ url_for('static', filename='img/Logo da QualiSUS com pinwheel colorido.png') }}"
+                alt="QualiSUS Logo"
+                class="w-36 h-auto object-contain hover:scale-105 transition-transform duration-300 drop-shadow-lg">
         </div>
 
-        <!-- Mini State Toggle Button (Desktop Only) -->
+        <!-- Mini State Toggle Button -->
         <button id="btnToggleSidebar"
-            class="absolute -right-3 top-1/2 -translate-y-1/2 w-7 h-7 bg-blue-600 text-white rounded-full hidden md:flex items-center justify-center border-4 border-[#0B1730] hover:scale-110 transition-all shadow-lg z-50">
-            <i data-lucide="chevron-left" class="w-4 h-4" id="toggleIcon"></i>
+            class="absolute -right-3 top-8 w-6 h-6 bg-[#0B1120] text-blue-400 rounded-full hidden md:flex items-center justify-center shadow-xl border border-white/10 z-50">
+            <i data-lucide="chevron-left" class="w-3.5 h-3.5" id="toggleIcon"></i>
         </button>
     </div>
 
-    <nav class="flex-1 overflow-y-auto px-6 py-6 space-y-12 scrollbar-hide sidebar-nav">
+    <nav class="flex-1 overflow-y-auto px-4 pt-4 pb-6 scrollbar-hide sidebar-nav">
 
-        <!-- DASHBOARD SECTION -->
-        <div class="space-y-1">
+        <!-- PRINCIPAL SECTION (always visible, no accordion) -->
+        <div class="mb-2">
             <a href="{{ url_for('home') }}"
-                class="nav-link flex items-center gap-4 px-5 py-4 rounded-2xl text-[13px] transition-all {% if request.endpoint == 'home' %} nav-item-active {% endif %}"
-                title="Dashboard Principal">
-                <i data-lucide="layout-grid" class="w-5 h-5 shrink-0"></i>
-                <span class="font-black uppercase tracking-wider text-[11px] whitespace-nowrap">Dashboard
-                    Principal</span>
+                class="nav-link {% if request.endpoint == 'home' %} nav-item-active {% endif %}"
+                title="Painel de Monitoramento">
+                <i data-lucide="layout-grid"></i>
+                <span>Painel Principal</span>
             </a>
         </div>
 
-        <!-- CLINICAL MANAGEMENT -->
-        <div class="space-y-5">
-            <p class="px-5 text-[10px] font-black text-slate-600 uppercase tracking-[0.3em] sidebar-label">Agenda
-                Clínica</p>
-            <div class="space-y-2">
-                <a href="javascript:void(0)" data-nav-url="{{ url_for('agendamento_bp.pagina_agendamento') }}"
-                    onclick="confirmExternalNavigation(this.dataset.navUrl)"
-                    class="nav-link flex items-center gap-4 px-5 py-3.5 rounded-2xl text-[13px] transition-all {% if 'agendamento_bp' in request.endpoint %} nav-item-active {% endif %}"
-                    title="Agendar Consulta">
-                    <i data-lucide="calendar-plus" class="w-5 h-5 opacity-70 shrink-0"></i>
-                    <span class="font-bold whitespace-nowrap">Agendar Consulta</span>
-                </a>
-                <a href="{{ url_for('log_agendamento.index') }}"
-                    class="nav-link flex items-center gap-4 px-5 py-3.5 rounded-2xl text-[13px] transition-all {% if 'log_agendamento' in request.endpoint %} nav-item-active {% endif %}"
-                    title="Histórico de Consultas">
-                    <i data-lucide="history" class="w-5 h-5 opacity-70 shrink-0"></i>
-                    <span class="font-bold whitespace-nowrap">Histórico de Consultas</span>
-                </a>
-                <a href="{{ url_for('gerenciamento.index') }}"
-                    class="nav-link flex items-center gap-4 px-5 py-3.5 rounded-2xl text-[13px] transition-all {% if 'gerenciamento' in request.endpoint %} nav-item-active {% endif %}"
-                    title="Configurações da Agenda">
-                    <i data-lucide="settings" class="w-5 h-5 opacity-70 shrink-0"></i>
-                    <span class="font-bold whitespace-nowrap">Configurações da Agenda</span>
-                </a>
+        <!-- AMBULATORY MANAGEMENT -->
+        <div class="nav-accordion mb-1" id="acc-ambulatorial">
+            <button class="nav-accordion-trigger" onclick="toggleAccordion('acc-ambulatorial')">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="stethoscope" class="w-3.5 h-3.5 text-slate-500"></i>
+                    <span>Gestão Ambulatorial</span>
+                </div>
+                <i data-lucide="chevron-right" class="acc-chevron w-3.5 h-3.5 text-slate-600"></i>
+            </button>
+            <div class="nav-accordion-body">
+                <div class="nav-group">
+                    <a href="javascript:void(0)" data-nav-url="{{ url_for('agendamento_bp.pagina_agendamento') }}"
+                        onclick="confirmExternalNavigation(this.dataset.navUrl)"
+                        class="nav-link {% if 'agendamento_bp' in request.endpoint %} nav-item-active {% endif %}"
+                        title="Agendamento de Consultas">
+                        <i data-lucide="calendar-plus"></i>
+                        <span>Agendamento</span>
+                    </a>
+                    <a href="{{ url_for('log_agendamento.index') }}"
+                        class="nav-link {% if 'log_agendamento' in request.endpoint and request.endpoint != 'log_agendamento.meus_pacientes' %} nav-item-active {% endif %}"
+                        title="Histórico de Atendimentos">
+                        <i data-lucide="history"></i>
+                        <span>Histórico</span>
+                    </a>
+
+                    <a href="{{ url_for('gerenciamento.index') }}"
+                        class="nav-link {% if 'gerenciamento' in request.endpoint %} nav-item-active {% endif %}"
+                        title="Parâmetros de Agenda">
+                        <i data-lucide="settings"></i>
+                        <span>Parâmetros</span>
+                    </a>
+                </div>
             </div>
         </div>
 
-        <!-- STAFF & ACCESS -->
-        <div class="space-y-5">
-            <p class="px-5 text-[10px] font-black text-slate-600 uppercase tracking-[0.3em] sidebar-label">Recursos
-                Humanos
-            </p>
-            <div class="space-y-2">
-                <a href="{{ url_for('trabalhadores.lista_trabalhadores') }}"
-                    class="nav-link flex items-center gap-4 px-5 py-3.5 rounded-2xl text-[13px] transition-all {% if 'trabalhadores' in request.endpoint %} nav-item-active {% endif %}"
-                    title="Base de Servidores">
-                    <i data-lucide="users" class="w-5 h-5 opacity-70 shrink-0"></i>
-                    <span class="font-bold whitespace-nowrap">Base de Servidores</span>
-                </a>
-                <a href="{{ url_for('servidor.lista_funcionarios') }}"
-                    class="nav-link flex items-center gap-4 px-5 py-3.5 rounded-2xl text-[13px] transition-all {% if 'servidor' in request.endpoint %} nav-item-active {% endif %}"
-                    title="Corpo Clínico">
-                    <i data-lucide="stethoscope" class="w-5 h-5 opacity-70 shrink-0"></i>
-                    <span class="font-bold whitespace-nowrap">Corpo Clínico</span>
-                </a>
-                <a href="{{ url_for('usuarios.lista_usuarios') }}"
-                    class="nav-link flex items-center gap-4 px-5 py-3.5 rounded-2xl text-[13px] transition-all {% if 'usuarios' in request.endpoint %} nav-item-active {% endif %}"
-                    title="Gestão de Acessos">
-                    <i data-lucide="shield-check" class="w-5 h-5 opacity-70 shrink-0"></i>
-                    <span class="font-bold whitespace-nowrap">Gestão de Acessos</span>
-                </a>
+        <!-- PEOPLE MANAGEMENT -->
+        <div class="nav-accordion mb-1" id="acc-pessoas">
+            <button class="nav-accordion-trigger" onclick="toggleAccordion('acc-pessoas')">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="users" class="w-3.5 h-3.5 text-slate-500"></i>
+                    <span>Gestão de Pessoas</span>
+                </div>
+                <i data-lucide="chevron-right" class="acc-chevron w-3.5 h-3.5 text-slate-600"></i>
+            </button>
+            <div class="nav-accordion-body">
+                <div class="nav-group">
+                    <a href="{{ url_for('trabalhadores.lista_trabalhadores') }}"
+                        class="nav-link {% if 'trabalhadores' in request.endpoint %} nav-item-active {% endif %}"
+                        title="Quadro de Pessoal">
+                        <i data-lucide="briefcase"></i>
+                        <span>Quadro de Pessoal</span>
+                    </a>
+                    <a href="{{ url_for('servidor.lista_funcionarios') }}"
+                        class="nav-link {% if 'servidor' in request.endpoint %} nav-item-active {% endif %}"
+                        title="Corpo Clínico QualiVida">
+                        <i data-lucide="user-cog"></i>
+                        <span>Corpo Clínico</span>
+                    </a>
+                </div>
             </div>
         </div>
+
+        <!-- GESTÃO DE PACIENTES (exclusivo para médicos e desenvolvedores) -->
+        {% if session.get('tipo', '').upper() in ['MEDICO', 'DESENVOLVEDOR', 'DEV'] %}
+        <div class="nav-accordion mb-1" id="acc-pacientes">
+            <button class="nav-accordion-trigger" onclick="toggleAccordion('acc-pacientes')">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="heart-pulse" class="w-3.5 h-3.5 text-slate-500"></i>
+                    <span>Gestão de Pacientes</span>
+                </div>
+                <i data-lucide="chevron-right" class="acc-chevron w-3.5 h-3.5 text-slate-600"></i>
+            </button>
+            <div class="nav-accordion-body">
+                <div class="nav-group">
+                    <a href="{{ url_for('gestao_pacientes.index') }}"
+                        class="nav-link {% if 'gestao_pacientes' in request.endpoint %} nav-item-active {% endif %}"
+                        title="Ciclo de Tratamento dos Pacientes">
+                        <i data-lucide="clipboard-list"></i>
+                        <span>Pacientes em Tratamento</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- GOVERNANCE & SECURITY -->
+        {% if session.get('tipo', '').upper() in ['DESENVOLVEDOR', 'DEV'] %}
+        <div class="nav-accordion mb-1" id="acc-governanca">
+            <button class="nav-accordion-trigger" onclick="toggleAccordion('acc-governanca')">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="shield" class="w-3.5 h-3.5 text-slate-500"></i>
+                    <span>Governança</span>
+                </div>
+                <i data-lucide="chevron-right" class="acc-chevron w-3.5 h-3.5 text-slate-600"></i>
+            </button>
+            <div class="nav-accordion-body">
+                <div class="nav-group">
+                    <a href="{{ url_for('usuarios.lista_usuarios') }}"
+                        class="nav-link {% if 'usuarios' in request.endpoint %} nav-item-active {% endif %}"
+                        title="Controle de Acessos">
+                        <i data-lucide="shield-check"></i>
+                        <span>Controle de Acessos</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
     </nav>
 
     <!-- SIDEBAR FOOTER -->
-    <div class="p-6 mt-auto">
-        <div
-            class="p-4 bg-white/5 rounded-2xl border border-white/5 backdrop-blur-md transition-all hover:bg-white/10 group/footer">
-            <div class="flex items-center gap-3">
-                <div
-                    class="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(0,99,247,0.5)] animate-pulse shrink-0">
-                </div>
-                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] sidebar-footer-text">Estado
-                    do Sistema</span>
+    <div class="px-6 py-8 mt-auto border-t border-white/5">
+        <div class="space-y-4">
+            <div class="flex items-center gap-2.5 px-2">
+                <div class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></div>
+                <span class="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Estado do Sistema</span>
             </div>
-            <div class="mt-3 pt-3 border-t border-white/5 space-y-1 sidebar-footer-text">
-                <p class="text-[8px] font-bold text-amber-500/80 uppercase tracking-widest mb-1">Ambiente de
-                    Homologação</p>
-                <p class="text-[8px] font-medium text-slate-500 group-hover/footer:text-slate-400 transition-colors">
-                    QUALISUS • v1.6.0-S</p>
-                <p class="text-[8px] font-medium text-slate-600">STABLE_BUILD_26</p>
+            <div class="px-2 space-y-1">
+                <p class="text-[8px] font-bold text-slate-300 uppercase tracking-widest">Homologação Estável</p>
+                <p class="text-[8px] font-medium text-slate-500">QUALISUS • v1.6.0-S</p>
             </div>
         </div>
     </div>

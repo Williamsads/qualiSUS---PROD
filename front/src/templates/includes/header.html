@@ -50,7 +50,14 @@
             <div class="text-right">
                 <p class="text-sm font-black text-slate-900 leading-none">{{ session.get('nome', 'Usuário')
                     }}</p>
-                <p class="text-[10px] font-black text-blue-600 uppercase tracking-widest mt-1">Administrador
+                <p class="text-[10px] font-black text-blue-600 uppercase tracking-widest mt-1">
+                    {% set role = session.get('tipo', '').upper() %}
+                    {% if role == 'MEDICO' %} Médico/Especialista
+                    {% elif role == 'ADMIN' %} Administrador
+                    {% elif role == 'DESENVOLVEDOR' or role == 'DEV' %} Desenvolvedor
+                    {% elif role == 'ASSISTENTE_SOCIAL' %} Assistente Social
+                    {% else %} Usuário
+                    {% endif %}
                 </p>
             </div>
             <button

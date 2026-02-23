@@ -1,354 +1,980 @@
 {% extends "base.html" %}
 
+{% block extra_css %}
+<style>
+    /* Enterprise Premium Tokens & Animations */
+    :root {
+        --ent-primary: #2563eb;
+        --ent-success: #059669;
+        --ent-danger: #DC2626;
+        --ent-border: rgba(0, 0, 0, 0.06);
+        --ent-bg-soft: #F8FAFC;
+    }
+
+    /* Layout Container */
+    .clinical-container {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .ent-card {
+        background: #ffffff;
+        border-radius: 12px;
+        border: 1px solid rgba(0, 0, 0, 0.04);
+        padding: 24px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.03);
+        transition: all 0.15s ease;
+    }
+
+    .ent-card:hover {
+        transform: scale(0.998);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Enterprise Input Styling */
+    .ent-input,
+    .ent-select,
+    .ent-textarea {
+        width: 100%;
+        background: white;
+        border: 1px solid #E2E8F0;
+        border-radius: 8px;
+        padding: 10px 12px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #1E293B;
+        transition: all 0.15s ease;
+        outline: none;
+    }
+
+    .ent-input {
+        height: 44px;
+    }
+
+    .ent-select {
+        height: 44px;
+    }
+
+    .ent-input:hover,
+    .ent-select:hover,
+    .ent-textarea:hover {
+        background: rgba(0, 0, 0, 0.015);
+        border-color: #CBD5E1;
+    }
+
+    .ent-input:focus,
+    .ent-select:focus,
+    .ent-textarea:focus {
+        border-color: var(--ent-primary);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        background: white;
+    }
+
+    /* Labels Padrão Consistente */
+    .ent-label {
+        display: block;
+        font-size: 12px;
+        font-weight: 600;
+        color: #64748b;
+        margin-bottom: 6px;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+    }
+
+    /* Sub-card Visualmente Distinto (Encaminhamento) */
+    .ent-subcard {
+        background: #f8fafc;
+        border-radius: 10px;
+        padding: 20px;
+        border: 1px solid rgba(37, 99, 235, 0.08);
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .ent-subcard-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 4px;
+    }
+
+    .ent-subcard-header h3 {
+        font-weight: 600;
+        font-size: 14px;
+        color: #2563eb;
+    }
+
+    /* Área de Horários Padrão Enterprise */
+    .slots-container {
+        background: white;
+        border-radius: 8px;
+        border: 1px dashed rgba(0, 0, 0, 0.12);
+        padding: 16px;
+    }
+
+    /* Grid de Campos Responsivo */
+    .ent-field-grid {
+        display: grid;
+        gap: 16px;
+    }
+
+    @media (min-width: 1024px) {
+        .grid-3-cols {
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+
+        .grid-obs-cid {
+            grid-template-columns: 2fr 1fr;
+        }
+    }
+
+    @media (min-width: 768px) and (max-width: 1023px) {
+        .grid-3-cols {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    @media (max-width: 767px) {
+        .grid-3-cols {
+            grid-template-columns: 1fr;
+        }
+
+        .grid-obs-cid {
+            grid-template-columns: 1fr;
+        }
+
+        .clinical-container {
+            padding: 16px;
+        }
+
+        .ent-card {
+            border-radius: 10px;
+            padding: 20px;
+        }
+    }
+
+    /* Button Patterns */
+    .btn-ent {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 11px 24px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        transition: all 0.15s ease;
+        cursor: pointer;
+    }
+
+    .btn-ent:active {
+        transform: scale(0.985);
+    }
+
+    .btn-ent-success {
+        background: #059669;
+        color: white;
+        box-shadow: 0 4px 6px rgba(5, 150, 105, 0.1);
+    }
+
+    .btn-ent-success:hover {
+        background: #047857;
+        transform: translateY(-1px);
+    }
+
+    .btn-ent-secondary {
+        background: white;
+        border: 1px solid #E2E8F0;
+        color: #64748B;
+    }
+
+    .btn-ent-secondary:hover {
+        background: #F8FAFC;
+        color: #1E293B;
+        border-color: #CBD5E1;
+    }
+
+    /* Badge */
+    .ent-badge {
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .badge-blue {
+        background: #E0F2FE;
+        color: #0369A1;
+        border: 1px solid #BAE6FD;
+    }
+
+    /* Full Monthly Calendar Styles */
+    .calendar-container {
+        background: white;
+        border: 1px solid #E2E8F0;
+        border-radius: 16px;
+        padding: 16px;
+        width: 100%;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    }
+
+    .calendar-month-title {
+        font-size: 14px;
+        font-weight: 800;
+        color: #0F172A;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 2px;
+    }
+
+    .weekday-header {
+        font-size: 9px;
+        font-weight: 700;
+        color: #94A3B8;
+        text-transform: lowercase;
+        text-align: center;
+        padding-bottom: 8px;
+    }
+
+    .calendar-day {
+        aspect-ratio: 1.2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 600;
+        color: #1E293B;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        position: relative;
+    }
+
+    /* Layout for Calendar + Slots side by side */
+    .calendar-time-layout {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 20px;
+        align-items: start;
+    }
+
+    @media (min-width: 1024px) {
+        .calendar-time-layout {
+            grid-template-columns: 350px 1fr;
+        }
+    }
+
+    .calendar-day:not(.empty):not(.disabled):hover {
+        background: rgba(37, 99, 235, 0.05);
+        color: var(--ent-primary);
+        transform: scale(1.05);
+    }
+
+    .calendar-day.disabled {
+        color: #CBD5E1;
+        cursor: not-allowed;
+        font-weight: 400;
+    }
+
+    .calendar-day.active {
+        background: var(--ent-primary) !important;
+        color: white !important;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        z-index: 10;
+    }
+
+    .calendar-day.today::after {
+        content: '';
+        position: absolute;
+        bottom: 4px;
+        width: 4px;
+        height: 4px;
+        background: var(--ent-primary);
+        border-radius: 50%;
+    }
+
+    .calendar-day.active.today::after {
+        background: white;
+    }
+
+    /* Adjust subcard for calendar */
+    .ent-subcard {
+        gap: 12px;
+    }
+
+    .animate-ent-fade {
+        animation: entFadeIn 0.3s ease-out forwards;
+    }
+
+    @keyframes entFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<!-- Hidden data for JS -->
+<!-- Data Hidden -->
 <div id="appt-data" data-id="{{ appt.id }}" data-status="{{ appt.status }}"
-    data-especialidade="{{ appt.especialidade }}" data-validado="{{ 'true' if appt.validado_para_psico else 'false' }}"
-    class="hidden"></div>
+    data-trabalhador-id="{{ appt.trabalhador_id }}" data-unidade="{{ appt.unidade }}"
+    data-especialidade="{{ appt.especialidade }}"
+    data-metadata='{{ desfecho.metadata | tojson | safe if desfecho and desfecho.metadata else "{}" }}' class="hidden">
+</div>
 
-<div class="max-w-5xl mx-auto space-y-8 animate-fade-in pb-12">
+<!-- Content Container -->
+<div class="clinical-container animate-ent-fade">
 
-    <!-- BREADCRUMBS -->
-    <nav class="flex items-center text-[11px] font-bold uppercase tracking-widest text-gray-400">
-        <a href="{{ url_for('home') }}" class="breadcrumb-item hover:text-clinical-blue transition-colors">QualiSUS</a>
-        <a href="{{ url_for('log_agendamento.index') }}"
-            class="breadcrumb-item hover:text-clinical-blue transition-colors">Log de Agendamentos</a>
-        <span class="breadcrumb-item text-clinical-blue">Desfecho Clínico</span>
-    </nav>
-
-    <!-- PATIENT MINI HEADER -->
-    <header
-        class="bg-white/40 backdrop-blur-md rounded-[2.5rem] p-8 border border-white/20 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 transition-all relative overflow-hidden group">
-        <div
-            class="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
-        </div>
-        <div class="relative flex items-center gap-6 text-center md:text-left">
+    <!-- HEADER: PATIENT INFO CARD -->
+    <header class="ent-card p-5 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="flex items-center gap-5 w-full md:w-auto">
             <div
-                class="w-20 h-20 rounded-[2rem] bg-indigo-600 text-white flex items-center justify-center font-black text-3xl shadow-2xl shadow-indigo-500/30 transform transition-transform group-hover:scale-105">
+                class="w-14 h-14 rounded-xl bg-brand-500 text-white flex items-center justify-center font-bold text-xl shadow-lg shadow-brand-500/20">
                 {{ appt.paciente[0] }}
             </div>
             <div>
-                <h1 class="text-4xl font-black text-slate-900 tracking-tighter leading-none mb-4">{{ appt.paciente }}
-                </h1>
-                <div class="flex flex-wrap items-center justify-center md:justify-start gap-3">
-                    <span
-                        class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100 text-slate-600 border border-slate-200/50 font-mono text-[11px] font-bold">
-                        <i data-lucide="id-card" class="w-3.5 h-3.5"></i>
-                        {{ appt.cpf_paciente }}
-                    </span>
-                    <span
-                        class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-100/50 text-[11px] font-black uppercase tracking-widest">
-                        <i data-lucide="hash" class="w-3.5 h-3.5"></i>
-                        {{ appt.num_func_vinculo or 'N/A' }}
-                    </span>
+                <h1 class="text-xl font-bold text-slate-900 leading-tight mb-1">{{ appt.paciente }}</h1>
+                <div class="flex flex-wrap gap-2 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
+                    <span class="flex items-center gap-1.5"><i data-lucide="id-card" class="w-3.5 h-3.5"></i> CPF: {{
+                        appt.cpf_paciente }}</span>
+                    <span class="text-slate-300 mx-1">•</span>
+                    <span class="flex items-center gap-1.5"><i data-lucide="user" class="w-3.5 h-3.5"></i> Resp: {{
+                        appt.medico }}</span>
+                    <span class="text-slate-300 mx-1">•</span>
+                    <button onclick="abrirHistorico({{ appt.trabalhador_id }}, '{{ appt.paciente }}')"
+                        class="flex items-center gap-1.5 text-blue-600 hover:text-blue-700 transition-colors font-black">
+                        <i data-lucide="clock-rewind" class="w-3.5 h-3.5"></i> Ver Fluxo do Paciente
+                    </button>
                 </div>
             </div>
         </div>
-        <div class="relative flex flex-col items-center md:items-end">
-            <span class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Status da Jornada</span>
+
+        <div class="flex flex-col md:items-end gap-2 w-full md:w-auto">
             <div class="flex items-center gap-3">
-                <span class="w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse"></span>
-                <span
-                    class="px-6 py-2.5 rounded-2xl bg-blue-600 text-white text-[10px] font-black uppercase tracking-[0.15em] shadow-lg shadow-blue-500/20 border border-blue-400">
-                    {{ appt.status }}
-                </span>
+                <span class="ent-badge badge-blue">{{ appt.status }}</span>
+                <span class="text-[11px] font-bold text-slate-400">ID: #{{ appt.id }}</span>
             </div>
+            <p class="text-[11px] font-semibold text-slate-500 uppercase">
+                {{ appt.data_consulta.strftime('%d/%m/%Y') }} às {{ appt.horario.strftime('%H:%M') }}
+            </p>
         </div>
     </header>
 
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-
-        <!-- LEFT COLUMN: CONTEXT -->
-        <aside class="lg:col-span-4 space-y-6">
-            <div class="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm">
-                <h3
-                    class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-8 flex items-center gap-2">
-                    <i data-lucide="info" class="w-4 h-4 text-blue-500"></i>
-                    Informações Clínicas
-                </h3>
-
-                <div class="space-y-8">
-                    <div class="group">
-                        <p
-                            class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mb-1.5 group-hover:text-blue-500 transition-colors">
-                            Especialidade</p>
-                        <p class="text-slate-800 font-black flex items-center gap-3">
-                        <div class="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
-                            <i data-lucide="stethoscope" class="w-4.5 h-4.5"></i>
-                        </div>
-                        <span class="text-sm">{{ appt.especialidade }}</span>
-                        </p>
+    <!-- MAIN SECTION: DESFECHO CLÍNICO -->
+    <div class="grid grid-cols-1 gap-6">
+        <section class="ent-card p-8 space-y-8">
+            <div class="flex items-center gap-3 border-b border-slate-100 pb-5">
+                <div class="w-10 h-10 rounded-lg bg-brand-50 text-brand-500 flex items-center justify-center">
+                    <i data-lucide="clipboard-list" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h2 class="text-base font-bold text-slate-900 leading-none">Desfecho Clínico</h2>
+                    {% if desfecho and desfecho.profissional_nome %}
+                    <div class="mt-1 flex items-center gap-2">
+                        <span
+                            class="flex items-center gap-1 text-[9px] font-black text-brand-600 uppercase bg-brand-50 px-2 py-0.5 rounded-md border border-brand-100">
+                            <i data-lucide="user-check" class="w-3 h-3"></i> Autenticado por: {{
+                            desfecho.profissional_nome }}
+                        </span>
+                        <span class="text-[9px] text-slate-300">•</span>
+                        <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                            Em: {{ desfecho.atualizado_em.strftime('%d/%m/%Y %H:%M') }}
+                        </span>
                     </div>
-                    <div>
-                        <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mb-1.5">Profissional
-                            Responsável</p>
-                        <p class="text-slate-800 font-black flex items-center gap-3">
-                        <div class="w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
-                            <i data-lucide="user-check" class="w-4.5 h-4.5"></i>
-                        </div>
-                        <span class="text-sm">{{ appt.medico }}</span>
-                        </p>
-                    </div>
-                    <div>
-                        <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mb-1.5">Data e Horário
-                        </p>
-                        <p class="text-slate-800 font-black flex items-center gap-3">
-                        <div class="w-9 h-9 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
-                            <i data-lucide="calendar" class="w-4.5 h-4.5"></i>
-                        </div>
-                        <span class="text-sm">{{ appt.data_consulta.strftime('%d/%m/%Y') }} • {{
-                            appt.horario.strftime('%H:%M') }}</span>
-                        </p>
-                    </div>
+                    {% else %}
+                    <p class="text-[11px] text-slate-400 font-medium uppercase tracking-widest mt-1">Preencha os dados
+                        do encerramento</p>
+                    {% endif %}
                 </div>
             </div>
 
-            <!-- WhatsApp Context -->
-            <div
-                class="bg-emerald-50/50 rounded-3xl p-8 border border-emerald-100/50 shadow-sm relative overflow-hidden group">
-                <div
-                    class="absolute -right-4 -top-4 w-24 h-24 bg-emerald-500/5 rounded-full group-hover:scale-150 transition-transform duration-1000">
-                </div>
-                <h3 class="text-[9px] font-black text-emerald-600 uppercase tracking-widest mb-4">Contato do Paciente
-                </h3>
-                <p class="text-xl font-black text-slate-800 mb-6 tracking-tight">{{ appt.telefone }}</p>
-                <a href="https://wa.me/55{{ appt.telefone|replace('(', '')|replace(')', '')|replace('-', '')|replace(' ', '') }}"
-                    target="_blank"
-                    class="w-full flex items-center justify-center gap-3 py-4 bg-emerald-500 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-500/20 active:scale-95">
-                    <i data-lucide="message-circle" class="w-5 h-5"></i>
-                    Chamar no WhatsApp
-                </a>
-            </div>
-        </aside>
-
-        <!-- MAIN AREA: DECISION MAKING -->
-        <main class="lg:col-span-8 space-y-8">
-
-            <section class="bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-sm relative overflow-hidden">
-                <div class="absolute top-0 right-0 w-32 h-32 bg-blue-50/20 rounded-full blur-3xl -mr-16 -mt-16"></div>
-
-                <h3 class="text-xs font-black text-slate-800 uppercase tracking-widest mb-10 flex items-center gap-3">
-                    <i data-lucide="clipboard-check" class="w-5 h-5 text-emerald-500"></i>
-                    Definição do Desfecho Clínico
-                </h3>
-
-                <!-- DESFECHO CARDS -->
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                    <button type="button" onclick="setDesfecho('nao_compareceu')" id="btn-desfecho-nc"
-                        class="desfecho-card group relative p-8 rounded-[2rem] border-2 border-slate-100 bg-white hover:bg-rose-50/50 hover:border-rose-200 hover:shadow-2xl hover:shadow-rose-500/10 transition-all text-center overflow-hidden">
-                        <div
-                            class="absolute top-0 left-0 w-full h-1 bg-rose-500 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500">
-                        </div>
-                        <div
-                            class="w-20 h-20 rounded-3xl bg-rose-50 flex items-center justify-center text-rose-500 mb-6 mx-auto group-hover:scale-110 group-hover:bg-rose-100 group-hover:rotate-6 transition-all duration-500">
-                            <i data-lucide="user-x" class="w-9 h-9"></i>
-                        </div>
-                        <p class="text-[10px] font-black text-rose-500/60 uppercase tracking-[0.2em] mb-2">Ausência</p>
-                        <p class="text-base font-black text-slate-900 leading-tight">Não Compareceu</p>
-                        <div
-                            class="check-indicator absolute top-6 right-6 opacity-0 scale-50 transition-all duration-300">
-                            <div
-                                class="bg-rose-500 text-white p-2 rounded-xl shadow-xl shadow-rose-500/40 transform rotate-12">
-                                <i data-lucide="check" class="w-5 h-5"></i></div>
-                        </div>
-                    </button>
-
-                    <button type="button" onclick="setDesfecho('reagendar')" id="btn-desfecho-re"
-                        class="desfecho-card group relative p-8 rounded-[2rem] border-2 border-slate-100 bg-white hover:bg-amber-50/50 hover:border-amber-200 hover:shadow-2xl hover:shadow-amber-500/10 transition-all text-center overflow-hidden">
-                        <div
-                            class="absolute top-0 left-0 w-full h-1 bg-amber-500 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500">
-                        </div>
-                        <div
-                            class="w-20 h-20 rounded-3xl bg-amber-50 flex items-center justify-center text-amber-500 mb-6 mx-auto group-hover:scale-110 group-hover:bg-amber-100 group-hover:-rotate-6 transition-all duration-500">
-                            <i data-lucide="calendar-clock" class="w-9 h-9"></i>
-                        </div>
-                        <p class="text-[10px] font-black text-amber-500/60 uppercase tracking-[0.2em] mb-2">Pendente</p>
-                        <p class="text-base font-black text-slate-900 leading-tight">Reagendar Atend.</p>
-                        <div
-                            class="check-indicator absolute top-6 right-6 opacity-0 scale-50 transition-all duration-300">
-                            <div
-                                class="bg-amber-500 text-white p-2 rounded-xl shadow-xl shadow-amber-500/40 transform -rotate-12">
-                                <i data-lucide="check" class="w-5 h-5"></i></div>
-                        </div>
-                    </button>
-
-                    <button type="button" onclick="setDesfecho('atendido')" id="btn-desfecho-at"
-                        class="desfecho-card group relative p-8 rounded-[2rem] border-2 border-emerald-500/20 bg-emerald-50/10 hover:bg-emerald-50/50 hover:border-emerald-500 hover:shadow-2xl hover:shadow-emerald-500/10 transition-all text-center overflow-hidden">
-                        <div
-                            class="absolute top-0 left-0 w-full h-1 bg-emerald-500 transform group-hover:translate-x-0 transition-transform duration-500">
-                        </div>
-                        <div
-                            class="w-20 h-20 rounded-3xl bg-emerald-100 flex items-center justify-center text-emerald-600 mb-6 mx-auto group-hover:scale-110 group-hover:bg-emerald-200 transition-all duration-500">
-                            <i data-lucide="check-circle-2" class="w-9 h-9"></i>
-                        </div>
-                        <p class="text-[10px] font-black text-emerald-500 uppercase tracking-[0.2em] mb-2">Executado</p>
-                        <p class="text-base font-black text-slate-900 leading-tight">Atendimento Normal</p>
-                        <div
-                            class="check-indicator absolute top-6 right-6 opacity-0 scale-50 transition-all duration-300">
-                            <div class="bg-emerald-500 text-white p-2 rounded-xl shadow-xl shadow-emerald-500/40"><i
-                                    data-lucide="check" class="w-5 h-5"></i></div>
-                        </div>
-                    </button>
+            <div class="grid grid-cols-1 gap-6">
+                <!-- Tipo de Desfecho -->
+                <div class="mb-5">
+                    <label class="ent-label">Tipo de Desfecho <span class="text-red-500">*</span></label>
+                    <select id="clin-desfecho-tipo" class="ent-select" onchange="handleDesfechoChange()">
+                        <option value="" disabled {{ 'selected' if not desfecho }}>Selecione o desfecho...</option>
+                        <option value="atendido" {{ 'selected' if desfecho and desfecho.tipo_desfecho=='atendido' }}>
+                            Atendimento Concluído</option>
+                        <option value="encaminhar" {{ 'selected' if desfecho and desfecho.tipo_desfecho=='encaminhar'
+                            }}>Encaminhamento Interno</option>
+                        <option value="nao_compareceu" {{ 'selected' if desfecho and
+                            desfecho.tipo_desfecho=='nao_compareceu' }}>Não Compareceu</option>
+                    </select>
                 </div>
 
-                <!-- CONDITIONAL: Aptitude (Only for Acolhimento) -->
-                {% if appt.especialidade == 'Acolhimento' %}
-                <div id="psico-validation-container"
-                    class="mt-10 pt-10 border-t border-slate-50 hidden animate-fade-in-up">
-                    <div class="bg-slate-50 rounded-[2rem] p-8 text-center space-y-6">
-                        <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                            Triagem de Saúde Mental</h4>
-                        <p class="text-sm text-slate-600 font-bold">O servidor está apto para encaminhamento à
-                            Especialidade (Psicologia/Psiquiatria)?</p>
+                <!-- Forms Dinâmicos com Sub-card -->
+                <div id="dynamic-forms-container" class="border-t border-slate-100 pt-5 mt-5">
 
-                        <div class="flex gap-4 max-w-sm mx-auto">
-                            <button type="button" onclick="setApto(true)" id="btn-apto-sim"
-                                class="apto-btn flex-1 py-4 rounded-2xl border-2 border-slate-200 text-slate-400 font-black text-[10px] hover:border-emerald-500 hover:text-emerald-500 transition-all uppercase tracking-widest active:scale-95 shadow-soft">
-                                Sim, Liberar
-                            </button>
-                            <button type="button" onclick="setApto(false)" id="btn-apto-nao"
-                                class="apto-btn flex-1 py-4 rounded-2xl border-2 border-slate-200 text-slate-400 font-black text-[10px] hover:border-rose-500 hover:text-rose-500 transition-all uppercase tracking-widest active:scale-95 shadow-soft">
-                                Não, Bloquear
-                            </button>
+                    <!-- ENCAMINHAMENTO FORM (Integrated) -->
+                    <div id="encaminhamento-detailed-form" style="display: none;" class="ent-subcard animate-ent-fade">
+                        <div class="ent-subcard-header">
+                            <i data-lucide="send" class="w-4 h-4 text-blue-600"></i>
+                            <h3>Agendar Encaminhamento Interno</h3>
+                        </div>
+
+                        <!-- Step 1 & 2: Main Info -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="space-y-1.5">
+                                <label class="ent-label text-[10px]">1. Especialidade</label>
+                                <select id="enc-especialidade" onchange="carregarProfissionaisEnc()"
+                                    class="ent-select"></select>
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="ent-label text-[10px]">2. Profissional</label>
+                                <select id="enc-profissional" onchange="carregarDatasDisponiveisEnc()"
+                                    class="ent-select">
+                                    <option value="">Selecione a especialidade...</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Step 3 & 4: Sidebar Layout -->
+                        <div class="calendar-time-layout mt-2">
+                            <!-- Column 3: Calendar -->
+                            <div class="space-y-3">
+                                <label class="ent-label text-[10px] flex items-center gap-2">
+                                    <i data-lucide="calendar" class="w-3.5 h-3.5"></i> 3. Seleção de Data
+                                </label>
+                                <div class="calendar-container" id="calendar-wrapper">
+                                    <div class="calendar-month-title" id="calendar-title">Selecione o Profissional</div>
+                                    <div class="calendar-grid" id="calendar-grid">
+                                        <div class="weekday-header">dom</div>
+                                        <div class="weekday-header">seg</div>
+                                        <div class="weekday-header">ter</div>
+                                        <div class="weekday-header">qua</div>
+                                        <div class="weekday-header">qui</div>
+                                        <div class="weekday-header">sex</div>
+                                        <div class="weekday-header">sab</div>
+                                        <div class="col-span-7 flex justify-center py-6">
+                                            <p class="text-[11px] text-slate-400 font-medium">Aguardando seleção...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="hidden" id="enc-data">
+                            </div>
+
+                            <!-- Column 4: Slots -->
+                            <div class="space-y-3">
+                                <label class="ent-label text-[10px] flex items-center gap-2">
+                                    <i data-lucide="clock" class="w-3.5 h-3.5"></i> 4. Horários Disponíveis
+                                </label>
+                                <div id="enc-slots-grid"
+                                    class="slots-container flex flex-wrap gap-2 min-h-[200px] content-start">
+                                    <div class="flex flex-col items-center justify-center w-full py-12 text-slate-400">
+                                        <i data-lucide="mouse-pointer-2" class="w-6 h-6 mb-2 opacity-20"></i>
+                                        <p class="text-[11px] font-medium text-center opacity-70">
+                                            Selecione uma data no calendário<br>para ver os horários.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                {% endif %}
 
-                <!-- CLINICAL NOTES -->
-                <div class="mt-10">
-                    <label
-                        class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-4 block ml-1">Evolução
-                        Clínica / Anotações</label>
-                    <textarea id="clin-observacao"
-                        class="w-full px-7 py-6 bg-slate-50/50 border border-slate-100 rounded-3xl focus:ring-4 focus:ring-blue-500/5 focus:bg-white focus:border-blue-200 outline-none text-sm text-slate-700 font-medium transition-all min-h-[160px] placeholder:text-slate-300"
-                        placeholder="Descreva de forma concisa a conduta adotada e observações relevantes...">{{ appt.observacao or "" }}</textarea>
+                <!-- Conduta Clínica -->
+                <div class="space-y-2 border-t border-slate-100 pt-5 mt-5">
+                    <label class="ent-label">Conduta Clínica <span class="text-red-500">*</span></label>
+                    <textarea id="clin-conduta" class="ent-textarea min-h-[140px]"
+                        placeholder="Descreva detalhadamente a conduta clínica adotada...">{{ desfecho.conduta if desfecho else "" }}</textarea>
                 </div>
 
-                <!-- ACTION BUTTONS -->
-                <div class="mt-12 flex flex-col sm:flex-row justify-end gap-4">
-                    <a href="{{ url_for('log_agendamento.index') }}"
-                        class="px-8 py-5 bg-white border-2 border-slate-200 text-slate-600 text-sm font-black uppercase tracking-wider rounded-2xl hover:bg-slate-50 hover:border-slate-300 transition-all text-center">
-                        Descartar e Voltar
-                    </a>
-                    <button onclick="salvarDesfecho()" id="btn-finalizar"
-                        class="px-12 py-5 bg-emerald-500 text-white text-sm font-black uppercase tracking-wider rounded-2xl shadow-xl shadow-emerald-500/20 hover:bg-emerald-600 transition-all transform active:scale-95 text-center">
-                        Finalizar Atendimento
-                    </button>
+                <!-- Grid: Observações & CID -->
+                <div class="ent-field-grid grid-obs-cid">
+                    <div class="space-y-2">
+                        <label class="ent-label">Observações Complementares</label>
+                        <textarea id="clin-observacao" class="ent-textarea min-h-[80px]"
+                            placeholder="Anotações adicionais, se houver...">{{ appt.observacao or "" }}</textarea>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="ent-label">CID-10</label>
+                        <input type="text" id="clin-cid" class="ent-input" placeholder="Ex: Z00.0"
+                            value="{{ desfecho.cid if desfecho else "" }}">
+                        <p class="text-[10px] text-slate-400 font-medium italic mt-1 ml-1">Opcional</p>
+                    </div>
                 </div>
-            </section>
 
-        </main>
+                <!-- Anexos -->
+                <div class="space-y-2 border-t border-slate-100 pt-5 mt-5">
+                    <label class="ent-label">Anexos e Documentos</label>
+                    <div class="upload-zone group">
+                        <div class="flex flex-col items-center gap-3">
+                            <div
+                                class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-brand-50 group-hover:text-brand-500 transition-colors">
+                                <i data-lucide="upload-cloud" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-slate-700">Arraste arquivos ou clique para anexar</p>
+                                <p class="text-[11px] text-slate-400 font-medium">PDF, JPG, PNG (Max 5MB)</p>
+                            </div>
+                        </div>
+                        <input type="file" id="clin-anexos" class="hidden" multiple>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ACTIONS BAR -->
+        <footer class="flex flex-col sm:flex-row justify-end items-center gap-3 pt-4">
+            <button onclick="window.location.href='{{ url_for('log_agendamento.index') }}'"
+                class="btn-ent btn-ent-secondary w-full sm:w-auto">
+                <i data-lucide="x" class="w-4 h-4 mr-2"></i> Cancelar
+            </button>
+            <button onclick="salvarDesfecho(false)" id="btn-salvar-rascunho"
+                class="btn-ent btn-ent-secondary w-full sm:w-auto">
+                <i data-lucide="save" class="w-4 h-4 mr-2"></i> Salvar Rascunho
+            </button>
+            <button onclick="salvarDesfecho(true)" id="btn-finalizar" class="btn-ent btn-ent-success w-full sm:w-auto">
+                <i data-lucide="check-circle" class="w-4 h-4 mr-2"></i> Finalizar Atendimento
+            </button>
+        </footer>
     </div>
 </div>
 
+<!-- ═══════════════════════════════════════════════════════
+     MODAL: HISTÓRICO / FLUXO DO PACIENTE
+═══════════════════════════════════════════════════════ -->
+<div id="modal-historico"
+    class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+    <div id="modal-historico-content"
+        class="bg-white rounded-[2rem] shadow-2xl w-full max-w-2xl border border-slate-100 flex flex-col transform scale-95 opacity-0 transition-all duration-300 max-h-[80vh]">
+        <div class="flex items-center justify-between px-8 py-6 border-b border-slate-100">
+            <div>
+                <h3 class="text-lg font-black text-slate-900 uppercase tracking-tight">Fluxo de Atendimento</h3>
+                <p class="text-xs text-slate-500 font-medium mt-0.5"><span id="label-nome-historico">—</span> • <span
+                        class="text-blue-600 font-bold">Rastreabilidade Clínica</span></p>
+            </div>
+            <button onclick="fecharModalHistorico()"
+                class="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-slate-400 hover:bg-slate-200 transition-all">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+        </div>
+        <div id="historico-body" class="flex-1 overflow-y-auto p-8 space-y-0 relative">
+            <div class="absolute left-10 top-0 bottom-0 w-px bg-slate-100 hidden md:block"></div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
 <script>
     let desfechoAtual = null;
-    let aptoAtual = null;
-
-    // Get info from hidden DOM element to avoid Jinja/JS syntax issues
+    let selectedSlotEncValue = null;
     const dataEl = document.getElementById('appt-data');
     const apptId = dataEl.dataset.id;
-    const currentStatus = dataEl.dataset.status;
-    const isAcolhimento = dataEl.dataset.especialidade === 'Acolhimento';
-    const isValidadoInicial = dataEl.dataset.validado === 'true';
+    const unidadeAtendimento = dataEl.dataset.unidade;
 
-    function setDesfecho(tipo) {
+    function handleDesfechoChange() {
+        const tipo = document.getElementById('clin-desfecho-tipo').value;
         desfechoAtual = tipo;
 
-        document.querySelectorAll('.desfecho-card').forEach(card => {
-            card.classList.remove('border-rose-500', 'border-amber-500', 'border-emerald-500', 'bg-rose-50', 'bg-amber-50', 'bg-emerald-50', 'ring-8', 'ring-rose-500/5', 'ring-amber-500/5', 'ring-emerald-500/5', 'scale-[1.02]');
-            card.querySelector('.check-indicator').classList.add('opacity-0');
-        });
+        // Reset visibility
+        document.getElementById('encaminhamento-detailed-form').style.display = 'none';
 
-        const btnId = tipo === 'nao_compareceu' ? 'nc' : (tipo === 'reagendar' ? 're' : 'at');
-        const card = document.getElementById(`btn-desfecho-${btnId}`);
-        const color = { 'nao_compareceu': 'rose', 'reagendar': 'amber', 'atendido': 'emerald' }[tipo];
+        if (tipo === 'encaminhar') {
+            document.getElementById('encaminhamento-detailed-form').style.display = 'block';
+            carregarEspecialidadesEnc();
+        }
+    }
 
-        card.classList.add(`border-${color}-500`, `bg-${color}-50`, 'ring-8', `ring-${color}-500/5`, 'scale-[1.02]');
-        card.querySelector('.check-indicator').classList.remove('opacity-0');
+    /* Logic for Re-scheduling / Referral inherited from previous version */
+    async function carregarEspecialidadesEnc() {
+        try {
+            const res = await fetch('/api/agendar_exame/especialidades');
+            const data = await res.json();
+            const select = document.getElementById('enc-especialidade');
+            select.innerHTML = '<option value="">Especialidade...</option>';
+            (data.especialidades || []).forEach(s => {
+                const opt = document.createElement('option');
+                opt.value = s.id;
+                opt.dataset.nome = s.nome;
+                opt.innerText = s.nome;
+                select.appendChild(opt);
+            });
+        } catch (err) { console.error(err); }
+    }
 
-        if (isAcolhimento) {
-            const container = document.getElementById('psico-validation-container');
-            if (tipo === 'atendido') {
-                container.classList.remove('hidden');
-            } else {
-                container.classList.add('hidden');
-                aptoAtual = null;
+    async function carregarProfissionaisEnc() {
+        const specId = document.getElementById('enc-especialidade').value;
+        if (!specId) return;
+        try {
+            const res = await fetch(`/api/agendar_exame/profissionais?especialidade_id=${specId}&unidade=${encodeURIComponent(unidadeAtendimento)}`);
+            const data = await res.json();
+            const select = document.getElementById('enc-profissional');
+            select.innerHTML = '<option value="">Profissional...</option>';
+            (data.profissionais || []).forEach(p => {
+                const opt = document.createElement('option');
+                opt.value = p.id;
+                opt.innerText = p.nome;
+                select.appendChild(opt);
+            });
+            resetDatasEnc();
+            resetSlotsEnc();
+        } catch (err) { console.error(err); }
+    }
+
+    async function carregarDatasDisponiveisEnc() {
+        const profId = document.getElementById('enc-profissional').value;
+        if (!profId) return;
+
+        const grid = document.getElementById('calendar-grid');
+        const title = document.getElementById('calendar-title');
+
+        try {
+            const res = await fetch(`/api/agendar_exame/datas_disponiveis?medico_id=${profId}`);
+            const diasTrabalho = await res.json();
+
+            const hoje = new Date();
+            const mesAtual = hoje.getMonth();
+            const anoAtual = hoje.getFullYear();
+            const mesesNomes = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+
+            title.innerText = `${mesesNomes[mesAtual]} ${anoAtual}`;
+
+            // Re-renderizar cabeçalho
+            grid.innerHTML = `
+                <div class="weekday-header">dom</div><div class="weekday-header">seg</div>
+                <div class="weekday-header">ter</div><div class="weekday-header">qua</div>
+                <div class="weekday-header">qui</div><div class="weekday-header">sex</div>
+                <div class="weekday-header">sab</div>
+            `;
+
+            const primDiaMes = new Date(anoAtual, mesAtual, 1).getDay();
+            const diasNoMes = new Date(anoAtual, mesAtual + 1, 0).getDate();
+
+            // Espaços vazios
+            for (let i = 0; i < primDiaMes; i++) {
+                const empty = document.createElement('div');
+                empty.className = 'calendar-day empty';
+                grid.appendChild(empty);
             }
-        }
+
+            // Dias do mês
+            for (let d = 1; d <= diasNoMes; d++) {
+                const dataLoop = new Date(anoAtual, mesAtual, d);
+                const isWorkDay = diasTrabalho.includes(dataLoop.getDay());
+                const isPast = dataLoop < new Date(hoje.setHours(0, 0, 0, 0));
+
+                const dayEl = document.createElement('div');
+                dayEl.className = 'calendar-day';
+                dayEl.innerText = d;
+
+                const dateISO = dataLoop.toISOString().split('T')[0];
+                dayEl.id = `day-${dateISO}`;
+
+                if (dataLoop.toDateString() === new Date().toDateString()) dayEl.classList.add('today');
+
+                if (!isWorkDay || isPast) {
+                    dayEl.classList.add('disabled');
+                } else {
+                    dayEl.onclick = () => selectDateEnc(dayEl, dateISO);
+                }
+
+                grid.appendChild(dayEl);
+            }
+
+        } catch (err) { console.error(err); }
     }
 
-    function setApto(val) {
-        aptoAtual = val;
-        const btnSim = document.getElementById('btn-apto-sim');
-        const btnNao = document.getElementById('btn-apto-nao');
-
-        btnSim.classList.remove('bg-emerald-600', 'text-white', 'border-emerald-600', 'shadow-lg', 'shadow-emerald-500/20');
-        btnNao.classList.remove('bg-rose-600', 'text-white', 'border-rose-600', 'shadow-lg', 'shadow-rose-500/20');
-
-        if (val) {
-            btnSim.classList.add('bg-emerald-600', 'text-white', 'border-emerald-600', 'shadow-lg', 'shadow-emerald-500/20');
-        } else {
-            btnNao.classList.add('bg-rose-600', 'text-white', 'border-rose-600', 'shadow-lg', 'shadow-rose-500/20');
-        }
+    function selectDateEnc(element, val) {
+        document.querySelectorAll('.calendar-day').forEach(c => c.classList.remove('active'));
+        element.classList.add('active');
+        document.getElementById('enc-data').value = val;
+        carregarSlotsEnc();
     }
 
-    async function salvarDesfecho() {
+    function resetDatasEnc() {
+        document.getElementById('enc-data').value = '';
+        document.getElementById('calendar-title').innerText = 'Selecione o Profissional';
+        document.getElementById('calendar-grid').innerHTML = '<div class="col-span-7 py-6 text-center text-slate-400 text-xs">Agenda indisponível</div>';
+    }
+
+    async function carregarSlotsEnc() {
+        const profId = document.getElementById('enc-profissional').value;
+        const data = document.getElementById('enc-data').value;
+        if (!profId || !data) return;
+        const grid = document.getElementById('enc-slots-grid');
+        grid.innerHTML = '<p class="text-[10px] text-blue-500 animate-pulse">Buscando...</p>';
+        try {
+            const res = await fetch(`/api/agendar_exame/horarios?medico_id=${profId}&data=${data}`);
+            const slots = await res.json();
+            grid.innerHTML = '';
+            if (slots.length === 0) {
+                grid.innerHTML = '<p class="text-[12px] text-rose-500 font-bold text-center w-full py-2">Esgotado para esta data</p>';
+                return;
+            }
+            slots.forEach(s => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'px-3 py-2 rounded-lg border border-slate-100 bg-white text-[10px] font-bold hover:bg-blue-600 hover:text-white transition-all';
+                btn.innerText = s.horario;
+                btn.onclick = () => selectSlotEnc(btn, s.horario);
+                grid.appendChild(btn);
+            });
+        } catch (err) { console.error(err); }
+    }
+
+    function selectSlotEnc(btn, val) {
+        document.querySelectorAll('#enc-slots-grid button').forEach(b => b.classList.remove('bg-blue-600', 'text-white', 'border-blue-600', 'ring-4', 'ring-blue-100'));
+        btn.classList.add('bg-blue-600', 'text-white', 'border-blue-600', 'ring-4', 'ring-blue-100');
+        selectedSlotEncValue = val;
+    }
+
+    function resetSlotsEnc() {
+        document.getElementById('enc-slots-grid').innerHTML = '<p class="text-[12px] text-slate-400 font-medium text-center w-full py-2 opacity-70">Aguardando seleção de data...</p>';
+        selectedSlotEncValue = null;
+    }
+
+    async function salvarDesfecho(finalizar = true) {
         if (!desfechoAtual) {
-            showToast("Selecione o desfecho do atendimento.", "warning");
+            showToast("Selecione o tipo de desfecho.", "warning");
             return;
         }
 
-        if (isAcolhimento && desfechoAtual === 'atendido' && aptoAtual === null) {
-            showToast("Informe se o servidor está apto para Psicologia/Psiquiatria.", "warning");
+        const conduta = document.getElementById('clin-conduta').value;
+        if (finalizar && conduta.length < 10) {
+            showToast("A conduta clínica deve ter pelo menos 10 caracteres.", "warning");
             return;
         }
 
-        const btn = document.getElementById('btn-finalizar');
-        const originalText = btn.innerHTML;
-        btn.innerHTML = "<span class='animate-pulse'>Gravando...</span>";
+        const payload = {
+            status: (finalizar || desfechoAtual === 'alta_medica' || desfechoAtual === 'encaminhar') ? 'Finalizado' :
+                (desfechoAtual === 'nao_compareceu' ? 'NAO_COMPARECEU' : 'Agendado'),
+            observacao: document.getElementById('clin-observacao').value,
+            desfecho: desfechoAtual,
+            conduta: conduta,
+            cid: document.getElementById('clin-cid').value
+        };
+
+        if (desfechoAtual === 'encaminhar') {
+            const specSelect = document.getElementById('enc-especialidade');
+            const profId = document.getElementById('enc-profissional').value;
+            const encData = document.getElementById('enc-data').value;
+            if (!profId || !encData || !selectedSlotEncValue) { return showToast("Preencha os dados do encaminhamento.", "warning"); }
+            const selectedSpecOpt = specSelect.options[specSelect.selectedIndex];
+            payload.encaminhamento = {
+                especialidade: selectedSpecOpt.dataset.nome,
+                profissional_id: profId,
+                data: encData,
+                horario: selectedSlotEncValue
+            };
+        }
+
+        const btn = finalizar ? document.getElementById('btn-finalizar') : document.getElementById('btn-salvar-rascunho');
+        const original = btn.innerHTML;
+        btn.innerHTML = "<i class='lucide-loader-2 animate-spin mr-2'></i> Aguarde...";
         btn.disabled = true;
 
         try {
             const res = await fetch(`/log_agendamento/api/atualizar/${apptId}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    status: desfechoAtual === 'atendido' ? 'Finalizado' : (desfechoAtual === 'nao_compareceu' ? 'NAO_COMPARECEU' : 'Agendado'),
-                    observacao: document.getElementById('clin-observacao').value,
-                    desfecho: desfechoAtual,
-                    apto_psico: aptoAtual
-                })
+                body: JSON.stringify(payload)
             });
-
             const data = await res.json();
             if (data.success) {
-                showToast("Atendimento finalizado com sucesso!", "success");
-                setTimeout(() => {
-                    window.location.href = "{{ url_for('log_agendamento.index') }}";
-                }, 1000);
+                showToast("Sucesso", finalizar ? "Atendimento finalizado!" : "Rascunho salvo.", "success");
+                setTimeout(() => window.location.href = "{{ url_for('log_agendamento.index') }}", 1000);
             } else {
-                showToast(data.error || "Erro ao salvar desfecho.", "error");
-                btn.innerHTML = originalText;
-                btn.disabled = false;
+                showToast("Erro", data.error || "Ocorreu um erro.", "error");
+                btn.innerHTML = original; btn.disabled = false;
             }
         } catch (err) {
             console.error(err);
-            showToast("Erro de conexão.", "error");
-            btn.innerHTML = originalText;
-            btn.disabled = false;
+            showToast("Erro", "Falha na conexão.", "error");
+            btn.innerHTML = original; btn.disabled = false;
         }
     }
 
-    window.addEventListener('load', () => {
-        if (currentStatus === 'NAO_COMPARECEU') setDesfecho('nao_compareceu');
-        else if (currentStatus === 'Finalizado') {
-            setDesfecho('atendido');
-            if (isAcolhimento) {
-                setApto(isValidadoInicial);
+    // Trigger upload on zone click
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('.upload-zone')) {
+            document.getElementById('clin-anexos').click();
+        }
+    });
+
+    window.addEventListener('load', async () => {
+        const preSelected = document.getElementById('clin-desfecho-tipo').value;
+        if (preSelected) {
+            handleDesfechoChange();
+
+            // Tenta restaurar metadados de encaminhamento se existirem
+            const meta = JSON.parse(dataEl.dataset.metadata || '{}');
+            if (preSelected === 'encaminhar' && meta.especialidade) {
+                // Aguarda o carregamento das especialidades
+                await carregarEspecialidadesEnc();
+                const specSelect = document.getElementById('enc-especialidade');
+
+                // Encontra a especialidade pelo nome
+                for (let i = 0; i < specSelect.options.length; i++) {
+                    if (specSelect.options[i].dataset.nome === meta.especialidade) {
+                        specSelect.selectedIndex = i;
+                        break;
+                    }
+                }
+
+                if (specSelect.value) {
+                    await carregarProfissionaisEnc();
+                    const profSelect = document.getElementById('enc-profissional');
+                    profSelect.value = meta.profissional_id;
+
+                    if (profSelect.value) {
+                        await carregarDatasDisponiveisEnc();
+                        const dateValue = meta.data;
+                        const dayEl = document.getElementById(`day-${dateValue}`);
+                        if (dayEl) {
+                            selectDateEnc(dayEl, dateValue);
+
+                            await carregarSlotsEnc();
+                            // Aguarda o render dos botões de slot
+                            setTimeout(() => {
+                                document.querySelectorAll('#enc-slots-grid button').forEach(btn => {
+                                    if (btn.innerText === meta.horario) {
+                                        selectSlotEnc(btn, meta.horario);
+                                    }
+                                });
+                            }, 500);
+                        }
+                    }
+                }
             }
         }
+    });
+    // ─── Modal Histórico / Timeline ─────────────────────────────
+    function abrirModal(id) {
+        const modal = document.getElementById(id);
+        const content = document.getElementById(id + '-content');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        setTimeout(() => {
+            content.classList.remove('scale-95', 'opacity-0');
+            content.classList.add('scale-100', 'opacity-100');
+        }, 10);
+    }
+
+    function fecharModal(id) {
+        const modal = document.getElementById(id);
+        const content = document.getElementById(id + '-content');
+        content.classList.remove('scale-100', 'opacity-100');
+        content.classList.add('scale-95', 'opacity-0');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }, 250);
+    }
+
+    async function abrirHistorico(trabalhadorId, nome) {
+        document.getElementById('label-nome-historico').textContent = nome;
+        const body = document.getElementById('historico-body');
+        body.innerHTML = `
+            <div class="flex items-center justify-center py-20 text-slate-400">
+                <div class="w-8 h-8 border-2 border-slate-200 border-t-blue-500 rounded-full animate-spin"></div>
+            </div>`;
+        abrirModal('modal-historico');
+
+        try {
+            const res = await fetch(`/gestao-pacientes/api/paciente/${trabalhadorId}/historico`);
+            const data = await res.json();
+
+            if (!data.length) {
+                body.innerHTML = `
+                    <div class="py-20 flex flex-col items-center text-slate-400">
+                        <i data-lucide="cloud-off" class="w-10 h-10 mb-4 opacity-20"></i>
+                        <p class="text-sm font-medium">Nenhuma interação registrada neste ciclo.</p>
+                    </div>`;
+                lucide.createIcons();
+                return;
+            }
+
+            // Cálculo do tempo de tratamento
+            const oldestEvent = data[data.length - 1];
+            const [d, m, y] = oldestEvent.data.split('/');
+            const startDate = new Date(y, m - 1, d);
+            const today = new Date();
+            const diffTime = Math.abs(today - startDate);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            const treatmentTimeStr = diffDays === 0 ? 'Iniciado hoje' : `${diffDays} dias de acompanhamento`;
+
+            body.innerHTML = `
+                <div class="absolute left-10 top-0 bottom-0 w-px bg-slate-100 hidden md:block z-0"></div>
+                <div class="relative z-10 space-y-8">
+                    <div class="flex justify-center mb-10">
+                        <div class="px-6 py-2 bg-blue-600 text-white rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-xl shadow-blue-500/30 ring-4 ring-white">
+                            ${treatmentTimeStr}
+                        </div>
+                    </div>
+                    ${data.map(e => {
+                let icon = 'calendar';
+                let color = 'bg-blue-50 text-blue-600';
+                if (e.tipo === 'sistema') { icon = 'activity'; color = 'bg-slate-100 text-slate-500'; }
+                if (e.tipo === 'clinico') { icon = 'heart-pulse'; color = 'bg-amber-50 text-amber-600'; }
+                if (e.status === 'Cancelado') color = 'bg-red-50 text-red-500 opacity-60';
+                if (e.status === 'Finalizado' || e.status === 'Atendido') color = 'bg-emerald-50 text-emerald-600';
+
+                return `
+                        <div class="flex gap-6 group">
+                            <div class="flex flex-col items-center shrink-0">
+                                <div class="w-10 h-10 rounded-2xl ${color} flex items-center justify-center shadow-sm border-2 border-white ring-4 ring-white z-10 transition-transform group-hover:scale-110">
+                                    <i data-lucide="${icon}" class="w-5 h-5"></i>
+                                </div>
+                            </div>
+                            <div class="flex-1 pt-1">
+                                <div class="flex flex-col md:flex-row md:items-center justify-between gap-1 mb-2">
+                                    <h4 class="text-sm font-black text-slate-800 uppercase tracking-tight">${e.titulo}</h4>
+                                    <span class="text-[10px] font-black text-slate-400 bg-slate-50 px-2 py-1 rounded-lg border border-slate-100">
+                                        ${e.data} às ${e.horario}
+                                    </span>
+                                </div>
+                                <div class="p-4 bg-white border border-slate-100 rounded-2xl shadow-sm hover:border-slate-200 transition-all">
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <div class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-[9px] font-black text-slate-500">
+                                            ${e.profissional ? e.profissional[0] : 'S'}
+                                        </div>
+                                        <span class="text-xs font-bold text-slate-600">${e.profissional || 'Sistema Automático'}</span>
+                                        <span class="ml-auto px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-wider ${color}">${e.status}</span>
+                                    </div>
+                                    ${e.obs ? `<p class="text-xs text-slate-500 font-medium leading-relaxed italic border-l-2 border-slate-100 pl-3">${e.obs}</p>` : ''}
+                                </div>
+                            </div>
+                        </div>`;
+            }).join('')}
+                </div>`;
+            lucide.createIcons();
+        } catch (err) {
+            body.innerHTML = `<p class="text-red-500 text-sm font-bold p-10">Erro ao carregar histórico: ${err.message}</p>`;
+        }
+    }
+
+    function fecharModalHistorico() { fecharModal('modal-historico'); }
+
+    // Fechar modal clicando fora
+    window.addEventListener('click', e => {
+        if (e.target.id === 'modal-historico') fecharModal('modal-historico');
     });
 </script>
 {% endblock %}

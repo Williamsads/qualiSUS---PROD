@@ -406,7 +406,7 @@
               </div>
 
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Cartão SUS*</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Cartão SUSo *</label>
                 <input type="text" id="modal_cns"
                   class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none bg-white">
               </div>
@@ -508,7 +508,8 @@
             <i data-lucide="alert-circle" class="w-10 h-10"></i>
           </div>
 
-          <h2 class="text-2xl font-black text-gray-900 mb-4 leading-tight">Acolhimento Obrigatório</h2>
+          <h2 class="text-2xl font-black text-gray-900 mb-4 leading-tight" id="modalAcolhimentoTitle">Acolhimento
+            Obrigatório</h2>
 
           <p class="text-gray-600 mb-8 leading-relaxed font-medium" id="acolhimento-msg">
             Antes do atendimento em Psicologia ou Psiquiatria, é necessário passar pelo Acolhimento Presencial.
@@ -929,6 +930,11 @@
     const step4 = document.getElementById('step-4');
     const step5 = document.getElementById('step-5');
 
+    // --- DADOS DE SESSÃO E PERFIS ---
+    const userTipo = "{{ session.get('tipo', '').upper() }}";
+    const perfilPaciente = ["TRABALHADOR", "USUARIO", "PACIENTE"];
+
+
     const modal = document.getElementById('modalCadastro');
     const formModal = document.getElementById('formCadastroPaciente');
 
@@ -1051,6 +1057,58 @@
     // VALIDAR PACIENTE
     // ===============================
     let isDataComplete = false;
+
+    // --- FUNÇÃO PARA PREENCHER DADOS AUTOMATICAMENTE (USADA NO AUTO-LOAD) ---
+    function preencherDadosPaciente(data) {
+      if (!data.found) return;
+
+      pacienteGlobal = data.trabalhador;
+      vinculoGlobal = { id: data.trabalhador.vinculo_id, numero_funcional: data.trabalhador.numero_funcional };
+      isDataComplete = data.proxima_etapa;
+
+      const t = data.trabalhador;
+      document.getElementById('found-name').innerText = t.nome_completo || 'Nome não informado';
+      document.getElementById('found-cpf').innerText = t.cpf || 'N/A';
+      document.getElementById('found-funcional').innerText = t.numero_funcional || 'N/A';
+      document.getElementById('found-vic').innerText = 'N/A';
+
+      const unidadesContainer = document.getElementById('found-unidades-container');
+      const unidadesList = document.getElementById('found-unidades-list');
+      if (unidadesContainer && unidadesList) {
+        unidadesList.innerHTML = '';
+        unidadesContainer.classList.add('hidden');
+        if (data.unidades_lotadas && data.unidades_lotadas.length > 0) {
+          unidadesContainer.classList.remove('hidden');
+          data.unidades_lotadas.forEach(uni => {
+            const badge = document.createElement('span');
+            badge.className = 'px-2.5 py-1 bg-blue-50 text-blue-700 text-xs font-bold rounded-lg border border-blue-200 capitalize';
+            badge.textContent = uni.toLowerCase();
+            unidadesList.appendChild(badge);
+          });
+        }
+      }
+      document.getElementById('card-paciente-encontrado').classList.remove('hidden');
+      carregarAgendamentos(t.id);
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    // --- EXECUÇÃO AO CARREGAR PÁGINA (PARA ENCAMINHAMENTOS) ---
+    window.addEventListener('load', async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const tid = urlParams.get('trabalhador_id');
+      const origem = urlParams.get('origem');
+
+      if (tid) {
+        try {
+          const res = await fetch(`/api/agendar_exame/trabalhador/by-id?id=${tid}`);
+          const data = await res.json();
+          if (data.found) {
+            preencherDadosPaciente(data);
+            showToast("Paciente carregado para encaminhamento", "info");
+          }
+        } catch (e) { console.error("Erro no auto-load:", e); }
+      }
+    });
 
     document.getElementById('btnValidar').onclick = async () => {
       const doc = document.getElementById('doc').value.trim();
@@ -1251,7 +1309,7 @@
         const url = unidadeId ? `/api/agendar_exame/especialidades?unidade_id=${unidadeId}` : '/api/agendar_exame/especialidades';
         const res = await fetch(url);
         const data = await res.json();
-        const specs = data.especialidades || [];
+        let specs = data.especialidades || [];
 
         if (specs.length === 0) {
           container.innerHTML = '<div class="col-span-3 text-center py-10 text-amber-600 bg-amber-50 rounded-xl border border-amber-100 font-medium">Nenhuma especialidade disponível nesta unidade.</div>';
@@ -1288,16 +1346,99 @@
       }
     }
 
-    function selecionarEspecialidade(id, nome) {
+    async function selecionarEspecialidade(id, nome) {
       specialtyInput.value = nome;
       specialtyIdInput.value = id;
       document.getElementById('step3-error').classList.add('hidden');
+
+      // --- REGRA DE NEGÓCIO: BLOQUEIO IMEDIATO AO CLICAR ---
+      const nomeLower = nome.toLowerCase();
+      if (nomeLower.includes("psic") || nomeLower.includes("psiquia") || nomeLower.includes("acolhimento")) {
+        try {
+          const res = await fetch(`/api/agendar_exame/check-acolhimento?trabalhador_id=${pacienteGlobal.id}&especialidade=${encodeURIComponent(nome)}`);
+
+          if (!res.ok) {
+            const errorData = await res.json().catch(() => ({}));
+            console.error("Erro na validação:", errorData);
+            showToast("Erro ao validar protocolo de acolhimento. Por segurança, o agendamento foi bloqueado.", "error");
+
+            // Bloqueia preventivamente em caso de erro no servidor
+            specialtyInput.value = "";
+            specialtyIdInput.value = "";
+            const unidadeId = document.getElementById('selected_unidade_id').value;
+            carregarEspecialidades(unidadeId, true);
+            return;
+          }
+
+          const data = await res.json();
+
+          if (data.blocked) {
+            // EXIBE ALERTA IMEDIATO (Toast)
+            showToast(data.message, "error");
+
+            // Atualiza conteúdo do modal informativo
+            document.getElementById('acolhimento-msg').innerText = data.message;
+
+            const titleEl = document.getElementById('modalAcolhimentoTitle');
+            if (data.reason === 'perfil_restrito') {
+              titleEl.innerText = 'Regulação de Acesso';
+            } else if (data.reason === 'duplicado' || data.reason === 'em_tratamento') {
+              titleEl.innerText = 'Agendamento Bloqueado';
+            } else {
+              titleEl.innerText = 'Acolhimento Obrigatório';
+            }
+
+            const btnAgendar = document.getElementById('btnIrParaAcolhimento');
+            if (data.reason === 'em_tratamento' || data.reason === 'duplicado') {
+              btnAgendar.classList.add('hidden');
+            } else {
+              btnAgendar.classList.remove('hidden');
+            }
+
+            const modalAcolhimento = document.getElementById('modalAcolhimento');
+            modalAcolhimento.classList.remove('hidden');
+            modalAcolhimento.classList.add('flex');
+
+            // Limpa a seleção para garantir integridade
+            specialtyInput.value = "";
+            specialtyIdInput.value = "";
+
+            // Atualiza o grid visual
+            const unidadeId = document.getElementById('selected_unidade_id').value;
+            carregarEspecialidades(unidadeId, true);
+
+            // Botão do Modal: Redireciona para Acolhimento
+            document.getElementById('btnIrParaAcolhimento').onclick = async () => {
+              modalAcolhimento.classList.add('hidden');
+              modalAcolhimento.classList.remove('flex');
+
+              const resSpec = await fetch('/api/agendar_exame/especialidades?include_hidden=true');
+              const specsData = await resSpec.json();
+              const acolhimentoSpec = (specsData.especialidades || []).find(s => s.nome.toLowerCase().includes('acolhimento'));
+
+              if (acolhimentoSpec) {
+                await selecionarEspecialidade(acolhimentoSpec.id, acolhimentoSpec.nome);
+                // Avança automaticamente para o passo 4 (Médico)
+                const btnNext = document.getElementById('btnStep3Next');
+                if (btnNext) btnNext.click();
+              }
+            };
+
+            document.getElementById('btnFecharAcolhimento').onclick = () => {
+              modalAcolhimento.classList.add('hidden');
+              modalAcolhimento.classList.remove('flex');
+            };
+            return;
+          }
+        } catch (err) {
+          console.error("Erro no fetch:", err);
+        }
+      }
 
       const unidadeId = document.getElementById('selected_unidade_id').value;
       carregarEspecialidades(unidadeId, true);
     }
 
-    const btnStep3Next = document.getElementById('btnStep3Next');
     if (btnStep3Next) {
       btnStep3Next.onclick = async () => {
         const val = document.getElementById('especialidadeIdEscolha').value;
@@ -1308,51 +1449,34 @@
           return;
         }
 
-        // --- REGRA DE NEGÓCIO: Acolhimento obrigatório ---
-        if (nome === "Psicólogo" || nome === "Psiquiatra") {
+        // --- VALIDAÇÃO DE SEGURANÇA EXTRA NO CLIQUE DO PRÓXIMO ---
+        const nomeLower = nome.toLowerCase();
+        if (nomeLower.includes("psic") || nomeLower.includes("psiquia") || nomeLower.includes("acolhimento")) {
           try {
             const res = await fetch(`/api/agendar_exame/check-acolhimento?trabalhador_id=${pacienteGlobal.id}&especialidade=${encodeURIComponent(nome)}`);
             const data = await res.json();
-
             if (data.blocked) {
+              showToast(data.message, "error");
               document.getElementById('acolhimento-msg').innerText = data.message;
+              document.getElementById('modalAcolhimentoTitle').innerText = 'Agendamento Bloqueado';
+
+              const btnAgendar = document.getElementById('btnIrParaAcolhimento');
+              btnAgendar.classList.add('hidden'); // No clique do próximo, se bloqueou é porque não pode mesmo
+
               const modalAcolhimento = document.getElementById('modalAcolhimento');
               modalAcolhimento.classList.remove('hidden');
               modalAcolhimento.classList.add('flex');
-
-              // Handler do Botão "Agendar Acolhimento"
-              document.getElementById('btnIrParaAcolhimento').onclick = async () => {
-                modalAcolhimento.classList.add('hidden');
-
-                // Busca o ID da especialidade 'Acolhimento' (pode estar oculta)
-                const resSpec = await fetch('/api/agendar_exame/especialidades?include_hidden=true');
-                const specsData = await resSpec.json();
-                const acolhimentoSpec = (specsData.especialidades || []).find(s => s.nome === 'Acolhimento');
-
-                if (acolhimentoSpec) {
-                  selecionarEspecialidade(acolhimentoSpec.id, acolhimentoSpec.nome);
-                  // Dispara o clique do "Próximo" automaticamente para Acolhimento
-                  btnStep3Next.click();
-                } else {
-                  showToast("Especialidade Acolhimento não encontrada no sistema.", "error");
-                }
-              };
-
-              document.getElementById('btnFecharAcolhimento').onclick = () => {
-                modalAcolhimento.classList.add('hidden');
-                modalAcolhimento.classList.remove('flex');
-              };
-
+              specialtyInput.value = "";
+              specialtyIdInput.value = "";
               return;
             }
-          } catch (err) {
-            console.error(err);
-            showToast("Erro ao validar regra de acolhimento.", "error");
+          } catch (e) {
+            showToast("Erro ao validar especialidade. Tente novamente.", "error");
             return;
           }
         }
 
-        // Carrega médicos antes de mudar
+        // Carrega profissionais disponíveis na unidade para esta especialidade
         await carregarMedicos(val);
 
         step3.classList.add('hidden');
@@ -1579,7 +1703,8 @@
         data_consulta: dateInput.value,
         horario: timeInput.value,
         unidade: unitNameInput.value,
-        especialidade: specialtyInput.value
+        especialidade: specialtyInput.value,
+        origem_agendamento: new URLSearchParams(window.location.search).get('origem') || null
       };
 
       try {

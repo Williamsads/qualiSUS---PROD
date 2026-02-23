@@ -6,7 +6,7 @@
     <!-- BREADCRUMBS -->
     <nav class="flex items-center text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
         <a href="{{ url_for('home') }}" class="breadcrumb-item hover:text-blue-600 transition-colors">QualiSUS</a>
-        <span class="breadcrumb-item text-blue-600">Dashboard de Gestão</span>
+        <span class="breadcrumb-item text-blue-600">Painel de Monitoramento</span>
     </nav>
 
     <!-- HERO SECTION -->
@@ -67,7 +67,7 @@
                             {{ total_trabalhadores }}
                         </span>
                         <span class="text-[10px] text-slate-500 font-bold uppercase tracking-[0.15em] opacity-80">
-                            Equipe Ativa
+                            Total de trabalhadores
                         </span>
                     </div>
                 </div>
@@ -92,9 +92,10 @@
                     class="w-16 h-16 bg-brand-50 text-brand-500 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
                     <i data-lucide="user-plus" class="w-8 h-8"></i>
                 </div>
-                <span class="font-black text-slate-800 text-base group-hover:text-brand-500">Novo Funcionário</span>
-                <span class="text-[11px] text-slate-400 mt-2 uppercase font-bold tracking-wider opacity-60">Cadastrar
-                    servidor</span>
+                <span class="font-black text-slate-800 text-base group-hover:text-brand-500">Admissão de
+                    Profissional</span>
+                <span class="text-[11px] text-slate-400 mt-2 uppercase font-bold tracking-wider opacity-60">Gestão de
+                    Ingressos</span>
             </a>
 
             <a href="{{ url_for('agendamento_bp.pagina_agendamento') }}"
@@ -103,9 +104,9 @@
                     class="w-16 h-16 bg-brand-50 text-brand-500 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
                     <i data-lucide="calendar-plus" class="w-8 h-8"></i>
                 </div>
-                <span class="font-black text-slate-800 text-base group-hover:text-brand-500">Agendar Exame</span>
-                <span class="text-[11px] text-slate-400 mt-2 uppercase font-bold tracking-wider opacity-60">Marcar
-                    consulta</span>
+                <span class="font-black text-slate-800 text-base group-hover:text-brand-500">Marcação de Exames</span>
+                <span class="text-[11px] text-slate-400 mt-2 uppercase font-bold tracking-wider opacity-60">Gestão de
+                    Agendamentos</span>
             </a>
 
             <a href="{{ url_for('trabalhadores.lista_trabalhadores') }}"
@@ -114,9 +115,9 @@
                     class="w-16 h-16 bg-brand-50 text-brand-500 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
                     <i data-lucide="users" class="w-8 h-8"></i>
                 </div>
-                <span class="font-black text-slate-800 text-base group-hover:text-brand-500">Trabalhadores</span>
-                <span class="text-[11px] text-slate-400 mt-2 uppercase font-bold tracking-wider opacity-60">Busca
-                    completa</span>
+                <span class="font-black text-slate-800 text-base group-hover:text-brand-500">Consulta de Cadastro</span>
+                <span class="text-[11px] text-slate-400 mt-2 uppercase font-bold tracking-wider opacity-60">Pesquisa de
+                    Pessoal</span>
             </a>
 
             <a href="{{ url_for('log_agendamento.index') }}"
@@ -125,9 +126,9 @@
                     class="w-16 h-16 bg-brand-50 text-brand-500 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
                     <i data-lucide="calendar" class="w-8 h-8"></i>
                 </div>
-                <span class="font-black text-slate-800 text-base group-hover:text-brand-500">Relatórios</span>
-                <span class="text-[11px] text-slate-400 mt-2 uppercase font-bold tracking-wider opacity-60">Ver
-                    Agendamentos</span>
+                <span class="font-black text-slate-800 text-base group-hover:text-brand-500">Centro de Relatórios</span>
+                <span class="text-[11px] text-slate-400 mt-2 uppercase font-bold tracking-wider opacity-60">Inteligência
+                    de Dados</span>
             </a>
         </div>
     </section>
