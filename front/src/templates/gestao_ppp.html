@@ -1,0 +1,287 @@
+{% extends 'base.html' %}
+
+{% block extra_css %}
+<style>
+    .status-badge {
+        padding: 4px 12px;
+        border-radius: 9999px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .status-elaboracao {
+        background: #F1F5F9;
+        color: #475569;
+    }
+
+    .status-finalizado {
+        background: #E0F2FE;
+        color: #0369A1;
+    }
+
+    .status-assinado {
+        background: #DCFCE7;
+        color: #15803D;
+    }
+
+    .filter-card {
+        background: white;
+        border: 1px solid #E2E8F0;
+        border-radius: 1.5rem;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- HEADER -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+            <h1 class="text-3xl font-black text-slate-900 tracking-tight">Gestão de PPP</h1>
+            <p class="text-slate-500 font-medium">Controle e rastreabilidade de Perfil Profissiográfico Previdenciário
+            </p>
+        </div>
+        <div class="flex items-center gap-3">
+            <a href="{{ url_for('ppp.novo_ppp') }}"
+                class="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-bold transition-all shadow-lg shadow-blue-600/20 active:scale-95">
+                <i data-lucide="plus" class="w-5 h-5"></i>
+                <span>Criar PPP</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="filter-card shadow-premium">
+        <form class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div class="md:col-span-2">
+                <label
+                    class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Servidor
+                    (Nome ou CPF)</label>
+                <div class="relative">
+                    <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+                    <input type="text" placeholder="Pesquisar..."
+                        class="w-full pl-11 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none font-medium">
+                </div>
+            </div>
+            <div>
+                <label
+                    class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Status</label>
+                <select
+                    class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none font-medium appearance-none">
+                    <option value="">Todos Status</option>
+                    <option value="ELABORACAO">Em Elaboração</option>
+                    <option value="FINALIZADO">Finalizado</option>
+                    <option value="ASSINADO">Assinado</option>
+                </select>
+            </div>
+            <div>
+                <label
+                    class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Unidade</label>
+                <select
+                    class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none font-medium appearance-none">
+                    <option value="">Todas Unidades</option>
+                </select>
+            </div>
+            <div>
+                <label
+                    class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Período</label>
+                <input type="date"
+                    class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none">
+            </div>
+            <div class="flex items-end">
+                <button type="button"
+                    class="w-full py-2.5 bg-slate-900 text-white rounded-xl font-bold text-sm hover:bg-slate-800 transition-all active:scale-95">
+                    Filtrar
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- TABLE -->
+    <div class="bg-white rounded-[2rem] border border-slate-200 overflow-hidden shadow-premium">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-50/50 border-b border-slate-100">
+                        <th class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Servidor
+                        </th>
+                        <th class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Unidade /
+                            Matrícula</th>
+                        <th class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Criação
+                        </th>
+                        <th
+                            class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">
+                            Status</th>
+                        <th
+                            class="px-12 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">
+                            Ações</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    {% for p in ppps %}
+                    <tr class="hover:bg-slate-50/50 transition-colors group">
+                        <td class="px-6 py-5">
+                            <div class="flex flex-col">
+                                <span class="font-bold text-slate-900">{{ p.nome_trabalhador }}</span>
+                                <span class="text-[10px] text-slate-500 font-medium">{{ p.cpf_trabalhador }}</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-5">
+                            <div class="flex flex-col">
+                                <span class="text-sm font-semibold text-slate-700">{{ p.unidade_trabalhador or 'Unidade
+                                    não
+                                    informada' }}</span>
+                                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">MAT: {{
+                                    p.matricula_trabalhador or '---' }}</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-5">
+                            <div class="flex flex-col">
+                                <span class="text-sm font-semibold text-slate-700">{{
+                                    p.data_criacao.strftime('%d/%m/%Y') }}</span>
+                                <span class="text-[10px] text-slate-400 font-medium italic">por {{ p.criado_por_nome
+                                    }}</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-5 text-center">
+                            <span class="status-badge status-{{ p.status|lower }}">
+                                {{ p.status.replace('_', ' ') }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-5">
+                            <div class="flex items-center justify-end gap-2">
+                                <button data-id="{{ p.id }}" onclick="abrirHistorico(this.dataset.id)"
+                                    title="Ver Histórico"
+                                    class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all">
+                                    <i data-lucide="history" class="w-5 h-5"></i>
+                                </button>
+                                <div class="h-4 w-px bg-slate-100"></div>
+                                {% if p.status != 'ASSINADO' %}
+                                <a href="{{ url_for('ppp.editar_ppp', id=p.id) }}"
+                                    class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all">
+                                    <i data-lucide="edit-3" class="w-5 h-5"></i>
+                                </a>
+                                {% endif %}
+                                <button
+                                    class="p-2 text-slate-400 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-all">
+                                    <i data-lucide="more-vertical" class="w-5 h-5"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="px-6 py-20 text-center">
+                            <div class="flex flex-col items-center gap-3">
+                                <div
+                                    class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center text-slate-300">
+                                    <i data-lucide="file-text" class="w-8 h-8"></i>
+                                </div>
+                                <p class="text-sm font-black text-slate-400 uppercase tracking-[0.2em]">Nenhum PPP
+                                    encontrado</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="px-6 py-4 bg-slate-50/50 border-t border-slate-100 flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-500 uppercase tracking-widest">Exibindo {{ ppps|length }}
+                registros</span>
+            <div class="flex gap-1">
+                <button
+                    class="p-2 bg-white border border-slate-200 rounded-lg text-slate-400 disabled:opacity-50 cursor-not-allowed">
+                    <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                </button>
+                <button
+                    class="p-2 bg-white border border-slate-200 rounded-lg text-slate-400 disabled:opacity-50 cursor-not-allowed">
+                    <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL HISTÓRICO -->
+<div id="modalHistorico"
+    class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
+    <div
+        class="bg-white rounded-[2.5rem] w-full max-w-lg shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+        <div class="px-8 py-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+            <div>
+                <h3 class="text-xl font-black text-slate-800 tracking-tight">Histórico de Ações</h3>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Rastreabilidade
+                    Completa</p>
+            </div>
+            <button onclick="fecharHistorico()"
+                class="p-2 hover:bg-white rounded-xl text-slate-400 hover:text-slate-900 transition-all border border-transparent hover:border-slate-100">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+        <div class="p-8 max-h-[60vh] overflow-y-auto">
+            <div id="timeline-container"
+                class="relative space-y-8 before:absolute before:inset-y-0 before:left-0 before:w-0.5 before:bg-slate-100 ml-4 pl-8">
+                <!-- Conteúdo via JS -->
+            </div>
+        </div>
+        <div class="px-8 py-6 bg-slate-50/50 border-t border-slate-100 flex justify-end">
+            <button onclick="fecharHistorico()"
+                class="px-6 py-2.5 bg-slate-900 text-white rounded-xl font-bold text-sm hover:bg-slate-800 transition-all active:scale-95">
+                Fechar
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    async function abrirHistorico(id) {
+        const container = document.getElementById('timeline-container');
+        container.innerHTML = '<div class="text-center py-10"><div class="animate-spin w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-2"></div><p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Carregando...</p></div>';
+
+        document.getElementById('modalHistorico').classList.remove('hidden');
+        document.getElementById('modalHistorico').classList.add('flex');
+
+        try {
+            const response = await fetch(`/ppp/historico/${id}`);
+            const data = await response.json();
+
+            container.innerHTML = '';
+            if (data.length === 0) {
+                container.innerHTML = '<p class="text-center text-slate-400 text-sm">Nenhum histórico registrado.</p>';
+                return;
+            }
+
+            data.forEach(item => {
+                const html = `
+                    <div class="relative">
+                        <div class="absolute -left-[27px] top-1.5 w-[14px] h-[14px] rounded-full border-2 border-white bg-blue-600 shadow-sm shadow-blue-600/50"></div>
+                        <div class="flex flex-col">
+                            <div class="flex items-center gap-3 mb-1">
+                                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">${item.data}</span>
+                                <span class="px-2 py-0.5 bg-blue-50 text-blue-600 text-[9px] font-black rounded-md uppercase tracking-wider">${item.acao}</span>
+                            </div>
+                            <p class="text-sm font-bold text-slate-800">${item.usuario_nome}</p>
+                            <p class="text-xs text-slate-500 font-medium">${item.descricao}</p>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += html;
+            });
+        } catch (error) {
+            container.innerHTML = '<p class="text-center text-red-500 text-sm">Erro ao carregar histórico.</p>';
+        }
+    }
+
+    function fecharHistorico() {
+        document.getElementById('modalHistorico').classList.add('hidden');
+        document.getElementById('modalHistorico').classList.remove('flex');
+    }
+</script>
+{% endblock %}

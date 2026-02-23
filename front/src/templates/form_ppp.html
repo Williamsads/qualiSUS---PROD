@@ -1,0 +1,655 @@
+{% extends 'base.html' %}
+
+{% block extra_css %}
+<style>
+    .tab-btn {
+        padding: 1rem 1.5rem;
+        font-size: 0.75rem;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        transition: all 0.2s;
+        border-bottom: 2px solid transparent;
+        background: transparent;
+        cursor: pointer;
+    }
+
+    .tab-btn.active {
+        border-color: #0063F7;
+        color: #0063F7;
+        background: rgba(0, 99, 247, 0.05);
+    }
+
+    .form-section {
+        background: white;
+        border-radius: 1.5rem;
+        padding: 2rem;
+        border: 1px solid #E2E8F0;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.02);
+        margin-bottom: 2rem;
+    }
+
+    .input-group label {
+        display: block;
+        font-size: 10px;
+        font-weight: 900;
+        color: #94A3B8;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        margin-bottom: 0.5rem;
+        margin-left: 0.25rem;
+    }
+
+    .input-field {
+        width: 100%;
+        padding: 0.875rem 1.25rem;
+        background: #F8FAFC;
+        border: 1px solid #E2E8F0;
+        border-radius: 1rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #1E293B;
+        transition: all 0.2s;
+        outline: none;
+    }
+
+    .input-field:focus {
+        border-color: #0063F7;
+        box-shadow: 0 0 0 4px rgba(0, 99, 247, 0.1);
+    }
+
+    .dynamic-table th {
+        padding: 1rem;
+        font-size: 9px;
+        font-weight: 900;
+        color: #94A3B8;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        background: rgba(248, 250, 252, 0.8);
+    }
+
+    .dynamic-table td {
+        padding: 0.75rem 1rem;
+        border-top: 1px solid #F1F5F9;
+    }
+
+    .btn-add {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: #F0F9FF;
+        color: #0063F7;
+        border-radius: 0.75rem;
+        font-size: 10px;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        transition: all 0.2s;
+    }
+
+    .btn-add:hover {
+        background: #0063F7;
+        color: white;
+    }
+
+    #fixed-header {
+        position: sticky;
+        top: 0;
+        z-index: 30;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid #E2E8F0;
+        margin: 0 -2.5rem 2rem -2.5rem;
+        padding: 1rem 2.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="ppp-config" data-id="{{ ppp.id if ppp else '' }}"></div>
+
+<div id="fixed-header" class="flex items-center justify-between">
+    <div class="flex items-center gap-4">
+        <a href="{{ url_for('ppp.gestao_ppp') }}"
+            class="p-3 bg-slate-100 text-slate-500 hover:bg-slate-200 rounded-2xl transition-all">
+            <i data-lucide="arrow-left" class="w-5 h-5"></i>
+        </a>
+        <div>
+            <h1 class="text-xl font-black text-slate-900 leading-tight">
+                {% if action == 'Criar' %}Novo PPP{% else %}Editar PPP #{{ ppp.id }}{% endif %}
+            </h1>
+            <div class="flex items-center gap-2 mt-1">
+                <span
+                    class="w-2 h-2 rounded-full {% if not ppp or ppp.status == 'ELABORACAO' %}bg-slate-400{% elif ppp.status == 'FINALIZADO' %}bg-blue-500{% else %}bg-green-500{% endif %}"></span>
+                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                    Status: {{ ppp.status if ppp else 'Em Elaboração' }}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex items-center gap-3">
+        <button type="button" onclick="salvarPPP()"
+            class="px-6 py-3 bg-white border border-slate-200 text-slate-700 rounded-2xl font-bold text-sm hover:bg-slate-50 transition-all active:scale-95">
+            Salvar Rascunho
+        </button>
+        {% if ppp and ppp.status == 'ELABORACAO' %}
+        <button type="button" data-id="{{ ppp.id }}" onclick="finalizarPPP(this.dataset.id)"
+            class="px-6 py-3 bg-blue-600 text-white rounded-2xl font-bold text-sm hover:bg-blue-700 shadow-xl shadow-blue-600/20 transition-all active:scale-95">
+            Finalizar PPP
+        </button>
+        {% endif %}
+        {% if ppp and ppp.status == 'FINALIZADO' %}
+        <button type="button" data-id="{{ ppp.id }}" onclick="assinarPPP(this.dataset.id)"
+            class="px-6 py-3 bg-green-600 text-white rounded-2xl font-bold text-sm hover:bg-green-700 shadow-xl shadow-green-600/20 transition-all active:scale-95">
+            Assinar Digitalmente
+        </button>
+        {% endif %}
+    </div>
+</div>
+
+<div class="mb-10">
+    <!-- TABS NAVIGATION -->
+    <div class="flex border-b border-slate-200 mb-8 overflow-x-auto scrollbar-hide">
+        <button class="tab-btn active" onclick="switchTab(event, 'tab-administrativo')">1. Administrativo</button>
+        <button class="tab-btn" onclick="switchTab(event, 'tab-lotacao')">2. Lotação</button>
+        <button class="tab-btn" onclick="switchTab(event, 'tab-profissiografia')">3. Profissiografia</button>
+        <button class="tab-btn" onclick="switchTab(event, 'tab-ambiental')">4. Ambiental</button>
+        <button class="tab-btn" onclick="switchTab(event, 'tab-responsaveis')">5. Responsáveis</button>
+        <button class="tab-btn" onclick="switchTab(event, 'tab-emissao')">6. Emissão</button>
+    </div>
+
+    <form id="formPPP">
+        <!-- ABA 1: DADOS ADMINISTRATIVOS -->
+        <div id="tab-administrativo" class="tab-content">
+            <div class="form-section">
+                <h3 class="text-lg font-black text-slate-800 mb-6 flex items-center gap-3">
+                    <span
+                        class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-sm">1</span>
+                    Dados da Empresa e Trabalhador
+                </h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="input-group">
+                        <label>CNPJ Empresa</label>
+                        <input type="text" class="input-field" placeholder="00.000.000/0000-00">
+                    </div>
+                    <div class="input-group md:col-span-2">
+                        <label>Nome Empresarial</label>
+                        <input type="text" class="input-field" placeholder="Razão Social completa">
+                    </div>
+                    <div class="input-group">
+                        <label>CNAE</label>
+                        <input type="text" class="input-field" placeholder="Código CNAE">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <!-- Removido vínculo automático -->
+
+                    <div class="input-group md:col-span-2">
+                        <label>Nome do Trabalhador</label>
+                        <input type="text" id="servidor_nome_display" class="input-field" placeholder="Nome completo"
+                            value="{{ ppp.nome_trabalhador if ppp else '' }}">
+                    </div>
+                    <div class="input-group">
+                        <label>CPF</label>
+                        <input type="text" id="servidor_cpf_display" class="input-field" placeholder="000.000.000-00"
+                            value="{{ ppp.cpf_trabalhador if ppp else '' }}">
+                    </div>
+                    <div class="input-group">
+                        <label>Data de Nascimento</label>
+                        <input type="date" id="servidor_data_nasc" class="input-field"
+                            value="{{ ppp.data_nascimento if ppp else '' }}">
+                    </div>
+                    <div class="input-group">
+                        <label>Sexo</label>
+                        <select id="servidor_sexo" class="input-field appearance-none">
+                            <option value="M" {% if ppp and ppp.sexo=='M' %}selected{% endif %}>Masculino</option>
+                            <option value="F" {% if ppp and ppp.sexo=='F' %}selected{% endif %}>Feminino</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Matrícula eSocial</label>
+                        <input type="text" id="servidor_matricula" class="input-field"
+                            value="{{ ppp.matricula_trabalhador if ppp else '' }}">
+                    </div>
+                    <div class="input-group">
+                        <label>Unidade de Lotação</label>
+                        <input type="text" id="servidor_unidade" class="input-field" placeholder="Nome da Unidade"
+                            value="{{ ppp.unidade_trabalhador if ppp else '' }}">
+                    </div>
+                    <div class="input-group">
+                        <label>Cargo Atual</label>
+                        <input type="text" id="servidor_cargo" class="input-field" placeholder="Cargo"
+                            value="{{ ppp.cargo_trabalhador if ppp else '' }}">
+                    </div>
+                    <div class="input-group">
+                        <label>Regime Revezamento</label>
+                        <input type="date" id="servidor_data_adm" class="hidden">
+                        <!-- Placeholder for future expansion -->
+                        <input type="text" id="regime_revezamento" class="input-field" placeholder="Ex: 12x36"
+                            value="{{ ppp.regime_revezamento if ppp else '' }}">
+                    </div>
+                </div>
+
+                <div class="mt-10 p-6 bg-slate-50 rounded-2xl border border-slate-200 border-dashed">
+                    <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">CAT Registrada (Se
+                        houver)</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="input-group">
+                            <label>Data da CAT</label>
+                            <input type="date" class="input-field" value="{{ ppp.cat_data if ppp else '' }}">
+                        </div>
+                        <div class="input-group md:col-span-2">
+                            <label>Número da CAT</label>
+                            <input type="text" class="input-field" placeholder="Número do registro"
+                                value="{{ ppp.cat_numero if ppp else '' }}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABA 2: LOTAÇÃO E ATRIBUIÇÃO -->
+        <div id="tab-lotacao" class="tab-content hidden">
+            <div class="form-section">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-black text-slate-800 flex items-center gap-3">
+                        <span
+                            class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-sm">2</span>
+                        Lotação e Atribuição
+                    </h3>
+                    <button type="button" class="btn-add" onclick="addRow('table-lotacao')">
+                        <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                        <span>Adicionar Período</span>
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto -mx-8 px-8">
+                    <table class="w-full dynamic-table" id="table-lotacao">
+                        <thead>
+                            <tr>
+                                <th>Início</th>
+                                <th>Fim</th>
+                                <th>CNPJ</th>
+                                <th>Setor</th>
+                                <th>Cargo</th>
+                                <th>Função</th>
+                                <th>CBO</th>
+                                <th>GFIP</th>
+                                <th class="w-10"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="date"
+                                        class="w-full bg-transparent border-none outline-none text-xs font-bold"></td>
+                                <td><input type="date"
+                                        class="w-full bg-transparent border-none outline-none text-xs font-bold"></td>
+                                <td><input type="text"
+                                        class="w-full bg-transparent border-none outline-none text-xs font-bold"
+                                        placeholder="CNPJ"></td>
+                                <td><input type="text"
+                                        class="w-full bg-transparent border-none outline-none text-xs font-bold"
+                                        placeholder="Setor"></td>
+                                <td><input type="text"
+                                        class="w-full bg-transparent border-none outline-none text-xs font-bold"
+                                        placeholder="Cargo"></td>
+                                <td><input type="text"
+                                        class="w-full bg-transparent border-none outline-none text-xs font-bold"
+                                        placeholder="Função"></td>
+                                <td><input type="text"
+                                        class="w-full bg-transparent border-none outline-none text-xs font-bold"
+                                        placeholder="CBO"></td>
+                                <td><input type="text"
+                                        class="w-full bg-transparent border-none outline-none text-xs font-bold"
+                                        placeholder="GFIP"></td>
+                                <td><button type="button" class="text-slate-300 hover:text-red-500 transition-all"
+                                        onclick="removeRow(this)"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABA 3: PROFISSIOGRAFIA -->
+        <div id="tab-profissiografia" class="tab-content hidden">
+            <div class="form-section">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-black text-slate-800 flex items-center gap-3">
+                        <span
+                            class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-sm">3</span>
+                        Profissiografia
+                    </h3>
+                    <button type="button" class="btn-add" onclick="addRow('table-profissiografia')">
+                        <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                        <span>Adicionar Atividade</span>
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto -mx-8 px-8">
+                    <table class="w-full dynamic-table" id="table-profissiografia">
+                        <thead>
+                            <tr>
+                                <th class="w-32">Início</th>
+                                <th class="w-32">Fim</th>
+                                <th>Descrição das Atividades</th>
+                                <th class="w-10"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="date"
+                                        class="w-full bg-transparent border-none outline-none text-xs font-bold"></td>
+                                <td><input type="date"
+                                        class="w-full bg-transparent border-none outline-none text-xs font-bold"></td>
+                                <td><textarea
+                                        class="w-full bg-transparent border-none outline-none text-xs font-bold min-h-[60px] resize-none py-2"
+                                        placeholder="Descreva as atividades..."></textarea></td>
+                                <td><button type="button" class="text-slate-300 hover:text-red-500 transition-all"
+                                        onclick="removeRow(this)"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABA 4: AMBIENTAL -->
+        <div id="tab-ambiental" class="tab-content hidden">
+            <div class="form-section">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-black text-slate-800 flex items-center gap-3">
+                        <span
+                            class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-sm">4</span>
+                        Registros Ambientais
+                    </h3>
+                    <button type="button" class="btn-add" onclick="addRow('table-ambiental')">
+                        <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                        <span>Adicionar Fator</span>
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto -mx-8 px-8">
+                    <table class="w-full dynamic-table" id="table-ambiental">
+                        <thead>
+                            <tr>
+                                <th>Início</th>
+                                <th>Fim</th>
+                                <th>Tipo</th>
+                                <th>Fator Risco</th>
+                                <th>Intens./Conc.</th>
+                                <th>Técnica</th>
+                                <th>EPC</th>
+                                <th>EPI</th>
+                                <th>CA</th>
+                                <th class="w-10"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="date"
+                                        class="w-full bg-transparent border-none outline-none text-[10px] font-bold">
+                                </td>
+                                <td><input type="date"
+                                        class="w-full bg-transparent border-none outline-none text-[10px] font-bold">
+                                </td>
+                                <td>
+                                    <select
+                                        class="w-full bg-transparent border-none outline-none text-[10px] font-bold">
+                                        <option>Físico</option>
+                                        <option>Químico</option>
+                                        <option>Biológico</option>
+                                    </select>
+                                </td>
+                                <td><input type="text"
+                                        class="w-full bg-transparent border-none outline-none text-[10px] font-bold"
+                                        placeholder="Risco"></td>
+                                <td><input type="text"
+                                        class="w-full bg-transparent border-none outline-none text-[10px] font-bold"
+                                        placeholder="..."></td>
+                                <td><input type="text"
+                                        class="w-full bg-transparent border-none outline-none text-[10px] font-bold"
+                                        placeholder="Técnica"></td>
+                                <td class="text-center"><input type="checkbox"></td>
+                                <td class="text-center"><input type="checkbox"></td>
+                                <td><input type="text"
+                                        class="w-full bg-transparent border-none outline-none text-[10px] font-bold"
+                                        placeholder="CA"></td>
+                                <td><button type="button" class="text-slate-300 hover:text-red-500 transition-all"
+                                        onclick="removeRow(this)"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABA 5: RESPONSÁVEIS -->
+        <div id="tab-responsaveis" class="tab-content hidden">
+            <div class="form-section">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-black text-slate-800 flex items-center gap-3">
+                        <span
+                            class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-sm">5</span>
+                        Responsáveis pelos Registros
+                    </h3>
+                    <button type="button" class="btn-add" onclick="addRow('table-responsaveis')">
+                        <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                        <span>Adicionar Responsável</span>
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto -mx-8 px-8">
+                    <table class="w-full dynamic-table" id="table-responsaveis">
+                        <thead>
+                            <tr>
+                                <th>Início</th>
+                                <th>Fim</th>
+                                <th>CPF</th>
+                                <th>Conselho / Registro</th>
+                                <th>Nome Profissional</th>
+                                <th class="w-10"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="date"
+                                        class="w-full bg-transparent border-none outline-none text-[10px] font-bold">
+                                </td>
+                                <td><input type="date"
+                                        class="w-full bg-transparent border-none outline-none text-[10px] font-bold">
+                                </td>
+                                <td><input type="text"
+                                        class="w-full bg-transparent border-none outline-none text-[10px] font-bold"
+                                        placeholder="CPF"></td>
+                                <td><input type="text"
+                                        class="w-full bg-transparent border-none outline-none text-[10px] font-bold"
+                                        placeholder="CRM/CREA/etc"></td>
+                                <td><input type="text"
+                                        class="w-full bg-transparent border-none outline-none text-[10px] font-bold"
+                                        placeholder="Nome completo"></td>
+                                <td><button type="button" class="text-slate-300 hover:text-red-500 transition-all"
+                                        onclick="removeRow(this)"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABA 6: EMISSÃO -->
+        <div id="tab-emissao" class="tab-content hidden">
+            <div class="form-section">
+                <h3 class="text-lg font-black text-slate-800 mb-6 flex items-center gap-3">
+                    <span
+                        class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-sm">6</span>
+                    Emissão e Representação Legal
+                </h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="input-group">
+                        <label>Data de Emissão</label>
+                        <input type="date" class="input-field" value="{{ today }}">
+                    </div>
+                    <div class="input-group">
+                        <label>CPF do Representante</label>
+                        <input type="text" class="input-field" placeholder="000.000.000-00"
+                            value="{{ ppp.rep_legal_cpf if ppp else '' }}">
+                    </div>
+                    <div class="input-group">
+                        <label>Nome do Representante</label>
+                        <input type="text" class="input-field" placeholder="Nome completo"
+                            value="{{ ppp.rep_legal_nome if ppp else '' }}">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Observações Adicionais</label>
+                    <textarea class="input-field min-h-[120px] resize-none"
+                        placeholder="Digite observações que serão impressas no PPP...">{{ ppp.observacoes if ppp else '' }}</textarea>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div id="ppp-config" data-id="{{ ppp.id if ppp else '' }}" data-action="{{ action }}" data-today="{{ today }}">
+</div>
+
+<script>
+    const configEl = document.getElementById('ppp-config');
+    const CONFIG = configEl ? configEl.dataset : {};
+    const PPP_ID = CONFIG.id || null;
+
+    function switchTab(evt, tabId) {
+        let contents = document.getElementsByClassName("tab-content");
+        for (let i = 0; i < contents.length; i++) {
+            contents[i].classList.add("hidden");
+        }
+
+        let tabs = document.getElementsByClassName("tab-btn");
+        for (let i = 0; i < tabs.length; i++) {
+            tabs[i].classList.remove("active");
+        }
+
+        document.getElementById(tabId).classList.remove("hidden");
+        evt.currentTarget.classList.add("active");
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function addRow(tableId) {
+        const table = document.getElementById(tableId);
+        const tbody = table.getElementsByTagName('tbody')[0];
+        const lastRow = tbody.rows[tbody.rows.length - 1];
+        const newRow = lastRow.cloneNode(true);
+        const inputs = newRow.querySelectorAll('input, select, textarea');
+        inputs.forEach(el => {
+            if (el.type === 'checkbox') el.checked = false;
+            else el.value = '';
+        });
+        tbody.appendChild(newRow);
+        lucide.createIcons();
+    }
+
+    function removeRow(btn) {
+        const row = btn.parentNode.parentNode;
+        const tbody = row.parentNode;
+        if (tbody.rows.length > 1) tbody.removeChild(row);
+        else showToast('Aviso', 'O PPP deve conter pelo menos um registro por seção.', 'warning');
+    }
+
+    function collectTable(tableId, keys) {
+        const rows = document.getElementById(tableId).getElementsByTagName('tbody')[0].rows;
+        const data = [];
+        for (let row of rows) {
+            const item = {};
+            const inputs = row.querySelectorAll('input, select, textarea');
+            keys.forEach((key, i) => {
+                const el = inputs[i];
+                item[key] = el.type === 'checkbox' ? el.checked : el.value;
+            });
+            data.push(item);
+        }
+        return data;
+    }
+
+    async function salvarPPP() {
+        const data = {
+            id: PPP_ID,
+            nome_trabalhador: document.getElementById('servidor_nome_display')?.value,
+            cpf_trabalhador: document.getElementById('servidor_cpf_display')?.value,
+            data_nascimento: document.getElementById('servidor_data_nasc')?.value,
+            sexo: document.getElementById('servidor_sexo')?.value,
+            matricula_trabalhador: document.getElementById('servidor_matricula')?.value,
+            unidade_trabalhador: document.getElementById('servidor_unidade')?.value,
+            cargo_trabalhador: document.getElementById('servidor_cargo')?.value,
+
+            regime_revezamento: document.getElementById('regime_revezamento')?.value,
+            cat_data: document.querySelector('#tab-adm input[type="date"]')?.value,
+            cat_numero: document.querySelector('input[placeholder="Número do registro"]')?.value,
+            data_emissao: document.querySelector('#tab-emissao input[type="date"]')?.value,
+            rep_legal_nome: document.querySelector('input[placeholder="Nome do Representante"]')?.value,
+            rep_legal_cpf: document.querySelector('input[placeholder="CPF do Representante"]')?.value,
+            observacoes: document.querySelector('textarea[placeholder="Digite observações..."]')?.value,
+
+            lotacao: collectTable('table-lotacao', ['periodo_inicio', 'periodo_fim', 'cnpj', 'setor', 'cargo', 'funcao', 'cbo', 'gfip']),
+            profissiografia: collectTable('table-profissiografia', ['periodo_inicio', 'periodo_fim', 'descricao']),
+            ambiental: collectTable('table-ambiental', ['periodo_inicio', 'periodo_fim', 'tipo', 'fator_risco', 'intensidade', 'tecnica', 'epc_eficaz', 'epi_eficaz', 'ca_epi']),
+            responsaveis: collectTable('table-responsaveis', ['periodo_inicio', 'periodo_fim', 'cpf', 'registro_conselho', 'nome'])
+        };
+
+        try {
+            const res = await fetch('/ppp/salvar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const result = await res.json();
+            if (result.success) {
+                showToast('Sucesso', 'Rascunho salvo com sucesso!', 'success');
+                if (!PPP_ID) window.location.href = `/ppp/editar/${result.id}`;
+            } else {
+                showToast('Erro', result.error || 'Erro ao salvar rascunho.', 'error');
+            }
+        } catch (e) { showToast('Erro', 'Conexão falhou.', 'error'); }
+    }
+
+    async function finalizarPPP(id) {
+        Swal.fire({
+            title: 'Finalizar PPP?',
+            text: "Bloqueia edições e permite assinatura.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Finalizar'
+        }).then(async (r) => {
+            if (r.isConfirmed) {
+                const res = await fetch(`/ppp/finalizar/${id}`, { method: 'POST' });
+                if ((await res.json()).success) window.location.reload();
+            }
+        });
+    }
+
+    async function assinarPPP(id) {
+        Swal.fire({
+            title: 'Assinar Digitalmente?',
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonText: 'Assinar'
+        }).then(async (r) => {
+            if (r.isConfirmed) {
+                const res = await fetch(`/ppp/assinar/${id}`, { method: 'POST' });
+                if ((await res.json()).success) window.location.href = '/ppp';
+            }
+        });
+    }
+</script>
+{% endblock %}

@@ -1,8 +1,22 @@
+import sys
+import os
+
+# Caminhos absolutos
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+
+# Remove o diretório atual do path para evitar conflito (shadowing) onde app.py impede encontrar o pacote app
+if sys.path and (sys.path[0] == current_dir or sys.path[0] == ''):
+    sys.path.pop(0)
+
+# Adiciona o diretório pai (backend) ao sys.path para permitir importações do tipo 'from app.routes'
+if parent_dir not in sys.path:
+    sys.path.insert(0, parent_dir)
+
 from flask import Flask, render_template, request, redirect, session, flash, url_for
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import hashlib
-import os
 import uuid
 from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -13,6 +27,7 @@ from app.routes.lista_usuario import usuarios_bp
 from app.routes.lista_trabalhador import trabalhadores_bp
 from app.routes.gerenciamento_agendamento import gerenciamento_bp
 from app.routes.gestao_pacientes import gestao_pacientes_bp
+from app.routes.ppp import ppp_bp
 
 
 # --------------------------
@@ -38,6 +53,7 @@ app.register_blueprint(usuarios_bp)
 app.register_blueprint(trabalhadores_bp)
 app.register_blueprint(gerenciamento_bp)
 app.register_blueprint(gestao_pacientes_bp)
+app.register_blueprint(ppp_bp)
 
 app.secret_key = "chave_muito_secreta"  # troque depois
 

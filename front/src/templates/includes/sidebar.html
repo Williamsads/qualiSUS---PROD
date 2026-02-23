@@ -138,6 +138,27 @@
         </div>
         {% endif %}
 
+        <!-- OCCUPATIONAL HEALTH -->
+        <div class="nav-accordion mb-1" id="acc-ocupacional">
+            <button class="nav-accordion-trigger" onclick="toggleAccordion('acc-ocupacional')">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="shield-check" class="w-3.5 h-3.5 text-slate-500"></i>
+                    <span>Saúde Ocupacional</span>
+                </div>
+                <i data-lucide="chevron-right" class="acc-chevron w-3.5 h-3.5 text-slate-600"></i>
+            </button>
+            <div class="nav-accordion-body">
+                <div class="nav-group">
+                    <a href="{{ url_for('ppp.gestao_ppp') }}"
+                        class="nav-link {% if 'ppp' in request.endpoint %} nav-item-active {% endif %}"
+                        title="Gestão de PPP">
+                        <i data-lucide="file-text"></i>
+                        <span>Gestão de PPP</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
     </nav>
 
     <!-- SIDEBAR FOOTER -->
