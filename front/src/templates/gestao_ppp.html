@@ -127,7 +127,14 @@
                         <td class="px-6 py-5">
                             <div class="flex flex-col">
                                 <span class="font-bold text-slate-900">{{ p.nome_trabalhador }}</span>
-                                <span class="text-[10px] text-slate-500 font-medium">{{ p.cpf_trabalhador }}</span>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-[10px] text-slate-500 font-medium">{{ p.cpf_trabalhador }}</span>
+                                    {% if p.parent_id %}
+                                    <span
+                                        class="px-1.5 py-0.5 bg-amber-50 text-amber-600 text-[8px] font-black rounded uppercase tracking-tighter border border-amber-100">Repub.
+                                        #{{ p.parent_id }}</span>
+                                    {% endif %}
+                                </div>
                             </div>
                         </td>
                         <td class="px-6 py-5">
@@ -160,6 +167,13 @@
                                     <i data-lucide="history" class="w-5 h-5"></i>
                                 </button>
                                 <div class="h-4 w-px bg-slate-100"></div>
+                                {% if p.status == 'ASSINADO' %}
+                                <button data-id="{{ p.id }}" onclick="republicarPPP(this.dataset.id)"
+                                    title="Republicar (Criar Nova Versão)"
+                                    class="p-2 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-xl transition-all">
+                                    <i data-lucide="refresh-cw" class="w-5 h-5"></i>
+                                </button>
+                                {% endif %}
                                 {% if p.status != 'ASSINADO' %}
                                 <a href="{{ url_for('ppp.editar_ppp', id=p.id) }}"
                                     class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all">
@@ -276,6 +290,47 @@
             });
         } catch (error) {
             container.innerHTML = '<p class="text-center text-red-500 text-sm">Erro ao carregar histórico.</p>';
+        }
+    }
+
+    async function republicarPPP(id) {
+        const { value: motivo } = await Swal.fire({
+            title: 'Republicar PPP',
+            input: 'textarea',
+            inputLabel: 'Motivo da Republicação',
+            inputPlaceholder: 'Descreva o motivo desta nova versão (ex: Correção de CBO, Adição de fator de risco...)',
+            inputAttributes: {
+                'aria-label': 'Descreva o motivo desta nova versão'
+            },
+            showCancelButton: true,
+            confirmButtonText: 'Republicar',
+            cancelButtonText: 'Cancelar',
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'Você precisa informar o motivo!'
+                }
+            }
+        });
+
+        if (motivo) {
+            try {
+                const response = await fetch(`/ppp/republicar/${id}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ motivo: motivo })
+                });
+                const result = await response.json();
+                if (result.success) {
+                    showToast('Sucesso', 'Nova versão do PPP criada com sucesso!', 'success');
+                    setTimeout(() => {
+                        window.location.href = `/ppp/editar/${result.id}`;
+                    }, 1500);
+                } else {
+                    showToast('Erro', result.error || 'Erro ao republicar.', 'error');
+                }
+            } catch (error) {
+                showToast('Erro', 'Falha na conexão.', 'error');
+            }
         }
     }
 

@@ -248,3 +248,94 @@ def assinar_ppp(id):
     finally:
         cursor.close()
         conn.close()
+@ppp_bp.route('/ppp/republicar/<int:id>', methods=['POST'])
+def republicar_ppp(id):
+    if "user_id" not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    data = request.json
+    motivo = data.get('motivo')
+    
+    if not motivo:
+        return jsonify({'error': 'O motivo da republicação é obrigatório.'}), 400
+    
+    conn = get_db_connection()
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
+    
+    try:
+        # 1. Fetch original PPP
+        cursor.execute("SELECT * FROM ppp WHERE id = %s", (id,))
+        old_ppp = cursor.fetchone()
+        
+        if not old_ppp:
+            return jsonify({'error': 'PPP não encontrado.'}), 404
+            
+        # 2. Create new version
+        cursor.execute("""
+            INSERT INTO ppp (
+                nome_trabalhador, cpf_trabalhador, data_nascimento, sexo, 
+                matricula_trabalhador, cargo_trabalhador, unidade_trabalhador,
+                data_emissao, rep_legal_nome, rep_legal_cpf, observacoes,
+                criado_por, status, data_criacao, parent_id, motivo_republicacao
+            ) 
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'ELABORACAO', NOW(), %s, %s) 
+            RETURNING id
+        """, (old_ppp['nome_trabalhador'], old_ppp['cpf_trabalhador'], old_ppp['data_nascimento'],
+              old_ppp['sexo'], old_ppp['matricula_trabalhador'], old_ppp['cargo_trabalhador'],
+              old_ppp['unidade_trabalhador'], old_ppp['data_emissao'], 
+              old_ppp['rep_legal_nome'], old_ppp['rep_legal_cpf'], old_ppp['observacoes'],
+              session['user_id'], id, motivo))
+        
+        new_id = cursor.fetchone()['id']
+        
+        # 3. Clone sub-tables
+        # 3.1 Lotação
+        cursor.execute("SELECT * FROM ppp_lotacao WHERE ppp_id = %s", (id,))
+        for item in cursor.fetchall():
+            cursor.execute("""
+                INSERT INTO ppp_lotacao (ppp_id, periodo_inicio, periodo_fim, cnpj, setor, cargo, funcao, cbo, gfip)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """, (new_id, item['periodo_inicio'], item['periodo_fim'], item['cnpj'], item['setor'], item['cargo'], item['funcao'], item['cbo'], item['gfip']))
+            
+        # 3.2 Profissiografia
+        cursor.execute("SELECT * FROM ppp_profissiografia WHERE ppp_id = %s", (id,))
+        for item in cursor.fetchall():
+            cursor.execute("""
+                INSERT INTO ppp_profissiografia (ppp_id, periodo_inicio, periodo_fim, descricao)
+                VALUES (%s, %s, %s, %s)
+            """, (new_id, item['periodo_inicio'], item['periodo_fim'], item['descricao']))
+            
+        # 3.3 Ambiental
+        cursor.execute("SELECT * FROM ppp_registros_ambientais WHERE ppp_id = %s", (id,))
+        for item in cursor.fetchall():
+            cursor.execute("""
+                INSERT INTO ppp_registros_ambientais (ppp_id, periodo_inicio, periodo_fim, tipo, fator_risco, intensidade, tecnica, epc_eficaz, epi_eficaz, ca_epi)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """, (new_id, item['periodo_inicio'], item['periodo_fim'], item['tipo'], item['fator_risco'], item['intensidade'], item['tecnica'], item['epc_eficaz'], item['epi_eficaz'], item['ca_epi']))
+            
+        # 3.4 Responsáveis
+        cursor.execute("SELECT * FROM ppp_responsaveis_registros WHERE ppp_id = %s", (id,))
+        for item in cursor.fetchall():
+            cursor.execute("""
+                INSERT INTO ppp_responsaveis_registros (ppp_id, periodo_inicio, periodo_fim, cpf, registro_conselho, nome)
+                VALUES (%s, %s, %s, %s, %s, %s)
+            """, (new_id, item['periodo_inicio'], item['periodo_fim'], item['cpf'], item['registro_conselho'], item['nome']))
+            
+        # 4. Update old PPP to inactive (optional, or just track via parent_id)
+        # cursor.execute("UPDATE ppp SET ativo = FALSE WHERE id = %s", (id,))
+        
+        # 5. Log history
+        cursor.execute("INSERT INTO ppp_historico (ppp_id, usuario_id, acao, descricao) VALUES (%s, %s, %s, %s)",
+                       (new_id, session['user_id'], 'Republicação Criada', f'Nova versão baseada no PPP #{id}. Motivo: {motivo}'))
+        
+        cursor.execute("INSERT INTO ppp_historico (ppp_id, usuario_id, acao, descricao) VALUES (%s, %s, %s, %s)",
+                       (id, session['user_id'], 'Documento Republicado', f'Gerada nova versão (PPP #{new_id}).'))
+        
+        conn.commit()
+        return jsonify({'success': True, 'id': new_id})
+    except Exception as e:
+        conn.rollback()
+        return jsonify({'error': str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
