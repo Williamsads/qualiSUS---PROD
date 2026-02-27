@@ -94,10 +94,27 @@ def editar_ppp(id):
         flash("Este PPP já está assinado e não pode ser editado.", "warning")
         return redirect(url_for('ppp.gestao_ppp'))
 
+    # Buscar dados das sub-tabelas
+    cursor.execute("SELECT * FROM ppp_lotacao WHERE ppp_id = %s", (id,))
+    lotacao = cursor.fetchall()
+    
+    cursor.execute("SELECT * FROM ppp_profissiografia WHERE ppp_id = %s", (id,))
+    profissiografia = cursor.fetchall()
+    
+    cursor.execute("SELECT * FROM ppp_registros_ambientais WHERE ppp_id = %s", (id,))
+    ambiental = cursor.fetchall()
+    
+    cursor.execute("SELECT * FROM ppp_responsaveis_registros WHERE ppp_id = %s", (id,))
+    responsaveis = cursor.fetchall()
+
     cursor.close()
     conn.close()
     
-    return render_template('form_ppp.html', action='Editar', ppp=ppp, today=datetime.now().strftime('%Y-%m-%d'), nome=session.get('nome'), tipo=session.get('tipo'))
+    return render_template('form_ppp.html', action='Editar', ppp=ppp, 
+                           lotacao=lotacao, profissiografia=profissiografia, 
+                           ambiental=ambiental, responsaveis=responsaveis,
+                           today=datetime.now().strftime('%Y-%m-%d'), 
+                           nome=session.get('nome'), tipo=session.get('tipo'))
 
 @ppp_bp.route('/ppp/salvar', methods=['POST'])
 def salvar_ppp():
@@ -115,14 +132,18 @@ def salvar_ppp():
             # Update existing header
             cursor.execute("""
                 UPDATE ppp SET 
-                    nome_trabalhador = %s, cpf_trabalhador = %s, data_nascimento = %s, 
-                    sexo = %s, matricula_trabalhador = %s, cargo_trabalhador = %s, 
-                    unidade_trabalhador = %s, data_emissao = %s, 
+                    cnpj_empresa = %s, nome_empresarial = %s, cnae = %s, br_pdh = %s, 
+                    data_admissao = %s, nome_trabalhador = %s, cpf_trabalhador = %s, 
+                    data_nascimento = %s, sexo = %s, matricula_trabalhador = %s, 
+                    cargo_trabalhador = %s, unidade_trabalhador = %s, regime_revezamento = %s,
+                    cat_data_registro = %s, cat_numero = %s, data_emissao = %s, 
                     rep_legal_nome = %s, rep_legal_cpf = %s, observacoes = %s
                 WHERE id = %s
-            """, (data.get('nome_trabalhador'), data.get('cpf_trabalhador'), data.get('data_nascimento') or None,
-                  data.get('sexo'), data.get('matricula_trabalhador'), data.get('cargo_trabalhador'),
-                  data.get('unidade_trabalhador'), data.get('data_emissao'), 
+            """, (data.get('cnpj_empresa'), data.get('nome_empresarial'), data.get('cnae'), data.get('br_pdh'), 
+                  data.get('data_admissao') or None, data.get('nome_trabalhador'), data.get('cpf_trabalhador'), 
+                  data.get('data_nascimento') or None, data.get('sexo'), data.get('matricula_trabalhador'), 
+                  data.get('cargo_trabalhador'), data.get('unidade_trabalhador'), data.get('regime_revezamento'),
+                  data.get('cat_data_registro') or None, data.get('cat_numero'), data.get('data_emissao'), 
                   data.get('rep_legal_nome'), data.get('rep_legal_cpf'), data.get('observacoes'), ppp_id))
             
             # Log history
@@ -138,14 +159,18 @@ def salvar_ppp():
             # Create new - manual entry
             cursor.execute("""
                 INSERT INTO ppp (
+                    cnpj_empresa, nome_empresarial, cnae, br_pdh, data_admissao,
                     nome_trabalhador, cpf_trabalhador, data_nascimento, sexo, 
                     matricula_trabalhador, cargo_trabalhador, unidade_trabalhador,
+                    regime_revezamento, cat_data_registro, cat_numero,
                     criado_por, status, data_criacao
                 ) 
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'ELABORACAO', NOW()) RETURNING id
-            """, (data.get('nome_trabalhador'), data.get('cpf_trabalhador'), data.get('data_nascimento') or None,
-                  data.get('sexo'), data.get('matricula_trabalhador'), data.get('cargo_trabalhador'),
-                  data.get('unidade_trabalhador'), session['user_id']))
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'ELABORACAO', NOW()) RETURNING id
+            """, (data.get('cnpj_empresa'), data.get('nome_empresarial'), data.get('cnae'), data.get('br_pdh'),
+                  data.get('data_admissao') or None, data.get('nome_trabalhador'), data.get('cpf_trabalhador'), 
+                  data.get('data_nascimento') or None, data.get('sexo'), data.get('matricula_trabalhador'), 
+                  data.get('cargo_trabalhador'), data.get('unidade_trabalhador'), data.get('regime_revezamento'),
+                  data.get('cat_data_registro') or None, data.get('cat_numero'), session['user_id']))
             ppp_id = cursor.fetchone()[0]
             
             # Log history
@@ -173,10 +198,18 @@ def salvar_ppp():
         for item in data.get('ambiental', []):
             if any(item.values()):
                 cursor.execute("""
-                    INSERT INTO ppp_registros_ambientais (ppp_id, periodo_inicio, periodo_fim, tipo, fator_risco, intensidade, tecnica, epc_eficaz, epi_eficaz, ca_epi)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    INSERT INTO ppp_registros_ambientais (
+                        ppp_id, periodo_inicio, periodo_fim, tipo, fator_risco, 
+                        intensidade, tecnica, epc_eficaz, epi_eficaz, ca_epi,
+                        medida_protecao, condicao_funcionamento, prazo_validade_epi, 
+                        periodicidade_troca_epi, higienizacao_epi
+                    )
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 """, (ppp_id, item.get('periodo_inicio') or None, item.get('periodo_fim') or None, item.get('tipo'), 
-                      item.get('fator_risco'), item.get('intensidade'), item.get('tecnica'), item.get('epc_eficaz'), item.get('epi_eficaz'), item.get('ca_epi')))
+                      item.get('fator_risco'), item.get('intensidade'), item.get('tecnica'), item.get('epc_eficaz'), 
+                      item.get('epi_eficaz'), item.get('ca_epi'), item.get('medida_protecao'), 
+                      item.get('condicao_funcionamento'), item.get('prazo_validade_epi'), 
+                      item.get('periodicidade_troca_epi'), item.get('higienizacao_epi')))
 
         # Insert Responsáveis
         for item in data.get('responsaveis', []):
@@ -273,17 +306,20 @@ def republicar_ppp(id):
         # 2. Create new version
         cursor.execute("""
             INSERT INTO ppp (
+                cnpj_empresa, nome_empresarial, cnae, br_pdh, data_admissao,
                 nome_trabalhador, cpf_trabalhador, data_nascimento, sexo, 
                 matricula_trabalhador, cargo_trabalhador, unidade_trabalhador,
+                regime_revezamento, cat_data_registro, cat_numero,
                 data_emissao, rep_legal_nome, rep_legal_cpf, observacoes,
                 criado_por, status, data_criacao, parent_id, motivo_republicacao
             ) 
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'ELABORACAO', NOW(), %s, %s) 
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'ELABORACAO', NOW(), %s, %s) 
             RETURNING id
-        """, (old_ppp['nome_trabalhador'], old_ppp['cpf_trabalhador'], old_ppp['data_nascimento'],
+        """, (old_ppp['cnpj_empresa'], old_ppp['nome_empresarial'], old_ppp['cnae'], old_ppp['br_pdh'], old_ppp['data_admissao'],
+              old_ppp['nome_trabalhador'], old_ppp['cpf_trabalhador'], old_ppp['data_nascimento'],
               old_ppp['sexo'], old_ppp['matricula_trabalhador'], old_ppp['cargo_trabalhador'],
-              old_ppp['unidade_trabalhador'], old_ppp['data_emissao'], 
-              old_ppp['rep_legal_nome'], old_ppp['rep_legal_cpf'], old_ppp['observacoes'],
+              old_ppp['unidade_trabalhador'], old_ppp['regime_revezamento'], old_ppp['cat_data_registro'], old_ppp['cat_numero'],
+              old_ppp['data_emissao'], old_ppp['rep_legal_nome'], old_ppp['rep_legal_cpf'], old_ppp['observacoes'],
               session['user_id'], id, motivo))
         
         new_id = cursor.fetchone()['id']
@@ -309,9 +345,18 @@ def republicar_ppp(id):
         cursor.execute("SELECT * FROM ppp_registros_ambientais WHERE ppp_id = %s", (id,))
         for item in cursor.fetchall():
             cursor.execute("""
-                INSERT INTO ppp_registros_ambientais (ppp_id, periodo_inicio, periodo_fim, tipo, fator_risco, intensidade, tecnica, epc_eficaz, epi_eficaz, ca_epi)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-            """, (new_id, item['periodo_inicio'], item['periodo_fim'], item['tipo'], item['fator_risco'], item['intensidade'], item['tecnica'], item['epc_eficaz'], item['epi_eficaz'], item['ca_epi']))
+                INSERT INTO ppp_registros_ambientais (
+                    ppp_id, periodo_inicio, periodo_fim, tipo, fator_risco, 
+                    intensidade, tecnica, epc_eficaz, epi_eficaz, ca_epi,
+                    medida_protecao, condicao_funcionamento, prazo_validade_epi, 
+                    periodicidade_troca_epi, higienizacao_epi
+                )
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """, (new_id, item['periodo_inicio'], item['periodo_fim'], item['tipo'], 
+                  item['fator_risco'], item['intensidade'], item['tecnica'], item['epc_eficaz'], 
+                  item['epi_eficaz'], item['ca_epi'], item['medida_protecao'], 
+                  item['condicao_funcionamento'], item['prazo_validade_epi'], 
+                  item['periodicidade_troca_epi'], item['higienizacao_epi']))
             
         # 3.4 Responsáveis
         cursor.execute("SELECT * FROM ppp_responsaveis_registros WHERE ppp_id = %s", (id,))

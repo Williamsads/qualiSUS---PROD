@@ -156,7 +156,7 @@
   </style>
 </head>
 
-<body class="bg-gray-50 min-h-screen font-sans">
+<body class="bg-gray-50 min-h-screen font-sans flex flex-col">
 
   <!-- Header estilo Gov PE -->
   <header
@@ -193,7 +193,7 @@
 
   <!-- Conteúdo principal -->
   <main
-    class="max-w-3xl mx-auto md:mt-10 bg-white p-4 sm:p-6 md:p-8 rounded-b-xl sm:rounded-xl md:rounded-2xl shadow-lg">
+    class="flex-grow max-w-3xl mx-auto w-full md:mt-10 bg-white p-4 sm:p-6 md:p-8 rounded-b-xl sm:rounded-xl md:rounded-2xl shadow-lg mb-12">
 
     <h1 class="text-2xl sm:text-3xl md:text-4xl font-black text-center mb-2 text-pe-blue tracking-tighter">
       Agende sua Consulta <span class="text-pe-red">Qualivida</span>
@@ -205,69 +205,64 @@
       </span>
     </div>
 
-    <p class="text-center text-sm sm:text-base text-gray-500 mb-8 md:mb-10 px-4 leading-relaxed font-medium">
+    <p class="text-center text-xs sm:text-base text-gray-500 mb-8 md:mb-10 px-4 leading-relaxed font-semibold">
       Escolha a especialidade, unidade e horário com praticidade.<br class="hidden sm:block">
       Processo 100% digital e seguro para o servidor.
     </p>
 
     <!-- Steps / Linha de progresso -->
-    <div class="flex justify-between items-center mb-8 md:mb-12 px-1 sm:px-2 gap-1">
+    <div id="step-progress-container" class="relative flex justify-between items-start mb-12 px-2">
+      <!-- Background Connecting Line -->
+      <div class="absolute top-4 md:top-6 left-10 right-10 h-0.5 bg-gray-100 z-0"></div>
+
       <!-- Step 1 -->
-      <div class="flex flex-col items-center flex-1 min-w-0">
-        <div
-          class="w-8 h-8 md:w-12 md:h-12 rounded-full bg-brand-600 text-white flex items-center justify-center font-bold text-xs md:text-lg shadow-md transition-all ring-4 ring-blue-50">
+      <div class="relative z-10 flex flex-col items-center flex-1">
+        <div id="step-circle-1"
+          class="w-9 h-9 md:w-12 md:h-12 rounded-full bg-brand-600 text-white flex items-center justify-center font-black text-xs md:text-lg shadow-lg ring-4 ring-blue-50 transition-all duration-300">
           1
         </div>
         <span
-          class="mt-2 text-brand-600 font-bold block text-[9px] md:text-sm uppercase tracking-tight truncate w-full text-center">Paciente</span>
+          class="mt-2 text-brand-600 font-bold text-[9px] md:text-xs uppercase tracking-tighter text-center">Paciente</span>
       </div>
 
-      <div class="flex-[0.5] h-0.5 bg-gray-100 mt-[-20px] md:mt-[-40px]"></div>
-
       <!-- Step 2 -->
-      <div class="flex flex-col items-center flex-1 min-w-0">
-        <div
-          class="w-8 h-8 md:w-12 md:h-12 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center font-bold text-xs md:text-lg transition-all">
+      <div class="relative z-10 flex flex-col items-center flex-1">
+        <div id="step-circle-2"
+          class="w-9 h-9 md:w-12 md:h-12 rounded-full bg-white border-2 border-gray-100 text-gray-400 flex items-center justify-center font-black text-xs md:text-lg transition-all duration-300">
           2
         </div>
         <span
-          class="mt-2 text-gray-400 font-medium block text-[9px] md:text-sm uppercase tracking-tight truncate w-full text-center">Unidade</span>
+          class="mt-2 text-gray-300 font-bold text-[9px] md:text-xs uppercase tracking-tighter text-center">Unidade</span>
       </div>
 
-      <div class="flex-[0.5] h-0.5 bg-gray-100 mt-[-20px] md:mt-[-40px]"></div>
-
       <!-- Step 3 -->
-      <div class="flex flex-col items-center flex-1 min-w-0">
-        <div
-          class="w-8 h-8 md:w-12 md:h-12 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center font-bold text-xs md:text-lg transition-all">
+      <div class="relative z-10 flex flex-col items-center flex-1">
+        <div id="step-circle-3"
+          class="w-9 h-9 md:w-12 md:h-12 rounded-full bg-white border-2 border-gray-100 text-gray-400 flex items-center justify-center font-black text-xs md:text-lg transition-all duration-300">
           3
         </div>
         <span
-          class="mt-2 text-gray-400 font-medium block text-[9px] md:text-sm uppercase tracking-tight truncate w-full text-center">Especialidade</span>
+          class="mt-2 text-gray-300 font-bold text-[9px] md:text-xs uppercase tracking-tighter text-center">Especialidade</span>
       </div>
 
-      <div class="flex-[0.5] h-0.5 bg-gray-100 mt-[-20px] md:mt-[-40px]"></div>
-
       <!-- Step 4 -->
-      <div class="flex flex-col items-center flex-1 min-w-0">
-        <div
-          class="w-8 h-8 md:w-12 md:h-12 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center font-bold text-xs md:text-lg transition-all">
+      <div class="relative z-10 flex flex-col items-center flex-1">
+        <div id="step-circle-4"
+          class="w-9 h-9 md:w-12 md:h-12 rounded-full bg-white border-2 border-gray-100 text-gray-400 flex items-center justify-center font-black text-xs md:text-lg transition-all duration-300">
           4
         </div>
         <span
-          class="mt-2 text-gray-400 font-medium block text-[9px] md:text-sm uppercase tracking-tight truncate w-full text-center">Horário</span>
+          class="mt-2 text-gray-300 font-bold text-[9px] md:text-xs uppercase tracking-tighter text-center">Horário</span>
       </div>
 
-      <div class="flex-[0.5] h-0.5 bg-gray-100 mt-[-20px] md:mt-[-40px]"></div>
-
       <!-- Step 5 -->
-      <div class="flex flex-col items-center flex-1 min-w-0">
-        <div
-          class="w-8 h-8 md:w-12 md:h-12 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center font-bold text-xs md:text-lg transition-all">
+      <div class="relative z-10 flex flex-col items-center flex-1">
+        <div id="step-circle-5"
+          class="w-9 h-9 md:w-12 md:h-12 rounded-full bg-white border-2 border-gray-100 text-gray-400 flex items-center justify-center font-black text-xs md:text-lg transition-all duration-300">
           5
         </div>
         <span
-          class="mt-2 text-gray-400 font-medium block text-[9px] md:text-sm uppercase tracking-tight truncate w-full text-center">CONFIRMAÇÃO</span>
+          class="mt-2 text-gray-300 font-bold text-[9px] md:text-xs uppercase tracking-tighter text-center">Confirmação</span>
       </div>
     </div>
 
@@ -288,12 +283,12 @@
         </label>
 
 
-        <div class="relative flex items-center z-10">
+        <div class="relative flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
           <input type="text" id="doc" name="doc" autocomplete="off"
-            class="w-full pl-5 pr-24 py-4 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 outline-none text-gray-900 font-bold bg-white shadow-sm transition-all dark:border-gray-700 cursor-text"
+            class="w-full pl-5 pr-5 sm:pr-24 py-4 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 outline-none text-gray-900 font-bold bg-white shadow-sm transition-all"
             placeholder="CPF ou Matrícula...">
           <button id="btnValidar"
-            class="absolute right-2 top-2 bottom-2 bg-red-600 text-white font-extrabold px-6 rounded-lg hover:bg-red-700 transition-colors z-20 shadow-md active:scale-95">
+            class="sm:absolute sm:right-2 sm:top-2 sm:bottom-2 bg-red-600 text-white font-black px-8 py-3 sm:py-0 rounded-lg hover:bg-red-700 transition-colors shadow-md active:scale-95">
             Buscar
           </button>
         </div>
@@ -900,26 +895,32 @@
     </div>
   </main>
 
-  <!-- RODAPÉ INSTITUCIONAL -->
-  <footer class="bg-blue-900 text-white mt-12">
-    <div class="max-w-7xl mx-auto px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+  <!-- RODAPÉ INSTITUCIONAL PREMIUM -->
+  <footer class="bg-[#004b90] text-white mt-auto border-t-4 border-[#FFD700]">
+    <div class="max-w-7xl mx-auto px-6 py-10">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-8">
 
-      <!-- Logo Governo de Pernambuco -->
-      <div class="flex items-center gap-4">
-        <img src="{{ url_for('static', filename='img/GOV-JPG-1024x452-removebg-preview.png') }}"
-          alt="Governo de Pernambuco" class="h-14 w-auto brightness-0 invert" />
-        <div class="leading-tight">
-          <span class="text-sm block">Governo de</span>
-          <span class="font-bold text-lg">Pernambuco</span>
+        <!-- Lado Esquerdo: Logo e Identidade -->
+        <div class="flex flex-col md:flex-row items-center gap-6">
+          <img src="{{ url_for('static', filename='img/GOV-JPG-1024x452-removebg-preview.png') }}"
+            alt="Governo de Pernambuco" class="h-12 w-auto brightness-0 invert opacity-90" />
+          <div class="h-10 w-px bg-white/20 hidden md:block"></div>
+          <div class="text-center md:text-left">
+            <p class="text-[10px] font-black uppercase tracking-[0.2em] text-blue-200 mb-1">Secretaria Estadual de
+              Saúde</p>
+            <p class="text-xs font-medium opacity-70">Governo do Estado de Pernambuco</p>
+          </div>
         </div>
-      </div>
 
-      <!-- Texto institucional -->
-      <div class="text-sm text-gray-200 text-center sm:text-right">
-        <p>Secretaria Estadual de Saúde</p>
-        <p class="text-xs opacity-80">© 2025 • QualiSUS PE</p>
-      </div>
+        <!-- Lado Direito: Copyright -->
+        <div class="flex flex-col items-center md:items-end gap-3">
+          <p
+            class="text-[10px] font-bold opacity-50 uppercase tracking-widest text-center md:text-right flex items-center gap-2">
+            <i data-lucide="copyright" class="w-3 h-3"></i> 2025 • Todos os direitos reservados
+          </p>
+        </div>
 
+      </div>
     </div>
   </footer>
 
@@ -1019,37 +1020,45 @@
     }
 
     function updateStepProgress(step) {
-      const stepItems = document.querySelectorAll('.flex.justify-between.items-center.mb-8 > div.flex-col');
-      const lines = document.querySelectorAll('.flex.justify-between.items-center.mb-8 > div.flex-1');
+      const container = document.getElementById('step-progress-container');
+      if (!container) return;
 
-      stepItems.forEach((item, idx) => {
-        const circle = item.querySelector('div');
-        const label = item.querySelector('span');
+      // Pegamos exatamente os 5 itens dos passos (evitando seletores genéricos)
+      const stepCircles = container.querySelectorAll('div[id^="step-circle-"]');
 
-        // Reset classes
-        circle.classList.remove('bg-brand-600', 'bg-green-600', 'bg-gray-100', 'text-white', 'text-gray-400', 'ring-4', 'ring-blue-50', 'ring-green-50');
-        label.classList.remove('text-brand-600', 'text-green-600', 'text-gray-400', 'font-bold', 'font-medium');
+      stepCircles.forEach((circle, idx) => {
+        const item = circle.closest('.flex-col');
+        const label = item ? item.querySelector('span') : null;
+
+        if (!circle || !label) return;
+
+        // Limpeza profunda de classes
+        circle.classList.remove(
+          'bg-brand-600', 'bg-green-600', 'bg-white',
+          'text-white', 'text-gray-400', 'text-green-600',
+          'ring-4', 'ring-blue-50', 'ring-green-50',
+          'border-gray-100', 'border-green-600', 'border-2'
+        );
+        label.classList.remove('text-brand-600', 'text-green-600', 'text-gray-300', 'font-black', 'font-bold', 'font-medium');
 
         if (idx < step) {
-          // Concluído
+          // CONCLUÍDO (CHECKMARK VERDE)
           circle.classList.add('bg-green-600', 'text-white', 'ring-4', 'ring-green-50');
           circle.innerHTML = '<i data-lucide="check" class="w-5 h-5"></i>';
-          label.classList.add('text-green-600', 'font-bold');
-          if (lines[idx]) lines[idx].classList.replace('bg-gray-100', 'bg-green-600');
+          label.classList.add('text-green-600', 'font-black');
         } else if (idx === step) {
-          // Ativo
+          // ATIVO (AZUL)
           circle.classList.add('bg-brand-600', 'text-white', 'ring-4', 'ring-blue-50');
-          circle.innerHTML = idx + 1;
-          label.classList.add('text-brand-600', 'font-bold');
-          if (lines[idx]) lines[idx].classList.replace('bg-green-600', 'bg-gray-100');
+          circle.innerHTML = `<span>${idx + 1}</span>`;
+          label.classList.add('text-brand-600', 'font-black');
         } else {
-          // Futuro
-          circle.classList.add('bg-gray-100', 'text-gray-400');
-          circle.innerHTML = idx + 1;
-          label.classList.add('text-gray-400', 'font-medium');
-          if (lines[idx]) lines[idx].classList.replace('bg-green-600', 'bg-gray-100');
+          // FUTURO (CINZA)
+          circle.classList.add('bg-white', 'border-2', 'border-gray-100', 'text-gray-400');
+          circle.innerHTML = `<span>${idx + 1}</span>`;
+          label.classList.add('text-gray-300', 'font-bold');
         }
       });
+
       if (typeof lucide !== 'undefined') lucide.createIcons();
     }
 
@@ -1961,26 +1970,32 @@
     }
 
     async function cancelarAgendamento(id, especialidade) {
-      if (!confirm(`Tem certeza que deseja cancelar seu agendamento de ${especialidade}?`)) return;
+      confirmAction({
+        title: 'Cancelar Agendamento',
+        message: `Tem certeza que deseja cancelar seu agendamento de ${especialidade}?`,
+        icon: 'trash-2',
+        type: 'danger',
+        onConfirm: async () => {
+          try {
+            const res = await fetch("/api/agendar_exame/cancelar", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ agendamento_id: id })
+            });
+            const data = await res.json();
 
-      try {
-        const res = await fetch("/api/agendar_exame/cancelar", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ agendamento_id: id })
-        });
-        const data = await res.json();
-
-        if (data.success) {
-          showToast("Agendamento cancelado com sucesso.", "success");
-          carregarAgendamentos(pacienteGlobal.id);
-        } else {
-          showToast("Erro: " + (data.error || "Não foi possível cancelar."), "error");
+            if (data.success) {
+              showToast("Agendamento cancelado com sucesso.", "success");
+              carregarAgendamentos(pacienteGlobal.id);
+            } else {
+              showToast("Erro: " + (data.error || "Não foi possível cancelar."), "error");
+            }
+          } catch (err) {
+            console.error(err);
+            showToast("Erro de conexão ao cancelar.", "error");
+          }
         }
-      } catch (err) {
-        console.error(err);
-        showToast("Erro de conexão ao cancelar.", "error");
-      }
+      });
     }
 
     window.carregarAgendamentos = carregarAgendamentos;

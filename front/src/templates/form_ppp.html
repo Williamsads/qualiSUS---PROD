@@ -170,18 +170,21 @@
                     Dados da Empresa e Trabalhador
                 </h3>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
                     <div class="input-group">
-                        <label>CNPJ Empresa</label>
-                        <input type="text" class="input-field" placeholder="00.000.000/0000-00">
+                        <label>1 - CNPJ/CEI/CAEPF/CNO</label>
+                        <input type="text" id="cnpj_empresa" class="input-field" placeholder="00.000.000/0000-00"
+                            value="{{ ppp.cnpj_empresa if ppp else '' }}">
                     </div>
                     <div class="input-group md:col-span-2">
-                        <label>Nome Empresarial</label>
-                        <input type="text" class="input-field" placeholder="Razão Social completa">
+                        <label>2 - Nome Empresarial</label>
+                        <input type="text" id="nome_empresarial" class="input-field" placeholder="Razão Social completa"
+                            value="{{ ppp.nome_empresarial if ppp else '' }}">
                     </div>
                     <div class="input-group">
-                        <label>CNAE</label>
-                        <input type="text" class="input-field" placeholder="Código CNAE">
+                        <label>3 - CNAE</label>
+                        <input type="text" id="cnae_empresa" class="input-field" placeholder="Código CNAE"
+                            value="{{ ppp.cnae if ppp else '' }}">
                     </div>
                 </div>
 
@@ -189,31 +192,47 @@
                     <!-- Removido vínculo automático -->
 
                     <div class="input-group md:col-span-2">
-                        <label>Nome do Trabalhador</label>
+                        <label>4 - Nome do Trabalhador</label>
                         <input type="text" id="servidor_nome_display" class="input-field" placeholder="Nome completo"
                             value="{{ ppp.nome_trabalhador if ppp else '' }}">
                     </div>
                     <div class="input-group">
-                        <label>CPF</label>
+                        <label>5 - BR/PDH</label>
+                        <input type="text" id="br_pdh" class="input-field" placeholder="..."
+                            value="{{ ppp.br_pdh if ppp else '' }}">
+                    </div>
+                    <div class="input-group">
+                        <label>6 - CPF</label>
                         <input type="text" id="servidor_cpf_display" class="input-field" placeholder="000.000.000-00"
                             value="{{ ppp.cpf_trabalhador if ppp else '' }}">
                     </div>
                     <div class="input-group">
-                        <label>Data de Nascimento</label>
+                        <label>7 - Data de Nascimento</label>
                         <input type="date" id="servidor_data_nasc" class="input-field"
                             value="{{ ppp.data_nascimento if ppp else '' }}">
                     </div>
                     <div class="input-group">
-                        <label>Sexo</label>
+                        <label>8 - Sexo</label>
                         <select id="servidor_sexo" class="input-field appearance-none">
+                            <option value="">-</option>
                             <option value="M" {% if ppp and ppp.sexo=='M' %}selected{% endif %}>Masculino</option>
                             <option value="F" {% if ppp and ppp.sexo=='F' %}selected{% endif %}>Feminino</option>
                         </select>
                     </div>
                     <div class="input-group">
-                        <label>Matrícula eSocial</label>
+                        <label>9 - Matrícula eSocial</label>
                         <input type="text" id="servidor_matricula" class="input-field"
                             value="{{ ppp.matricula_trabalhador if ppp else '' }}">
+                    </div>
+                    <div class="input-group">
+                        <label>10 - Data de Admissão</label>
+                        <input type="date" id="servidor_data_adm" class="input-field"
+                            value="{{ ppp.data_admissao if ppp else '' }}">
+                    </div>
+                    <div class="input-group">
+                        <label>11 - Regime Revezamento</label>
+                        <input type="text" id="regime_revezamento" class="input-field" placeholder="Ex: 12x36"
+                            value="{{ ppp.regime_revezamento if ppp else '' }}">
                     </div>
                     <div class="input-group">
                         <label>Unidade de Lotação</label>
@@ -225,13 +244,6 @@
                         <input type="text" id="servidor_cargo" class="input-field" placeholder="Cargo"
                             value="{{ ppp.cargo_trabalhador if ppp else '' }}">
                     </div>
-                    <div class="input-group">
-                        <label>Regime Revezamento</label>
-                        <input type="date" id="servidor_data_adm" class="hidden">
-                        <!-- Placeholder for future expansion -->
-                        <input type="text" id="regime_revezamento" class="input-field" placeholder="Ex: 12x36"
-                            value="{{ ppp.regime_revezamento if ppp else '' }}">
-                    </div>
                 </div>
 
                 <div class="mt-10 p-6 bg-slate-50 rounded-2xl border border-slate-200 border-dashed">
@@ -239,12 +251,13 @@
                         houver)</h4>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div class="input-group">
-                            <label>Data da CAT</label>
-                            <input type="date" class="input-field" value="{{ ppp.cat_data if ppp else '' }}">
+                            <label>12.1 - Data do Registro</label>
+                            <input type="date" id="cat_data" class="input-field"
+                                value="{{ ppp.cat_data_registro if ppp else '' }}">
                         </div>
                         <div class="input-group md:col-span-2">
-                            <label>Número da CAT</label>
-                            <input type="text" class="input-field" placeholder="Número do registro"
+                            <label>12.2 - Número da CAT</label>
+                            <input type="text" id="cat_numero" class="input-field" placeholder="Número do registro"
                                 value="{{ ppp.cat_numero if ppp else '' }}">
                         </div>
                     </div>
@@ -283,6 +296,37 @@
                             </tr>
                         </thead>
                         <tbody>
+                            {% if lotacao %}
+                            {% for item in lotacao %}
+                            <tr>
+                                <td><input type="date" value="{{ item.periodo_inicio }}"
+                                        class="w-full bg-transparent border-none outline-none text-xs font-bold"></td>
+                                <td><input type="date" value="{{ item.periodo_fim }}"
+                                        class="w-full bg-transparent border-none outline-none text-xs font-bold"></td>
+                                <td><input type="text" value="{{ item.cnpj or '' }}"
+                                        class="w-full bg-transparent border-none outline-none text-xs font-bold"
+                                        placeholder="CNPJ"></td>
+                                <td><input type="text" value="{{ item.setor or '' }}"
+                                        class="w-full bg-transparent border-none outline-none text-xs font-bold"
+                                        placeholder="Setor"></td>
+                                <td><input type="text" value="{{ item.cargo or '' }}"
+                                        class="w-full bg-transparent border-none outline-none text-xs font-bold"
+                                        placeholder="Cargo"></td>
+                                <td><input type="text" value="{{ item.funcao or '' }}"
+                                        class="w-full bg-transparent border-none outline-none text-xs font-bold"
+                                        placeholder="Função"></td>
+                                <td><input type="text" value="{{ item.cbo or '' }}"
+                                        class="w-full bg-transparent border-none outline-none text-xs font-bold"
+                                        placeholder="CBO"></td>
+                                <td><input type="text" value="{{ item.gfip or '' }}"
+                                        class="w-full bg-transparent border-none outline-none text-xs font-bold"
+                                        placeholder="GFIP"></td>
+                                <td><button type="button" class="text-slate-300 hover:text-red-500 transition-all"
+                                        onclick="removeRow(this)"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            {% else %}
                             <tr>
                                 <td><input type="date"
                                         class="w-full bg-transparent border-none outline-none text-xs font-bold"></td>
@@ -310,6 +354,7 @@
                                         onclick="removeRow(this)"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                                 </td>
                             </tr>
+                            {% endif %}
                         </tbody>
                     </table>
                 </div>
@@ -342,6 +387,23 @@
                             </tr>
                         </thead>
                         <tbody>
+                            {% if profissiografia %}
+                            {% for item in profissiografia %}
+                            <tr>
+                                <td><input type="date" value="{{ item.periodo_inicio }}"
+                                        class="w-full bg-transparent border-none outline-none text-xs font-bold"></td>
+                                <td><input type="date" value="{{ item.periodo_fim }}"
+                                        class="w-full bg-transparent border-none outline-none text-xs font-bold"></td>
+                                <td><textarea
+                                        class="w-full bg-transparent border-none outline-none text-xs font-bold min-h-[60px] resize-none py-2"
+                                        placeholder="Descreva as atividades...">{{ item.descricao or '' }}</textarea>
+                                </td>
+                                <td><button type="button" class="text-slate-300 hover:text-red-500 transition-all"
+                                        onclick="removeRow(this)"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            {% else %}
                             <tr>
                                 <td><input type="date"
                                         class="w-full bg-transparent border-none outline-none text-xs font-bold"></td>
@@ -354,6 +416,7 @@
                                         onclick="removeRow(this)"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                                 </td>
                             </tr>
+                            {% endif %}
                         </tbody>
                     </table>
                 </div>
@@ -385,13 +448,70 @@
                                 <th>Fator Risco</th>
                                 <th>Intens./Conc.</th>
                                 <th>Técnica</th>
-                                <th>EPC</th>
-                                <th>EPI</th>
+                                <th>EPC EF</th>
+                                <th>EPI EF</th>
                                 <th>CA</th>
+                                <th>Med. Prot.</th>
+                                <th>Cond. Func.</th>
+                                <th>Val. EPI</th>
+                                <th>Troca EPI</th>
+                                <th>Higien.</th>
                                 <th class="w-10"></th>
                             </tr>
                         </thead>
                         <tbody>
+                            {% if ambiental %}
+                            {% for item in ambiental %}
+                            <tr>
+                                <td><input type="date" value="{{ item.periodo_inicio }}"
+                                        class="w-full bg-transparent border-none outline-none text-[10px] font-bold">
+                                </td>
+                                <td><input type="date" value="{{ item.periodo_fim }}"
+                                        class="w-full bg-transparent border-none outline-none text-[10px] font-bold">
+                                </td>
+                                <td>
+                                    <select
+                                        class="w-full bg-transparent border-none outline-none text-[10px] font-bold">
+                                        <option value="Físico" {% if item.tipo=='Físico' %}selected{% endif %}>Físico
+                                        </option>
+                                        <option value="Químico" {% if item.tipo=='Químico' %}selected{% endif %}>Químico
+                                        </option>
+                                        <option value="Biológico" {% if item.tipo=='Biológico' %}selected{% endif %}>
+                                            Biológico</option>
+                                    </select>
+                                </td>
+                                <td><input type="text" value="{{ item.fator_risco or '' }}"
+                                        class="w-full bg-transparent border-none outline-none text-[10px] font-bold"
+                                        placeholder="Risco"></td>
+                                <td><input type="text" value="{{ item.intensidade or '' }}"
+                                        class="w-full bg-transparent border-none outline-none text-[10px] font-bold"
+                                        placeholder="..."></td>
+                                <td><input type="text" value="{{ item.tecnica or '' }}"
+                                        class="w-full bg-transparent border-none outline-none text-[10px] font-bold"
+                                        placeholder="Técnica"></td>
+                                <td class="text-center"><input type="checkbox" {% if item.epc_eficaz %}checked{% endif
+                                        %}></td>
+                                <td class="text-center"><input type="checkbox" {% if item.epi_eficaz %}checked{% endif
+                                        %}></td>
+                                <td><input type="text" value="{{ item.ca_epi or '' }}"
+                                        class="w-full bg-transparent border-none outline-none text-[10px] font-bold"
+                                        placeholder="CA"></td>
+                                <td class="text-center"><input type="checkbox" {% if item.medida_protecao %}checked{%
+                                        endif %}></td>
+                                <td class="text-center"><input type="checkbox" {% if item.condicao_funcionamento
+                                        %}checked{% endif %}></td>
+                                <td class="text-center"><input type="checkbox" {% if item.prazo_validade_epi %}checked{%
+                                        endif %}></td>
+                                <td class="text-center"><input type="checkbox" {% if item.periodicidade_troca_epi
+                                        %}checked{% endif %}></td>
+                                <td class="text-center"><input type="checkbox" {% if item.higienizacao_epi %}checked{%
+                                        endif %}></td>
+                                <td><button type="button" class="text-slate-300 hover:text-red-500 transition-all"
+                                        onclick="removeRow(this)"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            {% else %}
                             <tr>
                                 <td><input type="date"
                                         class="w-full bg-transparent border-none outline-none text-[10px] font-bold">
@@ -421,10 +541,16 @@
                                 <td><input type="text"
                                         class="w-full bg-transparent border-none outline-none text-[10px] font-bold"
                                         placeholder="CA"></td>
+                                <td class="text-center"><input type="checkbox"></td>
+                                <td class="text-center"><input type="checkbox"></td>
+                                <td class="text-center"><input type="checkbox"></td>
+                                <td class="text-center"><input type="checkbox"></td>
+                                <td class="text-center"><input type="checkbox"></td>
                                 <td><button type="button" class="text-slate-300 hover:text-red-500 transition-all"
                                         onclick="removeRow(this)"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                                 </td>
                             </tr>
+                            {% endif %}
                         </tbody>
                     </table>
                 </div>
@@ -459,6 +585,30 @@
                             </tr>
                         </thead>
                         <tbody>
+                            {% if responsaveis %}
+                            {% for item in responsaveis %}
+                            <tr>
+                                <td><input type="date" value="{{ item.periodo_inicio }}"
+                                        class="w-full bg-transparent border-none outline-none text-[10px] font-bold">
+                                </td>
+                                <td><input type="date" value="{{ item.periodo_fim }}"
+                                        class="w-full bg-transparent border-none outline-none text-[10px] font-bold">
+                                </td>
+                                <td><input type="text" value="{{ item.cpf or '' }}"
+                                        class="w-full bg-transparent border-none outline-none text-[10px] font-bold"
+                                        placeholder="CPF"></td>
+                                <td><input type="text" value="{{ item.registro_conselho or '' }}"
+                                        class="w-full bg-transparent border-none outline-none text-[10px] font-bold"
+                                        placeholder="CRM/CREA/etc"></td>
+                                <td><input type="text" value="{{ item.nome or '' }}"
+                                        class="w-full bg-transparent border-none outline-none text-[10px] font-bold"
+                                        placeholder="Nome completo"></td>
+                                <td><button type="button" class="text-slate-300 hover:text-red-500 transition-all"
+                                        onclick="removeRow(this)"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            {% else %}
                             <tr>
                                 <td><input type="date"
                                         class="w-full bg-transparent border-none outline-none text-[10px] font-bold">
@@ -479,6 +629,7 @@
                                         onclick="removeRow(this)"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                                 </td>
                             </tr>
+                            {% endif %}
                         </tbody>
                     </table>
                 </div>
@@ -496,24 +647,37 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                     <div class="input-group">
-                        <label>Data de Emissão</label>
-                        <input type="date" class="input-field" value="{{ today }}">
+                        <label>17 - Data de Emissão do PPP</label>
+                        <input type="date" id="data_emissao" class="input-field"
+                            value="{{ ppp.data_emissao if ppp else today }}">
                     </div>
                     <div class="input-group">
-                        <label>CPF do Representante</label>
-                        <input type="text" class="input-field" placeholder="000.000.000-00"
+                        <label>18.1 - CPF do Representante</label>
+                        <input type="text" id="rep_legal_cpf" class="input-field" placeholder="000.000.000-00"
                             value="{{ ppp.rep_legal_cpf if ppp else '' }}">
                     </div>
                     <div class="input-group">
-                        <label>Nome do Representante</label>
-                        <input type="text" class="input-field" placeholder="Nome completo"
+                        <label>18.2 - Nome do Representante</label>
+                        <input type="text" id="rep_legal_nome" class="input-field" placeholder="Nome completo"
                             value="{{ ppp.rep_legal_nome if ppp else '' }}">
                     </div>
                 </div>
 
+                <div
+                    class="mb-8 p-6 bg-blue-50/50 rounded-2xl border border-blue-100 italic text-slate-600 text-[11px] leading-relaxed">
+                    Declaramos, para todos fins de direito, que as informações prestadas neste documento são verídicas e
+                    foram transcritas fielmente dos registros administrativos, das demonstrações ambientais e dos
+                    programas médicos de responsabilidade da empresa. É de nosso conhecimento que a prestação de
+                    informações falsas neste documento constitui crime de falsificação de documento público, nos termos
+                    do art. 297 do Código Penal e, também, que tais informações são de caráter privativo do trabalhador,
+                    constituindo crime, nos termos da Lei nº 9.029, de 13 de abril de 1995, práticas discriminatórias
+                    decorrentes de sua exigibilidade por outrem, bem como de sua divulgação para terceiros, ressalvado
+                    quando exigida pelos órgãos públicos competentes.
+                </div>
+
                 <div class="input-group">
-                    <label>Observações Adicionais</label>
-                    <textarea class="input-field min-h-[120px] resize-none"
+                    <label>OBSERVAÇÕES</label>
+                    <textarea id="observacoes" class="input-field min-h-[120px] resize-none"
                         placeholder="Digite observações que serão impressas no PPP...">{{ ppp.observacoes if ppp else '' }}</textarea>
                 </div>
             </div>
@@ -585,6 +749,11 @@
     async function salvarPPP() {
         const data = {
             id: PPP_ID,
+            cnpj_empresa: document.getElementById('cnpj_empresa')?.value,
+            nome_empresarial: document.getElementById('nome_empresarial')?.value,
+            cnae: document.getElementById('cnae_empresa')?.value,
+            br_pdh: document.getElementById('br_pdh')?.value,
+            data_admissao: document.getElementById('servidor_data_adm')?.value,
             nome_trabalhador: document.getElementById('servidor_nome_display')?.value,
             cpf_trabalhador: document.getElementById('servidor_cpf_display')?.value,
             data_nascimento: document.getElementById('servidor_data_nasc')?.value,
@@ -592,18 +761,17 @@
             matricula_trabalhador: document.getElementById('servidor_matricula')?.value,
             unidade_trabalhador: document.getElementById('servidor_unidade')?.value,
             cargo_trabalhador: document.getElementById('servidor_cargo')?.value,
-
             regime_revezamento: document.getElementById('regime_revezamento')?.value,
-            cat_data: document.querySelector('#tab-adm input[type="date"]')?.value,
-            cat_numero: document.querySelector('input[placeholder="Número do registro"]')?.value,
-            data_emissao: document.querySelector('#tab-emissao input[type="date"]')?.value,
-            rep_legal_nome: document.querySelector('input[placeholder="Nome do Representante"]')?.value,
-            rep_legal_cpf: document.querySelector('input[placeholder="CPF do Representante"]')?.value,
-            observacoes: document.querySelector('textarea[placeholder="Digite observações..."]')?.value,
+            cat_data_registro: document.getElementById('cat_data')?.value,
+            cat_numero: document.getElementById('cat_numero')?.value,
+            data_emissao: document.getElementById('data_emissao')?.value,
+            rep_legal_nome: document.getElementById('rep_legal_nome')?.value,
+            rep_legal_cpf: document.getElementById('rep_legal_cpf')?.value,
+            observacoes: document.getElementById('observacoes')?.value,
 
             lotacao: collectTable('table-lotacao', ['periodo_inicio', 'periodo_fim', 'cnpj', 'setor', 'cargo', 'funcao', 'cbo', 'gfip']),
             profissiografia: collectTable('table-profissiografia', ['periodo_inicio', 'periodo_fim', 'descricao']),
-            ambiental: collectTable('table-ambiental', ['periodo_inicio', 'periodo_fim', 'tipo', 'fator_risco', 'intensidade', 'tecnica', 'epc_eficaz', 'epi_eficaz', 'ca_epi']),
+            ambiental: collectTable('table-ambiental', ['periodo_inicio', 'periodo_fim', 'tipo', 'fator_risco', 'intensidade', 'tecnica', 'epc_eficaz', 'epi_eficaz', 'ca_epi', 'medida_protecao', 'condicao_funcionamento', 'prazo_validade_epi', 'periodicidade_troca_epi', 'higienizacao_epi']),
             responsaveis: collectTable('table-responsaveis', ['periodo_inicio', 'periodo_fim', 'cpf', 'registro_conselho', 'nome'])
         };
 

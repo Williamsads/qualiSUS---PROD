@@ -198,18 +198,24 @@
     });
 
     async function executarLimpeza() {
-        if (!confirm('Deseja executar a verificação de inatividade de 60 dias para todos os seus pacientes?')) return;
-
-        try {
-            const res = await fetch('/log_agendamento/api/ciclo/limpeza-automatica', { method: 'POST' });
-            const data = await res.json();
-            if (data.success) {
-                showToast('Sistema', 'Rotina de limpeza executada com sucesso!', 'success');
-                carregarPacientes();
+        confirmAction({
+            title: 'Validar Inatividade',
+            message: 'Deseja executar a verificação de inatividade de 60 dias para todos os seus pacientes? Ciclos sem movimentação serão encerrados.',
+            icon: 'refresh-cw',
+            type: 'info',
+            onConfirm: async () => {
+                try {
+                    const res = await fetch('/log_agendamento/api/ciclo/limpeza-automatica', { method: 'POST' });
+                    const data = await res.json();
+                    if (data.success) {
+                        showToast('Sistema', 'Rotina de limpeza executada com sucesso!', 'success');
+                        carregarPacientes();
+                    }
+                } catch (err) {
+                    showToast('Erro', 'Erro ao processar limpeza', 'error');
+                }
             }
-        } catch (err) {
-            showToast('Erro', 'Erro ao processar limpeza', 'error');
-        }
+        });
     }
 
     window.addEventListener('load', carregarPacientes);

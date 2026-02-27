@@ -359,8 +359,22 @@ def api_historico_paciente(trabalhador_id):
         eventos = []
         for c in consultas:
             desc = f"Consulta de {c['especialidade']}"
+            icon = "calendar"
+            color = "blue"
+            
             if c['origem_agendamento'] == 'ENCAMINHAMENTO':
                 desc = f"Encaminhamento para {c['especialidade']}"
+                icon = "send"
+                color = "indigo"
+            elif c['especialidade'] == 'Acolhimento':
+                desc = "Consulta de Acolhimento"
+                icon = "stethoscope"
+                color = "emerald"
+            
+            # Hora do agendamento para ordenação dentro do dia
+            # Se não tiver hora, assume 00:00
+            h = c['detalhe_horario'] or "00:00"
+            sort_dt = f"{c['data_evento']} {h}"
             
             eventos.append({
                 "data": c['data_evento'].strftime("%d/%m/%Y"),
@@ -370,7 +384,9 @@ def api_historico_paciente(trabalhador_id):
                 "status": c['status'],
                 "obs": c['observacao'],
                 "tipo": "consulta",
-                "raw_date": c['data_evento']
+                "icon": icon,
+                "color": color,
+                "raw_date": sort_dt
             })
 
         for cc in ciclos:
@@ -382,7 +398,9 @@ def api_historico_paciente(trabalhador_id):
                 "status": cc['status'],
                 "obs": "Paciente ingressou no fluxo de acolhimento.",
                 "tipo": "sistema",
-                "raw_date": cc['data_evento']
+                "icon": "activity",
+                "color": "sky",
+                "raw_date": f"{cc['data_evento']} 00:00"
             })
 
         for pt in tratamentos:
@@ -394,11 +412,13 @@ def api_historico_paciente(trabalhador_id):
                 "status": pt['status'],
                 "obs": "Paciente vinculado para acompanhamento clínico contínuo.",
                 "tipo": "clinico",
-                "raw_date": pt['data_evento']
+                "icon": "heart-pulse",
+                "color": "amber",
+                "raw_date": f"{pt['data_evento']} {pt['detalhe_horario']}"
             })
 
-        # Ordena por data decrescente (Garante que tudo seja comparável convertendo para string ou date bruto)
-        eventos.sort(key=lambda x: str(x['raw_date']), reverse=True)
+        # Ordena por data e hora decrescente (mais recente primeiro)
+        eventos.sort(key=lambda x: x['raw_date'], reverse=True)
         
         # Remove a chave raw_date antes de enviar
         for e in eventos:

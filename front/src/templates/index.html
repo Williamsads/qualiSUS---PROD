@@ -81,13 +81,23 @@
             background-color: #1e293b;
             border: 1px solid #334155;
             transition: all 0.2s ease;
-            color: white;
+            color: white !important;
         }
 
         .input-solid:focus {
             background-color: #0f172a;
             border-color: #0063F7;
             box-shadow: 0 0 0 4px rgba(0, 99, 247, 0.2);
+        }
+
+        /* Prevent background change on autofill */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0 30px #1e293b inset !important;
+            -webkit-text-fill-color: white !important;
+            transition: background-color 5000s ease-in-out 0s;
         }
 
         .bg-system-blue {
@@ -182,7 +192,7 @@
                                 <i data-lucide="mail" class="w-5 h-5"></i>
                             </div>
                             <input type="email" id="email" name="email" placeholder="usuario@saude.pe.gov.br" required
-                                class="w-full pl-12 pr-4 py-4 input-solid rounded-2xl outline-none text-slate-900 dark:text-white placeholder-slate-400 font-bold tracking-tight">
+                                class="w-full pl-12 pr-4 py-4 input-solid rounded-2xl outline-none placeholder-slate-400 font-bold tracking-tight">
                         </div>
                     </div>
 
@@ -201,7 +211,7 @@
                                 <i data-lucide="lock" class="w-5 h-5"></i>
                             </div>
                             <input type="password" id="senha" name="senha" placeholder="••••••••" required
-                                class="w-full pl-12 pr-12 py-4 input-solid rounded-2xl outline-none text-slate-900 dark:text-white placeholder-slate-400 font-bold tracking-tight">
+                                class="w-full pl-12 pr-12 py-4 input-solid rounded-2xl outline-none placeholder-slate-400 font-bold tracking-tight">
 
                             <button type="button" id="toggleSenha"
                                 class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-blue-600 cursor-pointer transition-colors"

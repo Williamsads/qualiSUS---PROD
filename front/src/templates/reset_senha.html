@@ -63,13 +63,23 @@
             background-color: #1e293b;
             border: 1px solid #334155;
             transition: all 0.2s ease;
-            color: white;
+            color: white !important;
         }
 
         .input-solid:focus {
             background-color: #0f172a;
             border-color: #0063F7;
             box-shadow: 0 0 0 4px rgba(0, 99, 247, 0.2);
+        }
+
+        /* Prevent background change on autofill */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0 30px #1e293b inset !important;
+            -webkit-text-fill-color: white !important;
+            transition: background-color 5000s ease-in-out 0s;
         }
     </style>
 </head>

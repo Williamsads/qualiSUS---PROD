@@ -155,7 +155,6 @@
             text-transform: uppercase;
         }
 
-        /* Nav Link Style */
         .nav-link {
             display: flex;
             align-items: center;
@@ -385,6 +384,53 @@
             color: #CBD5E1;
             font-weight: 300;
         }
+
+        /* Essential Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.4s ease-out forwards;
+        }
+
+        .animate-scale-in {
+            animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
     </style>
 
     {% block extra_css %}{% endblock %}
@@ -533,26 +579,41 @@
 
     </div>
 
-    <!-- GLOBAL CONFIRM MODAL -->
+    <!-- GLOBAL CONFIRM MODAL (PREMIUM UPGRADE) -->
     <div id="confirm-modal"
-        class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-gray-950/80 backdrop-blur-sm transition-all duration-300">
-        <div class="bg-white dark:bg-gray-900 rounded-[2.5rem] shadow-2xl w-full max-w-sm transform scale-95 opacity-0 transition-all duration-300 border border-gray-100 dark:border-gray-800 p-8 flex flex-col items-center"
+        class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-slate-950/40 backdrop-blur-md transition-all duration-500 ease-out">
+        <div class="bg-white/90 backdrop-blur-2xl rounded-[2.5rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] w-full max-w-sm transform scale-95 opacity-0 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] border border-white/40 p-10 flex flex-col items-center overflow-hidden relative"
             id="confirm-modal-content">
+
+            <!-- Decorative Background Element -->
+            <div class="absolute -top-20 -right-20 w-40 h-40 bg-red-500/5 rounded-full blur-3xl"
+                id="confirm-modal-blob"></div>
+
             <div id="confirm-icon-bg"
-                class="w-20 h-20 bg-red-50 dark:bg-red-900/20 rounded-3xl flex items-center justify-center text-red-600 dark:text-red-400 mb-6 transition-all duration-500">
-                <i data-lucide="trash-2" class="w-10 h-10" id="confirm-icon"></i>
+                class="w-24 h-24 bg-gradient-to-br from-red-50 to-red-100 dark:from-red-900/20 dark:to-red-800/20 rounded-[2rem] flex items-center justify-center text-red-600 dark:text-red-400 mb-8 shadow-inner relative group">
+                <div
+                    class="absolute inset-0 bg-red-500/10 rounded-[2rem] scale-90 group-hover:scale-110 transition-transform duration-500">
+                </div>
+                <i data-lucide="trash-2" class="w-10 h-10 relative z-10" id="confirm-icon"></i>
             </div>
-            <h3 id="confirm-title" class="text-2xl font-black text-gray-900 dark:text-gray-100 mb-2 text-center">
-                Confirmar
-                Exclusão</h3>
-            <p id="confirm-message" class="text-gray-500 dark:text-gray-400 text-sm text-center mb-8 font-medium">
-                Tem
-                certeza que deseja remover este item? Esta ação não pode ser desfeita.</p>
-            <div class="flex w-full gap-3">
+
+            <h3 id="confirm-title" class="text-3xl font-black text-slate-900 mb-3 text-center tracking-tight">
+                Confirmar Ação
+            </h3>
+
+            <p id="confirm-message" class="text-slate-500 text-sm text-center mb-10 font-medium leading-relaxed px-2">
+                Tem certeza que deseja prosseguir com esta operação? Esta ação poderá ser irreversível.
+            </p>
+
+            <div class="flex w-full gap-4">
                 <button id="confirm-cancel-btn"
-                    class="flex-1 px-6 py-4 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-2xl font-bold hover:bg-gray-200 dark:hover:bg-gray-700 transition-all active:scale-95 uppercase text-[10px] tracking-widest">Cancelar</button>
+                    class="flex-1 px-6 py-4 bg-slate-100 text-slate-500 rounded-2xl font-black hover:bg-slate-200 transition-all active:scale-95 uppercase text-[10px] tracking-[0.2em]">
+                    Cancelar
+                </button>
                 <button id="confirm-yes-btn"
-                    class="flex-1 px-6 py-4 bg-red-600 text-white rounded-2xl font-bold hover:bg-red-700 shadow-xl shadow-red-600/20 transition-all active:scale-95 uppercase text-[10px] tracking-widest">Confirmar</button>
+                    class="flex-1 px-6 py-4 bg-red-600 text-white rounded-2xl font-black hover:bg-red-700 shadow-[0_12px_24px_-8px_rgba(220,38,38,0.4)] transition-all active:scale-95 uppercase text-[10px] tracking-[0.2em]">
+                    Confirmar
+                </button>
             </div>
         </div>
     </div>
@@ -617,22 +678,28 @@
             const titleEl = document.getElementById('confirm-title');
             const messageEl = document.getElementById('confirm-message');
             const iconBg = document.getElementById('confirm-icon-bg');
+            const blob = document.getElementById('confirm-modal-blob');
             const yesBtn = document.getElementById('confirm-yes-btn');
             const cancelBtn = document.getElementById('confirm-cancel-btn');
 
             titleEl.textContent = title;
             messageEl.textContent = message;
 
-            // Update colors based on type
+            // Cores dinâmicas para o tema Premium
             if (type === 'danger') {
-                iconBg.className = 'w-20 h-20 bg-red-50 dark:bg-red-900/20 rounded-3xl flex items-center justify-center text-red-600 dark:text-red-400 mb-6';
-                yesBtn.className = 'flex-1 px-6 py-4 bg-red-600 text-white rounded-2xl font-bold hover:bg-red-700 shadow-xl shadow-red-600/20 transition-all active:scale-95 uppercase text-[10px] tracking-widest';
+                iconBg.className = 'w-24 h-24 bg-gradient-to-br from-red-50 to-red-100 rounded-[2rem] flex items-center justify-center text-red-600 mb-8 shadow-inner relative group';
+                yesBtn.className = 'flex-1 px-6 py-4 bg-red-600 text-white rounded-2xl font-black hover:bg-red-700 shadow-[0_12px_24px_-8px_rgba(220,38,38,0.4)] transition-all active:scale-95 uppercase text-[10px] tracking-[0.2em]';
+                blob.className = 'absolute -top-20 -right-20 w-40 h-40 bg-red-500/10 rounded-full blur-3xl';
             } else {
-                iconBg.className = 'w-20 h-20 bg-brand-50 dark:bg-brand-900/20 rounded-3xl flex items-center justify-center text-brand-600 dark:text-brand-400 mb-6';
-                yesBtn.className = 'flex-1 px-6 py-4 bg-brand-600 text-white rounded-2xl font-bold hover:bg-brand-700 shadow-xl shadow-brand-600/20 transition-all active:scale-95 uppercase text-[10px] tracking-widest';
+                iconBg.className = 'w-24 h-24 bg-gradient-to-br from-blue-50 to-blue-100 rounded-[2rem] flex items-center justify-center text-blue-600 mb-8 shadow-inner relative group';
+                yesBtn.className = 'flex-1 px-6 py-4 bg-blue-600 text-white rounded-2xl font-black hover:bg-blue-700 shadow-[0_12px_24px_-8px_rgba(37,99,235,0.4)] transition-all active:scale-95 uppercase text-[10px] tracking-[0.2em]';
+                blob.className = 'absolute -top-20 -right-20 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl';
             }
 
-            iconBg.innerHTML = `<i data-lucide="${icon}" class="w-10 h-10"></i>`;
+            iconBg.innerHTML = `
+                <div class="absolute inset-0 bg-current opacity-10 rounded-[2rem] scale-90 group-hover:scale-110 transition-transform duration-500"></div>
+                <i data-lucide="${icon}" class="w-10 h-10 relative z-10"></i>
+            `;
             lucide.createIcons();
 
             modal.classList.remove('hidden');
@@ -649,7 +716,7 @@
                     modal.classList.add('hidden');
                     modal.classList.remove('flex');
                     yesBtn.onclick = null;
-                }, 200);
+                }, 400);
             };
 
             yesBtn.onclick = () => {
@@ -799,21 +866,15 @@
 
         // Sidebar Navigation Confirmation
         function confirmExternalNavigation(url) {
-            if (window.confirmAction) {
-                window.confirmAction({
-                    title: 'Agendamento de Consultas',
-                    message: 'Você será redirecionado para a plataforma de agendamento externa. Deseja continuar?',
-                    icon: 'external-link',
-                    type: 'info',
-                    onConfirm: () => {
-                        window.location.href = url;
-                    }
-                });
-            } else {
-                if (confirm('Deseja ir para a página de agendamento externa?')) {
+            window.confirmAction({
+                title: 'Agendamento de Consultas',
+                message: 'Você será redirecionado para a plataforma de agendamento externa. Deseja continuar?',
+                icon: 'external-link',
+                type: 'info',
+                onConfirm: () => {
                     window.location.href = url;
                 }
-            }
+            });
         }
 
     </script>

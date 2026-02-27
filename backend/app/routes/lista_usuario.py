@@ -83,72 +83,66 @@ def cadastro_usuario():
 
 
 # ================= EDITAR =================
-@usuarios_bp.route('/usuarios/editar/<int:id>', methods=['GET', 'POST'])
+@usuarios_bp.route('/usuarios/editar/<int:id>', methods=['POST'])
 def editar_usuario(id):
+    # Security check: only devs or admins can edit (optional, but good)
+    if session.get('tipo', '').upper() not in ['DESENVOLVEDOR', 'DEV', 'ADMIN']:
+        flash("Permissão insuficiente para editar usuários.", "error")
+        return redirect(url_for('usuarios.lista_usuarios'))
+
+    nome = request.form.get('nome')
+    email = request.form.get('email')
+    tipo = request.form.get('tipo', '').upper() # Match DB expected uppercase
+    cpf = request.form.get('cpf')
+    num_func_vinculo = request.form.get('num_func_vinculo')
+    ativo = request.form.get('ativo') == 'on'
+    nova_senha = request.form.get('senha')
+
     conn = get_connection()
     cursor = conn.cursor(cursor_factory=RealDictCursor)
 
-    if request.method == 'POST':
-        nome = request.form['nome']
-        email = request.form['email']
-        tipo = request.form['tipo']
-        cpf = request.form['cpf']
-        num_func_vinculo = request.form['num_func_vinculo']
-        ativo = request.form.get('ativo') == 'on'  # Checkbox returns 'on' if checked
-        nova_senha = request.form.get('senha')
+    try:
+        # Check for duplicates (CPF)
+        if cpf:
+            cursor.execute("SELECT id FROM usuarios WHERE cpf = %s AND id != %s", (cpf, id))
+            if cursor.fetchone():
+                flash(f"O CPF {cpf} já está cadastrado para outro usuário!", "error")
+                return redirect(url_for('usuarios.lista_usuarios'))
 
-        conn = get_connection()
-        cursor = conn.cursor(cursor_factory=RealDictCursor)
+        # Check for duplicates (Matrícula)
+        if num_func_vinculo:
+            cursor.execute("SELECT id FROM usuarios WHERE num_func_vinculo = %s AND id != %s", (num_func_vinculo, id))
+            if cursor.fetchone():
+                flash(f"A matrícula {num_func_vinculo} já está em uso!", "error")
+                return redirect(url_for('usuarios.lista_usuarios'))
 
-        try:
-            # Check for duplicates (CPF)
-            if cpf:
-                cursor.execute("SELECT id FROM usuarios WHERE cpf = %s AND id != %s", (cpf, id))
-                if cursor.fetchone():
-                    flash("CPF já cadastrado para outro usuário!", "error")
-                    return redirect(url_for('usuarios.editar_usuario', id=id))
+        if nova_senha and nova_senha.strip():
+            senha_hash = generate_password_hash(nova_senha)
+            cursor.execute("""
+                UPDATE usuarios
+                SET nome=%s, email=%s, tipo=%s, cpf=%s, num_func_vinculo=%s, ativo=%s, senha=%s
+                WHERE id=%s
+            """, (nome, email, tipo, cpf, num_func_vinculo, ativo, senha_hash, id))
+        else:
+            cursor.execute("""
+                UPDATE usuarios
+                SET nome=%s, email=%s, tipo=%s, cpf=%s, num_func_vinculo=%s, ativo=%s
+                WHERE id=%s
+            """, (nome, email, tipo, cpf, num_func_vinculo, ativo, id))
 
-            # Check for duplicates (Matrícula)
-            if num_func_vinculo:
-                cursor.execute("SELECT id FROM usuarios WHERE num_func_vinculo = %s AND id != %s", (num_func_vinculo, id))
-                if cursor.fetchone():
-                    flash("Matrícula (Vínculo) já cadastrada para outro usuário!", "error")
-                    return redirect(url_for('usuarios.editar_usuario', id=id))
+        conn.commit()
+        flash(f"Usuário {nome} atualizado com sucesso!", "success")
 
-            if nova_senha:
-                # Se nova senha foi fornecida, atualiza com hash
-                senha_hash = generate_password_hash(nova_senha)
-                cursor.execute("""
-                    UPDATE usuarios
-                    SET nome=%s, email=%s, tipo=%s, cpf=%s, num_func_vinculo=%s, ativo=%s, senha=%s
-                    WHERE id=%s
-                """, (nome, email, tipo, cpf, num_func_vinculo, ativo, senha_hash, id))
-            else:
-                # Se não, mantém a senha atual
-                cursor.execute("""
-                    UPDATE usuarios
-                    SET nome=%s, email=%s, tipo=%s, cpf=%s, num_func_vinculo=%s, ativo=%s
-                    WHERE id=%s
-                """, (nome, email, tipo, cpf, num_func_vinculo, ativo, id))
+    except Exception as e:
+        conn.rollback()
+        print(f"Error editing user: {e}")
+        flash("Erro ao processar atualização. Verifique os dados.", "error")
 
-            conn.commit()
-            flash("Usuário atualizado com sucesso!", "success")
+    finally:
+        cursor.close()
+        conn.close()
 
-        except UniqueViolation:
-            conn.rollback()
-            flash("CPF ou Número de vínculo já está em uso!", "error")
-
-        finally:
-            cursor.close()
-            conn.close()
-
-        return redirect(url_for('usuarios.lista_usuarios'))
-
-    cursor.execute("SELECT * FROM usuarios WHERE id=%s", (id,))
-    usuario = cursor.fetchone()
-    cursor.close()
-    conn.close()
-    return render_template("editar_usuario.html", usuario=usuario)
+    return redirect(url_for('usuarios.lista_usuarios'))
 @usuarios_bp.route('/usuarios/status/<int:id>', methods=['POST'])
 def alterar_status_usuario(id):
     data = request.get_json()
