@@ -1,0 +1,401 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard QualiSUS{% endblock %}
+
+{% block extra_css %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+    .dashboard-card {
+        background: white;
+        border-radius: 1.5rem;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .dashboard-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    }
+
+    .stat-value {
+        font-size: 2.25rem;
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -0.025em;
+    }
+
+    .stat-label {
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: #64748b;
+        /* Slate 500 */
+        margin-top: 0.5rem;
+    }
+
+    .pe-navy {
+        background-color: #001F3F;
+    }
+
+    .pe-royal {
+        background-color: #0063F7;
+    }
+
+    .pe-red {
+        background-color: #EE3124;
+    }
+
+    .pe-yellow {
+        background-color: #FFD100;
+    }
+
+    .pe-green {
+        background-color: #009639;
+    }
+
+    .pe-sky {
+        background-color: #00A3E0;
+    }
+
+    .text-pe-navy {
+        color: #001F3F;
+    }
+
+    .text-pe-royal {
+        color: #0063F7;
+    }
+
+    .text-pe-red {
+        color: #EE3124;
+    }
+
+    .text-pe-green {
+        color: #009639;
+    }
+
+    .chart-container {
+        position: relative;
+        height: 260px;
+        width: 100%;
+        margin-top: auto;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto space-y-8 animate-fade-in-up pb-12">
+
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-4">
+        <div class="flex items-center gap-5">
+            <div class="bg-pe-royal rounded-[1.5rem] p-4 flex items-center justify-center shadow-lg shadow-pe-royal/20">
+                <i data-lucide="bar-chart-3" class="w-8 h-8 text-white"></i>
+            </div>
+            <div>
+                <h1 class="text-3xl font-black text-slate-900 tracking-tight">Indicadores de Gestão</h1>
+                <p class="text-[10px] font-black text-pe-royal uppercase tracking-[0.2em] mt-1">Dashboard Estratégico
+                    QualiSUS PE</p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <button onclick="fetchStats()"
+                class="px-6 py-3 bg-white border border-slate-200 text-slate-600 rounded-2xl hover:bg-slate-50 transition-all flex items-center gap-2 font-black text-[10px] uppercase tracking-widest shadow-sm">
+                <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                <span>Atualizar</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Summary Widgets -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Altas Médicas -->
+        <div class="dashboard-card border-l-4 border-pe-green">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h3 class="stat-value text-pe-green" id="stat-altas">--</h3>
+                    <p class="stat-label">Altas Médicas</p>
+                </div>
+                <div class="p-3 bg-green-50 rounded-xl text-pe-green">
+                    <i data-lucide="user-check" class="w-6 h-6"></i>
+                </div>
+            </div>
+            <p class="text-[10px] text-slate-400 mt-4 font-bold uppercase tracking-wider">Altas acumuladas no período
+            </p>
+        </div>
+
+        <!-- Faltas -->
+        <div class="dashboard-card border-l-4 border-pe-red">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h3 class="stat-value text-pe-red" id="stat-faltas">--</h3>
+                    <p class="stat-label">Total de Faltas</p>
+                </div>
+                <div class="p-3 bg-red-50 rounded-xl text-pe-red">
+                    <i data-lucide="user-minus" class="w-6 h-6"></i>
+                </div>
+            </div>
+            <p class="text-[10px] text-slate-400 mt-4 font-bold uppercase tracking-wider">Pacientes ausentes no período
+            </p>
+        </div>
+
+        <!-- Faltas sem Justificativa -->
+        <div class="dashboard-card border-l-4 border-pe-yellow">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h3 class="stat-value text-amber-600" id="stat-faltas-sem">--</h3>
+                    <p class="stat-label">Faltas s/ Justificativa</p>
+                </div>
+                <div class="p-3 bg-amber-50 rounded-xl text-amber-600">
+                    <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+                </div>
+            </div>
+            <p class="text-[10px] text-slate-400 mt-4 font-bold uppercase tracking-wider">Sem justificativa clínica</p>
+        </div>
+
+        <!-- Atendimentos Realizados -->
+        <div class="dashboard-card border-l-4 border-pe-royal">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h3 class="stat-value text-pe-royal" id="stat-realizados">--</h3>
+                    <p class="stat-label">Atendimentos</p>
+                </div>
+                <div class="p-3 bg-blue-50 rounded-xl text-pe-royal">
+                    <i data-lucide="check-circle" class="w-6 h-6"></i>
+                </div>
+            </div>
+            <p class="text-[10px] text-slate-400 mt-4 font-bold uppercase tracking-wider">Concluídos com sucesso</p>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- 1. Evolução de Atendimentos -->
+        <div class="dashboard-card">
+            <h3 class="text-sm font-black text-slate-900 uppercase tracking-widest mb-6 flex items-center gap-2">
+                <i data-lucide="trending-up" class="w-4 h-4 text-pe-royal"></i>
+                Evolução Mensal de Atendimentos
+            </h3>
+            <div class="chart-container">
+                <canvas id="evolutionChart"></canvas>
+            </div>
+        </div>
+
+        <!-- 2. Top Especialidades -->
+        <div class="dashboard-card">
+            <h3 class="text-sm font-black text-slate-900 uppercase tracking-widest mb-6 flex items-center gap-2">
+                <i data-lucide="activity" class="w-4 h-4 text-pe-red"></i>
+                Atendimentos por Especialidade
+            </h3>
+            <div class="chart-container">
+                <canvas id="specialtyChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Secondary Info Row -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="lg:col-span-2 dashboard-card overflow-hidden">
+            <h3 class="text-sm font-black text-slate-900 uppercase tracking-widest mb-6">Detalhamento por Unidade</h3>
+            <div class="flex flex-col gap-4" id="units-container">
+                <!-- JS Populado -->
+            </div>
+        </div>
+
+        <!-- Today Summary -->
+        <div
+            class="dashboard-card bg-pe-navy text-white border-none shadow-xl shadow-pe-navy/20 flex flex-col justify-center items-center text-center p-10">
+            <div class="w-20 h-20 bg-white/10 rounded-3xl flex items-center justify-center mb-6 backdrop-blur-md">
+                <i data-lucide="calendar" class="w-10 h-10 text-pe-sky"></i>
+            </div>
+            <h4 class="text-lg font-black uppercase tracking-widest mb-2">Hoje</h4>
+            <h2 class="text-6xl font-black mb-4" id="stat-hoje">--</h2>
+            <p class="text-sm font-medium text-slate-400 max-w-[200px]">Atendimentos agendados para a data corrente</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    let evolutionChart = null;
+    let specialtyChart = null;
+
+    async function fetchStats() {
+        try {
+            const res = await fetch("/dashboard/api/stats");
+            const data = await res.json();
+
+            if (data.error) {
+                if (typeof showToast !== 'undefined') showToast("Erro ao carregar dados", "error");
+                return;
+            }
+
+            // Update simple numbers with animation
+            animateValue("stat-altas", data.altas);
+            animateValue("stat-faltas", data.faltas);
+            animateValue("stat-faltas-sem", data.faltas_sem_justificativa);
+            animateValue("stat-realizados", data.realizados);
+            animateValue("stat-hoje", data.hoje);
+
+            // Update Charts
+            renderEvolutionChart(data.evolucao);
+            renderSpecialtyChart(data.por_especialidade);
+            renderUnits(data.unidades);
+
+            if (window.lucide) lucide.createIcons();
+
+        } catch (err) {
+            console.error(err);
+            if (typeof showToast !== 'undefined') showToast("Erro de conexão", "error");
+        }
+    }
+
+    function animateValue(id, value) {
+        const obj = document.getElementById(id);
+        if (!obj) return;
+        const start = 0;
+        const end = parseInt(value) || 0;
+        const duration = 1000;
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            obj.innerText = Math.floor(progress * (end - start) + start);
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            }
+        };
+        window.requestAnimationFrame(step);
+    }
+
+    function renderEvolutionChart(data) {
+        const el = document.getElementById('evolutionChart');
+        if (!el) return;
+        const ctx = el.getContext('2d');
+
+        if (evolutionChart) evolutionChart.destroy();
+
+        evolutionChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data.map(d => d.mes),
+                datasets: [{
+                    label: 'Atendimentos',
+                    data: data.map(d => d.total),
+                    borderColor: '#0063F7',
+                    backgroundColor: 'rgba(0, 99, 247, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    borderWidth: 4,
+                    pointRadius: 6,
+                    pointBackgroundColor: '#FFFFFF',
+                    pointBorderColor: '#0063F7',
+                    pointBorderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { borderDash: [5, 5], color: '#f1f5f9' },
+                        ticks: { font: { weight: 'bold' } }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { weight: 'bold' } }
+                    }
+                }
+            }
+        });
+    }
+
+    function renderSpecialtyChart(data) {
+        const el = document.getElementById('specialtyChart');
+        if (!el) return;
+        const ctx = el.getContext('2d');
+
+        if (specialtyChart) specialtyChart.destroy();
+
+        const colors = [
+            '#001F3F', '#0063F7', '#EE3124', '#009639', '#FFD100'
+        ];
+
+        specialtyChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: data.map(d => d.especialidade),
+                datasets: [{
+                    data: data.map(d => d.total),
+                    backgroundColor: data.map((_, i) => colors[i % colors.length]),
+                    borderRadius: 12,
+                    barThickness: 24
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        grid: { borderDash: [5, 5], color: '#f1f5f9' },
+                        ticks: { font: { weight: 'bold' } }
+                    },
+                    y: {
+                        grid: { display: false },
+                        ticks: { font: { weight: 'bold' } }
+                    }
+                }
+            }
+        });
+    }
+
+    function renderUnits(units) {
+        const container = document.getElementById('units-container');
+        if (!container) return;
+        container.innerHTML = "";
+
+        if (!units || units.length === 0) {
+            container.innerHTML = '<p class="text-slate-400 text-xs font-bold py-4 text-center">Nenhuma unidade com dados registrados.</p>';
+            return;
+        }
+
+        units.forEach(u => {
+            const char = u.unidade ? u.unidade[0].toUpperCase() : 'U';
+            const efficiencyClass = u.eficiencia > 80 ? 'text-pe-green' : (u.eficiencia > 50 ? 'text-pe-royal' : 'text-pe-red');
+
+            container.innerHTML += `
+                <div class="flex items-center justify-between p-4 bg-slate-50 rounded-2xl hover:bg-slate-100 transition-colors">
+                     <div class="flex items-center gap-4">
+                         <div class="w-10 h-10 rounded-xl bg-pe-navy text-white flex items-center justify-center font-black font-sans shadow-md">${char}</div>
+                         <div>
+                             <p class="text-sm font-bold text-slate-800">${u.unidade}</p>
+                             <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Total: ${u.total} agendamentos</p>
+                         </div>
+                     </div>
+                     <div class="flex flex-col items-end">
+                        <span class="px-4 py-1.5 bg-white border border-slate-100 rounded-xl text-[11px] font-black ${efficiencyClass}">
+                            ${u.eficiencia}% EFICIÊNCIA
+                        </span>
+                     </div>
+                 </div>
+            `;
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', fetchStats);
+</script>
+{% endblock %}

@@ -28,6 +28,7 @@ from app.routes.lista_trabalhador import trabalhadores_bp
 from app.routes.gerenciamento_agendamento import gerenciamento_bp
 from app.routes.gestao_pacientes import gestao_pacientes_bp
 from app.routes.ppp import ppp_bp
+from app.routes.dashboard import dashboard_bp
 
 
 # --------------------------
@@ -54,6 +55,7 @@ app.register_blueprint(trabalhadores_bp)
 app.register_blueprint(gerenciamento_bp)
 app.register_blueprint(gestao_pacientes_bp)
 app.register_blueprint(ppp_bp)
+app.register_blueprint(dashboard_bp)
 
 app.secret_key = "chave_muito_secreta"  # troque depois
 

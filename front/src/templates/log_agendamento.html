@@ -526,7 +526,7 @@
               <button onclick="showDetails(${i})" class="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-all rounded-xl" title="Ver Detalhes">
                 <i data-lucide="eye" class="w-4 h-4"></i>
               </button>
-              ${(a.especialidade === 'Acolhimento' || (loggedUserTipo !== 'COMUM')) ? `
+              ${a.especialidade === 'Acolhimento' ? `
               <button onclick="realizarAtendimento(${i})" class="w-9 h-9 flex items-center justify-center text-emerald-500 hover:text-emerald-700 hover:bg-emerald-50 transition-all rounded-xl" title="Realizar Atendimento">
                 <i data-lucide="stethoscope" class="w-4 h-4"></i>
               </button>

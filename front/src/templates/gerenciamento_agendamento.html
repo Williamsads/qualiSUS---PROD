@@ -34,7 +34,7 @@
             <!-- Form Card -->
             <div class="lg:col-span-1">
                 <div
-                    class="bg-white dark:bg-gray-900 rounded-3xl p-6 shadow-soft border border-gray-100 dark:border-gray-800 sticky top-28">
+                    class="bg-white dark:bg-gray-900 rounded-3xl p-6 shadow-soft border border-gray-100 dark:border-gray-800 ">
                     <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
                         <i data-lucide="plus-circle" class="w-5 h-5 text-brand-600"></i>
                         Nova Especialidade
@@ -130,7 +130,7 @@
             <!-- Form Card -->
             <div class="lg:col-span-1">
                 <div
-                    class="bg-white dark:bg-gray-900 rounded-3xl p-6 shadow-soft border border-gray-100 dark:border-gray-800 sticky top-28">
+                    class="bg-white dark:bg-gray-900 rounded-3xl p-6 shadow-soft border border-gray-100 dark:border-gray-800 ">
                     <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
                         <i data-lucide="user-plus" class="w-5 h-5 text-indigo-600"></i>
                         Novo Profissional
@@ -148,7 +148,7 @@
                                 <label
                                     class="block text-sm font-semibold mb-1 text-gray-700 dark:text-gray-300">Especialidades</label>
                                 <div id="prof-especialidades-container"
-                                    class="max-h-40 overflow-y-auto p-4 rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800 space-y-2">
+                                    class="max-h-60 overflow-y-auto p-4 rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800 space-y-2 custom-scrollbar">
                                     <!-- Checkboxes will be rendered here -->
                                 </div>
                                 <p class="text-[10px] text-gray-400 mt-1">Selecione uma ou mais especialidades.</p>
@@ -233,7 +233,7 @@
             <!-- Form Card -->
             <div class="lg:col-span-1">
                 <div
-                    class="bg-white dark:bg-gray-900 rounded-3xl p-6 shadow-soft border border-gray-100 dark:border-gray-800 sticky top-28">
+                    class="bg-white dark:bg-gray-900 rounded-3xl p-6 shadow-soft border border-gray-100 dark:border-gray-800 ">
                     <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
                         <i data-lucide="map-pin" class="w-5 h-5 text-rose-600"></i>
                         Nova Unidade
@@ -1070,7 +1070,8 @@
             });
             const data = await res.json();
             if (data.success) {
-                showToast(selectedDays.length > 1 ? 'Horários adicionados!' : 'Horário adicionado!', 'success');
+                const msg = data.message || (selectedDays.length > 1 ? 'Horários adicionados!' : 'Horário adicionado!');
+                showToast(msg, 'success');
                 // document.getElementById('new-hour').value = '';
                 // Limpar seleção se desejar
                 loadHours();

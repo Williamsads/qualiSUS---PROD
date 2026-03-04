@@ -56,6 +56,7 @@ def validar_trabalhador():
             t.data_nascimento,
             t.telefone,
             t.email,
+            t.acolhimento_realizado,
             vt.id AS vinculo_id,
             vt.numero_funcional,
             vt.tipo_vinculo,
@@ -289,7 +290,7 @@ def especialidades_disponiveis():
 
     if unidade_id:
         cur.execute(f"""
-            SELECT e.id, e.nome, e.icone 
+            SELECT e.id, e.nome, e.icone, e.tipo_fluxo, e.exige_acolhimento_previo 
             FROM especialidades e
             JOIN unidades_especialidades ue ON ue.especialidade_id = e.id
             WHERE ue.unidade_id = %s {visivel_filter}
@@ -297,7 +298,7 @@ def especialidades_disponiveis():
         """, (unidade_id,))
     else:
         # Corrigido: Se não for para incluir ocultos, usa WHERE (ou 1=1 se for para incluir)
-        query = f"SELECT id, nome, icone FROM especialidades {visivel_filter_no_alias} ORDER BY nome"
+        query = f"SELECT id, nome, icone, tipo_fluxo, exige_acolhimento_previo FROM especialidades {visivel_filter_no_alias} ORDER BY nome"
         cur.execute(query)
         
     especialidades = cur.fetchall()
@@ -311,88 +312,48 @@ def especialidades_disponiveis():
 @agendamento_bp.route("/api/agendar_exame/check-acolhimento")
 def check_acolhimento():
     trabalhador_id = request.args.get("trabalhador_id")
-    especialidade = str(request.args.get("especialidade", "")).strip().lower()
+    especialidade_nome = request.args.get("especialidade")
 
-    # 🔐 Identificação do Perfil e Papel do Usuário Logado
     user_tipo = str(session.get("tipo", "")).upper()
-    user_email = session.get("email")
-    
-    # Identificamos se é Saúde Mental, Acolhimento ou Especialidade Livre (TO)
-    especialidades_mental_radicais = ["psic", "psiquia"]
-    is_mental_health = any(x in especialidade for x in especialidades_mental_radicais)
-    is_acolhimento = "acolhimento" in especialidade
-    is_to = "terapeuta" in especialidade # Terapia Ocupacional é livre
-    
     perfil_paciente = ["TRABALHADOR", "USUARIO", "PACIENTE", ""]
 
-    # 1. BLOQUEIO PARA PACIENTES (Autoagendamento)
-    # Pacientes podem agendar Acolhimento OU Terapia Ocupacional
-    if user_tipo in perfil_paciente:
-        if not is_acolhimento and not is_to:
-            return jsonify({
-                "blocked": True, 
-                "reason": "perfil_restrito",
-                "message": "Como paciente, você só pode realizar o agendamento direto do Acolhimento Presencial ou Terapia Ocupacional. Para outras especialidades, procure a regulação do Qualivida após seu acolhimento."
-            })
+    conn = get_connection()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
     
-    # 2. BLOQUEIO DE SAÚDE MENTAL (Regulação via Assistente Social)
-    if is_mental_health and not is_acolhimento:
-        # Verifica se o operador é uma Assistente Social
-        is_assistente = False
-        if user_email:
-            conn_temp = get_connection()
-            cur_temp = conn_temp.cursor(cursor_factory=RealDictCursor)
-            cur_temp.execute("SELECT especialidade FROM funcionarios WHERE LOWER(email) = LOWER(%s)", (user_email,))
-            func = cur_temp.fetchone()
-            if func and func['especialidade'] and "assistente social" in func['especialidade'].lower():
-                is_assistente = True
-            cur_temp.close()
-            conn_temp.close()
+    try:
+        # 1. Busca regra da especialidade (Case Insensitive)
+        cur.execute("SELECT id, nome, exige_acolhimento_previo FROM especialidades WHERE LOWER(nome) = LOWER(%s)", (especialidade_nome,))
+        spec = cur.fetchone()
 
-        if not is_assistente:
-            return jsonify({
-                "blocked": True, 
-                "reason": "perfil_restrito",
-                "message": "Agendamentos para especialidades de saúde mental/reabilitação devem ser realizados exclusivamente pela Assistente Social da equipe de Acolhimento."
-            })
+        if not spec:
+            return jsonify({"blocked": False})
 
-    # 3. VALIDAÇÃO DE DUPLICIDADE E TRATAMENTO ATIVO (Para qualquer agendamento de Acolhimento)
-    if is_acolhimento:
-        conn = get_connection()
-        cur = conn.cursor(cursor_factory=RealDictCursor)
-        try:
-            # Verifica Tratamento Ativo
-            cur.execute("SELECT id FROM paciente_tratamento WHERE trabalhador_id = %s AND status = 'EM_TRATAMENTO'", (trabalhador_id,))
-            if cur.fetchone():
+        # 2. Se exige acolhimento, verifica a flag no perfil do trabalhador
+        if spec['exige_acolhimento_previo']:
+            # Se for profissional, libera sempre
+            if user_tipo not in perfil_paciente:
+                return jsonify({"blocked": False})
+
+            # Se for paciente, verifica a flag no banco
+            cur.execute("SELECT acolhimento_realizado FROM trabalhadores WHERE id = %s", (trabalhador_id,))
+            t_data = cur.fetchone()
+            
+            flag_realizado = t_data['acolhimento_realizado'] if t_data else False
+
+            if not flag_realizado:
+                msg = "Para agendar esta especialidade, é necessário realizar o Acolhimento Social primeiro."
                 return jsonify({
                     "blocked": True,
-                    "reason": "em_tratamento",
-                    "message": "Este paciente já possui um acompanhamento clínico ativo no Qualivida. Não é necessário realizar um novo Acolhimento."
+                    "reason": "necessita_acolhimento",
+                    "message": msg
                 })
 
-            # Verifica Agendamento Pendente
-            cur.execute("""
-                SELECT id, TO_CHAR(data_consulta, 'DD/MM/YYYY') as data 
-                FROM agendamento_exames 
-                WHERE trabalhador_id = %s 
-                  AND especialidade ILIKE '%%Acolhimento%%' 
-                  AND status = 'Agendado'
-                  AND (data_consulta > CURRENT_DATE OR (data_consulta = CURRENT_DATE AND horario >= CURRENT_TIME))
-                LIMIT 1
-            """, (trabalhador_id,))
-            pendente = cur.fetchone()
-            if pendente:
-                return jsonify({
-                    "blocked": True,
-                    "reason": "duplicado",
-                    "message": f"Já existe um Acolhimento agendado para este paciente no dia {pendente['data']}."
-                })
-        finally:
-            cur.close()
-            conn.close()
-
-    # Se passou por todas as travas, libera
-    return jsonify({"blocked": False})
+        return jsonify({"blocked": False})
+    except Exception as e:
+        return jsonify({"blocked": False, "error": str(e)}) # Em caso de erro, libera para não travar o fluxo
+    finally:
+        cur.close()
+        conn.close()
 
 # ====================
 # Profissionais por especialidade
@@ -522,97 +483,46 @@ def confirmar_agendamento():
     unidade = data.get("unidade")
     especialidade = data.get("especialidade")
 
-    # --- CONFIGURAÇÃO DE AUDITORIA E PERMISSÕES ---
+    # --- [A] IDENTIFICAÇÃO DO PERFIL ---
     user_tipo = str(session.get("tipo", "")).upper()
     user_email = session.get("email")
-    perfil_paciente = ["TRABALHADOR", "USUARIO", "PACIENTE"] # Perfis que representam o paciente
-    especialidade_normalizada = str(especialidade).strip().lower()
-
-    # Identifica agendamentos de Saúde Mental / Reabilitação (Regulados)
-    # Identifica agendamentos de Saúde Mental / Reabilitação (Regulados)
-    especialidades_mental_radicais = ["psic", "psiquia"]
-    is_mental_health = any(x in especialidade_normalizada for x in especialidades_mental_radicais)
-    is_acolhimento = "acolhimento" in especialidade_normalizada
-    is_to = "terapeuta" in especialidade_normalizada
-
-    # Define a origem do agendamento e aplica bloqueios de segurança
-    if is_mental_health and not is_acolhimento:
-        # Verifica se o operador é uma Assistente Social (Papel regulador)
-        is_assistente = False
-        if user_email:
-            conn_temp = get_connection()
-            cur_temp = conn_temp.cursor(cursor_factory=RealDictCursor)
-            cur_temp.execute("SELECT especialidade FROM funcionarios WHERE LOWER(email) = LOWER(%s)", (user_email,))
-            func = cur_temp.fetchone()
-            if func and func['especialidade'] and "assistente social" in func['especialidade'].lower():
-                is_assistente = True
-            cur_temp.close()
-            conn_temp.close()
-
-        # BLOQUEIA: Apenas Assistentes Sociais podem confirmar agendamentos diretos de especialidades reguladas
-        if not is_assistente:
-            return jsonify({
-                "success": False, 
-                "error": "Permissão negada. Agendamentos de especialidades de saúde mental devem ser realizados exclusivamente pela Assistente Social da equipe de Acolhimento."
-            }), 403
-            
-        origem = data.get("origem_agendamento") or "REGULACAO_ACOLHIMENTO"
+    perfil_paciente = ["TRABALHADOR", "USUARIO", "PACIENTE"] 
     
-    elif is_acolhimento:
-        # VALIDAÇÃO EXTRA: Paciente não pode ter acolhimento pendente ou estar em tratamento
-        conn_check = get_connection()
-        cur_check = conn_check.cursor(cursor_factory=RealDictCursor)
-        try:
-            cur_check.execute("SELECT id FROM paciente_tratamento WHERE trabalhador_id = %s AND status = 'EM_TRATAMENTO'", (trabalhador_id,))
-            if cur_check.fetchone():
-                return jsonify({"success": False, "error": "Você já possui um acompanhamento clínico ativo."}), 403
-
-            cur_check.execute("""
-                SELECT id FROM agendamento_exames 
-                WHERE trabalhador_id = %s AND especialidade ILIKE '%%Acolhimento%%' AND status = 'Agendado'
-                  AND (data_consulta > CURRENT_DATE OR (data_consulta = CURRENT_DATE AND horario >= CURRENT_TIME))
-                LIMIT 1
-            """, (trabalhador_id,))
-            if cur_check.fetchone():
-                return jsonify({"success": False, "error": "Você já possui um Acolhimento agendado."}), 403
-        finally:
-            cur_check.close()
-            conn_check.close()
-            
-        origem = "AUTOAGENDAMENTO"
-    
-    elif user_tipo in perfil_paciente:
-        origem = "AUTOAGENDAMENTO"
-        # BLOQUEIO: Paciente só agenda Acolhimento ou TO
-        if not is_acolhimento and not is_to:
-            return jsonify({
-                "success": False, 
-                "error": "Acesso negado. Apenas Acolhimento ou Terapia Ocupacional podem ser agendados diretamente pelo paciente."
-            }), 403
-    else:
-        # Se for profissional (não restringido acima), aceita a origem enviada ou define como ENCAMINHAMENTO
-        origem = data.get("origem_agendamento") or "ENCAMINHAMENTO"
-
-
     conn = get_connection()
-    cur = conn.cursor()
-
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    
     try:
-        # --- REGRA EXISTENTE REFORÇADA: Acolhimento validado para especializado ---
-        # Removido ou mantido? O usuário pediu: "Paciente só agenda Acolhimento"
-        # Mas para Profissionais, eles podem agendar tudo.
-        if especialidade_normalizada in ["psicólogo", "psiquiatra"]:
-            cur.execute("""
-                SELECT validado_para_psico FROM agendamento_exames 
-                WHERE trabalhador_id = %s AND especialidade ILIKE '%%Acolhimento%%' AND status != 'Cancelado'
-                ORDER BY data_consulta DESC, horario DESC LIMIT 1
-            """, (trabalhador_id,))
-            acolhimento = cur.fetchone()
-            if not acolhimento or not acolhimento[0]:
+        # --- [B] BUSCAR REGRAS DA ESPECIALIDADE (Case Insensitive) ---
+        cur.execute("SELECT id, nome, exige_acolhimento_previo, tipo_fluxo FROM especialidades WHERE LOWER(nome) = LOWER(%s) LIMIT 1", (especialidade,))
+        spec = cur.fetchone()
+        
+        if not spec:
+            return jsonify({"success": False, "error": "Especialidade inválida."}), 404
+            
+        especialidade_id = spec['id']
+        exige_acolhimento = spec['exige_acolhimento_previo']
+        tipo_fluxo = spec['tipo_fluxo']
+
+        # --- [C] VALIDAÇÃO DO GATE DE ACOLHIMENTO ---
+        if exige_acolhimento:
+            # Verifica se o paciente já foi liberado
+            cur.execute("SELECT acolhimento_realizado FROM trabalhadores WHERE id = %s", (trabalhador_id,))
+            t_data = cur.fetchone()
+            
+            flag_realizado = t_data['acolhimento_realizado'] if t_data else False
+            
+            # Se não fez acolhimento, pacientes são bloqueados. 
+            if not flag_realizado and (user_tipo in perfil_paciente):
                 return jsonify({
                     "success": False, 
-                    "error": "Este paciente ainda não possui um Acolhimento validado pelo profissional habilitado."
+                    "error": "Para agendar esta especialidade, é necessário realizar o Acolhimento primeiro."
                 }), 403
+
+        # --- [D] DEFINIÇÃO DE ORIGEM ---
+        if tipo_fluxo == 'ACOLHIMENTO':
+            origem = "AUTOAGENDAMENTO"
+        else:
+            origem = "REGULACAO" if user_tipo not in perfil_paciente else "AUTOAGENDAMENTO"
 
         # --- VALIDAÇÕES DE DATA/HORA E DUPLICIDADE (MANTIDAS) ---
         try:
@@ -648,6 +558,7 @@ def confirmar_agendamento():
 
         # --- VÍNCULO AUTOMÁTICO NA GESTÃO DE PACIENTES ---
         # Se for uma consulta especializada (não acolhimento) e o paciente estiver sem responsável, já vincula ao médico agendado.
+        especialidade_normalizada = str(especialidade).lower()
         if "acolhimento" not in especialidade_normalizada:
             cur.execute("""
                 UPDATE paciente_tratamento SET 
@@ -694,7 +605,7 @@ def agendamentos_por_trabalhador():
                 ae.unidade
             FROM agendamento_exames ae
             JOIN funcionarios f ON ae.funcionario_id = f.id
-            WHERE ae.trabalhador_id = %s AND ae.status != 'Cancelado'
+            WHERE ae.trabalhador_id = %s AND ae.status = 'Agendado'
             ORDER BY ae.data_consulta DESC, ae.horario DESC
         """, (trabalhador_id,))
         rows = cur.fetchall()
@@ -735,10 +646,10 @@ def cancelar_agendamento():
         consulta_datetime = datetime.combine(agendamento['data_consulta'], agendamento['horario'])
         agora = datetime.now()
         
-        if (consulta_datetime - agora) < timedelta(hours=24):
+        if (consulta_datetime - agora) < timedelta(hours=12):
             return jsonify({
                 "success": False, 
-                "error": "O cancelamento só é permitido com pelo menos 24 horas de antecedência."
+                "error": "O cancelamento só é permitido com pelo menos 12 horas de antecedência."
             }), 403
             
         cur.execute("UPDATE agendamento_exames SET status = 'Cancelado' WHERE id = %s", (agendamento_id,))

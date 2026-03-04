@@ -411,14 +411,43 @@ def add_horario():
     days_to_add = dias_semana if dias_semana else ([dia_semana] if dia_semana is not None else [])
     
     conn = get_connection()
-    cur = conn.cursor()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
     try:
         if days_to_add:
-            # Prepara os dados para inserção em lote
-            args = [(prof_id, horario, d) for d in days_to_add]
-            cur.executemany("INSERT INTO horarios_funcionarios (funcionario_id, horario, dia_semana) VALUES (%s, %s, %s)", args)
+            # Verifica quais já existem para evitar duplicidade lógica
+            cur.execute("""
+                SELECT dia_semana, horario FROM horarios_funcionarios 
+                WHERE funcionario_id = %s 
+                AND dia_semana = ANY(%s) 
+                AND horario = ANY(%s)
+            """, (prof_id, days_to_add, [horario] * len(days_to_add)))
+            
+            existing = {(row['dia_semana'], str(row['horario'])) for row in cur.fetchall()}
+            
+            # Filtra apenas os que não existem
+            to_insert = []
+            for d in days_to_add:
+            
+                # O banco retorna '07:00:00', o input envia '07:00'
+                h_target = str(horario)
+                if len(h_target) == 5: # HH:MM
+                    h_target += ":00"
+                
+                if (int(d), h_target) not in existing:
+                    to_insert.append((prof_id, horario, d))
+            
+            if not to_insert:
+                return jsonify({"success": False, "error": "Os horários selecionados já estão cadastrados para este profissional."}), 400
+            
+            cur.executemany("INSERT INTO horarios_funcionarios (funcionario_id, horario, dia_semana) VALUES (%s, %s, %s)", to_insert)
             conn.commit()
-            return jsonify({"success": True})
+            
+            msg = f"{len(to_insert)} horários adicionados."
+            if len(to_insert) < len(days_to_add):
+                msg += f" ({len(days_to_add) - len(to_insert)} já existiam)."
+                
+            return jsonify({"success": True, "message": msg})
+            
         return jsonify({"success": False, "error": "Nenhum dia selecionado"}), 400
     except Exception as e:
         conn.rollback()

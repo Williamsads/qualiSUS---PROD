@@ -33,6 +33,12 @@
                 <i data-lucide="layout-grid"></i>
                 <span>Painel Principal</span>
             </a>
+            <a href="{{ url_for('dashboard.index') }}"
+                class="nav-link {% if 'dashboard' in request.endpoint %} nav-item-active {% endif %}"
+                title="Indicadores de Gestão">
+                <i data-lucide="bar-chart-3"></i>
+                <span>Dashboard</span>
+            </a>
         </div>
 
         <!-- AMBULATORY MANAGEMENT -->
