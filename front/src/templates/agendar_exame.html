@@ -246,7 +246,7 @@
           2
         </div>
         <span
-          class="mt-2 text-gray-300 font-bold text-[9px] md:text-xs uppercase tracking-tighter text-center">Unidade</span>
+          class="mt-2 text-gray-300 font-bold text-[9px] md:text-xs uppercase tracking-tighter text-center">Especialidade</span>
       </div>
 
       <!-- Step 3 -->
@@ -256,7 +256,7 @@
           3
         </div>
         <span
-          class="mt-2 text-gray-300 font-bold text-[9px] md:text-xs uppercase tracking-tighter text-center">Especialidade</span>
+          class="mt-2 text-gray-300 font-bold text-[9px] md:text-xs uppercase tracking-tighter text-center">Unidade</span>
       </div>
 
       <!-- Step 4 -->
@@ -550,8 +550,47 @@
       </div>
     </div>
 
-    <!-- STEP 2: Unidade / Data (Redesigned) -->
-    <div id="step-2" class="hidden mt-8 w-full max-w-5xl mx-auto">
+    <!-- STEP 2: Especialidade (Redesigned) -->
+    <div id="step-2" class="hidden mt-8 w-full max-w-4xl mx-auto">
+      <div class="text-center mb-10">
+        <div class="inline-flex items-center justify-center p-3 bg-pe-red/5 rounded-2xl mb-4">
+          <svg class="w-8 h-8 text-pe-red" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z">
+            </path>
+          </svg>
+        </div>
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 px-2">Especialidade</h2>
+        <p class="text-sm sm:text-base text-gray-500 mt-2 px-2">Qual tipo de atendimento você precisa?</p>
+      </div>
+
+      <!-- Hidden Input for Logic -->
+      <input type="hidden" id="especialidadeEscolha" value="">
+      <input type="hidden" id="especialidadeIdEscolha" value="">
+
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6 mb-8" id="especialidades-grid">
+        <!-- Cards will be injected via JS -->
+      </div>
+
+      <div id="step2-error-alt"
+        class="hidden p-4 mb-6 bg-red-50 text-red-600 rounded-xl text-center text-sm font-medium">
+        Por favor, selecione uma especialidade.
+      </div>
+
+      <div class="flex flex-col sm:flex-row justify-between gap-3 sm:gap-4 border-t border-gray-100 pt-6">
+        <button id="btnBack2"
+          class="w-full sm:w-auto px-6 py-3 rounded-xl text-gray-600 font-semibold hover:bg-gray-100 hover:text-gray-800 transition-colors flex items-center justify-center gap-2">
+          <i data-lucide="arrow-left" class="w-5 h-5"></i> Voltar
+        </button>
+        <button id="btnStep2Next"
+          class="w-full sm:w-auto bg-pe-red text-white px-8 py-3 rounded-xl font-bold hover:bg-pe-red/90 shadow-lg shadow-pe-royal/20 transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2">
+          Próximo <i data-lucide="arrow-right" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- STEP 3: Unidade / Data (Redesigned) -->
+    <div id="step-3" class="hidden mt-8 w-full max-w-5xl mx-auto">
       <div class="text-center mb-10">
         <div class="inline-flex items-center justify-center p-3 bg-pe-royal/5 rounded-2xl mb-4">
           <svg class="w-8 h-8 text-pe-royal" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -642,56 +681,19 @@
       </div>
 
       <!-- Warnings / Messages -->
-      <div id="step2-error" class="hidden mt-6 p-4 bg-red-50 text-red-600 rounded-xl text-center text-sm font-medium">
+      <div id="step3-error-alt"
+        class="hidden mt-6 p-4 bg-red-50 text-red-600 rounded-xl text-center text-sm font-medium">
         Por favor, selecione uma unidade e uma data válida.
       </div>
 
       <!-- Navigation Buttons -->
       <div class="flex flex-col sm:flex-row justify-between gap-3 sm:gap-4 mt-12 pt-6 border-t border-gray-100">
-        <button type="button" id="btnBack2"
+        <button type="button" id="btnBack3"
           class="w-full sm:w-auto px-6 py-3 rounded-xl text-gray-600 font-semibold hover:bg-gray-100 hover:text-gray-800 transition-colors flex items-center justify-center gap-2">
           <i data-lucide="arrow-left" class="w-5 h-5"></i> Voltar
         </button>
-        <button type="button" id="btnStep2Next"
+        <button type="button" id="btnStep3Next"
           class="w-full sm:w-auto bg-pe-navy text-white px-8 py-3 rounded-xl font-bold hover:bg-pe-navy/90 shadow-lg shadow-pe-navy/20 transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2">
-          Próximo <i data-lucide="arrow-right" class="w-5 h-5"></i>
-        </button>
-      </div>
-    </div>
-
-    <!-- STEP 3: Especialidade (Redesigned) -->
-    <div id="step-3" class="hidden mt-8 w-full max-w-4xl mx-auto">
-      <div class="text-center mb-10">
-        <div class="inline-flex items-center justify-center p-3 bg-pe-red/5 rounded-2xl mb-4">
-          <svg class="w-8 h-8 text-pe-red" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round"
-              d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z">
-            </path>
-          </svg>
-        </div>
-        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 px-2">Especialidade</h2>
-        <p class="text-sm sm:text-base text-gray-500 mt-2 px-2">Qual tipo de atendimento você precisa?</p>
-      </div>
-
-      <!-- Hidden Input for Logic -->
-      <input type="hidden" id="especialidadeEscolha" value="">
-      <input type="hidden" id="especialidadeIdEscolha" value="">
-
-      <div class="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6 mb-8" id="especialidades-grid">
-        <!-- Cards will be injected via JS -->
-      </div>
-
-      <div id="step3-error" class="hidden p-4 mb-6 bg-red-50 text-red-600 rounded-xl text-center text-sm font-medium">
-        Por favor, selecione uma especialidade.
-      </div>
-
-      <div class="flex flex-col sm:flex-row justify-between gap-3 sm:gap-4 border-t border-gray-100 pt-6">
-        <button id="btnBack3"
-          class="w-full sm:w-auto px-6 py-3 rounded-xl text-gray-600 font-semibold hover:bg-gray-100 hover:text-gray-800 transition-colors flex items-center justify-center gap-2">
-          <i data-lucide="arrow-left" class="w-5 h-5"></i> Voltar
-        </button>
-        <button id="btnStep3Next"
-          class="w-full sm:w-auto bg-pe-red text-white px-8 py-3 rounded-xl font-bold hover:bg-pe-red/90 shadow-lg shadow-pe-royal/20 transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2">
           Próximo <i data-lucide="arrow-right" class="w-5 h-5"></i>
         </button>
       </div>
@@ -1214,7 +1216,8 @@
           return;
         }
 
-        // 👉 OK → STEP 2
+        // 👉 OK → STEP 2 (Especialidade)
+        carregarEspecialidades(); // Pre-load specialties
         step1.classList.add('hidden');
         step2.classList.remove('hidden');
         updateStepProgress(1);
@@ -1352,7 +1355,7 @@
     async function selecionarEspecialidade(id, nome, exigeAcolhimento = false, tipoFluxo = 'CONSULTA') {
       specialtyInput.value = nome;
       specialtyIdInput.value = id;
-      document.getElementById('step3-error').classList.add('hidden');
+      document.getElementById('step2-error-alt').classList.add('hidden');
 
       // --- REGRA DE NEGÓCIO: BLOQUEIO VIA BACKEND SE EXIGIR ACOLHIMENTO ---
       if (exigeAcolhimento) {
@@ -1375,8 +1378,7 @@
             // Limpa seleção
             specialtyInput.value = "";
             specialtyIdInput.value = "";
-            const unidadeId = document.getElementById('selected_unidade_id').value;
-            carregarEspecialidades(unidadeId, true);
+            carregarEspecialidades(null, true);
 
             // Redirecionamento para Acolhimento
             document.getElementById('btnIrParaAcolhimento').onclick = async () => {
@@ -1400,27 +1402,8 @@
         }
       }
 
-      const unidadeId = document.getElementById('selected_unidade_id').value;
-      carregarEspecialidades(unidadeId, true);
-    }
-
-    if (btnStep3Next) {
-      btnStep3Next.onclick = async () => {
-        const val = document.getElementById('especialidadeIdEscolha').value;
-        const nome = document.getElementById('especialidadeEscolha').value;
-
-        if (!val) {
-          document.getElementById('step3-error').classList.remove('hidden');
-          return;
-        }
-
-        // Carrega profissionais disponíveis na unidade para esta especialidade
-        await carregarMedicos(val);
-
-        step3.classList.add('hidden');
-        step4.classList.remove('hidden');
-        updateStepProgress(3);
-      }
+      const specId = specialtyIdInput.value;
+      carregarEspecialidades(null, true);
     }
 
     // --- STEP NAVIGATION BACK BUTTONS ---
@@ -1934,7 +1917,7 @@
     // ===============================
     // UNIDADES CARD LOGIC
     // ===============================
-    async function carregarUnidadesCard(silent = false) {
+    async function carregarUnidadesCard(silent = false, especialidadeId = null) {
       const container = document.getElementById('unidades-container');
       const hiddenInput = document.getElementById('selected_unidade_id');
       if (!container) return;
@@ -1946,12 +1929,13 @@
       }
 
       try {
-        const res = await fetch('/api/agendar_exame/unidades_disponiveis');
+        const url = especialidadeId ? `/api/agendar_exame/unidades_disponiveis?especialidade_id=${especialidadeId}` : '/api/agendar_exame/unidades_disponiveis';
+        const res = await fetch(url);
         const data = await res.json();
         const unidades = data.unidades || [];
 
         if (unidades.length === 0) {
-          container.innerHTML = '<div class="p-4 text-center text-gray-500">Nenhuma unidade encontrada.</div>';
+          container.innerHTML = '<div class="p-4 text-center text-amber-600 bg-amber-50 rounded-xl border border-amber-100 font-medium">Nenhuma unidade disponível para esta especialidade.</div>';
           return;
         }
 
@@ -1996,9 +1980,10 @@
       if (hiddenInput) hiddenInput.value = id;
       if (nameInput) nameInput.value = nome;
 
-      carregarUnidadesCard(true);
+      const specId = document.getElementById('especialidadeIdEscolha').value;
+      carregarUnidadesCard(true, specId);
 
-      const errorMsg = document.getElementById('step2-error');
+      const errorMsg = document.getElementById('step3-error-alt');
       if (errorMsg) errorMsg.classList.add('hidden');
     }
 
@@ -2088,7 +2073,8 @@
             });
 
             hiddenInput.value = dateStr;
-            document.getElementById('step2-error').classList.add('hidden');
+            const errorMsg = document.getElementById('step3-error-alt');
+            if (errorMsg) errorMsg.classList.add('hidden');
 
             // Add selection style
             dayEl.classList.remove("text-gray-700", "hover:bg-blue-50", "hover:text-pe-royal");
@@ -2122,32 +2108,20 @@
 
 
     // ===============================
-    // STEP 2 NAVIGATION HANDLER (NEW)
+    // STEP 2 NAVIGATION HANDLER (SPECIALTY)
     // ===============================
     const btnStep2Next = document.getElementById('btnStep2Next');
     if (btnStep2Next) {
       btnStep2Next.onclick = async () => {
-        const unidadeId = document.getElementById('selected_unidade_id').value;
-        const dataConsulta = document.getElementById('selected_data_consulta').value;
+        const specialtyId = document.getElementById('especialidadeIdEscolha').value;
 
-        if (!unidadeId || !dataConsulta) {
-          document.getElementById('step2-error').classList.remove('hidden');
+        if (!specialtyId) {
+          document.getElementById('step2-error-alt').classList.remove('hidden');
           return;
         }
 
-        // --- FRONTEND VALIDATION: BLOQUEIO MENSAL ---
-        const [y, m, d] = dataConsulta.split('-').map(Number);
-        const agora = new Date();
-        const mesAtual = agora.getMonth() + 1; // getMonth is 0-indexed
-        const anoAtual = agora.getFullYear();
-
-        if (y !== anoAtual || m !== mesAtual) {
-          showToast("Agendamentos só podem ser realizados para datas dentro do mês atual.", "error");
-          return;
-        }
-
-        // 👉 CARREGAR ESPECIALIDADES DA UNIDADE
-        await carregarEspecialidades(unidadeId);
+        // 👉 CARREGAR UNIDADES FILTRADAS PELA ESPECIALIDADE
+        await carregarUnidadesCard(false, specialtyId);
 
         // Proceed to Step 3
         step2.classList.add('hidden');
@@ -2157,17 +2131,53 @@
     }
 
     // ===============================
+    // STEP 3 NAVIGATION HANDLER (UNIT/DATE)
+    // ===============================
+    const btnStep3Next = document.getElementById('btnStep3Next');
+    if (btnStep3Next) {
+      btnStep3Next.onclick = async () => {
+        const unidadeId = document.getElementById('selected_unidade_id').value;
+        const dataConsulta = document.getElementById('selected_data_consulta').value;
+
+        if (!unidadeId || !dataConsulta) {
+          document.getElementById('step3-error-alt').classList.remove('hidden');
+          return;
+        }
+
+        // --- FRONTEND VALIDATION: BLOQUEIO MENSAL ---
+        const [y, m, d] = dataConsulta.split('-').map(Number);
+        const agora = new Date();
+        const mesAtual = agora.getMonth() + 1;
+        const anoAtual = agora.getFullYear();
+
+        if (y !== anoAtual || m !== mesAtual) {
+          showToast("Agendamentos só podem ser realizados para datas dentro do mês atual.", "error");
+          return;
+        }
+
+        const specId = document.getElementById('especialidadeIdEscolha').value;
+        // Carrega profissionais disponíveis na unidade para esta especialidade
+        await carregarMedicos(specId);
+
+        step3.classList.add('hidden');
+        step4.classList.remove('hidden');
+        updateStepProgress(3);
+      };
+    }
+
+    // ===============================
     // REAL-TIME POLLING
     // ===============================
     setInterval(() => {
       if (document.hidden) return;
 
-      if (!step1.classList.contains('hidden') || !step2.classList.contains('hidden')) {
-        carregarUnidadesCard(true);
+      if (!step1.classList.contains('hidden')) {
         if (pacienteGlobal) carregarAgendamentos(pacienteGlobal.id);
+      } else if (!step2.classList.contains('hidden')) {
+        carregarEspecialidades(null, true);
       } else if (!step3.classList.contains('hidden')) {
-        const unidadeId = document.getElementById('selected_unidade_id').value;
-        carregarEspecialidades(unidadeId, true);
+        const specId = document.getElementById('especialidadeIdEscolha').value;
+        carregarUnidadesCard(true, specId);
       } else if (!step4.classList.contains('hidden')) {
         const specId = specialtyIdInput.value;
         carregarMedicos(specId, true);
@@ -2178,11 +2188,10 @@
 
     // Call onload
     window.addEventListener('DOMContentLoaded', () => {
-      carregarUnidadesCard();
-      renderCalendar(currentMonth, currentYear);
-
+      // Prioridade: Configurar a máscara do documento imediatamente
       const docInput = document.getElementById('doc');
       if (docInput) {
+        // Usar setTimeout para focar melhora a acessibilidade, sem bloquear
         setTimeout(() => docInput.focus(), 500);
 
         docInput.addEventListener('input', (e) => {
@@ -2209,7 +2218,15 @@
           }
         });
       }
-      if (typeof lucide !== 'undefined') lucide.createIcons();
+
+      // Outras inicializações da página
+      try {
+        carregarUnidadesCard();
+        renderCalendar(currentMonth, currentYear);
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      } catch (err) {
+        console.warn("Erro não-crítico durante inicialização:", err);
+      }
     });
   </script>
 

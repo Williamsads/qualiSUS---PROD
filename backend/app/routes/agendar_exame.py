@@ -266,9 +266,21 @@ def atualizar_cadastro():
 # ====================
 @agendamento_bp.route("/api/agendar_exame/unidades_disponiveis")
 def unidades_disponiveis():
+    especialidade_id = request.args.get("especialidade_id")
     conn = get_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
-    cur.execute("SELECT id, nome, endereco FROM unidades_saude")
+    
+    if especialidade_id:
+        cur.execute("""
+            SELECT DISTINCT u.id, u.nome, u.endereco 
+            FROM unidades_saude u
+            JOIN unidades_especialidades ue ON ue.unidade_id = u.id
+            WHERE ue.especialidade_id = %s
+            ORDER BY u.nome
+        """, (especialidade_id,))
+    else:
+        cur.execute("SELECT id, nome, endereco FROM unidades_saude ORDER BY nome")
+        
     unidades = cur.fetchall()
     cur.close()
     conn.close()

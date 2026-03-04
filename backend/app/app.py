@@ -19,6 +19,10 @@ from psycopg2.extras import RealDictCursor
 import hashlib
 import uuid
 from datetime import datetime, timedelta
+import smtplib
+import secrets
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.routes.servidor import servidor_bp
 from app.routes.log_agendamento import bp_agendamento
@@ -86,7 +90,7 @@ def raiz():
 @app.before_request
 def verificar_status_usuario():
     # Rotas que não precisam de verificação (estáticos e o próprio login)
-    if request.endpoint in ['static', 'login', 'raiz', 'logout', 'recuperar_senha', 'redefinir_senha_token']:
+    if request.endpoint in ['static', 'login', 'raiz', 'logout', 'recuperar_senha', 'resetar_senha']:
         return
     
     # Se usuário estiver logado na sessão
@@ -201,7 +205,9 @@ def logout():
 @app.route("/recuperar-senha", methods=["POST"])
 def recuperar_senha():
     email = request.form.get("email")
-    
+    if not email:
+        return redirect("/index")
+        
     conn = get_connection()
     cursor = conn.cursor(cursor_factory=RealDictCursor)
     
@@ -209,33 +215,77 @@ def recuperar_senha():
     user = cursor.fetchone()
     
     if user:
-        token = str(uuid.uuid4())
-        expiracao = datetime.now() + timedelta(hours=1)
+        # Proteção contra abuso: Verifica se existe um token gerado a menos de 1 minuto (expira em > 14 min)
+        minuto_expiracao_recente = datetime.now() + timedelta(minutes=14)
+        cursor.execute("SELECT id FROM recuperacao_senha WHERE email = %s AND data_expiracao > %s", 
+                       (email, minuto_expiracao_recente))
+        recent_token = cursor.fetchone()
         
-        cursor.execute(
-            "INSERT INTO recuperacao_senha (email, token, data_expiracao) VALUES (%s, %s, %s)",
-            (email, token, expiracao)
-        )
-        conn.commit()
-        
-        # Simula o envio de e-mail imprimindo no console
-        reset_link = url_for('redefinir_senha_token', token=token, _external=True)
-        print(f"\n--- LINK DE RECUPERAÇÃO PARA {email} ---\n{reset_link}\n-----------------------------------\n")
-        
-        flash("Se o e-mail estiver cadastrado, você receberá um link para redefinir sua senha.", "sucesso")
-    else:
-        # Por segurança, não confirmamos se o e-mail existe ou não
-        flash("Se o e-mail estiver cadastrado, você receberá um link para redefinir sua senha.", "sucesso")
+        if not recent_token:
+            # Apaga tokens antigos e não utilizados
+            cursor.execute("DELETE FROM recuperacao_senha WHERE email = %s", (email,))
+            
+            # Gera token seguro de 32 bytes na base64 url-safe
+            token = secrets.token_urlsafe(32)
+            expiracao = datetime.now() + timedelta(minutes=15)
+            
+            cursor.execute(
+                "INSERT INTO recuperacao_senha (email, token, data_expiracao) VALUES (%s, %s, %s)",
+                (email, token, expiracao)
+            )
+            conn.commit()
+            
+            # Constrói o link com query string (Exemplo: .../resetar-senha?token=XYZ)
+            reset_link = url_for('resetar_senha', _external=True) + f"?token={token}"
+            
+            try:
+                msg = MIMEMultipart()
+                msg['From'] = "Agendamento QualiVida <naorespondases@saude.pe.gov.br>"
+                msg['To'] = email
+                msg['Subject'] = "Recuperação de Senha - QualiVida"
+                
+                body = f"""Olá,
+
+Você solicitou a recuperação de senha no sistema QualiVida.
+Clique no link abaixo para redefinir sua senha:
+
+{reset_link}
+
+Este link é válido por apenas 15 minutos e foi gerado como um token criptograficamente seguro com expiração.
+Se você não solicitou a redefinição de sua senha, limpe este e-mail da sua caixa de entrada; nenhuma alteração será processada no seu usuário.
+
+Atenciosamente,
+Equipe QualiVida
+"""
+                msg.attach(MIMEText(body, 'plain', 'utf-8'))
+                
+                # Envio utilizando as credenciais SMTP repassadas
+                server = smtplib.SMTP("antispamout.ati.pe.gov.br", 587)
+                server.starttls()
+                server.login("dgiis.ses", "$35dG!1s")
+                server.sendmail("naorespondases@saude.pe.gov.br", email, msg.as_string())
+                server.quit()
+            except Exception as e:
+                print(f"Erro ao enviar email de recuperação: {e}")
+
+    # Não revelar se o e-mail existe! Sempre retornar mesma mensagem.
+    flash("Se o e-mail estiver cadastrado, você receberá um link para redefinir sua senha.", "sucesso")
     
     cursor.close()
     conn.close()
     return redirect("/index")
 
-@app.route("/redefinir-senha/<token>", methods=["GET", "POST"])
-def redefinir_senha_token(token):
+@app.route("/resetar-senha", methods=["GET", "POST"])
+def resetar_senha():
+    token = request.args.get("token") or request.form.get("token")
+    if not token:
+        flash("Token ausente.", "erro")
+        return redirect("/index")
+
     conn = get_connection()
     cursor = conn.cursor(cursor_factory=RealDictCursor)
     
+    # Verifica se o token não expirou (validação rigorosa de 15 minutos)
     cursor.execute(
         "SELECT * FROM recuperacao_senha WHERE token = %s AND data_expiracao > %s",
         (token, datetime.now())
@@ -244,14 +294,16 @@ def redefinir_senha_token(token):
     
     if not request_data:
         flash("Link de recuperação inválido ou expirado.", "erro")
+        cursor.close()
+        conn.close()
         return redirect("/index")
     
     if request.method == "POST":
         nova_senha = request.form.get("senha")
         confirmar_senha = request.form.get("confirmar_senha")
         
-        if nova_senha != confirmar_senha:
-            flash("As senhas não coincidem.", "erro")
+        if not nova_senha or nova_senha != confirmar_senha:
+            flash("As senhas não coincidem ou estão vazias.", "erro")
             return render_template("reset_senha.html", token=token)
         
         senha_hash = generate_password_hash(nova_senha)
@@ -262,7 +314,7 @@ def redefinir_senha_token(token):
             (senha_hash, request_data["email"])
         )
         
-        # Remove o token usado
+        # Invalida/remove esse token especifico para que não seja mais usado
         cursor.execute("DELETE FROM recuperacao_senha WHERE token = %s", (token,))
         
         conn.commit()
