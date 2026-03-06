@@ -47,34 +47,44 @@ def lista_trabalhadores():
     cursor.execute(f"SELECT COUNT(*) as total FROM trabalhadores t {where_sql}", params)
     total = cursor.fetchone()["total"]
 
-    # Seleção com limite e offset
+    # Seleção dos IDs dos trabalhadores da página atual
     cursor.execute(f"""
-        SELECT
-            t.id AS trabalhador_id,
-            t.nome_completo,
-            t.cpf,
-            t.cns,
-            t.data_nascimento,
-            t.telefone,
-            t.email,
-            t.cidade,
-            t.uf,
-            v.id AS vinculo_id,
-            v.tipo_vinculo,
-            v.numero_funcional,
-            v.especialidade,
-            v.unidade_lotacao,
-            v.data_admissao,
-            v.situacao
-        FROM trabalhadores t
-        LEFT JOIN vinculos_trabalhadores v
-               ON v.trabalhador_id = t.id
-        {where_sql}
+        SELECT t.id FROM trabalhadores t {where_sql}
         ORDER BY t.nome_completo
         LIMIT %s OFFSET %s
     """, params + [per_page, offset])
-
-    rows = cursor.fetchall()
+    
+    id_rows = cursor.fetchall()
+    if not id_rows:
+        rows = []
+    else:
+        target_ids = [r["id"] for r in id_rows]
+        # Seleção completa dos trabalhadores e seus vínculos apenas para os IDs da página
+        cursor.execute(f"""
+            SELECT
+                t.id AS trabalhador_id,
+                t.nome_completo,
+                t.cpf,
+                t.cns,
+                t.data_nascimento,
+                t.telefone,
+                t.email,
+                t.cidade,
+                t.uf,
+                v.id AS vinculo_id,
+                v.tipo_vinculo,
+                v.numero_funcional,
+                v.especialidade,
+                v.unidade_lotacao,
+                v.data_admissao,
+                v.situacao
+            FROM trabalhadores t
+            LEFT JOIN vinculos_trabalhadores v
+                   ON v.trabalhador_id = t.id
+            WHERE t.id IN %s
+            ORDER BY t.nome_completo
+        """, (tuple(target_ids),))
+        rows = cursor.fetchall()
     cursor.close()
     conn.close()
 

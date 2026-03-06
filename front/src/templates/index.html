@@ -142,7 +142,7 @@
             </div>
             <span
                 class="mt-4 px-3 py-1 bg-amber-100 text-amber-700 text-[10px] font-black uppercase rounded-full border border-amber-200">
-                Ambiente de Homologação
+                Ambiente de Teste
             </span>
         </div>
 
@@ -157,6 +157,11 @@
                     <p class="text-sm text-slate-400 font-medium">
                         Acesse sua conta para gerenciar agendamentos e serviços.
                     </p>
+                    <div class="flex items-center justify-center gap-2 pt-2 opacity-60">
+                        <i data-lucide="shield-check" class="w-4 h-4 text-emerald-500"></i>
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-emerald-500">Ambiente
+                            monitorado e protegido</span>
+                    </div>
                 </div>
 
                 <!-- Flash Messages -->
@@ -164,15 +169,20 @@
                 {% if messages %}
                 <div class="space-y-3 animate-slide-up" style="animation-delay: 0.2s;">
                     {% for categoria, mensagem in messages %}
+                    {% if mensagem == "Se o e-mail estiver cadastrado, você receberá um link para redefinir sua senha."
+                    %}
+                    <script>window.showFeedbackModal = true;</script>
+                    {% else %}
                     <div
                         class="flex items-center gap-3 p-4 rounded-2xl border text-sm font-bold shadow-sm backdrop-blur-md
-                                    {% if categoria == 'erro' %} bg-red-50/80 border-red-200 text-red-700 dark:bg-red-900/20 dark:border-red-800 dark:text-red-400
-                                    {% elif categoria == 'sucesso' %} bg-green-50/80 border-green-200 text-green-700 dark:bg-green-900/20 dark:border-green-800 dark:text-green-400
-                                    {% else %} bg-blue-50/80 border-blue-200 text-blue-700 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-400 {% endif %}">
+                                            {% if categoria == 'erro' %} bg-red-50/80 border-red-200 text-red-700 dark:bg-red-900/20 dark:border-red-800 dark:text-red-400
+                                            {% elif categoria == 'sucesso' %} bg-green-50/80 border-green-200 text-green-700 dark:bg-green-900/20 dark:border-green-800 dark:text-green-400
+                                            {% else %} bg-blue-50/80 border-blue-200 text-blue-700 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-400 {% endif %}">
                         <i data-lucide="{% if categoria == 'erro' %}alert-circle{% elif categoria == 'sucesso' %}check-circle{% else %}info{% endif %}"
                             class="w-5 h-5"></i>
                         <span>{{ mensagem }}</span>
                     </div>
+                    {% endif %}
                     {% endfor %}
                 </div>
                 {% endif %}
@@ -185,7 +195,7 @@
                     <div class="space-y-2 animate-slide-up" style="animation-delay: 0.3s;">
                         <label for="email"
                             class="block text-xs font-black uppercase tracking-widest text-slate-500 ml-1">Email
-                            Corporativo</label>
+                            Institucional</label>
                         <div class="relative group">
                             <div
                                 class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-600 transition-colors">
@@ -224,8 +234,8 @@
                         <!-- Forgot Password Link -->
                         <div class="flex justify-end pt-1 pr-1">
                             <button type="button" onclick="abrirModalSenha()"
-                                class="text-[10px] font-black uppercase tracking-widest text-blue-400 hover:text-blue-300 transition-all">
-                                Esqueceu a senha?
+                                class="text-[11px] font-bold uppercase tracking-widest text-blue-400 hover:text-blue-300 transition-all hover:underline decoration-2 underline-offset-4">
+                                Esqueceu sua senha?
                             </button>
                         </div>
                     </div>
@@ -264,7 +274,7 @@
                     alt="Gov PE">
             </div>
             <p class="text-[10px] text-slate-500 font-black uppercase tracking-[0.3em] leading-relaxed">
-                © 2025 • QualiSUS PE<br>
+                © 2026 • QualiSUS PE<br>
                 <span class="font-medium normal-case tracking-normal opacity-50">Secretaria Estadual de Saúde</span>
             </p>
         </div>
@@ -275,7 +285,7 @@
 
         <!-- Overlay Gradient -->
         <div
-            class="absolute inset-0 bg-gradient-to-t from-brand-900 via-brand-900/60 to-transparent z-10 pointer-events-none">
+            class="absolute inset-0 bg-gradient-to-t from-brand-900 via-brand-900/80 to-brand-900/20 z-10 pointer-events-none transition-all duration-700">
         </div>
 
         <!-- Images -->
@@ -375,6 +385,41 @@
         </div>
     </div>
 
+    <!-- ======================= MODAL: FEEDBACK ======================= -->
+    <div id="modalFeedback" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog"
+        aria-modal="true">
+        <!-- Backdrop -->
+        <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity opacity-0" id="feedbackBackdrop">
+        </div>
+
+        <div class="fixed inset-0 z-10 overflow-y-auto">
+            <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+
+                <div class="relative transform overflow-hidden rounded-[2.5rem] solid-card text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-md opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                    id="feedbackPanel">
+                    <div class="absolute top-0 left-0 w-full h-1.5 bg-emerald-500"></div>
+
+                    <div class="px-8 pb-4 pt-10 sm:p-10 sm:pb-6 text-center">
+                        <div
+                            class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-50/10 shadow-inner mb-6 border border-emerald-500/20">
+                            <i data-lucide="check-circle" class="w-8 h-8 text-emerald-500"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Solicitação Enviada!</h3>
+                        <p class="text-sm text-slate-400 leading-relaxed">Se o e-mail estiver cadastrado, você receberá
+                            um link para redefinir sua senha.</p>
+                    </div>
+
+                    <div class="px-8 py-6 text-center pb-10">
+                        <button type="button" onclick="fecharModalFeedback()"
+                            class="inline-flex w-full justify-center rounded-xl bg-emerald-600 px-8 py-3.5 text-xs font-black uppercase tracking-widest text-white shadow-xl shadow-emerald-500/20 hover:bg-emerald-700 transition-all">
+                            Entendido
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- ======================= SCRIPTS ======================= -->
     <script>
         // Init Icons
@@ -396,7 +441,7 @@
             formLogin.addEventListener('submit', () => {
                 btnSubmit.disabled = true;
                 btnSubmit.classList.add('opacity-80', 'cursor-not-allowed');
-                btnText.innerText = "Verificando...";
+                btnText.innerText = "Entrando...";
                 btnLoader.classList.remove('hidden');
                 btnIcon.classList.add('hidden');
             });
@@ -503,6 +548,35 @@
             setTimeout(() => {
                 modal.classList.add("hidden");
             }, 300); // Wait for transition
+        }
+
+        // --- Feedback Modal Logic ---
+        const feedbackModal = document.getElementById("modalFeedback");
+        const feedbackBackdrop = document.getElementById("feedbackBackdrop");
+        const feedbackPanel = document.getElementById("feedbackPanel");
+
+        function abrirModalFeedback() {
+            feedbackModal.classList.remove("hidden");
+            setTimeout(() => {
+                feedbackBackdrop.classList.remove("opacity-0");
+                feedbackPanel.classList.remove("opacity-0", "translate-y-4", "sm:translate-y-0", "sm:scale-95");
+                feedbackPanel.classList.add("opacity-100", "translate-y-0", "sm:scale-100");
+            }, 10);
+        }
+
+        function fecharModalFeedback() {
+            feedbackBackdrop.classList.add("opacity-0");
+            feedbackPanel.classList.remove("opacity-100", "translate-y-0", "sm:scale-100");
+            feedbackPanel.classList.add("opacity-0", "translate-y-4", "sm:translate-y-0", "sm:scale-95");
+
+            setTimeout(() => {
+                feedbackModal.classList.add("hidden");
+            }, 300);
+        }
+
+        // Auto-show if flag is set
+        if (window.showFeedbackModal) {
+            abrirModalFeedback();
         }
     </script>
 </body>

@@ -35,7 +35,9 @@ def lista_funcionarios():
                 atendimento,
                 situacao,
                 situacao_data_inicio,
-                situacao_data_fim
+                situacao_data_fim,
+                email,
+                telefone
             FROM funcionarios
             ORDER BY nome
         """)
@@ -83,6 +85,8 @@ def exportar_funcionarios():
                 unidade_atendimento as "Unidade",
                 CASE WHEN atendimento THEN 'Sim' ELSE 'Não' END as "Atendimento",
                 situacao as "Situação Atual",
+                email as "E-mail",
+                telefone as "Contato",
                 CASE WHEN ativo THEN 'Ativo' ELSE 'Inativo' END as "Status"
             FROM funcionarios
             WHERE 1=1
@@ -259,6 +263,8 @@ def editar_funcionario(id):
         situacao_data_inicio = request.form.get('situacao_data_inicio') or None
         situacao_data_fim = request.form.get('situacao_data_fim') or None
         atendimento = request.form.get('atendimento') == 'on'
+        email = request.form.get('email')
+        telefone = request.form.get('telefone')
         # Normaliza CPF
         if cpf:
             cpf = cpf.replace('.', '').replace('-', '').strip()
@@ -273,7 +279,9 @@ def editar_funcionario(id):
                 atendimento = %s,
                 situacao = %s,
                 situacao_data_inicio = %s,
-                situacao_data_fim = %s
+                situacao_data_fim = %s,
+                email = %s,
+                telefone = %s
             WHERE id = %s
         """
 
@@ -304,6 +312,8 @@ def editar_funcionario(id):
                 situacao,
                 situacao_data_inicio,
                 situacao_data_fim,
+                email,
+                telefone,
                 id
             ))
 
@@ -536,44 +546,37 @@ def cadastro_paciente():
 
     # -------- GET (abrir tela) --------
     trabalhador_id = request.args.get('id')
+    trabalhador = None
 
     conn = get_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
 
-    cur.execute("""
-        SELECT
-            t.*,
-            v.tipo_vinculo,
-            v.numero_funcional,
-            v.especialidade,
-            v.unidade_lotacao,
-            v.data_admissao,
-            v.data_desligamento
-        FROM trabalhadores t
-        LEFT JOIN vinculos_trabalhadores v
-               ON v.trabalhador_id = t.id
-        WHERE t.id = %s
-    """, (trabalhador_id,))
+    if trabalhador_id and trabalhador_id.strip():
+        # Busca dados base do trabalhador
+        cur.execute("SELECT * FROM trabalhadores WHERE id = %s", (trabalhador_id,))
+        trabalhador = cur.fetchone()
 
-    trabalhador = cur.fetchone()
+        if trabalhador:
+            # Busca TODOS os vínculos completos do trabalhador
+            cur.execute("""
+                SELECT * FROM vinculos_trabalhadores 
+                WHERE trabalhador_id = %s 
+                ORDER BY id ASC
+            """, (trabalhador_id,))
+            trabalhador['vinculos'] = cur.fetchall()
 
-    if trabalhador:
-        # Busca TODOS os vínculos do trabalhador
-        cur.execute("""
-            SELECT * FROM vinculos_trabalhadores 
-            WHERE trabalhador_id = %s 
-            ORDER BY id ASC
-        """, (trabalhador_id,))
-        trabalhador['vinculos'] = cur.fetchall()
-
+    # Busca listas para os selects
     cur.execute("SELECT nome FROM unidades_saude ORDER BY nome")
     unidades = cur.fetchall()
 
     cur.execute("SELECT nome FROM especialidades ORDER BY nome")
     especialidades = cur.fetchall()
 
-    # Tabela tipos_vinculo não existe, usando lista fixa por enquanto
-    tipos_vinculo = [{'nome': 'Servidor'}, {'nome': 'Contratado'}, {'nome': 'Terceirizado'}, {'nome': 'Jovem Aprendiz'}]
+    # Tipos de vínculo comuns no banco (EST=Estatutário, CTD=Contratado)
+    tipos_vinculo = [
+        {'nome': 'EST'}, {'nome': 'CTD'}, {'nome': 'CLT'}, {'nome': 'COM'}, 
+        {'nome': 'Servidor'}, {'nome': 'Contratado'}, {'nome': 'Terceirizado'}, {'nome': 'Jovem Aprendiz'}
+    ]
 
     cur.close()
     conn.close()

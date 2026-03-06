@@ -25,37 +25,41 @@
 
     <nav class="flex-1 overflow-y-auto px-4 pt-2 pb-6 scrollbar-hide sidebar-nav">
 
-        <!-- PRINCIPAL SECTION (always visible, no accordion) -->
-        <div class="mb-2">
+        <!-- SECTION: VISÃO GERAL -->
+        <h4 class="nav-section-title">Visão Geral</h4>
+        <div class="mb-6">
             <a href="{{ url_for('home') }}"
                 class="nav-link {% if request.endpoint == 'home' %} nav-item-active {% endif %}"
                 title="Painel de Monitoramento">
-                <i data-lucide="layout-grid"></i>
+                <i data-lucide="layout-dashboard"></i>
                 <span>Painel Principal</span>
             </a>
             <a href="{{ url_for('dashboard.index') }}"
                 class="nav-link {% if 'dashboard' in request.endpoint %} nav-item-active {% endif %}"
                 title="Indicadores de Gestão">
-                <i data-lucide="bar-chart-3"></i>
+                <i data-lucide="bar-chart-big"></i>
                 <span>Dashboard</span>
             </a>
         </div>
 
-        <!-- AMBULATORY MANAGEMENT -->
+        <!-- SECTION: OPERAÇÃO CLÍNICA -->
+        <h4 class="nav-section-title">Operação Clínica</h4>
+
+        <!-- AMBULATÓRIO (accordion) -->
         <div class="nav-accordion mb-1" id="acc-ambulatorial">
             <button class="nav-accordion-trigger" onclick="toggleAccordion('acc-ambulatorial')">
                 <div class="flex items-center gap-2">
-                    <i data-lucide="stethoscope" class="w-3.5 h-3.5 text-slate-500"></i>
-                    <span>Gestão Ambulatorial</span>
+                    <i data-lucide="stethoscope" class="w-3.5 h-3.5"></i>
+                    <span>Ambulatório</span>
                 </div>
-                <i data-lucide="chevron-right" class="acc-chevron w-3.5 h-3.5 text-slate-600"></i>
+                <i data-lucide="chevron-right" class="acc-chevron w-3.5 h-3.5"></i>
             </button>
             <div class="nav-accordion-body">
                 <div class="nav-group">
                     <a href="javascript:void(0)" data-nav-url="{{ url_for('agendamento_bp.pagina_agendamento') }}"
                         onclick="confirmExternalNavigation(this.dataset.navUrl)"
                         class="nav-link {% if 'agendamento_bp' in request.endpoint %} nav-item-active {% endif %}"
-                        title="Agendamento de Consultas">
+                        title="Novo Agendamento">
                         <i data-lucide="calendar-plus"></i>
                         <span>Agendamento</span>
                     </a>
@@ -65,110 +69,104 @@
                         <i data-lucide="history"></i>
                         <span>Histórico</span>
                     </a>
-
                     <a href="{{ url_for('gerenciamento.index') }}"
                         class="nav-link {% if 'gerenciamento' in request.endpoint %} nav-item-active {% endif %}"
                         title="Parâmetros de Agenda">
-                        <i data-lucide="settings"></i>
-                        <span>Parâmetros</span>
+                        <i data-lucide="settings-2"></i>
+                        <span>Configurar Agenda</span>
                     </a>
                 </div>
             </div>
         </div>
 
-        <!-- PEOPLE MANAGEMENT -->
-        <div class="nav-accordion mb-1" id="acc-pessoas">
-            <button class="nav-accordion-trigger" onclick="toggleAccordion('acc-pessoas')">
-                <div class="flex items-center gap-2">
-                    <i data-lucide="users" class="w-3.5 h-3.5 text-slate-500"></i>
-                    <span>Gestão de Pessoas</span>
-                </div>
-                <i data-lucide="chevron-right" class="acc-chevron w-3.5 h-3.5 text-slate-600"></i>
-            </button>
-            <div class="nav-accordion-body">
-                <div class="nav-group">
-                    <a href="{{ url_for('trabalhadores.lista_trabalhadores') }}"
-                        class="nav-link {% if 'trabalhadores' in request.endpoint %} nav-item-active {% endif %}"
-                        title="Quadro de Pessoal">
-                        <i data-lucide="briefcase"></i>
-                        <span>Trabalhadores SES</span>
-                    </a>
-                    <a href="{{ url_for('servidor.lista_funcionarios') }}"
-                        class="nav-link {% if 'servidor' in request.endpoint %} nav-item-active {% endif %}"
-                        title="Quadro de Pessoas">
-                        <i data-lucide="user-cog"></i>
-                        <span>Quadro de Pessoas QualiVida</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- GESTÃO DE PACIENTES (exclusivo para médicos e desenvolvedores) -->
+        <!-- PACIENTES (accordion - condicional médico/dev) -->
         {% if session.get('tipo', '').upper() in ['MEDICO', 'DESENVOLVEDOR', 'DEV'] %}
-        <div class="nav-accordion mb-1" id="acc-pacientes">
+        <div class="nav-accordion mb-6" id="acc-pacientes">
             <button class="nav-accordion-trigger" onclick="toggleAccordion('acc-pacientes')">
                 <div class="flex items-center gap-2">
-                    <i data-lucide="heart-pulse" class="w-3.5 h-3.5 text-slate-500"></i>
-                    <span>Gestão de Pacientes</span>
+                    <i data-lucide="heart-pulse" class="w-3.5 h-3.5"></i>
+                    <span>Pacientes</span>
                 </div>
-                <i data-lucide="chevron-right" class="acc-chevron w-3.5 h-3.5 text-slate-600"></i>
+                <i data-lucide="chevron-right" class="acc-chevron w-3.5 h-3.5"></i>
             </button>
             <div class="nav-accordion-body">
                 <div class="nav-group">
                     <a href="{{ url_for('gestao_pacientes.index') }}"
                         class="nav-link {% if 'gestao_pacientes' in request.endpoint %} nav-item-active {% endif %}"
-                        title="Ciclo de Tratamento dos Pacientes">
+                        title="Ciclo de Tratamento">
                         <i data-lucide="clipboard-list"></i>
-                        <span>Pacientes em Tratamento</span>
+                        <span>Em Tratamento</span>
                     </a>
                 </div>
             </div>
         </div>
+        {% else %}
+        <div class="mb-6"></div>
         {% endif %}
 
-        <!-- GOVERNANCE & SECURITY -->
-        {% if session.get('tipo', '').upper() in ['DESENVOLVEDOR', 'DEV'] %}
-        <div class="nav-accordion mb-1" id="acc-governanca">
-            <button class="nav-accordion-trigger" onclick="toggleAccordion('acc-governanca')">
+        <!-- SECTION: CAPITAL HUMANO -->
+        <h4 class="nav-section-title">Capital Humano</h4>
+
+        <!-- GESTÃO DE PESSOAS (accordion) -->
+        <div class="nav-accordion mb-1" id="acc-pessoas">
+            <button class="nav-accordion-trigger" onclick="toggleAccordion('acc-pessoas')">
                 <div class="flex items-center gap-2">
-                    <i data-lucide="shield" class="w-3.5 h-3.5 text-slate-500"></i>
-                    <span>Governança</span>
+                    <i data-lucide="users" class="w-3.5 h-3.5"></i>
+                    <span>Gestão de Pessoas</span>
                 </div>
-                <i data-lucide="chevron-right" class="acc-chevron w-3.5 h-3.5 text-slate-600"></i>
+                <i data-lucide="chevron-right" class="acc-chevron w-3.5 h-3.5"></i>
             </button>
             <div class="nav-accordion-body">
                 <div class="nav-group">
-                    <a href="{{ url_for('usuarios.lista_usuarios') }}"
-                        class="nav-link {% if 'usuarios' in request.endpoint %} nav-item-active {% endif %}"
-                        title="Controle de Acessos">
-                        <i data-lucide="shield-check"></i>
-                        <span>Controle de Acessos</span>
+                    <a href="{{ url_for('trabalhadores.lista_trabalhadores') }}"
+                        class="nav-link {% if 'trabalhadores' in request.endpoint %} nav-item-active {% endif %}"
+                        title="Base de Servidores SES">
+                        <i data-lucide="database"></i>
+                        <span>Base SES</span>
+                    </a>
+                    <a href="{{ url_for('servidor.lista_funcionarios') }}"
+                        class="nav-link {% if 'servidor' in request.endpoint %} nav-item-active {% endif %}"
+                        title="Equipe QualiVida">
+                        <i data-lucide="user-cog"></i>
+                        <span>Equipe QualiVida</span>
                     </a>
                 </div>
             </div>
         </div>
-        {% endif %}
 
-        <!-- OCCUPATIONAL HEALTH -->
-        <div class="nav-accordion mb-1" id="acc-ocupacional">
+        <!-- SAÚDE OCUPACIONAL (accordion) -->
+        <div class="nav-accordion mb-6" id="acc-ocupacional">
             <button class="nav-accordion-trigger" onclick="toggleAccordion('acc-ocupacional')">
                 <div class="flex items-center gap-2">
-                    <i data-lucide="shield-check" class="w-3.5 h-3.5 text-slate-500"></i>
-                    <span>Saúde Ocupacional</span>
+                    <i data-lucide="hard-hat" class="w-3.5 h-3.5"></i>
+                    <span>Segurança & Saúde</span>
                 </div>
-                <i data-lucide="chevron-right" class="acc-chevron w-3.5 h-3.5 text-slate-600"></i>
+                <i data-lucide="chevron-right" class="acc-chevron w-3.5 h-3.5"></i>
             </button>
             <div class="nav-accordion-body">
                 <div class="nav-group">
                     <a href="{{ url_for('ppp.gestao_ppp') }}"
                         class="nav-link {% if 'ppp' in request.endpoint %} nav-item-active {% endif %}"
-                        title="Gestão de PPP">
+                        title="Perfil Profissiográfico Previdenciário">
                         <i data-lucide="file-text"></i>
                         <span>Gestão de PPP</span>
                     </a>
                 </div>
             </div>
         </div>
+
+        <!-- SECTION: ADMINISTRAÇÃO -->
+        {% if session.get('tipo', '').upper() in ['DESENVOLVEDOR', 'DEV'] %}
+        <h4 class="nav-section-title">Administração</h4>
+        <div class="mb-1">
+            <a href="{{ url_for('usuarios.lista_usuarios') }}"
+                class="nav-link {% if 'usuarios' in request.endpoint %} nav-item-active {% endif %}"
+                title="Configurações de Usuários e Permissões">
+                <i data-lucide="key-round"></i>
+                <span>Controle de Acessos</span>
+            </a>
+        </div>
+        {% endif %}
 
     </nav>
 

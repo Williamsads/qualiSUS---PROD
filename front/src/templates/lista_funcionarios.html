@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="max-w-7xl mx-auto space-y-8 animate-fade-in-up">
+<div class="max-w-full mx-auto space-y-8 animate-fade-in-up">
 
   <!-- CABEÇALHO -->
   <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
@@ -10,7 +10,7 @@
         Equipe de Especialistas
       </h1>
       <p class="text-gray-500 dark:text-gray-400 max-w-2xl transition-colors font-medium">
-        Gerencie os profissionais de saúde cadastrados no sistema, suas especialidades e lotações.
+        Gerencie os profissionais de saúde cadastrados no sistema. (v2)
       </p>
     </div>
 
@@ -98,13 +98,13 @@
         </div>
 
         <div class="relative group">
-          <i data-lucide="check-circle"
+          <i data-lucide="shield-check"
             class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
           <select id="filterStatus" onchange="filterTable()"
             class="w-full pl-11 pr-10 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 font-bold transition-all dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 appearance-none cursor-pointer">
-            <option value="">Status: Todos</option>
-            <option value="ativo">Status: Ativo</option>
-            <option value="inativo">Status: Inativo</option>
+            <option value="">Acesso: Todos</option>
+            <option value="ativo">Acesso: Habilitado</option>
+            <option value="inativo">Acesso: Bloqueado</option>
           </select>
           <i data-lucide="chevron-down"
             class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"></i>
@@ -151,26 +151,35 @@
         <thead>
           <tr
             class="bg-gray-50/50 dark:bg-clinical-bg/30 border-b border-gray-100 dark:border-gray-800 transition-colors">
-            <th class="px-6 py-5 text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
+            <th
+              class="px-6 py-5 text-[10px] font-extrabold text-gray-500 dark:text-gray-400 uppercase tracking-widest whitespace-nowrap">
               Nome do Profissional</th>
-            <th class="px-6 py-5 text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
+            <th
+              class="px-6 py-5 text-[10px] font-extrabold text-gray-500 dark:text-gray-400 uppercase tracking-widest whitespace-nowrap">
               CPF / Matrícula</th>
-            <th class="px-6 py-5 text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
+            <th
+              class="px-6 py-5 text-[10px] font-extrabold text-gray-500 dark:text-gray-400 uppercase tracking-widest whitespace-nowrap">
               Especialidade</th>
             <th scope="col"
-              class="px-6 py-5 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              class="px-6 py-5 text-left text-[10px] font-extrabold text-gray-500 dark:text-gray-400 uppercase tracking-widest whitespace-nowrap">
               Unidade
             </th>
             <th scope="col"
-              class="px-6 py-5 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              class="px-6 py-5 text-left text-[10px] font-extrabold text-gray-500 dark:text-gray-400 uppercase tracking-widest whitespace-nowrap">
+              Contatos
+            </th>
+            <th scope="col"
+              class="px-6 py-5 text-left text-[10px] font-extrabold text-gray-500 dark:text-gray-400 uppercase tracking-widest whitespace-nowrap">
               Atendimento
             </th>
-            <th class="px-6 py-5 text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
-              Situação</th>
-            <th class="px-6 py-5 text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
-              Status</th>
             <th
-              class="px-6 py-5 text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest text-center">
+              class="px-6 py-5 text-[10px] font-extrabold text-gray-500 dark:text-gray-400 uppercase tracking-widest whitespace-nowrap">
+              Status Funcional</th>
+            <th
+              class="px-6 py-5 text-[10px] font-extrabold text-gray-500 dark:text-gray-400 uppercase tracking-widest whitespace-nowrap">
+              Acesso</th>
+            <th
+              class="sticky right-0 px-6 py-5 text-[10px] font-extrabold text-gray-500 dark:text-gray-400 uppercase tracking-widest text-center whitespace-nowrap bg-gray-50 dark:bg-gray-900 border-l border-gray-100 dark:border-gray-800 z-10 shadow-[-10px_0_15px_-5px_rgba(0,0,0,0.05)]">
               Ações</th>
           </tr>
         </thead>
@@ -183,7 +192,8 @@
             <td class="px-6 py-5">
               <div class="flex items-center gap-3">
                 <div
-                  class="w-10 h-10 bg-brand-50 dark:bg-brand-900/20 rounded-xl flex items-center justify-center text-brand-600 dark:text-brand-400 font-bold text-sm">
+                  class="avatar-circle w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm transition-all shadow-sm"
+                  data-name="{{ f.nome }}">
                   {{ f.nome[:1] }}
                 </div>
                 <span class="font-bold text-gray-800 dark:text-gray-200">{{ f.nome }}</span>
@@ -203,6 +213,18 @@
             </td>
             <td class="px-6 py-5 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 font-medium">
               {{ f.unidade_atendimento or '-' }}
+            </td>
+            <td class="px-6 py-5 whitespace-nowrap">
+              <div class="flex flex-col gap-1">
+                <div class="flex items-center gap-1.5 text-xs font-bold text-gray-700 dark:text-gray-300">
+                  <i data-lucide="mail" class="w-3.5 h-3.5 text-gray-400"></i>
+                  {{ f.email or '-' }}
+                </div>
+                <div class="flex items-center gap-1.5 text-[10px] font-medium text-gray-500">
+                  <i data-lucide="phone" class="w-3 h-3 text-gray-400"></i>
+                  {{ f.telefone or '-' }}
+                </div>
+              </div>
             </td>
             <td class="px-6 py-5 whitespace-nowrap">
               {% if f.atendimento %}
@@ -238,19 +260,39 @@
               </span>
             </td>
             <td class="px-6 py-5">
-              <select onchange="alterarStatus(this.getAttribute('data-id'), this.value)" data-id="{{ f.id }}" class="text-[10px] font-bold px-3 py-1.5 rounded-xl border-none ring-1 ring-gray-100 dark:ring-gray-800 focus:ring-2 focus:ring-brand-500/20 bg-white dark:bg-gray-800 outline-none cursor-pointer transition-all
-                                           {{ 'text-green-600' if f.ativo else 'text-red-500' }}">
-                <option value="ativo" {% if f.ativo %}selected{% endif %}>Ativo</option>
-                <option value="inativo" {% if not f.ativo %}selected{% endif %}>Inativo</option>
+              <select onchange="alterarStatus(this.getAttribute('data-id'), this.value)" data-id="{{ f.id }}" class="text-[9px] font-black uppercase px-3 py-1.5 rounded-xl border-none ring-1 ring-gray-100 dark:ring-gray-800 focus:ring-2 focus:ring-brand-500/20 bg-white dark:bg-gray-800 outline-none cursor-pointer transition-all tracking-wider
+                                           {{ 'text-emerald-600' if f.ativo else 'text-rose-500' }}">
+                <option value="ativo" {% if f.ativo %}selected{% endif %}>Habilitado</option>
+                <option value="inativo" {% if not f.ativo %}selected{% endif %}>Bloqueado</option>
               </select>
             </td>
-            <td class="px-6 py-5">
-              <div class="flex justify-center">
-                <button type="button"
-                  class="btn-edit-funcionario w-9 h-9 flex items-center justify-center rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-400 hover:text-brand-600 hover:bg-brand-50 dark:hover:bg-brand-900/30 transition-all"
-                  data-funcionario='{{ f | tojson | forceescape }}'>
-                  <i data-lucide="edit-3" class="w-4.5 h-4.5"></i>
+            <td
+              class="sticky right-0 px-6 py-5 bg-white dark:bg-clinical-surface border-l border-gray-100 dark:border-gray-800 z-10 shadow-[-10px_0_15px_-5px_rgba(0,0,0,0.05)]">
+              <div class="flex justify-center relative dropdown-container">
+                <button type="button" onclick="toggleActionsMenu(event, 'menu-{{ f.id }}')"
+                  class="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-400 hover:text-brand-600 hover:bg-brand-50 dark:hover:bg-brand-900/30 transition-all active:scale-90">
+                  <i data-lucide="more-horizontal" class="w-5 h-5"></i>
                 </button>
+
+                <!-- DROPDOWN MENU -->
+                <div id="menu-{{ f.id }}"
+                  class="hidden absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 z-50 py-2 animate-fade-in-down">
+                  <button
+                    class="btn-view-profile w-full flex items-center gap-3 px-4 py-2.5 text-xs font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-left"
+                    data-funcionario='{{ f | tojson | forceescape }}'>
+                    <i data-lucide="user" class="w-4 h-4"></i> Ver Perfil
+                  </button>
+                  <button
+                    class="btn-edit-funcionario w-full flex items-center gap-3 px-4 py-2.5 text-xs font-bold text-gray-600 dark:text-gray-300 hover:bg-brand-50 dark:hover:bg-brand-900/30 hover:text-brand-600 transition-colors text-left"
+                    data-funcionario='{{ f | tojson | forceescape }}'>
+                    <i data-lucide="edit-3" class="w-4 h-4"></i> Editar Cadastro
+                  </button>
+                  <div class="h-px bg-gray-100 dark:bg-gray-700 my-1 mx-2"></div>
+                  <button onclick="alterarStatus('{{ f.id }}', 'inativo')"
+                    class="w-full flex items-center gap-3 px-4 py-2.5 text-xs font-bold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-colors text-left">
+                    <i data-lucide="user-minus" class="w-4 h-4"></i> Desativar Acesso
+                  </button>
+                </div>
               </div>
             </td>
           </tr>
@@ -329,6 +371,21 @@
                 class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2 group-focus-within/field:text-brand-600 transition-colors">Matrícula</label>
               <input id="editMatriculaField" name="num_func_vinculo"
                 class="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 dark:text-gray-100 transition-all font-medium">
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div class="group/field">
+                <label
+                  class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2 group-focus-within/field:text-brand-600 transition-colors">E-mail</label>
+                <input id="editEmail" name="email" type="email"
+                  class="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 dark:text-gray-100 transition-all font-medium text-xs">
+              </div>
+              <div class="group/field">
+                <label
+                  class="block text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2 group-focus-within/field:text-brand-600 transition-colors">Contato</label>
+                <input id="editTelefone" name="telefone" type="text" oninput="maskPhone(this)"
+                  class="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 dark:text-gray-100 transition-all font-medium text-xs">
+              </div>
             </div>
           </div>
         </div>
@@ -451,6 +508,84 @@
   </div>
 </div>
 
+<!-- MODAL VISUALIZAÇÃO DE PERFIL -->
+<div id="viewProfileModal"
+  class="fixed inset-0 bg-gray-950/80 backdrop-blur-md hidden items-center justify-center z-50 p-4 transition-all duration-300">
+  <div
+    class="bg-white dark:bg-gray-900 rounded-[2.5rem] shadow-2xl w-full max-w-2xl overflow-hidden border border-gray-100 dark:border-gray-800 animate-fade-in-up">
+
+    <div class="h-24 bg-gradient-to-r from-brand-600 to-blue-600 relative">
+      <button onclick="closeViewProfileModal()"
+        class="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/20 hover:bg-white/40 text-white flex items-center justify-center transition-all">
+        <i data-lucide="x" class="w-6 h-6"></i>
+      </button>
+    </div>
+
+    <div class="px-8 pb-8">
+      <div class="relative flex justify-between items-end -mt-10 mb-6">
+        <div id="profileAvatar"
+          class="w-20 h-20 rounded-2xl border-4 border-white dark:border-gray-900 shadow-xl flex items-center justify-center text-3xl font-black text-white">
+          ?
+        </div>
+        <div class="flex gap-2">
+          <span id="profileStatusBadge"
+            class="px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border">
+            STATUS
+          </span>
+        </div>
+      </div>
+
+      <div class="space-y-6">
+        <div>
+          <h2 id="profileNome" class="text-2xl font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight">
+            Nome do Profissional</h2>
+          <p id="profileEspecialidade"
+            class="text-brand-600 dark:text-brand-400 font-bold uppercase text-xs tracking-widest mt-1">Especialidade
+          </p>
+        </div>
+
+        <div
+          class="grid grid-cols-2 gap-4 bg-gray-50 dark:bg-gray-800/50 p-6 rounded-[2rem] border border-gray-100 dark:border-gray-800">
+          <div class="space-y-1">
+            <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">CPF / Identificador</span>
+            <p id="profileCPF" class="text-sm font-bold text-gray-700 dark:text-gray-300">000.000.000-00</p>
+          </div>
+          <div class="space-y-1">
+            <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Matrícula</span>
+            <p id="profileMatricula" class="text-sm font-bold text-gray-700 dark:text-gray-300">000000/00</p>
+          </div>
+          <div class="space-y-1">
+            <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Unidade</span>
+            <p id="profileUnidade" class="text-sm font-bold text-gray-700 dark:text-gray-300">Unidade</p>
+          </div>
+          <div class="space-y-1">
+            <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Contato de E-mail</span>
+            <p id="profileEmail" class="text-sm font-bold text-gray-700 dark:text-gray-300">email@exemplo.com</p>
+          </div>
+        </div>
+
+        <div
+          class="flex items-center gap-4 p-4 border border-gray-100 dark:border-gray-800 rounded-2xl bg-white dark:bg-gray-900/50 shadow-sm">
+          <div class="p-3 bg-blue-50 dark:bg-blue-900/20 text-blue-600 rounded-xl">
+            <i data-lucide="phone" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Telefone de Contato</span>
+            <p id="profileTelefone" class="text-sm font-bold text-gray-700 dark:text-gray-200">(81) 00000-0000</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800 flex justify-end">
+        <button onclick="closeViewProfileModal()"
+          class="px-10 py-3 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-2xl font-bold hover:bg-gray-200 dark:hover:bg-gray-700 transition-all uppercase text-[10px] tracking-widest">
+          Fechar Consulta
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
   function toggleFilters() {
     const filterArea = document.getElementById('filterArea');
@@ -489,6 +624,8 @@
     document.getElementById('editSituacaoDataInicio').value = f.situacao_data_inicio || "";
     document.getElementById('editSituacaoDataFim').value = f.situacao_data_fim || "";
     document.getElementById('editAtendimento').checked = f.atendimento;
+    document.getElementById('editEmail').value = f.email || '';
+    document.getElementById('editTelefone').value = f.telefone || '';
     document.getElementById('editForm').action = `/funcionario/editar/${f.id}`;
 
     // Apply initial situation styling
@@ -589,18 +726,129 @@
   window.addEventListener('DOMContentLoaded', () => {
     if (typeof lucide !== 'undefined') lucide.createIcons();
 
-    // Event listener for edit buttons
-    document.querySelectorAll('.btn-edit-funcionario').forEach(btn => {
-      btn.addEventListener('click', () => {
+    // Dinamic Avatar Colors
+    const colors = [
+      { bg: '#E0F2FE', text: '#0369A1' }, // Blue
+      { bg: '#F0FDF4', text: '#15803D' }, // Green
+      { bg: '#FEFCE8', text: '#A16207' }, // Yellow
+      { bg: '#FAF5FF', text: '#7E22CE' }, // Purple
+      { bg: '#FFF1F2', text: '#BE123C' }, // Rose
+      { bg: '#F5F3FF', text: '#4338CA' }, // Indigo
+      { bg: '#FFF7ED', text: '#C2410C' }, // Orange
+      { bg: '#F0FDFA', text: '#0F766E' }  // Teal
+    ];
+
+    document.querySelectorAll('.avatar-circle').forEach(avatar => {
+      const name = avatar.getAttribute('data-name');
+      const hash = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+      const color = colors[hash % colors.length];
+
+      avatar.style.backgroundColor = color.bg;
+      avatar.style.color = color.text;
+    });
+
+    // Event listener for edit buttons inside dropdown
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.btn-edit-funcionario');
+      const btnView = e.target.closest('.btn-view-profile');
+
+      if (btn) {
         try {
           const funcData = JSON.parse(btn.getAttribute('data-funcionario'));
           openEditModal(funcData);
-        } catch (e) {
-          console.error('Error parsing funcionario data:', e);
+          const menu = btn.closest('[id^="menu-"]');
+          if (menu) menu.classList.add('hidden');
+        } catch (err) {
+          console.error('Error parsing funcionario data:', err);
         }
-      });
+      }
+
+      if (btnView) {
+        try {
+          const funcData = JSON.parse(btnView.getAttribute('data-funcionario'));
+          verPerfil(funcData);
+          const menu = btnView.closest('[id^="menu-"]');
+          if (menu) menu.classList.add('hidden');
+        } catch (err) {
+          console.error('Error parsing group data:', err);
+        }
+      }
+
+      // Close all dropdowns if click outside
+      if (!e.target.closest('.dropdown-container')) {
+        document.querySelectorAll('[id^="menu-"]').forEach(m => m.classList.add('hidden'));
+      }
     });
   });
+
+  function toggleActionsMenu(event, menuId) {
+    event.stopPropagation();
+    const targetMenu = document.getElementById(menuId);
+    const isHidden = targetMenu.classList.contains('hidden');
+
+    // Close other menus
+    document.querySelectorAll('[id^="menu-"]').forEach(m => m.classList.add('hidden'));
+
+    if (isHidden) {
+      targetMenu.classList.remove('hidden');
+    }
+  }
+
+  function verPerfil(f) {
+    // Populando dados no Modal de Perfil
+    document.getElementById('profileNome').innerText = f.nome;
+    document.getElementById('profileEspecialidade').innerText = f.especialidade;
+    document.getElementById('profileCPF').innerText = f.cpf || 'Não informado';
+    document.getElementById('profileMatricula').innerText = f.num_func_num_vinc || 'Não informado';
+    document.getElementById('profileUnidade').innerText = f.unidade_atendimento || 'Não informada';
+    document.getElementById('profileEmail').innerText = f.email || 'Não informado';
+    document.getElementById('profileTelefone').innerText = f.telefone || 'Não informado';
+
+    // Avatar Color Logic
+    const colors = [
+      { bg: '#0369A1' }, { bg: '#15803D' }, { bg: '#A16207' }, { bg: '#7E22CE' },
+      { bg: '#BE123C' }, { bg: '#4338CA' }, { bg: '#C2410C' }, { bg: '#0F766E' }
+    ];
+    const hash = f.nome.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const color = colors[hash % colors.length];
+
+    const avatar = document.getElementById('profileAvatar');
+    avatar.innerText = f.nome ? f.nome.charAt(0) : '?';
+    avatar.style.backgroundColor = color.bg;
+
+    // Status Badge Style
+    const badge = document.getElementById('profileStatusBadge');
+    badge.innerText = f.situacao || 'Ativo';
+    badge.className = "px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border ";
+
+    if (f.situacao === 'Ativo') {
+      badge.classList.add("bg-green-50", "text-green-600", "border-green-200");
+    } else if (f.situacao === 'Férias') {
+      badge.classList.add("bg-purple-50", "text-purple-600", "border-purple-200");
+    } else {
+      badge.classList.add("bg-gray-50", "text-gray-600", "border-gray-200");
+    }
+
+    const modal = document.getElementById('viewProfileModal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+
+    // Close dropdown
+    document.querySelectorAll('[id^="menu-"]').forEach(m => m.classList.add('hidden'));
+
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+
+  function closeViewProfileModal() {
+    const modal = document.getElementById('viewProfileModal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+  function maskPhone(el) {
+    el.value = el.value.replace(/\D/g, '')
+      .replace(/^(\d{2})(\d)/g, '($1) $2')
+      .replace(/(\d{5})(\d{4})$/, '$1-$2');
+  }
 </script>
 
 {% endblock %}
