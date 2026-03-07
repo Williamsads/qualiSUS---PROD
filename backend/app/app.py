@@ -367,5 +367,13 @@ def perfil():
     return render_template("perfil.html", user=user)
 
 # --------------------------
+# GLOBAL ERROR HANDLER
+# --------------------------
+@app.errorhandler(psycopg2.Error)
+def handle_db_error(e):
+    print(f"Database Error: {e}")
+    flash("Erro de comunicação com o banco de dados. Tente novamente em instantes.", "erro")
+    return redirect(url_for('home'))
+
 if __name__ == "__main__":
     app.run(debug=True)

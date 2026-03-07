@@ -5,6 +5,7 @@ from psycopg2.extras import RealDictCursor
 from psycopg2.errors import UniqueViolation
 usuarios_bp = Blueprint('usuarios', __name__)
 from werkzeug.security import generate_password_hash
+from app.utils import validar_cpf
 
 
 # --- Função de conexão com o banco ---
@@ -41,6 +42,12 @@ def cadastro_usuario():
         if not all([nome, email, tipo, senha]):
             flash("Preencha todos os campos obrigatórios!", "error")
             return redirect(url_for('usuarios.cadastro_usuario'))
+
+        if cpf:
+            cpf_limpo = "".join(filter(str.isdigit, str(cpf)))
+            if not validar_cpf(cpf_limpo):
+                flash("O CPF informado é inválido!", "error")
+                return redirect(url_for('usuarios.cadastro_usuario'))
 
         senha_hash = generate_password_hash(senha)
 
@@ -97,6 +104,12 @@ def editar_usuario(id):
     num_func_vinculo = request.form.get('num_func_vinculo')
     ativo = request.form.get('ativo') == 'on'
     nova_senha = request.form.get('senha')
+
+    if cpf:
+        cpf_limpo = "".join(filter(str.isdigit, str(cpf)))
+        if not validar_cpf(cpf_limpo):
+            flash("O CPF informado é inválido!", "error")
+            return redirect(url_for('usuarios.lista_usuarios'))
 
     conn = get_connection()
     cursor = conn.cursor(cursor_factory=RealDictCursor)

@@ -1242,9 +1242,9 @@
         return;
       }
 
+      // Prepara objeto consolidado
       const payload = {
         trabalhador_id: pacienteGlobal.id,
-
         trabalhador: {
           nome_completo: document.getElementById('modal_nome').value,
           cns: document.getElementById('modal_cns').value,
@@ -1619,6 +1619,7 @@
       btn.disabled = true;
 
       const payload = {
+        trabalhador_id: pacienteGlobal.id,
         vinculo_id: vinculoGlobal ? vinculoGlobal.id : null,
         funcionario_id: doctorIdInput.value,
         data_consulta: dateInput.value,

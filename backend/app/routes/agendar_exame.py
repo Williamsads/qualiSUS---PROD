@@ -3,6 +3,7 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 import os
 from datetime import datetime, timedelta
+from app.utils import validar_cpf
 
 # ----------------------
 # CONFIGURAÇÃO DO FLASK
@@ -42,6 +43,10 @@ def validar_trabalhador():
     doc = request.args.get("doc", "").strip()
     # Limpa apenas para o CPF (que no banco geralmente é numérico)
     doc_limpo = "".join(filter(str.isdigit, doc))
+    
+    # Validação de CPF se o documento tiver 11 dígitos
+    if len(doc_limpo) == 11 and not validar_cpf(doc_limpo):
+        return jsonify({"found": False, "error": "CPF mathematicamente inválido."}), 400
     
     conn = get_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
@@ -157,12 +162,24 @@ def atualizar_cadastro():
     trabalhador = data.get("trabalhador", {})
     vinculo = data.get("vinculo", {})
 
-    trabalhador_id = session.get("trabalhador_id")
+    trabalhador_id_sessao = session.get("trabalhador_id")
+    trabalhador_id_corpo = data.get("trabalhador_id")
+    
+    # Prioriza o ID do corpo da requisição para evitar concorrência de abas
+    trabalhador_id = trabalhador_id_corpo or trabalhador_id_sessao
+
     if not trabalhador_id:
         return jsonify({
             "success": False,
-            "error": "Sessão expirada. Valide o trabalhador novamente."
+            "error": "Identificação do trabalhador ausente. Por favor, valide o CPF novamente."
         }), 401
+    
+    # Validação rigorosa de CPF se enviado
+    t_cpf = trabalhador.get("cpf")
+    if t_cpf:
+        t_cpf_limpo = "".join(filter(str.isdigit, str(t_cpf)))
+        if len(t_cpf_limpo) == 11 and not validar_cpf(t_cpf_limpo):
+            return jsonify({"success": False, "error": "O CPF informado é inválido."}), 400
     
     # Sanitização Helper
     def clean(val):
@@ -482,11 +499,11 @@ def dias_disponiveis_profissional():
 # ====================
 @agendamento_bp.route("/api/agendar_exame/confirmar", methods=["POST"])
 def confirmar_agendamento():
-    data = request.json
-    
-    trabalhador_id = session.get("trabalhador_id")
+    # Prioriza trabalhador_id do corpo para evitar concorrência de abas
+    trabalhador_id = data.get("trabalhador_id") or session.get("trabalhador_id")
+
     if not trabalhador_id:
-        return jsonify({"success": False, "error": "Sessão expirada. Valide o trabalhador novamente."}), 401
+        return jsonify({"success": False, "error": "Identificação do trabalhador ausente. Valide o trabalhador novamente."}), 401
 
     vinculo_id = data.get("vinculo_id")
     funcionario_id = data.get("funcionario_id") # Este é o ID do Profissional

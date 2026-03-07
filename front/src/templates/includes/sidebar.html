@@ -15,13 +15,8 @@
         <div
             class="absolute bottom-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-white/[0.12] to-transparent">
         </div>
-
-        <!-- Mini State Toggle Button -->
-        <button id="btnToggleSidebar" style="box-shadow: 0 4px 12px rgba(0,0,0,0.2); transition: all 0.2s ease;"
-            class="absolute -right-3 top-7 w-6 h-6 bg-[#111c44] text-blue-400 rounded-full hidden md:flex items-center justify-center border border-white/10 z-50 hover:bg-blue-600 hover:text-white">
-            <i data-lucide="chevron-left" class="w-3.5 h-3.5" id="toggleIcon"></i>
-        </button>
     </div>
+
 
     <nav class="flex-1 overflow-y-auto px-4 pt-2 pb-6 scrollbar-hide sidebar-nav">
 
@@ -31,15 +26,20 @@
             <a href="{{ url_for('home') }}"
                 class="nav-link {% if request.endpoint == 'home' %} nav-item-active {% endif %}"
                 title="Painel de Monitoramento">
-                <i data-lucide="layout-dashboard"></i>
+                <div class="nav-icon-tile">
+                    <i data-lucide="layout-dashboard"></i>
+                </div>
                 <span>Painel Principal</span>
             </a>
             <a href="{{ url_for('dashboard.index') }}"
                 class="nav-link {% if 'dashboard' in request.endpoint %} nav-item-active {% endif %}"
                 title="Indicadores de Gestão">
-                <i data-lucide="bar-chart-big"></i>
+                <div class="nav-icon-tile">
+                    <i data-lucide="bar-chart-big"></i>
+                </div>
                 <span>Dashboard</span>
             </a>
+
         </div>
 
         <!-- SECTION: OPERAÇÃO CLÍNICA -->
@@ -48,33 +48,43 @@
         <!-- AMBULATÓRIO (accordion) -->
         <div class="nav-accordion mb-1" id="acc-ambulatorial">
             <button class="nav-accordion-trigger" onclick="toggleAccordion('acc-ambulatorial')">
-                <div class="flex items-center gap-2">
-                    <i data-lucide="stethoscope" class="w-3.5 h-3.5"></i>
+                <div class="flex items-center gap-3">
+                    <div class="nav-icon-tile">
+                        <i data-lucide="stethoscope"></i>
+                    </div>
                     <span>Ambulatório</span>
                 </div>
-                <i data-lucide="chevron-right" class="acc-chevron w-3.5 h-3.5"></i>
+                <i data-lucide="chevron-right" class="acc-chevron w-4 h-4"></i>
             </button>
+
             <div class="nav-accordion-body">
                 <div class="nav-group">
                     <a href="javascript:void(0)" data-nav-url="{{ url_for('agendamento_bp.pagina_agendamento') }}"
                         onclick="confirmExternalNavigation(this.dataset.navUrl)"
                         class="nav-link {% if 'agendamento_bp' in request.endpoint %} nav-item-active {% endif %}"
                         title="Novo Agendamento">
-                        <i data-lucide="calendar-plus"></i>
+                        <div class="nav-icon-tile">
+                            <i data-lucide="calendar-plus"></i>
+                        </div>
                         <span>Agendamento</span>
                     </a>
                     <a href="{{ url_for('log_agendamento.index') }}"
                         class="nav-link {% if 'log_agendamento' in request.endpoint and request.endpoint != 'log_agendamento.meus_pacientes' %} nav-item-active {% endif %}"
                         title="Histórico de Atendimentos">
-                        <i data-lucide="history"></i>
+                        <div class="nav-icon-tile">
+                            <i data-lucide="history"></i>
+                        </div>
                         <span>Histórico</span>
                     </a>
                     <a href="{{ url_for('gerenciamento.index') }}"
                         class="nav-link {% if 'gerenciamento' in request.endpoint %} nav-item-active {% endif %}"
                         title="Parâmetros de Agenda">
-                        <i data-lucide="settings-2"></i>
+                        <div class="nav-icon-tile">
+                            <i data-lucide="settings-2"></i>
+                        </div>
                         <span>Configurar Agenda</span>
                     </a>
+
                 </div>
             </div>
         </div>
@@ -83,20 +93,26 @@
         {% if session.get('tipo', '').upper() in ['MEDICO', 'DESENVOLVEDOR', 'DEV'] %}
         <div class="nav-accordion mb-6" id="acc-pacientes">
             <button class="nav-accordion-trigger" onclick="toggleAccordion('acc-pacientes')">
-                <div class="flex items-center gap-2">
-                    <i data-lucide="heart-pulse" class="w-3.5 h-3.5"></i>
+                <div class="flex items-center gap-3">
+                    <div class="nav-icon-tile">
+                        <i data-lucide="heart-pulse"></i>
+                    </div>
                     <span>Pacientes</span>
                 </div>
-                <i data-lucide="chevron-right" class="acc-chevron w-3.5 h-3.5"></i>
+                <i data-lucide="chevron-right" class="acc-chevron w-4 h-4"></i>
             </button>
+
             <div class="nav-accordion-body">
                 <div class="nav-group">
                     <a href="{{ url_for('gestao_pacientes.index') }}"
                         class="nav-link {% if 'gestao_pacientes' in request.endpoint %} nav-item-active {% endif %}"
                         title="Ciclo de Tratamento">
-                        <i data-lucide="clipboard-list"></i>
+                        <div class="nav-icon-tile">
+                            <i data-lucide="clipboard-list"></i>
+                        </div>
                         <span>Em Tratamento</span>
                     </a>
+
                 </div>
             </div>
         </div>
@@ -121,15 +137,20 @@
                     <a href="{{ url_for('trabalhadores.lista_trabalhadores') }}"
                         class="nav-link {% if 'trabalhadores' in request.endpoint %} nav-item-active {% endif %}"
                         title="Base de Servidores SES">
-                        <i data-lucide="database"></i>
+                        <div class="nav-icon-tile">
+                            <i data-lucide="database"></i>
+                        </div>
                         <span>Base SES</span>
                     </a>
                     <a href="{{ url_for('servidor.lista_funcionarios') }}"
                         class="nav-link {% if 'servidor' in request.endpoint %} nav-item-active {% endif %}"
                         title="Equipe QualiVida">
-                        <i data-lucide="user-cog"></i>
+                        <div class="nav-icon-tile">
+                            <i data-lucide="user-cog"></i>
+                        </div>
                         <span>Equipe QualiVida</span>
                     </a>
+
                 </div>
             </div>
         </div>
@@ -148,9 +169,12 @@
                     <a href="{{ url_for('ppp.gestao_ppp') }}"
                         class="nav-link {% if 'ppp' in request.endpoint %} nav-item-active {% endif %}"
                         title="Perfil Profissiográfico Previdenciário">
-                        <i data-lucide="file-text"></i>
+                        <div class="nav-icon-tile">
+                            <i data-lucide="file-text"></i>
+                        </div>
                         <span>Gestão de PPP</span>
                     </a>
+
                 </div>
             </div>
         </div>
@@ -162,9 +186,12 @@
             <a href="{{ url_for('usuarios.lista_usuarios') }}"
                 class="nav-link {% if 'usuarios' in request.endpoint %} nav-item-active {% endif %}"
                 title="Configurações de Usuários e Permissões">
-                <i data-lucide="key-round"></i>
+                <div class="nav-icon-tile">
+                    <i data-lucide="key-round"></i>
+                </div>
                 <span>Controle de Acessos</span>
             </a>
+
         </div>
         {% endif %}
 
