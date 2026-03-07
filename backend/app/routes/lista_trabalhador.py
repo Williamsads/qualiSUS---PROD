@@ -2,16 +2,8 @@ from flask import request, render_template
 from psycopg2.extras import RealDictCursor
 from flask import Blueprint
 import psycopg2
+from app.database import get_connection
 trabalhadores_bp = Blueprint('trabalhadores', __name__, url_prefix="/trabalhadores")
-
-# --- Função de conexão com o banco ---
-def get_connection():
-    return psycopg2.connect(
-        host="10.24.59.104",
-        user="qualisus",
-        password="h5eXAx59gJ3h84Xa",
-        database="qualisus"
-    )
 
 @trabalhadores_bp.route("/lista")
 def lista_trabalhadores():

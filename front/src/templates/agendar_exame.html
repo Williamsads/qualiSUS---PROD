@@ -782,8 +782,7 @@
         <p class="text-gray-500 mt-2">Revise os dados antes de finalizar o agendamento</p>
       </div>
 
-      <div
-        class="relative bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden transform transition-all hover:scale-[1.01]">
+      <div class="relative bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden transform transition-all hover:scale-[1.01]">
         <!-- Ticket Header (Patient Info) -->
         <div class="bg-gradient-to-r from-blue-900 to-brand-600 p-8 text-white relative overflow-hidden">
           <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 blur-2xl"></div>
@@ -798,79 +797,81 @@
           </div>
         </div>
 
-        <!-- Ticket Body (Details) -->
-        <div class="p-8 space-y-8">
-          <!-- Unidade e Especialidade -->
+        <!-- Ticket Body (Appointment Details) -->
+        <div class="p-8 space-y-8 relative">
+          <!-- Separator Line (Perforated Effect) -->
+          <div class="absolute -top-4 left-0 right-0 h-8 flex justify-between px-0 overflow-hidden">
+             <div class="w-8 h-8 rounded-full bg-gray-50 -ml-4"></div>
+             <div class="flex-1 flex items-center justify-center px-4">
+                <div class="w-full border-t-2 border-dashed border-gray-100"></div>
+             </div>
+             <div class="w-8 h-8 rounded-full bg-gray-50 -mr-4"></div>
+          </div>
+
           <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div class="flex items-start gap-4">
-              <div class="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center text-pe-royal flex-shrink-0">
-                <i data-lucide="map-pin" class="w-5 h-5"></i>
+              <div class="w-12 h-12 bg-pe-red/5 rounded-xl flex items-center justify-center text-pe-red shrink-0">
+                <i data-lucide="activity" class="w-6 h-6"></i>
               </div>
               <div>
-                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Unidade de Saúde</p>
-                <p class="font-bold text-gray-800 text-lg leading-tight" id="conf-unidade">Unidade Central</p>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Especialidade</p>
+                <p class="text-lg font-bold text-slate-800" id="conf-especialidade">Clínica Médica</p>
               </div>
             </div>
 
             <div class="flex items-start gap-4">
-              <div class="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center text-pe-royal flex-shrink-0">
-                <i data-lucide="stethoscope" class="w-5 h-5"></i>
+              <div class="w-12 h-12 bg-pe-royal/5 rounded-xl flex items-center justify-center text-pe-royal shrink-0">
+                <i data-lucide="building-2" class="w-6 h-6"></i>
               </div>
               <div>
-                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Especialidade</p>
-                <p class="font-bold text-gray-800 text-lg leading-tight" id="conf-especialidade">Cardiologia</p>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Unidade</p>
+                <p class="text-lg font-bold text-slate-800" id="conf-unidade">Unidade Central</p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-4">
+              <div class="w-12 h-12 bg-pe-green/5 rounded-xl flex items-center justify-center text-pe-green shrink-0">
+                <i data-lucide="calendar" class="w-6 h-6"></i>
+              </div>
+              <div>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Data da Consulta</p>
+                <p class="text-lg font-bold text-slate-800" id="conf-data">12/03/2026</p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-4">
+              <div class="w-12 h-12 bg-pe-sky/5 rounded-xl flex items-center justify-center text-pe-sky shrink-0">
+                <i data-lucide="clock" class="w-6 h-6"></i>
+              </div>
+              <div>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Horário</p>
+                <p class="text-lg font-bold text-slate-800" id="conf-hora">08:30</p>
               </div>
             </div>
           </div>
 
-          <!-- Divider with Ticket Cut - Use gray-50 to match main bg -->
-          <div class="ticket-cut border-t-2 border-dashed border-gray-100 my-8 py-2"></div>
-
-          <!-- Médico e Horário -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div class="flex items-start gap-4">
-              <div class="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center text-pe-royal flex-shrink-0">
-                <i data-lucide="user-check" class="w-5 h-5"></i>
-              </div>
-              <div>
-                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Profissional Responsável
-                </p>
-                <p class="font-bold text-gray-800 text-lg leading-tight" id="conf-medico">Dr. João Silva</p>
-              </div>
+          <!-- Professional Highlight -->
+          <div class="mt-8 p-6 bg-slate-50 rounded-2xl border border-slate-100 flex items-center gap-4">
+            <div class="w-14 h-14 bg-white rounded-full border-4 border-white shadow-sm flex items-center justify-center text-pe-navy shrink-0">
+              <i data-lucide="stethoscope" class="w-7 h-7"></i>
             </div>
-
-            <div class="flex items-start gap-4">
-              <div
-                class="w-10 h-10 bg-pe-royal rounded-xl flex items-center justify-center text-white flex-shrink-0 shadow-lg shadow-pe-royal/20">
-                <i data-lucide="clock" class="w-5 h-5"></i>
-              </div>
-              <div>
-                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Data e Horário</p>
-                <div class="flex items-baseline gap-2">
-                  <p class="font-bold text-gray-800 text-lg leading-tight" id="conf-data">15/10/2025</p>
-                  <p class="text-pe-royal font-black text-xl leading-tight" id="conf-hora">09:30</p>
-                </div>
-              </div>
+            <div>
+              <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Profissional Responsável</p>
+              <p class="text-xl font-black text-pe-navy" id="conf-medico">Dr. Alan Turing</p>
             </div>
           </div>
         </div>
 
-        <!-- Decorative Barcode -->
-        <div class="bg-gray-50 p-4 border-t border-gray-100 flex flex-col items-center gap-2">
-          <div class="flex gap-1 h-8 opacity-20">
-            <div class="bg-black w-2"></div>
-            <div class="bg-black w-1"></div>
-            <div class="bg-black w-3"></div>
-            <div class="bg-black w-1"></div>
-            <div class="bg-black w-2"></div>
-            <div class="bg-black w-4"></div>
-            <div class="bg-black w-1"></div>
-            <div class="bg-black w-2"></div>
-            <div class="bg-black w-3"></div>
-            <div class="bg-black w-1"></div>
-            <div class="bg-black w-5"></div>
-          </div>
-          <span class="text-[8px] font-bold text-gray-400 tracking-[0.5em] uppercase">Validação Digital QualiSUS</span>
+        <!-- Decorative Footer (Cupom Bottom) -->
+        <div class="bg-gray-50 px-8 py-6 border-t border-dashed border-gray-200 flex flex-col items-center">
+            <div class="w-full flex justify-between items-center mb-4">
+                <div class="flex gap-1">
+                    <div class="w-2 h-2 rounded-full bg-slate-200"></div>
+                    <div class="w-20 h-2 rounded-full bg-slate-200"></div>
+                </div>
+                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.3em]">Qualivida • PE</p>
+            </div>
+            <p class="text-[10px] text-slate-400 font-medium text-center">Tire um print ou foto desta tela para apresentar na recepção.</p>
         </div>
       </div>
 
@@ -883,14 +884,11 @@
       <div class="flex flex-col sm:flex-row justify-between gap-3 sm:gap-4 pt-4 border-t border-gray-100">
         <button id="btnBack5"
           class="w-full sm:w-auto px-6 py-3 rounded-xl text-gray-600 font-semibold hover:bg-gray-100 hover:text-gray-800 transition-colors flex items-center justify-center gap-2">
-          <i data-lucide="arrow-left" class="w-5 h-5"></i> Voltar
+          <i data-lucide="arrow-left" class="w-5 h-5"></i> Corrigir Dados
         </button>
         <button id="btnConfirmar"
-          class="w-full sm:w-auto bg-pe-navy text-white px-8 py-3 rounded-xl font-bold hover:bg-pe-navy/90 shadow-lg shadow-pe-navy/20 transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2">
-          Confirmar Agendamento
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
-          </svg>
+          class="w-full sm:w-auto bg-green-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-green-700 shadow-lg shadow-green-600/20 transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2">
+          Finalizar Agendamento <i data-lucide="check" class="w-5 h-5"></i>
         </button>
       </div>
     </div>
@@ -2192,7 +2190,6 @@
       // Prioridade: Configurar a máscara do documento imediatamente
       const docInput = document.getElementById('doc');
       if (docInput) {
-        // Usar setTimeout para focar melhora a acessibilidade, sem bloquear
         setTimeout(() => docInput.focus(), 500);
 
         docInput.addEventListener('input', (e) => {
@@ -2202,18 +2199,27 @@
 
           let formatted = v;
 
+          // REGRA DE MÁSCARA DINÂMICA (Auditoria UX)
           if (v.length === 11) {
             // Formata como CPF apenas se tiver os 11 dígitos completos
             formatted = v.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+            
+            // FEEDBACK VISUAL: Adiciona ícone de sucesso sutil se for CPF válido (lógica visual)
+            docInput.classList.add('border-green-500', 'bg-green-50/10');
+            docInput.classList.remove('border-gray-300');
           } else if (v.length >= 3) {
             // Formata como Matrícula (#######/##) para qualquer tamanho entre 3 e 10
-            // A barra sempre fica antes dos últimos 2 dígitos
             const prefixo = v.slice(0, -2);
             const sufixo = v.slice(-2);
-            formatted = `${prefixo}/${sufixo}`;
+            formatted = prefixo ? `${prefixo}/${sufixo}` : sufixo;
+            
+            docInput.classList.remove('border-green-500', 'bg-green-50/10');
+            docInput.classList.add('border-gray-300');
+          } else {
+            docInput.classList.remove('border-green-500', 'bg-green-50/10');
+            docInput.classList.add('border-gray-300');
           }
 
-          // Só atualiza o valor se for diferente, para não perder a posição do cursor inutilmente
           if (e.target.value !== formatted) {
             e.target.value = formatted;
           }

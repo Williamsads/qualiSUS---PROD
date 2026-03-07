@@ -7,14 +7,7 @@ import io
 
 servidor_bp = Blueprint('servidor', __name__)
 
-# ================= CONEXÃO =================
-def get_connection():
-    return psycopg2.connect(
-        host="10.24.59.104",
-        user="qualisus",
-        password="h5eXAx59gJ3h84Xa",
-        database="qualisus"
-    )
+from app.database import get_connection
 
 # ================= LISTAR FUNCIONÁRIOS =================
 @servidor_bp.route('/funcionarios')

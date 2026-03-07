@@ -2,16 +2,10 @@ from flask import Blueprint, render_template, request, redirect, session, flash,
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from datetime import datetime
+from app.database import get_connection
 
 ppp_bp = Blueprint('ppp', __name__)
 
-def get_db_connection():
-    return psycopg2.connect(
-        host="10.24.59.104",
-        user="qualisus",
-        password="h5eXAx59gJ3h84Xa",
-        database="qualisus"
-    )
 
 @ppp_bp.route('/ppp')
 def gestao_ppp():

@@ -1,16 +1,10 @@
 from flask import Blueprint, render_template, request, jsonify, session
 import psycopg2
 from psycopg2.extras import RealDictCursor
+from app.database import get_connection
 
 gerenciamento_bp = Blueprint('gerenciamento', __name__)
 
-def get_connection():
-    return psycopg2.connect(
-        host="10.24.59.104",
-        user="qualisus",
-        password="h5eXAx59gJ3h84Xa",
-        database="qualisus"
-    )
 
 @gerenciamento_bp.route("/gerenciamento/agendamento")
 def index():

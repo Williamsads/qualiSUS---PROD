@@ -2,21 +2,13 @@ from flask import Blueprint, render_template, jsonify, request, session
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from datetime import datetime, timedelta
+from app.database import get_connection
 
 gestao_pacientes_bp = Blueprint(
     "gestao_pacientes",
     __name__,
     url_prefix="/gestao-pacientes"
 )
-
-
-def get_connection():
-    return psycopg2.connect(
-        host="10.24.59.104",
-        user="qualisus",
-        password="h5eXAx59gJ3h84Xa",
-        database="qualisus"
-    )
 
 
 def _require_medico():

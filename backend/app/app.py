@@ -18,12 +18,19 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 import hashlib
 import uuid
+import os
 from datetime import datetime, timedelta
 import smtplib
 import secrets
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from werkzeug.security import generate_password_hash, check_password_hash
+from dotenv import load_dotenv
+
+# Carrega variáveis de ambiente do arquivo .env
+load_dotenv()
+
+from app.database import get_connection
 from app.routes.servidor import servidor_bp
 from app.routes.log_agendamento import bp_agendamento
 from app.routes.agendar_exame import agendamento_bp
@@ -61,25 +68,19 @@ app.register_blueprint(gestao_pacientes_bp)
 app.register_blueprint(ppp_bp)
 app.register_blueprint(dashboard_bp)
 
-app.secret_key = "chave_muito_secreta"  # troque depois
+app.secret_key = os.getenv("SECRET_KEY", "fallback-key-se-nao-definido")
 
 # --------------------------
 # CONEXÃO COM postgreSQL
 # --------------------------
-def get_connection():
-    return psycopg2.connect(
-        host="10.24.59.104",
-        user="qualisus",
-        password="h5eXAx59gJ3h84Xa",
-        database="qualisus"
-    )
+# A conexão agora é gerenciada por app.database.get_connection
 
 # --------------------------
 # ROTA RAIZ
 # --------------------------
 @app.route("/")
 def raiz():
-    return redirect("/index")
+    return redirect("/login")
 
 # --------------------------
 # LOGIN
@@ -107,15 +108,15 @@ def verificar_status_usuario():
             if not user_status or not user_status[0]:
                 session.clear()
                 flash("Sua conta foi desativada. Entre em contato com o suporte.", "erro")
-                return redirect("/index")
+                return redirect("/login")
                 
         except Exception as e:
             # Em caso de erro de conexão, faz logout por segurança
             print(f"Erro ao verificar status: {e}")
             session.clear()
-            return redirect("/index")
+            return redirect("/login")
 
-@app.route("/index", methods=["GET", "POST"])
+@app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
         email = request.form["email"]
@@ -162,7 +163,7 @@ def login():
 @app.route("/home")
 def home():
     if "user_id" not in session:
-        return redirect("/index")
+        return redirect("/login")
 
     conn = get_connection()
     cursor = conn.cursor()
@@ -197,7 +198,7 @@ def home():
 @app.route("/logout")
 def logout():
     session.clear()
-    return redirect("/index")
+    return redirect("/login")
 
 # --------------------------
 # RECUPERAR SENHA
@@ -206,7 +207,7 @@ def logout():
 def recuperar_senha():
     email = request.form.get("email")
     if not email:
-        return redirect("/index")
+        return redirect("/login")
         
     conn = get_connection()
     cursor = conn.cursor(cursor_factory=RealDictCursor)
@@ -259,11 +260,11 @@ Equipe QualiVida
 """
                 msg.attach(MIMEText(body, 'plain', 'utf-8'))
                 
-                # Envio utilizando as credenciais SMTP repassadas
-                server = smtplib.SMTP("antispamout.ati.pe.gov.br", 587)
+                # Envio utilizando as credenciais SMTP do ambiente
+                server = smtplib.SMTP(os.getenv("SMTP_SERVER"), int(os.getenv("SMTP_PORT", 587)))
                 server.starttls()
-                server.login("dgiis.ses", "$35dG!1s")
-                server.sendmail("naorespondases@saude.pe.gov.br", email, msg.as_string())
+                server.login(os.getenv("SMTP_USER"), os.getenv("SMTP_PASSWORD"))
+                server.sendmail(os.getenv("MAIL_DEFAULT_SENDER"), email, msg.as_string())
                 server.quit()
             except Exception as e:
                 print(f"Erro ao enviar email de recuperação: {e}")
@@ -273,14 +274,14 @@ Equipe QualiVida
     
     cursor.close()
     conn.close()
-    return redirect("/index")
+    return redirect("/login")
 
 @app.route("/resetar-senha", methods=["GET", "POST"])
 def resetar_senha():
     token = request.args.get("token") or request.form.get("token")
     if not token:
         flash("Token ausente.", "erro")
-        return redirect("/index")
+        return redirect("/login")
 
     conn = get_connection()
     cursor = conn.cursor(cursor_factory=RealDictCursor)
@@ -296,7 +297,7 @@ def resetar_senha():
         flash("Link de recuperação inválido ou expirado.", "erro")
         cursor.close()
         conn.close()
-        return redirect("/index")
+        return redirect("/login")
     
     if request.method == "POST":
         nova_senha = request.form.get("senha")
@@ -322,7 +323,7 @@ def resetar_senha():
         conn.close()
         
         flash("Senha redefinida com sucesso! Agora você pode fazer login.", "sucesso")
-        return redirect("/index")
+        return redirect("/login")
     
     cursor.close()
     conn.close()
@@ -333,7 +334,7 @@ def resetar_senha():
 @app.route("/perfil", methods=["GET", "POST"])
 def perfil():
     if "user_id" not in session:
-        return redirect("/index")
+        return redirect("/login")
     
     conn = get_connection()
     cursor = conn.cursor(cursor_factory=RealDictCursor)
@@ -376,4 +377,4 @@ def handle_db_error(e):
     return redirect(url_for('home'))
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=os.getenv("FLASK_DEBUG", "False").lower() == "true")

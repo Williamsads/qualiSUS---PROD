@@ -3,20 +3,13 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 from datetime import datetime, timedelta
 import json
+from app.database import get_connection
 
 bp_agendamento = Blueprint(
     "log_agendamento",
     __name__,
     url_prefix="/log_agendamento"
 )
-
-def get_connection():
-    return psycopg2.connect(
-        host="10.24.59.104",
-        user="qualisus",
-        password="h5eXAx59gJ3h84Xa",
-        database="qualisus"
-    )
 
 @bp_agendamento.route("/")
 def index():
@@ -180,7 +173,7 @@ def api_dar_alta(ciclo_id):
 @bp_agendamento.route("/atendimento/<int:id>")
 def atendimento(id):
     if "user_id" not in session:
-        return redirect("/index")
+        return redirect("/login")
         
     conn = get_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)

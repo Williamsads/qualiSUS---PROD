@@ -8,14 +8,7 @@ from werkzeug.security import generate_password_hash
 from app.utils import validar_cpf
 
 
-# --- Função de conexão com o banco ---
-def get_connection():
-    return psycopg2.connect(
-        host="10.24.59.104",
-        user="qualisus",
-        password="h5eXAx59gJ3h84Xa",
-        database="qualisus"
-    )
+from app.database import get_connection
 # ================= LISTA DE USUÁRIOS =================
 @usuarios_bp.route('/usuarios')
 def lista_usuarios():

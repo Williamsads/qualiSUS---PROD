@@ -2,16 +2,9 @@ from flask import Blueprint, render_template, jsonify, session
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from datetime import datetime
+from app.database import get_connection
 
 dashboard_bp = Blueprint('dashboard', __name__, url_prefix='/dashboard')
-
-def get_connection():
-    return psycopg2.connect(
-        host="10.24.59.104",
-        user="qualisus",
-        password="h5eXAx59gJ3h84Xa",
-        database="qualisus"
-    )
 
 @dashboard_bp.route("/")
 def index():

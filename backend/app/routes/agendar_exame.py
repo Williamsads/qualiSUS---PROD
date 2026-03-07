@@ -18,14 +18,7 @@ agendamento_bp = Blueprint("agendamento_bp", __name__, template_folder="template
 
 # ----------------------
 # CONEXÃO COM O BANCO
-# ----------------------
-def get_connection():
-    return psycopg2.connect(
-        host="10.24.59.104",
-        user="qualisus",
-        password="h5eXAx59gJ3h84Xa",
-        database="qualisus"
-    )
+from app.database import get_connection
 
 # ----------------------
 # ROTA PRINCIPAL (HTML)
