@@ -67,11 +67,9 @@
           <label
             class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2.5 block ml-1">Unidade</label>
           <div class="relative group">
-            <select id="filtro-unidade"
+            <select id="filtro-unidade" onchange="limparFiltroEspecialidade()"
               class="w-full pl-4 pr-10 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition-all outline-none text-sm font-bold text-slate-600 appearance-none cursor-pointer">
               <option value="">Todas as Unidades</option>
-              <option>Qualivida Boa Vista</option>
-              <option>Qualivida Santo Amaro</option>
             </select>
             <i data-lucide="chevron-down"
               class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none group-focus-within:rotate-180 transition-transform"></i>
@@ -82,9 +80,14 @@
         <div>
           <label
             class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2.5 block ml-1">Especialidade</label>
-          <input id="filtro-especialidade" type="text"
-            class="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition-all outline-none text-sm font-bold text-slate-600 placeholder:text-slate-300"
-            placeholder="Ex: Cardiologia">
+          <div class="relative group">
+            <select id="filtro-especialidade" onfocus="carregarEspecialidadesSelect()"
+              class="w-full pl-4 pr-10 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition-all outline-none text-sm font-bold text-slate-600 appearance-none cursor-pointer placeholder:text-slate-300">
+              <option value="">Todas as Especialidades</option>
+            </select>
+            <i data-lucide="chevron-down"
+              class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none group-focus-within:rotate-180 transition-transform"></i>
+          </div>
         </div>
 
         <!-- Profissional -->
@@ -406,7 +409,8 @@
       if (currentTab === 'acolhimento' && a.especialidade !== 'Acolhimento') return false;
       if (p && !a.paciente.toLowerCase().includes(p) && !a.cpf_paciente.includes(p)) return false;
       if (u && a.unidade !== u) return false;
-      if (e && !a.especialidade.toLowerCase().includes(e)) return false;
+      // Trata select case insensitive
+      if (e && a.especialidade.toLowerCase() !== e) return false;
       if (m && !a.medico.toLowerCase().includes(m)) return false;
       if (d && a.data !== d) return false;
       return true;
@@ -425,6 +429,78 @@
   }
 
   function aplicarFiltros() { filtrar(); }
+
+  // --- FILTROS DINÂMICOS (UNIDADES E ESPECIALIDADES) ---
+  let unidadesCarregadas = false;
+  let cacheEspecialidadesGerais = null;
+
+  async function carregarUnidadesFilters() {
+    if (unidadesCarregadas) return;
+    try {
+      const resp = await fetch('/api/gerenciamento/unidades');
+      const data = await resp.json();
+      const sel = document.getElementById('filtro-unidade');
+      sel.innerHTML = '<option value="">Todas as Unidades</option>';
+      data.forEach(u => {
+        sel.innerHTML += `<option value="${u.nome}">${u.nome}</option>`;
+      });
+      unidadesCarregadas = true;
+    } catch (err) {
+      console.error("Erro ao puxar unidades para o filtro", err);
+    }
+  }
+
+  async function carregarEspecialidadesSelect() {
+    const selUnidade = document.getElementById('filtro-unidade').value;
+    const selEspecialidade = document.getElementById('filtro-especialidade');
+
+    // Mostra estado de loading
+    const currentVal = selEspecialidade.value;
+    selEspecialidade.innerHTML = '<option value="">Carregando...</option>';
+
+    try {
+      let data = [];
+      if (selUnidade) {
+        // Se unidade estiver selecionada, busca só as que tem nela
+        const resp = await fetch(`/api/gerenciamento/especialidades-por-unidade?unidade=${encodeURIComponent(selUnidade)}`);
+        data = await resp.json();
+        // O endpoint retorna array de objetos [{nome: '...'}], extraímos:
+        selEspecialidade.innerHTML = '<option value="">Todas as Especialidades</option>';
+        data.forEach(item => {
+          selEspecialidade.innerHTML += `<option value="${item.nome.toLowerCase()}">${item.nome}</option>`;
+        });
+      } else {
+        // Se não tiver selecionada, pega todas
+        if (!cacheEspecialidadesGerais) {
+          const resp = await fetch('/api/gerenciamento/especialidades');
+          cacheEspecialidadesGerais = await resp.json();
+        }
+        selEspecialidade.innerHTML = '<option value="">Todas as Especialidades</option>';
+        cacheEspecialidadesGerais.forEach(e => {
+          if (e.visivel) {
+            selEspecialidade.innerHTML += `<option value="${e.nome.toLowerCase()}">${e.nome}</option>`;
+          }
+        });
+      }
+
+      // Restaura o valor caso ainda exista nas opções
+      if (currentVal && Array.from(selEspecialidade.options).some(o => o.value === currentVal)) {
+        selEspecialidade.value = currentVal;
+      }
+
+    } catch (err) {
+      console.error(err);
+      selEspecialidade.innerHTML = '<option value="">Erro ao carregar</option>';
+    }
+  }
+
+  function limparFiltroEspecialidade() {
+    // Quando trocar a unidade, limpa a especialidade preenchida e já recarrega a nova lista em background
+    document.getElementById('filtro-especialidade').value = '';
+    carregarEspecialidadesSelect();
+  }
+
+  // --- /FILTROS DINÂMICOS ---
 
   function enviarConfirmacao() {
     const a = listaFiltrada[indexSelecionado];
@@ -459,14 +535,43 @@
     window.open(url, '_blank');
   }
 
-  async function deletarAgendamento(i) {
+  async function cancelarAgendamento(i) {
     const a = listaFiltrada[i];
     if (!a) return;
 
     confirmAction({
       title: 'Cancelar Atendimento',
-      message: `Deseja realmente cancelar definitivamente o atendimento de ${a.paciente}?`,
+      message: `Deseja realmente cancelar o atendimento de ${a.paciente}?`,
       icon: 'alert-triangle',
+      type: 'danger',
+      onConfirm: async () => {
+        try {
+          const res = await fetch(`/log_agendamento/api/cancelar/${a.id}`, { method: 'POST' });
+          const data = await res.json();
+          if (data.success) {
+            // Update local status instead of removing
+            a.status = 'Cancelado';
+            filtrar();
+            showToast("Sucesso", "Atendimento cancelado com sucesso!", "success");
+          } else {
+            showToast("Erro", "Erro ao cancelar: " + (data.error || "Erro desconhecido"), "error");
+          }
+        } catch (err) {
+          console.error(err);
+          showToast("Erro", "Erro ao processar solicitação no servidor.", "error");
+        }
+      }
+    });
+  }
+
+  async function deletarAgendamento(i) {
+    const a = listaFiltrada[i];
+    if (!a) return;
+
+    confirmAction({
+      title: 'Excluir Registro',
+      message: `Deseja excluir permanentemente o registro de ${a.paciente}? Esta ação não pode ser desfeita.`,
+      icon: 'trash-2',
       type: 'danger',
       onConfirm: async () => {
         try {
@@ -475,9 +580,9 @@
           if (data.success) {
             appointments = appointments.filter(item => item.id !== a.id);
             filtrar();
-            showToast("Sucesso", "Atendimento cancelado com sucesso!", "success");
+            showToast("Sucesso", "Registro excluído com sucesso!", "success");
           } else {
-            showToast("Erro", "Erro ao cancelar: " + (data.error || "Erro desconhecido"), "error");
+            showToast("Erro", "Erro ao excluir: " + (data.error || "Erro desconhecido"), "error");
           }
         } catch (err) {
           console.error(err);
@@ -544,9 +649,16 @@
                 <i data-lucide="stethoscope" class="w-4 h-4"></i>
               </button>
               ` : ''}
-              <button onclick="deletarAgendamento(${i})" class="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-all rounded-xl" title="Deletar">
+              ${(a.status !== 'Cancelado' && a.status !== 'NAO_COMPARECEU' && a.status !== 'Finalizado') ? `
+              <button onclick="cancelarAgendamento(${i})" class="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-all rounded-xl" title="Cancelar Atendimento">
+                <i data-lucide="calendar-x" class="w-4 h-4"></i>
+              </button>
+              ` : `
+              <button onclick="deletarAgendamento(${i})" class="w-9 h-9 flex items-center justify-center text-slate-300 hover:text-slate-600 hover:bg-slate-100 transition-all rounded-xl" title="Excluir Registro">
                 <i data-lucide="trash-2" class="w-4 h-4"></i>
               </button>
+              `}
+
             </div>
           </td>
         </tr>`;
@@ -728,5 +840,6 @@
   });
 
   fetchAppointments();
+  carregarUnidadesFilters(); // Carrega dinamicamente a lista no boot da tela
 </script>
 {% endblock %}
