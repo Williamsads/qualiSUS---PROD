@@ -412,8 +412,8 @@ def add_horario():
             cur.execute("""
                 SELECT dia_semana, horario FROM horarios_funcionarios 
                 WHERE funcionario_id = %s 
-                AND dia_semana = ANY(%s) 
-                AND horario = ANY(%s)
+                AND dia_semana = ANY(%s::integer[]) 
+                AND horario = ANY(%s::time[])
             """, (prof_id, days_to_add, [horario] * len(days_to_add)))
             
             existing = {(row['dia_semana'], str(row['horario'])) for row in cur.fetchall()}

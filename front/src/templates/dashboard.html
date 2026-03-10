@@ -106,7 +106,8 @@
         </div>
 
         <div class="flex flex-col md:flex-row items-center gap-4">
-            <div id="last-update" class="text-[10px] font-bold text-slate-400 uppercase tracking-widest hidden md:block">
+            <div id="last-update"
+                class="text-[10px] font-bold text-slate-400 uppercase tracking-widest hidden md:block">
                 Aguardando atualização...
             </div>
             <button onclick="fetchStats()"
@@ -252,7 +253,7 @@
             renderUnits(data.unidades);
 
             if (window.lucide) lucide.createIcons();
-            
+
             // Update timestamp
             const now = new Date();
             const timeStr = now.toLocaleTimeString('pt-BR');
@@ -289,8 +290,24 @@
     function renderEvolutionChart(data) {
         const el = document.getElementById('evolutionChart');
         if (!el) return;
-        const ctx = el.getContext('2d');
 
+        // Check for empty data
+        if (!data || data.length === 0 || data.every(d => d.total === 0)) {
+            const container = el.parentElement;
+            container.innerHTML = `
+                <div class="flex flex-col items-center justify-center h-full text-slate-400 bg-slate-50/50 rounded-2xl border-2 border-dashed border-slate-100 p-8">
+                    <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mb-4 shadow-sm">
+                        <i data-lucide="bar-chart-2" class="w-8 h-8 opacity-20"></i>
+                    </div>
+                    <p class="text-[11px] font-black uppercase tracking-widest leading-none">Sem dados evolutivos</p>
+                    <p class="text-[10px] font-bold opacity-60 mt-2">Nenhum atendimento registrado nos últimos meses.</p>
+                </div>
+            `;
+            if (window.lucide) lucide.createIcons();
+            return;
+        }
+
+        const ctx = el.getContext('2d');
         if (evolutionChart) evolutionChart.destroy();
 
         evolutionChart = new Chart(ctx, {
@@ -335,8 +352,24 @@
     function renderSpecialtyChart(data) {
         const el = document.getElementById('specialtyChart');
         if (!el) return;
-        const ctx = el.getContext('2d');
 
+        // Check for empty data
+        if (!data || data.length === 0 || data.every(d => d.total === 0)) {
+            const container = el.parentElement;
+            container.innerHTML = `
+                <div class="flex flex-col items-center justify-center h-full text-slate-400 bg-slate-50/50 rounded-2xl border-2 border-dashed border-slate-100 p-8">
+                    <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mb-4 shadow-sm">
+                        <i data-lucide="pie-chart" class="w-8 h-8 opacity-20"></i>
+                    </div>
+                    <p class="text-[11px] font-black uppercase tracking-widest leading-none">Sem especialidades</p>
+                    <p class="text-[10px] font-bold opacity-60 mt-2">Aguardando dados demográficos de consultas.</p>
+                </div>
+            `;
+            if (window.lucide) lucide.createIcons();
+            return;
+        }
+
+        const ctx = el.getContext('2d');
         if (specialtyChart) specialtyChart.destroy();
 
         const colors = [

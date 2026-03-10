@@ -547,33 +547,41 @@
             `).join(' ');
 
             return `
-                <tr class="hover:bg-blue-50/40 dark:hover:bg-blue-900/10 even:bg-slate-50/30 dark:even:bg-gray-800/20 transition-all duration-200 group">
-                    <td class="px-6 py-5 text-sm">
+                <tr class="hover:bg-blue-50/40 dark:hover:bg-blue-900/10 even:bg-slate-50/30 dark:even:bg-gray-800/20 transition-all duration-200 group ${!p.ativo ? 'opacity-70' : ''}">
+                    <td class="px-6 py-5 text-sm max-w-[250px]">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500 font-black text-xs group-hover:bg-blue-600 group-hover:text-white transition-all">
+                            <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500 font-black text-xs group-hover:bg-blue-600 group-hover:text-white transition-all flex-shrink-0">
                                 ${p.nome.charAt(0)}
                             </div>
                             <div class="flex flex-col">
-                                <span class="font-bold text-slate-900 leading-tight">${p.nome}</span>
-                                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">${p.unidade_atendimento || 'Sem unidade'}</span>
+                                <div class="flex items-center flex-wrap gap-1.5">
+                                    <span class="font-bold ${p.ativo ? 'text-slate-900' : 'text-slate-500 line-through'} leading-tight truncate">${p.nome}</span>
+                                    ${!p.ativo ? '<span class="px-1.5 py-0.5 bg-rose-50 text-rose-500 border border-rose-100 rounded text-[8px] font-black uppercase tracking-widest text-nowrap mt-0.5">Inativo</span>' : ''}
+                                </div>
+                                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">
+                                    ${p.num_func_num_vinc && p.num_func_num_vinc !== '00000' ? `<span class="bg-gray-100 px-1 py-0.5 rounded text-gray-500 mr-0.5 font-mono shadow-sm">Matrícula: ${p.num_func_num_vinc}</span>` : ''}
+                                    ${p.unidade_atendimento || 'Sem unidade vinculada'}
+                                </span>
                             </div>
                         </div>
                     </td>
                     <td class="px-6 py-5">
-                        <div class="flex flex-wrap gap-1.5">
-                            ${specsHtml || '<span class="text-xs text-gray-400 italic">Sem Especialidade</span>'}
+                        <div class="flex flex-wrap gap-1.5 items-center">
+                            ${specsHtml || `
+                            <span class="px-2.5 py-1 bg-amber-50 text-amber-600 border border-amber-200/50 rounded-lg text-[9px] font-black uppercase tracking-wide whitespace-nowrap flex items-center gap-1">
+                                <i data-lucide="alert-triangle" class="w-3 h-3"></i> Sem Especialidade
+                            </span>`}
                         </div>
-                        ${!p.ativo ? '<div class="mt-2"><span class="px-2 py-0.5 bg-rose-50 text-rose-500 border border-rose-100 rounded-lg text-[9px] font-black uppercase tracking-widest">Inativo</span></div>' : ''}
                     </td>
-                    <td class="px-6 py-5 text-right">
-                        <div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button onclick="openHoursModal(${p.id}, '${p.nome}')" class="p-2.5 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-xl transition" title="Horários">
+                    <td class="px-6 py-5 text-right w-36">
+                        <div class="flex justify-end gap-1 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button onclick="openHoursModal(${p.id}, '${p.nome}')" class="p-2.5 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-xl transition tooltip-trigger" title="Horários">
                                 <i data-lucide="clock" class="w-4.5 h-4.5"></i>
                             </button>
-                            <button onclick="editProf(${p.id})" class="p-2.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition">
+                            <button onclick="editProf(${p.id})" class="p-2.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition tooltip-trigger" title="Editar Profissional">
                                 <i data-lucide="edit-3" class="w-4.5 h-4.5"></i>
                             </button>
-                            <button onclick="deleteProf(${p.id})" class="p-2.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition">
+                            <button onclick="deleteProf(${p.id})" class="p-2.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition tooltip-trigger" title="Remover Profissional">
                                 <i data-lucide="trash-2" class="w-4.5 h-4.5"></i>
                             </button>
                         </div>

@@ -1,9 +1,10 @@
-from flask import Flask, Blueprint, request, jsonify, render_template,session
+from flask import Flask, Blueprint, request, jsonify, render_template, session
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import os
 from datetime import datetime, timedelta
 from app.utils import validar_cpf
+from app.database import get_connection
 
 # ----------------------
 # CONFIGURAÇÃO DO FLASK
@@ -492,6 +493,7 @@ def dias_disponiveis_profissional():
 # ====================
 @agendamento_bp.route("/api/agendar_exame/confirmar", methods=["POST"])
 def confirmar_agendamento():
+    data = request.json
     # Prioriza trabalhador_id do corpo para evitar concorrência de abas
     trabalhador_id = data.get("trabalhador_id") or session.get("trabalhador_id")
 
@@ -572,11 +574,13 @@ def confirmar_agendamento():
                 data_consulta, horario, unidade, especialidade, status,
                 criado_por, perfil_criador, origem_agendamento, criado_em
             ) VALUES (%s, %s, %s, %s, %s, %s, %s, 'Agendado', %s, %s, %s, NOW())
+            RETURNING id
         """, (
             trabalhador_id, vinculo_id, funcionario_id,
             data_consulta, horario, unidade, especialidade,
             user_email, user_tipo, origem
         ))
+        agendamento_id = cur.fetchone()['id']
 
         # --- VÍNCULO AUTOMÁTICO NA GESTÃO DE PACIENTES ---
         # Se for uma consulta especializada (não acolhimento) e o paciente estiver sem responsável, já vincula ao médico agendado.
@@ -593,7 +597,108 @@ def confirmar_agendamento():
             """, (funcionario_id, user_email, trabalhador_id))
 
         conn.commit()
-        return jsonify({"success": True, "message": "Agendamento realizado com sucesso."})
+
+        # --- NOTIFICAÇÃO DE SUCESSO POR E-MAIL ---
+        try:
+            print(f">>> DEBUG: Tentando buscar info para e-mail. trabalhador_id={trabalhador_id}, funcionario_id={funcionario_id}")
+            
+            # Query mais robusta: Busca trabalhador, e tenta trazer o nome do médico via LEFT JOIN
+            cur.execute("""
+                SELECT t.nome_completo, t.email, 
+                       (SELECT nome FROM funcionarios WHERE id = %s LIMIT 1) as medico_nome
+                FROM trabalhadores t
+                WHERE t.id = %s
+            """, (funcionario_id, trabalhador_id))
+            trabalhador_info = cur.fetchone()
+            
+            print(f">>> DEBUG: trabalhador_info encontrado? {trabalhador_info is not None}")
+            if trabalhador_info:
+                print(f">>> DEBUG: E-mail do trabalhador: {trabalhador_info.get('email')}")
+            
+            if trabalhador_info and trabalhador_info.get('email'):
+                from email.mime.text import MIMEText
+                from email.mime.multipart import MIMEMultipart
+                import smtplib
+
+                msg = MIMEMultipart()
+                msg['From'] = f"QualiVida PE <{os.getenv('MAIL_DEFAULT_SENDER')}>"
+                msg['To'] = trabalhador_info['email']
+                msg['Subject'] = f"✅ Confirmação de Agendamento - {especialidade}"
+
+                # Formatação de data/hora
+                try:
+                    dt_obj = datetime.strptime(data_consulta, '%Y-%m-%d')
+                    data_fmt = dt_obj.strftime('%d/%m/%Y')
+                except:
+                    data_fmt = data_consulta
+
+                html_body = f"""
+                <div style="font-family: 'Inter', 'Segoe UI', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f8fafc;">
+                    <div style="background-color: #ffffff; border-radius: 16px; padding: 40px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); text-align: center;">
+                        
+                        <div style="margin-bottom: 24px;">
+                            <h2 style="color: #0f172a; margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.5px;">QualiVida <span style="color: #2563eb;">PE</span></h2>
+                        </div>
+                        
+                        <div style="background-color: #eff6ff; color: #1d4ed8; padding: 8px 16px; border-radius: 999px; font-weight: 700; font-size: 12px; display: inline-block; margin-bottom: 24px;">
+                           ✓ AGENDAMENTO CONFIRMADO
+                        </div>
+
+                        <p style="font-size: 16px; color: #1e293b; margin-top: 0; margin-bottom: 8px;">Olá, <strong>{trabalhador_info['nome_completo']}</strong>,</p>
+                        <p style="font-size: 14px; color: #64748b; margin-top: 0; margin-bottom: 32px;">Sua consulta foi agendada com sucesso no sistema oficial.</p>
+                        
+                        <!-- Card de Dados Minimalista -->
+                        <div style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; text-align: left; background-color: #ffffff;">
+                            
+                            <div style="margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px dashed #e2e8f0;">
+                                <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; color: #94a3b8; letter-spacing: 1px; display: block; margin-bottom: 4px;">Especialidade</span>
+                                <span style="font-size: 18px; font-weight: 800; color: #0f172a;">{especialidade}</span>
+                            </div>
+                            
+                            <div style="margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px dashed #e2e8f0;">
+                                <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; color: #94a3b8; letter-spacing: 1px; display: block; margin-bottom: 4px;">Profissional Responsável</span>
+                                <span style="font-size: 15px; font-weight: 600; color: #1e293b;">{trabalhador_info['medico_nome'] or 'Profissional não atribuído'}</span>
+                            </div>
+
+                            <div style="margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px dashed #e2e8f0;">
+                                <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                                    <tr>
+                                        <td width="50%" valign="top">
+                                            <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; color: #94a3b8; letter-spacing: 1px; display: block; margin-bottom: 4px;">Data</span>
+                                            <span style="font-size: 15px; font-weight: 700; color: #1e293b;">{data_fmt}</span>
+                                        </td>
+                                        <td width="50%" valign="top">
+                                            <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; color: #94a3b8; letter-spacing: 1px; display: block; margin-bottom: 4px;">Horário</span>
+                                            <span style="font-size: 15px; font-weight: 700; color: #1e293b;">{horario}</span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <div>
+                                <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; color: #94a3b8; letter-spacing: 1px; display: block; margin-bottom: 4px;">Local do Atendimento</span>
+                                <span style="font-size: 14px; font-weight: 600; color: #475569;">{unidade}</span>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 32px; background-color: #f8fafc; border-radius: 8px; padding: 16px; border: 1px solid #f1f5f9;">
+                            <p style="margin: 0; font-size: 12px; color: #64748b;">⚠️ <strong>Importante:</strong> Chegue com 15 minutos de antecedência e porte seu documento original.</p>
+                        </div>
+                    </div>
+                </div>
+                """
+                msg.attach(MIMEText(html_body, 'html', 'utf-8'))
+
+                server = smtplib.SMTP(os.getenv("SMTP_SERVER"), int(os.getenv("SMTP_PORT", 587)))
+                server.starttls()
+                server.login(os.getenv("SMTP_USER"), os.getenv("SMTP_PASSWORD"))
+                server.sendmail(os.getenv("MAIL_DEFAULT_SENDER"), trabalhador_info['email'], msg.as_string())
+                server.quit()
+
+        except Exception as mail_err:
+            print(f"Erro ao enviar e-mail de confirmação: {mail_err}")
+
+        return jsonify({"success": True, "message": "Agendamento realizado com sucesso.", "agendamento_id": agendamento_id})
     except Exception as e:
         conn.rollback()
         return jsonify({"success": False, "error": str(e)}), 500
@@ -645,6 +750,8 @@ def agendamentos_por_trabalhador():
 def cancelar_agendamento():
     data = request.json
     agendamento_id = data.get("agendamento_id")
+    motivo = data.get("motivo", "Não informado")
+    notas = data.get("observacao", "")
     
     if not agendamento_id:
         return jsonify({"success": False, "error": "ID do agendamento não informado."}), 400
@@ -653,11 +760,14 @@ def cancelar_agendamento():
     cur = conn.cursor(cursor_factory=RealDictCursor)
     
     try:
-        # Busca detalhes do agendamento para validar prazo
+        # Busca detalhes do agendamento para validar prazo e pegar dados para o e-mail
         cur.execute("""
-            SELECT data_consulta, horario 
-            FROM agendamento_exames 
-            WHERE id = %s
+            SELECT ae.data_consulta, ae.horario, ae.especialidade, ae.unidade,
+                   f.nome as medico_nome, t.nome_completo as paciente_nome, t.email as paciente_email
+            FROM agendamento_exames ae
+            JOIN trabalhadores t ON ae.trabalhador_id = t.id
+            JOIN funcionarios f ON ae.funcionario_id = f.id
+            WHERE ae.id = %s
         """, (agendamento_id,))
         agendamento = cur.fetchone()
         
@@ -668,14 +778,89 @@ def cancelar_agendamento():
         consulta_datetime = datetime.combine(agendamento['data_consulta'], agendamento['horario'])
         agora = datetime.now()
         
+        # Validação de antecedência (12h)
         if (consulta_datetime - agora) < timedelta(hours=12):
             return jsonify({
                 "success": False, 
                 "error": "O cancelamento só é permitido com pelo menos 12 horas de antecedência."
             }), 403
             
-        cur.execute("UPDATE agendamento_exames SET status = 'Cancelado' WHERE id = %s", (agendamento_id,))
+        user_email = session.get("email") or "Sistema/Paciente"
+        obs_formatada = f"CANCELAMENTO - Motivo: {motivo}. Notas: {notas}"
+        
+        cur.execute("""
+            UPDATE agendamento_exames 
+            SET status = 'Cancelado', 
+                observacao = %s,
+                atualizado_em = NOW(),
+                atualizado_por = %s
+            WHERE id = %s
+        """, (obs_formatada, user_email, agendamento_id))
+        
         conn.commit()
+
+        # --- NOTIFICAÇÃO AUTOMÁTICA ---
+        if agendamento['paciente_email']:
+            try:
+                from email.mime.text import MIMEText
+                from email.mime.multipart import MIMEMultipart
+                import smtplib
+
+                msg = MIMEMultipart()
+                msg['From'] = f"QualiVida PE <{os.getenv('MAIL_DEFAULT_SENDER')}>"
+                msg['To'] = agendamento['paciente_email']
+                msg['Subject'] = f"Cancelamento de Agendamento - {agendamento['especialidade']}"
+
+                data_fmt = agendamento['data_consulta'].strftime('%d/%m/%Y')
+                hora_fmt = agendamento['horario'].strftime('%H:%M')
+
+                html_body = f"""
+                <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 500px; margin: 40px auto; color: #334155;">
+                    <div style="text-align: center; margin-bottom: 30px;">
+                        <h2 style="color: #0f172a; margin: 0; font-size: 20px; font-weight: 800; letter-spacing: -0.5px;">QualiVida <span style="color: #ef4444;">PE</span></h2>
+                    </div>
+                    
+                    <div style="background: #ffffff; border: 1px solid #fee2e2; border-radius: 24px; padding: 40px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
+                        <div style="background: #fef2f2; color: #b91c1c; padding: 12px 20px; border-radius: 12px; font-weight: 800; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 24px; display: inline-block;">
+                           ⚠️ Agendamento Cancelado
+                        </div>
+
+                        <p style="font-size: 15px; margin-bottom: 8px; color: #1e293b;">Olá, <strong>{agendamento['paciente_name' if 'paciente_name' in agendamento else 'paciente_nome']}</strong>,</p>
+                        <p style="font-size: 14px; color: #64748b; margin-bottom: 32px;">Informamos que a sua consulta foi removida do nosso cronograma.</p>
+                        
+                        <div style="background: #fdf2f2; border-radius: 20px; padding: 24px; border: 1px solid #fee2e2; margin-bottom: 32px;">
+                            <div style="margin-bottom: 12px; border-bottom: 1px solid #fee2e2; padding-bottom: 12px;">
+                                <span style="font-size: 10px; font-weight: 800; text-transform: uppercase; color: #991b1b; display: block; opacity: 0.6; margin-bottom: 4px;">Consulta Cancelada</span>
+                                <span style="font-size: 14px; font-weight: 700; color: #1e293b;">{agendamento['especialidade']} - {data_fmt} às {hora_fmt}</span>
+                            </div>
+                            <div>
+                                <span style="font-size: 10px; font-weight: 800; text-transform: uppercase; color: #991b1b; display: block; opacity: 0.6; margin-bottom: 4px;">Motivo do Cancelamento</span>
+                                <span style="font-size: 13px; font-weight: 600; color: #4b5563;">{motivo}</span>
+                            </div>
+                        </div>
+
+                        <p style="font-size: 12px; text-align: center; color: #64748b; margin-top: 32px; font-style: italic;">
+                            Caso precise de um novo horário, acesse o portal QualiVida PE e realize um novo agendamento.
+                        </p>
+
+                        <div style="text-align: center; margin-top: 32px; border-top: 1px solid #f1f5f9; padding-top: 24px;">
+                             <a href="https://wa.me/5581981066190" style="color: #b91c1c; text-decoration: none; font-size: 11px; font-weight: 800; text-transform: uppercase;">Dúvidas? Entre em contato</a>
+                        </div>
+                    </div>
+                </div>
+                """
+                msg.attach(MIMEText(html_body, 'html', 'utf-8'))
+
+                server = smtplib.SMTP(os.getenv("SMTP_SERVER"), int(os.getenv("SMTP_PORT", 587)))
+                server.starttls()
+                server.login(os.getenv("SMTP_USER"), os.getenv("SMTP_PASSWORD"))
+                server.sendmail(os.getenv("MAIL_DEFAULT_SENDER"), agendamento['paciente_email'], msg.as_string())
+                server.quit()
+
+            except Exception as mail_err:
+                print(f"Erro ao enviar e-mail de cancelamento: {mail_err}")
+                # Não interrompemos o sucesso do cancelamento se o e-mail falhar
+
         return jsonify({"success": True})
     except Exception as e:
         conn.rollback()

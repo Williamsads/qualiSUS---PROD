@@ -71,6 +71,22 @@
       }
     }
 
+    @keyframes fadeInRight {
+      from {
+        opacity: 0;
+        transform: translateX(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .animate-fade-in-right {
+      animation: fadeInRight 0.4s ease-out forwards;
+    }
+
     .animate-fade-in-up {
       animation: fadeInUp 0.4s ease-out forwards;
     }
@@ -174,16 +190,16 @@
       <div class="flex-1 bg-pe-yellow"></div>
       <div class="flex-1 bg-pe-green"></div>
     </div>
-    <div class="flex items-center gap-4">
+    <div class="flex items-center gap-3 md:gap-4">
       <div class="hover:scale-110 transition-transform duration-500 ease-out cursor-pointer group">
         <img src="{{ url_for('static', filename='img/Logo da QualiSUS com pinwheel colorido.png') }}"
-          alt="QualiSUS Logo" class="h-16 md:h-20 w-auto object-contain drop-shadow-2xl brightness-110" />
+          alt="QualiSUS Logo" class="h-12 md:h-20 w-auto object-contain drop-shadow-2xl brightness-110" />
       </div>
-      <div class="h-10 w-px bg-white/30 hidden md:block"></div>
-      <div class="hidden md:block">
-        <span class="font-black text-2xl tracking-tighter block leading-none mb-1">Quali<span
+      <div class="h-8 md:h-10 w-px bg-white/30 hidden sm:block"></div>
+      <div class="hidden sm:block">
+        <span class="font-black text-xl md:text-2xl tracking-tighter block leading-none mb-1">Quali<span
             class="text-pe-red">SUS</span> PE</span>
-        <span class="text-[10px] uppercase tracking-[0.2em] text-pe-sky font-black">Governo do Estado de
+        <span class="text-[8px] md:text-[10px] uppercase tracking-[0.2em] text-pe-sky font-black">Governo do Estado de
           Pernambuco</span>
       </div>
     </div>
@@ -207,7 +223,7 @@
 
   <!-- Conteúdo principal -->
   <main
-    class="flex-grow max-w-3xl mx-auto w-full md:mt-10 bg-white p-4 sm:p-6 md:p-8 rounded-b-xl sm:rounded-xl md:rounded-2xl shadow-lg mb-12">
+    class="flex-grow max-w-3xl mx-auto w-full md:mt-10 bg-white p-4 sm:p-6 md:p-8 rounded-none sm:rounded-xl md:rounded-2xl shadow-lg mb-0 sm:mb-12">
 
     <h1 class="text-2xl sm:text-3xl md:text-4xl font-black text-center mb-2 text-pe-navy tracking-tighter">
       Agende sua Consulta <span class="text-pe-red">Qualivida</span>
@@ -225,58 +241,59 @@
     </p>
 
     <!-- Steps / Linha de progresso -->
-    <div id="step-progress-container" class="relative flex justify-between items-start mb-12 px-2">
+    <div id="step-progress-container"
+      class="relative flex justify-between items-start mb-8 md:mb-12 px-2 overflow-x-hidden">
       <!-- Background Connecting Line -->
       <div class="absolute top-4 md:top-6 left-10 right-10 h-0.5 bg-gray-100 z-0"></div>
 
       <!-- Step 1 -->
       <div class="relative z-10 flex flex-col items-center flex-1">
         <div id="step-circle-1"
-          class="w-9 h-9 md:w-12 md:h-12 rounded-full bg-pe-royal text-white flex items-center justify-center font-black text-xs md:text-lg shadow-lg ring-4 ring-pe-royal/20 transition-all duration-300">
+          class="w-8 h-8 md:w-12 md:h-12 rounded-full bg-pe-royal text-white flex items-center justify-center font-black text-xs md:text-lg shadow-lg ring-4 ring-pe-royal/20 transition-all duration-300">
           1
         </div>
         <span
-          class="mt-2 text-brand-600 font-bold text-[9px] md:text-xs uppercase tracking-tighter text-center">Paciente</span>
+          class="mt-2 text-brand-600 font-bold text-[8px] md:text-xs uppercase tracking-tighter text-center line-clamp-1 max-w-[60px] md:max-w-none">Paciente</span>
       </div>
 
       <!-- Step 2 -->
       <div class="relative z-10 flex flex-col items-center flex-1">
         <div id="step-circle-2"
-          class="w-9 h-9 md:w-12 md:h-12 rounded-full bg-white border-2 border-gray-100 text-gray-400 flex items-center justify-center font-black text-xs md:text-lg transition-all duration-300">
+          class="w-8 h-8 md:w-12 md:h-12 rounded-full bg-white border-2 border-gray-100 text-gray-400 flex items-center justify-center font-black text-xs md:text-lg transition-all duration-300">
           2
         </div>
         <span
-          class="mt-2 text-gray-300 font-bold text-[9px] md:text-xs uppercase tracking-tighter text-center">Especialidade</span>
+          class="mt-2 text-gray-300 font-bold text-[8px] md:text-xs uppercase tracking-tighter text-center line-clamp-1 max-w-[60px] md:max-w-none">Especialidade</span>
       </div>
 
       <!-- Step 3 -->
       <div class="relative z-10 flex flex-col items-center flex-1">
         <div id="step-circle-3"
-          class="w-9 h-9 md:w-12 md:h-12 rounded-full bg-white border-2 border-gray-100 text-gray-400 flex items-center justify-center font-black text-xs md:text-lg transition-all duration-300">
+          class="w-8 h-8 md:w-12 md:h-12 rounded-full bg-white border-2 border-gray-100 text-gray-400 flex items-center justify-center font-black text-xs md:text-lg transition-all duration-300">
           3
         </div>
         <span
-          class="mt-2 text-gray-300 font-bold text-[9px] md:text-xs uppercase tracking-tighter text-center">Unidade</span>
+          class="mt-2 text-gray-300 font-bold text-[8px] md:text-xs uppercase tracking-tighter text-center line-clamp-1 max-w-[60px] md:max-w-none">Unidade</span>
       </div>
 
       <!-- Step 4 -->
       <div class="relative z-10 flex flex-col items-center flex-1">
         <div id="step-circle-4"
-          class="w-9 h-9 md:w-12 md:h-12 rounded-full bg-white border-2 border-gray-100 text-gray-400 flex items-center justify-center font-black text-xs md:text-lg transition-all duration-300">
+          class="w-8 h-8 md:w-12 md:h-12 rounded-full bg-white border-2 border-gray-100 text-gray-400 flex items-center justify-center font-black text-xs md:text-lg transition-all duration-300">
           4
         </div>
         <span
-          class="mt-2 text-gray-300 font-bold text-[9px] md:text-xs uppercase tracking-tighter text-center">Horário</span>
+          class="mt-2 text-gray-300 font-bold text-[8px] md:text-xs uppercase tracking-tighter text-center line-clamp-1 max-w-[60px] md:max-w-none">Horário</span>
       </div>
 
       <!-- Step 5 -->
       <div class="relative z-10 flex flex-col items-center flex-1">
         <div id="step-circle-5"
-          class="w-9 h-9 md:w-12 md:h-12 rounded-full bg-white border-2 border-gray-100 text-gray-400 flex items-center justify-center font-black text-xs md:text-lg transition-all duration-300">
+          class="w-8 h-8 md:w-12 md:h-12 rounded-full bg-white border-2 border-gray-100 text-gray-400 flex items-center justify-center font-black text-xs md:text-lg transition-all duration-300">
           5
         </div>
         <span
-          class="mt-2 text-gray-300 font-bold text-[9px] md:text-xs uppercase tracking-tighter text-center">Confirmação</span>
+          class="mt-2 text-gray-300 font-bold text-[8px] md:text-xs uppercase tracking-tighter text-center line-clamp-1 max-w-[60px] md:max-w-none">Confirmação</span>
       </div>
     </div>
 
@@ -375,132 +392,424 @@
 
     <!-- MODAL ATUALIZAR CADASTRO -->
     <div id="modalCadastro"
-      class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 p-4 backdrop-blur-sm">
-      <div class="bg-white rounded-2xl w-full max-w-2xl shadow-2xl flex flex-col max-h-[90vh] animate-fade-in-up">
+      class="fixed inset-0 bg-black/60 hidden items-center justify-center z-[80] p-4 backdrop-blur-md">
+      <div
+        class="bg-white rounded-3xl w-full max-w-2xl shadow-2xl flex flex-col animate-fade-in-up overflow-hidden max-h-[90vh]">
+        <!-- Top Bar Decorativa -->
+        <div class="h-3 bg-gradient-to-r from-pe-navy to-pe-royalblue"></div>
 
         <!-- Header -->
-        <div class="flex justify-between items-center p-6 border-b border-gray-100">
-          <div>
-            <h2 class="text-xl font-bold text-pe-navy">Completar Cadastro</h2>
-            <p class="text-sm text-gray-500 mt-1">Atualize seus dados para prosseguir com o
-              agendamento.</p>
+        <div class="flex justify-between items-start p-8 border-b border-gray-100">
+          <div class="flex items-center gap-4">
+            <div class="w-14 h-14 bg-pe-navy/10 rounded-2xl flex items-center justify-center text-pe-navy">
+              <i data-lucide="user-plus" class="w-8 h-8"></i>
+            </div>
+            <div>
+              <h2 class="text-2xl font-black text-pe-navy">Completar Cadastro</h2>
+              <p class="text-sm text-gray-500 font-medium mt-1">Atualize seus dados para o agendamento.</p>
+            </div>
           </div>
           <button type="button" id="btnFecharModalTop"
-            class="text-gray-400 hover:text-pe-red transition-colors p-2 rounded-lg hover:bg-gray-100">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            class="text-gray-300 hover:text-pe-red transition-all p-2 bg-gray-50 rounded-xl hover:bg-pe-red/5">
+            <i data-lucide="x" class="w-6 h-6"></i>
           </button>
         </div>
 
-        <form id="formCadastroPaciente" class="p-6 overflow-y-auto space-y-8">
-
+        <form id="formCadastroPaciente" class="p-8 overflow-y-auto space-y-8 scrollbar-thin scrollbar-thumb-gray-200">
           <!-- DADOS PESSOAIS -->
-          <div class="bg-pe-royal/5 p-5 rounded-xl border border-pe-royal/10">
-            <div class="flex items-center gap-2 mb-4">
-              <div class="bg-pe-royal/10 p-2 rounded-lg text-pe-royal">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                </svg>
-              </div>
-              <h3 class="font-bold text-gray-800">Dados Pessoais</h3>
+          <div class="space-y-6">
+            <div class="flex items-center gap-2 mb-2 pb-2 border-b border-gray-50">
+              <span class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Informações Pessoais</span>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-6 gap-5">
+              <div class="md:col-span-4">
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 ml-1">Nome Completo
+                  (Conforme Identidade)*</label>
+                <div class="relative group">
+                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
+                    <i data-lucide="user" class="w-4 h-4 text-pe-navy"></i>
+                  </div>
+                  <input type="text" id="modal_nome"
+                    class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-gray-800 transition-all focus:ring-4 focus:ring-pe-navy/10 focus:border-pe-navy focus:bg-white outline-none"
+                    placeholder="Ex: Maria José da Silva">
+                </div>
+              </div>
+
               <div class="md:col-span-2">
-                <label class="block text-sm font-medium text-gray-700 mb-1">Nome completo*</label>
-                <input type="text" id="modal_nome"
-                  class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pe-royal/20 focus:border-pe-royal transition-all outline-none bg-white">
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 ml-1">Data
+                  Nascimento*</label>
+                <div class="relative group">
+                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
+                    <i data-lucide="calendar" class="w-4 h-4 text-pe-navy"></i>
+                  </div>
+                  <input type="date" id="modal_nascimento"
+                    class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-gray-800 transition-all focus:ring-4 focus:ring-pe-navy/10 focus:border-pe-navy focus:bg-white outline-none">
+                </div>
               </div>
 
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Cartão SUSo *</label>
-                <input type="text" id="modal_cns"
-                  class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pe-royal/20 focus:border-pe-royal transition-all outline-none bg-white">
+              <div class="md:col-span-3">
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 ml-1">Cartão SUS
+                  (CNS)*</label>
+                <div class="relative group">
+                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
+                    <i data-lucide="id-card" class="w-4 h-4 text-pe-navy"></i>
+                  </div>
+                  <input type="text" id="modal_cns"
+                    class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-gray-800 transition-all focus:ring-4 focus:ring-pe-navy/10 focus:border-pe-navy focus:bg-white outline-none"
+                    placeholder="000.0000.0000.0000">
+                </div>
               </div>
 
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Data de
-                  nascimento*</label>
-                <input type="date" id="modal_nascimento"
-                  class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pe-royal/20 focus:border-pe-royal transition-all outline-none bg-white">
+              <div class="md:col-span-3">
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 ml-1">Telefone /
+                  WhatsApp*</label>
+                <div class="relative group">
+                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
+                    <i data-lucide="phone" class="w-4 h-4 text-pe-navy"></i>
+                  </div>
+                  <input type="text" id="modal_telefone"
+                    class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-gray-800 transition-all focus:ring-4 focus:ring-pe-navy/10 focus:border-pe-navy focus:bg-white outline-none"
+                    placeholder="(81) 90000-0000">
+                </div>
               </div>
 
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Telefone*</label>
-                <input type="text" id="modal_telefone"
-                  class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pe-royal/20 focus:border-pe-royal transition-all outline-none bg-white">
+              <div class="md:col-span-6">
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 ml-1">E-mail para
+                  Notificações*</label>
+                <div class="relative group">
+                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
+                    <i data-lucide="mail" class="w-4 h-4 text-pe-navy"></i>
+                  </div>
+                  <input type="email" id="modal_email"
+                    class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-gray-800 transition-all focus:ring-4 focus:ring-pe-navy/10 focus:border-pe-navy focus:bg-white outline-none"
+                    placeholder="nome@email.com">
+                </div>
               </div>
+            </div>
+          </div>
 
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Email*</label>
-                <input type="email" id="modal_email"
-                  class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pe-royal/20 focus:border-pe-royal transition-all outline-none bg-white">
-              </div>
+          <!-- ENDEREÇO -->
+          <div class="space-y-6">
+            <div class="flex items-center gap-2 mb-2 pb-2 border-b border-gray-50">
+              <span class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Localização /
+                Residência</span>
+            </div>
 
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">CEP*</label>
+            <div class="grid grid-cols-1 md:grid-cols-6 gap-5">
+              <div class="md:col-span-2">
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 ml-1">CEP*</label>
                 <div class="flex gap-2">
-                  <input type="text" id="modal_cep" placeholder="00000-000"
-                    class="flex-1 p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pe-royal/20 focus:border-pe-royal transition-all outline-none bg-white">
+                  <div class="relative flex-1 group">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
+                      <i data-lucide="map-pin" class="w-4 h-4 text-pe-navy"></i>
+                    </div>
+                    <input type="text" id="modal_cep"
+                      class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-gray-800 transition-all focus:ring-4 focus:ring-pe-navy/10 focus:border-pe-navy focus:bg-white outline-none"
+                      placeholder="00000-000">
+                  </div>
                   <button type="button" id="btnBuscarCep"
-                    class="bg-pe-royal text-white px-3 py-2.5 rounded-lg hover:bg-pe-royal/90 transition-colors"
-                    title="Buscar CEP">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                    </svg>
+                    class="px-3.5 bg-pe-navy text-white rounded-xl hover:bg-pe-navy/90 transition-all shadow-md active:scale-95 group">
+                    <i data-lucide="search" class="w-5 h-5 transition-transform group-hover:scale-110"></i>
                   </button>
                 </div>
               </div>
 
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Logradouro*</label>
+              <div class="md:col-span-3">
+                <label
+                  class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 ml-1">Logradouro*</label>
                 <input type="text" id="modal_logradouro"
-                  class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pe-royal/20 focus:border-pe-royal transition-all outline-none bg-white">
+                  class="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-gray-800 transition-all focus:ring-4 focus:ring-pe-navy/10 focus:border-pe-navy focus:bg-white outline-none"
+                  placeholder="Rua, Avenida...">
               </div>
 
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Número*</label>
+              <div class="md:col-span-1">
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 ml-1">Nº*</label>
                 <input type="text" id="modal_numero"
-                  class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pe-royal/20 focus:border-pe-royal transition-all outline-none bg-white">
+                  class="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-gray-800 transition-all focus:ring-4 focus:ring-pe-navy/10 focus:border-pe-navy focus:bg-white outline-none"
+                  placeholder="S/N">
               </div>
 
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Bairro*</label>
+              <div class="md:col-span-2">
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 ml-1">Bairro*</label>
                 <input type="text" id="modal_bairro"
-                  class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pe-royal/20 focus:border-pe-royal transition-all outline-none bg-white">
+                  class="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-gray-800 transition-all focus:ring-4 focus:ring-pe-navy/10 focus:border-pe-navy focus:bg-white outline-none">
               </div>
 
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Cidade*</label>
+              <div class="md:col-span-3">
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 ml-1">Cidade*</label>
                 <input type="text" id="modal_cidade"
-                  class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pe-royal/20 focus:border-pe-royal transition-all outline-none bg-white">
+                  class="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-gray-800 transition-all focus:ring-4 focus:ring-pe-navy/10 focus:border-pe-navy focus:bg-white outline-none">
               </div>
 
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">UF*</label>
+              <div class="md:col-span-1">
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 ml-1">UF*</label>
                 <input type="text" id="modal_uf"
-                  class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pe-royal/20 focus:border-pe-royal transition-all outline-none bg-white">
+                  class="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-gray-800 transition-all focus:ring-4 focus:ring-pe-navy/10 focus:border-pe-navy focus:bg-white outline-none"
+                  maxlength="2">
               </div>
-
             </div>
           </div>
 
-
           <!-- Actions -->
-          <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-100 dark:border-gray-800">
+          <div class="flex items-center justify-between pt-6 border-t border-gray-100 dark:border-gray-800">
             <button type="button" id="btnCancelarModal"
-              class="px-5 py-2.5 rounded-lg text-gray-700 font-medium hover:bg-gray-100 transition-colors dark:text-gray-400 dark:hover:bg-gray-800">
+              class="px-8 py-4 rounded-2xl text-gray-400 font-bold hover:bg-gray-50 transition-all transform active:scale-95">
               Cancelar
             </button>
             <button type="submit"
-              class="px-6 py-2.5 bg-pe-navy text-white font-bold rounded-lg hover:bg-pe-navy/90 shadow-lg shadow-pe-navy/20 transition-all transform hover:scale-[1.02]">
-              Salvar e Continuar
+              class="px-10 py-4 bg-pe-navy text-white font-black rounded-2xl hover:bg-pe-navy/90 shadow-xl shadow-pe-navy/30 transition-all transform hover:scale-[1.02] active:scale-95 flex items-center gap-3">
+              Salvar e Continuar <i data-lucide="arrow-right" class="w-5 h-5"></i>
             </button>
           </div>
         </form>
+      </div>
+    </div>
+
+    <!-- MODAL CANCELAMENTO (Multi-passo) -->
+    <div id="modalCancelamento"
+      class="fixed inset-0 bg-black/60 hidden items-center justify-center z-[70] p-4 backdrop-blur-md">
+      <div
+        class="bg-white rounded-3xl w-full max-w-lg shadow-2xl flex flex-col animate-fade-in-up overflow-hidden max-h-[95vh]">
+
+        <!-- Barra de Progresso do Cancelamento -->
+        <div class="flex h-1.5 w-full bg-gray-100">
+          <div id="cancel-progress-1" class="h-full bg-pe-navy transition-all duration-500 w-1/3"></div>
+          <div id="cancel-progress-2" class="h-full bg-gray-100 transition-all duration-500 w-0"></div>
+          <div id="cancel-progress-3" class="h-full bg-gray-100 transition-all duration-500 w-0"></div>
+        </div>
+
+        <div class="p-8 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200">
+          <!-- CONTEÚDO PASSO 1: MOTIVO -->
+          <div id="cancel-step-1" class="space-y-6">
+            <div class="flex items-center gap-4">
+              <div class="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center text-pe-navy">
+                <i data-lucide="help-circle" class="w-8 h-8"></i>
+              </div>
+              <div>
+                <h2 class="text-2xl font-black text-gray-900">Por que deseja cancelar?</h2>
+                <p class="text-sm text-gray-500 font-medium">Nos ajude a entender para melhorarmos nossos serviços.</p>
+              </div>
+            </div>
+
+            <!-- Banner Informativo -->
+            <div class="bg-blue-50 border border-blue-100 rounded-2xl p-4 flex items-start gap-3">
+              <i data-lucide="info" class="w-5 h-5 text-pe-navy mt-0.5"></i>
+              <p class="text-xs font-bold text-pe-navy leading-relaxed">Não se preocupe! Você poderá reagendar sua
+                consulta a qualquer momento após o cancelamento.</p>
+            </div>
+
+            <!-- Card Resumo Consulta -->
+            <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100 flex items-center gap-4">
+              <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-pe-navy shadow-sm">
+                <i data-lucide="calendar" class="w-5 h-5"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p id="cancel-summary-spec"
+                  class="text-[10px] font-black text-gray-400 uppercase tracking-widest truncate">---</p>
+                <p id="cancel-summary-info" class="text-sm font-bold text-gray-800 truncate">---</p>
+              </div>
+            </div>
+
+            <!-- Opções de Motivo -->
+            <div class="grid grid-cols-1 gap-3">
+              <div onclick="setCancelReason(1, 'Não poderei comparecer')"
+                class="reason-option cursor-pointer group flex items-center justify-between p-4 bg-white border-2 border-gray-100 rounded-2xl transition-all hover:border-pe-navy hover:bg-blue-50/50">
+                <div class="flex items-center gap-3">
+                  <span class="text-2xl">🚫</span>
+                  <span class="text-sm font-black text-gray-700 group-hover:text-pe-navy">Não poderei comparecer</span>
+                </div>
+                <div
+                  class="w-6 h-6 rounded-full border-2 border-gray-200 flex items-center justify-center group-[.active]:bg-pe-navy group-[.active]:border-pe-navy transition-all">
+                  <i data-lucide="check" class="w-3.5 h-3.5 text-white opacity-0 group-[.active]:opacity-100"></i>
+                </div>
+              </div>
+
+              <div onclick="setCancelReason(2, 'Mudança de horário/data')"
+                class="reason-option cursor-pointer group flex items-center justify-between p-4 bg-white border-2 border-gray-100 rounded-2xl transition-all hover:border-pe-navy hover:bg-blue-50/50">
+                <div class="flex items-center gap-3">
+                  <span class="text-2xl">📅</span>
+                  <span class="text-sm font-black text-gray-700 group-hover:text-pe-navy">Mudança de horário/data</span>
+                </div>
+                <div
+                  class="w-6 h-6 rounded-full border-2 border-gray-200 flex items-center justify-center group-[.active]:bg-pe-navy group-[.active]:border-pe-navy transition-all">
+                  <i data-lucide="check" class="w-3.5 h-3.5 text-white opacity-0 group-[.active]:opacity-100"></i>
+                </div>
+              </div>
+
+              <div onclick="setCancelReason(3, 'Problema de saúde')"
+                class="reason-option cursor-pointer group flex items-center justify-between p-4 bg-white border-2 border-gray-100 rounded-2xl transition-all hover:border-pe-navy hover:bg-blue-50/50">
+                <div class="flex items-center gap-3">
+                  <span class="text-2xl">🏥</span>
+                  <span class="text-sm font-black text-gray-700 group-hover:text-pe-navy">Problema de saúde</span>
+                </div>
+                <div
+                  class="w-6 h-6 rounded-full border-2 border-gray-200 flex items-center justify-center group-[.active]:bg-pe-navy group-[.active]:border-pe-navy transition-all">
+                  <i data-lucide="check" class="w-3.5 h-3.5 text-white opacity-0 group-[.active]:opacity-100"></i>
+                </div>
+              </div>
+
+              <div onclick="setCancelReason(4, 'Falta de transporte')"
+                class="reason-option cursor-pointer group flex items-center justify-between p-4 bg-white border-2 border-gray-100 rounded-2xl transition-all hover:border-pe-navy hover:bg-blue-50/50">
+                <div class="flex items-center gap-3">
+                  <span class="text-2xl">🚗</span>
+                  <span class="text-sm font-black text-gray-700 group-hover:text-pe-navy">Falta de transporte</span>
+                </div>
+                <div
+                  class="w-6 h-6 rounded-full border-2 border-gray-200 flex items-center justify-center group-[.active]:bg-pe-navy group-[.active]:border-pe-navy transition-all">
+                  <i data-lucide="check" class="w-3.5 h-3.5 text-white opacity-0 group-[.active]:opacity-100"></i>
+                </div>
+              </div>
+
+              <div onclick="setCancelReason(5, 'Motivo não informado')"
+                class="reason-option cursor-pointer group flex items-center justify-between p-4 bg-white border-2 border-gray-100 rounded-2xl transition-all hover:border-pe-navy hover:bg-blue-50/50">
+                <div class="flex items-center gap-3">
+                  <span class="text-2xl">❓</span>
+                  <span class="text-sm font-black text-gray-700 group-hover:text-pe-navy">Motivo não informado</span>
+                </div>
+                <div
+                  class="w-6 h-6 rounded-full border-2 border-gray-200 flex items-center justify-center group-[.active]:bg-pe-navy group-[.active]:border-pe-navy transition-all">
+                  <i data-lucide="check" class="w-3.5 h-3.5 text-white opacity-0 group-[.active]:opacity-100"></i>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3 pt-4">
+              <button onclick="document.getElementById('modalCancelamento').classList.add('hidden')"
+                class="order-2 sm:order-1 flex-1 py-4 text-gray-400 font-bold hover:bg-gray-50 rounded-2xl transition-all">
+                Manter Agendamento
+              </button>
+              <button id="btnNextCancel1" onclick="nextStepCancel(2)" disabled
+                class="order-1 sm:order-2 flex-1 py-4 bg-pe-navy text-white font-black rounded-2xl shadow-xl shadow-pe-navy/20 transition-all transform hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
+                Continuar
+              </button>
+            </div>
+          </div>
+
+          <!-- CONTEÚDO PASSO 2: MENSAGEM -->
+          <div id="cancel-step-2" class="hidden space-y-6 animate-fade-in-right">
+            <div class="flex items-center gap-4">
+              <div class="w-14 h-14 bg-green-50 rounded-2xl flex items-center justify-center text-green-600">
+                <i data-lucide="message-square" class="w-8 h-8"></i>
+              </div>
+              <div>
+                <h2 class="text-2xl font-black text-gray-900">Deixe uma mensagem?</h2>
+                <p class="text-sm text-gray-500 font-medium">Nos ajude a entender melhor sua situação (opcional).</p>
+              </div>
+            </div>
+
+            <div class="bg-green-50 border border-green-100 rounded-2xl p-4 flex items-center gap-3">
+              <i data-lucide="check-circle" class="w-5 h-5 text-green-600"></i>
+              <p class="text-xs font-bold text-green-600">Seu feedback é fundamental para nossa melhoria!</p>
+            </div>
+
+            <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100">
+              <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Motivo Selecionado</p>
+              <p id="cancel-reason-summary" class="text-sm font-bold text-gray-800">---</p>
+            </div>
+
+            <div class="relative">
+              <textarea id="cancel-additional-msg" maxlength="500" rows="5"
+                class="w-full p-5 bg-white border-2 border-gray-100 rounded-2xl text-sm font-medium text-gray-700 focus:ring-4 focus:ring-pe-navy/5 focus:border-pe-navy outline-none transition-all resize-none"
+                placeholder="Ex: Desmarquei porque consegui um horário melhor em outro lugar..."></textarea>
+              <div class="absolute bottom-4 right-4 text-[10px] font-black text-gray-300 uppercase tracking-widest">
+                <span id="char-count">0</span> / 500
+              </div>
+            </div>
+
+            <!-- Sugestões Rápidas -->
+            <div class="flex flex-wrap gap-2">
+              <button type="button" onclick="insertCancelText('Não tenho como chegar')"
+                class="px-3 py-1.5 bg-gray-50 border border-gray-100 rounded-lg text-[10px] font-black text-gray-500 uppercase tracking-tighter hover:border-pe-navy hover:text-pe-navy transition-all">🚗
+                Sem transporte</button>
+              <button type="button" onclick="insertCancelText('Consegui no particular')"
+                class="px-3 py-1.5 bg-gray-50 border border-gray-100 rounded-lg text-[10px] font-black text-gray-500 uppercase tracking-tighter hover:border-pe-navy hover:text-pe-navy transition-all">🏥
+                Outra opção</button>
+              <button type="button" onclick="insertCancelText('Minha saúde piorou')"
+                class="px-3 py-1.5 bg-gray-50 border border-gray-100 rounded-lg text-[10px] font-black text-gray-500 uppercase tracking-tighter hover:border-pe-navy hover:text-pe-navy transition-all">⚠️
+                Saúde piorou</button>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3 pt-4">
+              <button onclick="nextStepCancel(1)"
+                class="order-2 sm:order-1 flex-1 py-4 text-gray-400 font-bold hover:bg-gray-50 rounded-2xl transition-all">
+                Voltar
+              </button>
+              <button onclick="nextStepCancel(3)"
+                class="order-1 sm:order-2 flex-1 py-4 bg-pe-navy text-white font-black rounded-2xl shadow-xl shadow-pe-navy/20 transition-all transform hover:scale-[1.02] active:scale-95">
+                Próximo
+              </button>
+            </div>
+          </div>
+
+          <!-- CONTEÚDO PASSO 3: CONFIRMAÇÃO -->
+          <div id="cancel-step-3" class="hidden space-y-6 animate-fade-in-right">
+            <div class="flex items-center gap-4">
+              <div class="w-14 h-14 bg-red-50 rounded-2xl flex items-center justify-center text-red-600">
+                <i data-lucide="alert-triangle" class="w-8 h-8"></i>
+              </div>
+              <div>
+                <h2 class="text-2xl font-black text-gray-900">Tem certeza?</h2>
+                <p class="text-sm text-gray-500 font-medium">Confirme antes de prosseguir com o cancelamento.</p>
+              </div>
+            </div>
+
+            <div class="bg-red-50 border border-red-100 rounded-2xl p-4 flex items-start gap-3">
+              <i data-lucide="alert-circle" class="w-5 h-5 text-red-600 mt-0.5"></i>
+              <div class="space-y-2">
+                <p class="text-xs font-black text-red-600 uppercase tracking-widest leading-relaxed">Você está prestes a
+                  cancelar esta consulta.</p>
+                <ul class="text-[10px] font-bold text-red-500 space-y-1">
+                  <li class="flex items-center gap-1.5"><i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i> A
+                    consulta será cancelada imediatamente</li>
+                  <li class="flex items-center gap-1.5"><i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i>
+                    Confirmação enviada por e-mail automaticamente</li>
+                  <li class="flex items-center gap-1.5"><i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i> Seu
+                    histórico permanece disponível</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Resumo Final -->
+            <div class="bg-gray-50 rounded-3xl p-6 border border-gray-100 relative overflow-hidden">
+              <div class="absolute top-0 right-0 w-24 h-24 bg-gray-200/20 rounded-full -mr-12 -mt-12"></div>
+
+              <div class="space-y-4 relative z-10">
+                <div>
+                  <p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">Consulta</p>
+                  <p id="cancel-final-consulta" class="text-sm font-black text-pe-navy uppercase">---</p>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">Motivo</p>
+                    <p id="cancel-final-motivo" class="text-xs font-bold text-gray-800">---</p>
+                  </div>
+                  <div>
+                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">Data</p>
+                    <p id="cancel-final-data" class="text-xs font-bold text-gray-800">---</p>
+                  </div>
+                </div>
+                <div id="cancel-final-msg-container" class="hidden">
+                  <p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">Sua Mensagem</p>
+                  <p id="cancel-final-msg"
+                    class="text-xs font-medium text-gray-600 bg-white p-3 rounded-xl border border-gray-100 italic">---
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-3 pt-4">
+              <button id="btnConfirmarCancelamento"
+                class="w-full py-4 bg-red-600 text-white font-black rounded-2xl shadow-xl shadow-red-600/20 transition-all transform hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3">
+                <i data-lucide="trash-2" class="w-5 h-5"></i> Cancelar Consulta
+              </button>
+              <button onclick="nextStepCancel(2)"
+                class="w-full py-4 text-gray-400 font-bold hover:bg-gray-50 rounded-2xl transition-all">
+                Voltar e Revisar
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -782,7 +1091,8 @@
         <p class="text-gray-500 mt-2">Revise os dados antes de finalizar o agendamento</p>
       </div>
 
-      <div class="relative bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden transform transition-all hover:scale-[1.01]">
+      <div
+        class="relative bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden transform transition-all hover:scale-[1.01]">
         <!-- Ticket Header (Patient Info) -->
         <div class="bg-gradient-to-r from-blue-900 to-brand-600 p-8 text-white relative overflow-hidden">
           <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 blur-2xl"></div>
@@ -801,11 +1111,11 @@
         <div class="p-8 space-y-8 relative">
           <!-- Separator Line (Perforated Effect) -->
           <div class="absolute -top-4 left-0 right-0 h-8 flex justify-between px-0 overflow-hidden">
-             <div class="w-8 h-8 rounded-full bg-gray-50 -ml-4"></div>
-             <div class="flex-1 flex items-center justify-center px-4">
-                <div class="w-full border-t-2 border-dashed border-gray-100"></div>
-             </div>
-             <div class="w-8 h-8 rounded-full bg-gray-50 -mr-4"></div>
+            <div class="w-8 h-8 rounded-full bg-gray-50 -ml-4"></div>
+            <div class="flex-1 flex items-center justify-center px-4">
+              <div class="w-full border-t-2 border-dashed border-gray-100"></div>
+            </div>
+            <div class="w-8 h-8 rounded-full bg-gray-50 -mr-4"></div>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -852,11 +1162,13 @@
 
           <!-- Professional Highlight -->
           <div class="mt-8 p-6 bg-slate-50 rounded-2xl border border-slate-100 flex items-center gap-4">
-            <div class="w-14 h-14 bg-white rounded-full border-4 border-white shadow-sm flex items-center justify-center text-pe-navy shrink-0">
+            <div
+              class="w-14 h-14 bg-white rounded-full border-4 border-white shadow-sm flex items-center justify-center text-pe-navy shrink-0">
               <i data-lucide="stethoscope" class="w-7 h-7"></i>
             </div>
             <div>
-              <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Profissional Responsável</p>
+              <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Profissional Responsável
+              </p>
               <p class="text-xl font-black text-pe-navy" id="conf-medico">Dr. Alan Turing</p>
             </div>
           </div>
@@ -864,14 +1176,15 @@
 
         <!-- Decorative Footer (Cupom Bottom) -->
         <div class="bg-gray-50 px-8 py-6 border-t border-dashed border-gray-200 flex flex-col items-center">
-            <div class="w-full flex justify-between items-center mb-4">
-                <div class="flex gap-1">
-                    <div class="w-2 h-2 rounded-full bg-slate-200"></div>
-                    <div class="w-20 h-2 rounded-full bg-slate-200"></div>
-                </div>
-                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.3em]">Qualivida • PE</p>
+          <div class="w-full flex justify-between items-center mb-4">
+            <div class="flex gap-1">
+              <div class="w-2 h-2 rounded-full bg-slate-200"></div>
+              <div class="w-20 h-2 rounded-full bg-slate-200"></div>
             </div>
-            <p class="text-[10px] text-slate-400 font-medium text-center">Tire um print ou foto desta tela para apresentar na recepção.</p>
+            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.3em]">Qualivida • PE</p>
+          </div>
+          <p class="text-[10px] text-slate-400 font-medium text-center">Tire um print ou foto desta tela para apresentar
+            na recepção.</p>
         </div>
       </div>
 
@@ -912,7 +1225,7 @@
       <!-- Lado Direito: Copyright -->
       <div class="flex flex-col items-center md:items-end gap-2">
         <p class="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em] text-center md:text-right">
-          © 2025 • TODOS OS DIREITOS RESERVADOS
+          © 2026 • TODOS OS DIREITOS RESERVADOS
         </p>
       </div>
     </div>
@@ -1328,13 +1641,13 @@
           return `
             <div 
               onclick="selecionarEspecialidade(${s.id}, '${s.nome}', ${s.exige_acolhimento_previo || false}, '${s.tipo_fluxo || 'CONSULTA'}')"
-              class="specialty-card cursor-pointer group flex flex-col items-center p-6 rounded-2xl border-2 transition-all duration-300 transform hover:-translate-y-1 ${isSelected ? 'border-pe-royal bg-pe-royal/5 shadow-md ring-4 ring-pe-royal/20' : 'border-gray-100 bg-white hover:border-pe-sky hover:shadow-sm'}"
+              class="specialty-card cursor-pointer group flex flex-col items-center p-6 rounded-2xl border-2 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl ${isSelected ? 'border-pe-royal bg-pe-royal/5 shadow-md ring-4 ring-pe-royal/20' : 'border-gray-50 bg-white hover:border-pe-sky shadow-sm'}"
             >
-              <div class="w-16 h-16 rounded-2xl ${isSelected ? 'bg-pe-royal text-white shadow-lg' : 'bg-pe-royal/10 text-pe-royal'} flex items-center justify-center mb-4 transition-colors group-hover:bg-pe-royal group-hover:text-white group-hover:shadow-lg">
+              <div class="w-16 h-16 rounded-2xl ${isSelected ? 'bg-gradient-to-br from-pe-royal to-pe-navy text-white shadow-lg' : 'bg-pe-royal/5 text-pe-royal'} flex items-center justify-center mb-4 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
                 <i data-lucide="${iconName}" class="w-8 h-8"></i>
               </div>
-              <h3 class="text-sm font-bold text-gray-800 text-center uppercase tracking-tight">${s.nome}</h3>
-              ${isSelected ? '<div class="mt-3 py-1 px-3 bg-pe-royal text-white text-[10px] font-black rounded-full uppercase">Selecionado</div>' : ''}
+              <h3 class="text-sm font-black text-gray-800 text-center uppercase tracking-tight group-hover:text-pe-navy transition-colors">${s.nome}</h3>
+              ${isSelected ? '<div class="mt-3 py-1 px-4 bg-pe-royal text-white text-[10px] font-black rounded-full uppercase shadow-sm animate-pulse">Selecionado</div>' : '<div class="mt-3 h-6"></div>'}
             </div>
           `;
         }).join('');
@@ -1639,21 +1952,155 @@
         if (data.success) {
           showToast("Agendamento realizado com sucesso!", "success");
           updateStepProgress(5);
-          // Show Success state in UI
+
+          // Funções Auxiliares Globalizadas (Versão Definitiva)
+          window.copyAppointmentDetails = (btn) => {
+            // Usamos as variáveis locais capturadas no momento do sucesso para evitar erros de busca no DOM
+            const confData = document.getElementById('conf-data').innerText; // Re-captura para garantir que está atualizado
+            const confHora = timeInput.value; // Re-captura para garantir que está atualizado
+            const textToCopy = `✅ QualiVida PE - Detalhes do Agendamento\n\n🔹 Especialidade: ${specialtyInput.value}\n👨‍⚕️ Profissional: ${doctorInput.value}\n📅 Data: ${confData}\n⏰ Horário: ${confHora}\n📍 Unidade: ${unitNameInput.value}\n\nProtocolo: #${data.agendamento_id}`;
+
+            const textArea = document.createElement("textarea");
+            textArea.value = textToCopy;
+            document.body.appendChild(textArea);
+            textArea.select();
+
+            try {
+              document.execCommand('copy');
+              showToast("Detalhes copiados!", "success");
+              if (btn) {
+                const originalHtml = btn.innerHTML;
+                btn.innerHTML = '<i data-lucide="check" class="w-4 h-4 text-green-500"></i> Copiado';
+                if (window.lucide) window.lucide.createIcons();
+                setTimeout(() => {
+                  btn.innerHTML = originalHtml;
+                  if (window.lucide) window.lucide.createIcons();
+                }, 2000);
+              }
+            } catch (err) {
+              console.error('Erro ao copiar:', err);
+              showToast("Erro ao copiar.", "error");
+            }
+            document.body.removeChild(textArea);
+          };
+
+          window.cancelAppointmentImmediately = async (id) => {
+            if (!confirm("Tem certeza que deseja cancelar este agendamento agora?")) return;
+            try {
+              const res = await fetch("/api/agendar_exame/cancelar", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  agendamento_id: id,
+                  motivo: "Cancelamento imediato",
+                  notas: "Cancelado pelo usuário logo após confirmar"
+                })
+              });
+              const d = await res.json();
+              if (d.success) {
+                showToast("Cancelado com sucesso.", "success");
+                setTimeout(() => window.location.reload(), 2000);
+              }
+            } catch (err) { console.error(err); }
+          };
+
+          const confData = document.getElementById('conf-data').innerText;
+          const confHora = timeInput.value;
+          const userEmail = pacienteGlobal.email || 'seu e-mail';
+
+          // Show Success state in UI with a simplified, elegant design
           step5.innerHTML = `
-            <div class="text-center py-20 animate-fade-in-up">
-              <div class="w-24 h-24 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg class="w-12 h-12" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
-                </svg>
+            <div class="max-w-md mx-auto py-4 animate-fade-in-up">
+              <div class="bg-white rounded-[32px] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-slate-100 overflow-hidden">
+                <!-- Header: Icon & Title -->
+                <div class="bg-pe-navy p-8 text-center text-white relative">
+                  <div class="absolute top-0 right-0 p-4 opacity-10">
+                    <i data-lucide="shield-check" class="w-16 h-16"></i>
+                  </div>
+                  <div class="w-14 h-14 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-inner ring-1 ring-white/30">
+                    <i data-lucide="check-circle" class="w-8 h-8 text-white"></i>
+                  </div>
+                  <h2 class="text-2xl font-black tracking-tight mb-1 uppercase">Confirmado!</h2>
+                  <p class="text-white/70 text-[10px] font-bold uppercase tracking-widest">Seu agendamento foi realizado</p>
+                </div>
+
+                <!-- Info Body -->
+                <div class="p-8 space-y-6">
+                  <!-- Email Alert -->
+                  <div class="flex items-center gap-3 p-4 bg-slate-50 border border-slate-100 rounded-2xl">
+                    <div class="w-10 h-10 bg-pe-navy/10 text-pe-navy rounded-xl flex items-center justify-center">
+                      <i data-lucide="mail" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                      <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">E-mail de Confirmação</p>
+                      <p class="text-xs font-bold text-slate-700">${userEmail}</p>
+                    </div>
+                  </div>
+
+                  <!-- Details List -->
+                  <div class="space-y-4">
+                    <div class="flex justify-between items-start border-b border-slate-50 pb-3">
+                      <div>
+                        <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">Especialidade</span>
+                        <span class="font-black text-pe-navy uppercase text-sm">${specialtyInput.value}</span>
+                      </div>
+                      <div class="text-right">
+                        <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">Profissional</span>
+                        <span class="font-bold text-slate-800 text-xs">${doctorInput.value}</span>
+                      </div>
+                    </div>
+
+                    <div class="flex justify-between items-end">
+                      <div>
+                        <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">Data e Hora</span>
+                        <span class="font-black text-pe-royal text-sm">${confData} às ${confHora}</span>
+                      </div>
+                      <div class="text-right max-w-[140px]">
+                        <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">Unidade</span>
+                        <span class="font-bold text-slate-600 text-[10px] leading-tight block">${unitNameInput.value}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Main Action -->
+                  <div class="pt-4 space-y-3">
+                    <button onclick="window.location.reload()" class="w-full bg-pe-navy text-white px-6 py-4 rounded-2xl font-black hover:bg-pe-navy/90 transition-all text-xs uppercase tracking-widest shadow-lg shadow-pe-navy/20 flex items-center justify-center gap-2">
+                      <i data-lucide="calendar-plus" class="w-4 h-4"></i>
+                      Novo Agendamento
+                    </button>
+                    
+                    <button onclick="copyAppointmentDetails(this)" class="w-full flex items-center justify-center gap-2 px-6 py-3 bg-slate-50 hover:bg-slate-100 text-slate-500 rounded-xl transition-all font-bold text-[10px] uppercase tracking-[0.1em]">
+                       <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                       Copiar Comprovante
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Footer: Links & Info -->
+                <div class="bg-slate-50/50 p-6 border-t border-slate-50">
+                   <div class="flex items-center justify-center gap-2 mb-4 opacity-40">
+                      <i data-lucide="info" class="w-3 h-3 text-pe-navy"></i>
+                      <p class="text-[8px] font-bold text-slate-500 uppercase tracking-widest">Compareça com 15 min de antecedência</p>
+                   </div>
+                   
+                   <div class="flex items-center justify-center gap-6">
+                     <button onclick="window.location.reload()" class="text-[10px] font-black text-slate-400 hover:text-pe-navy uppercase tracking-widest transition-colors flex items-center gap-1">
+                        <i data-lucide="home" class="w-3 h-3"></i> Painel
+                     </button>
+                     <span class="w-1 h-1 bg-slate-200 rounded-full"></span>
+                     <button onclick="cancelAppointmentImmediately(${data.agendamento_id})" class="text-[10px] font-black text-slate-400 hover:text-red-500 uppercase tracking-widest transition-colors flex items-center gap-1">
+                        <i data-lucide="x-circle" class="w-3 h-3"></i> Cancelar
+                     </button>
+                   </div>
+                </div>
               </div>
-              <h2 class="text-4xl font-black text-gray-900 mb-4">Agendamento Realizado!</h2>
-              <p class="text-xl text-gray-600 mb-10">Sua consulta foi confirmada e salva com sucesso no sistema.</p>
-              <button onclick="window.location.reload()" class="bg-pe-royal text-white px-10 py-4 rounded-2xl font-bold hover:bg-pe-navy transition-all shadow-xl shadow-brand-600/20">
-                Fazer Outro Agendamento
-              </button>
+              
+              <div class="mt-8 text-center opacity-30 text-[9px] font-black text-slate-400 uppercase tracking-widest">
+                Protocolo #${data.agendamento_id}
+              </div>
             </div>
           `;
+          if (typeof lucide !== 'undefined') lucide.createIcons();
         } else {
           showToast("Erro: " + (data.error || "Não foi possível salvar."), "error");
           btn.innerHTML = originalText;
@@ -1850,23 +2297,43 @@
           const podeCancelar = diffHoras >= 12;
 
           return `
-                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-100 group hover:border-blue-200 transition-all">
-                  <div class="flex flex-col">
-                    <span class="text-xs font-black text-pe-navy uppercase tracking-tight">${a.especialidade}</span>
-                    <span class="text-sm font-bold text-gray-800">${a.medico}</span>
-                    <div class="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1 text-[11px] text-gray-500 font-medium">
-                      <span class="flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3"></i> ${a.unidade}</span>
-                      <span class="flex items-center gap-1"><i data-lucide="calendar" class="w-3 h-3"></i> ${dataFmt}</span>
-                      <span class="flex items-center gap-1"><i data-lucide="clock" class="w-3 h-3"></i> ${a.horario}</span>
+                <div class="relative bg-blue-50/50 border-2 border-dashed border-blue-200 rounded-3xl p-6 md:p-8 transition-all hover:bg-blue-50 group">
+                  <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div class="space-y-3">
+                      <h4 class="text-lg font-black text-pe-navy mb-4">Sua Consulta Agendada</h4>
+                      
+                      <div class="flex items-center gap-3 text-gray-700">
+                        <div class="w-8 h-8 bg-white rounded-lg flex items-center justify-center text-pe-royal shadow-sm">
+                          <i data-lucide="calendar" class="w-4.5 h-4.5"></i>
+                        </div>
+                        <span class="text-sm md:text-base font-bold underline decoration-pe-royal/30 underline-offset-4">${dataFmt} às ${a.horario}</span>
+                      </div>
+
+                      <div class="flex items-center gap-3 text-gray-600">
+                        <div class="w-8 h-8 bg-white rounded-lg flex items-center justify-center text-pe-royal shadow-sm">
+                          <i data-lucide="user" class="w-4.5 h-4.5"></i>
+                        </div>
+                        <span class="text-sm md:text-base font-bold"><span class="text-pe-navy">${a.especialidade}</span> - ${a.medico}</span>
+                      </div>
+
+                      <div class="flex items-center gap-3 text-gray-500">
+                        <div class="w-8 h-8 bg-white rounded-lg flex items-center justify-center text-pe-red shadow-sm">
+                          <i data-lucide="map-pin" class="w-4.5 h-4.5"></i>
+                        </div>
+                        <span class="text-sm font-bold">${a.unidade}</span>
+                      </div>
+                    </div>
+
+                    <div class="flex md:flex-col items-center gap-3">
+                      <button 
+                        onclick='cancelarAgendamento(${JSON.stringify(a)})'
+                        ${podeCancelar ? '' : 'disabled title="Cancelamento permitido apenas com 12h de antecedência"'}
+                        class="w-full md:w-auto px-8 py-3.5 bg-red-600 text-white font-black rounded-2xl hover:bg-red-700 shadow-xl shadow-red-600/20 transition-all transform hover:scale-[1.05] active:scale-95 disabled:opacity-30 disabled:grayscale disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                      >
+                        Cancelar
+                      </button>
                     </div>
                   </div>
-                  <button 
-                    onclick="cancelarAgendamento(${a.id}, '${a.especialidade}')"
-                    ${podeCancelar ? '' : 'disabled title="Cancelamento permitido apenas com 12h de antecedência"'}
-                    class="p-2.5 rounded-lg border border-gray-200 text-gray-400 hover:text-red-600 hover:bg-red-50 hover:border-red-200 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
-                  >
-                    <i data-lucide="trash-2" class="w-4.5 h-4.5"></i>
-                  </button>
                 </div>
               `;
         }).join('')}
@@ -1880,34 +2347,146 @@
       }
     }
 
-    async function cancelarAgendamento(id, especialidade) {
-      confirmAction({
-        title: 'Cancelar Agendamento',
-        message: `Tem certeza que deseja cancelar seu agendamento de ${especialidade}?`,
-        icon: 'trash-2',
-        type: 'danger',
-        onConfirm: async () => {
-          try {
-            const res = await fetch("/api/agendar_exame/cancelar", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ agendamento_id: id })
-            });
-            const data = await res.json();
+    let tempCancelId = null;
+    let selectedCancelReason = "";
+    let cancelData = null;
 
-            if (data.success) {
-              showToast("Agendamento cancelado com sucesso.", "success");
-              carregarAgendamentos(pacienteGlobal.id);
-            } else {
-              showToast("Erro: " + (data.error || "Não foi possível cancelar."), "error");
-            }
-          } catch (err) {
-            console.error(err);
-            showToast("Erro de conexão ao cancelar.", "error");
-          }
-        }
-      });
+    function setCancelReason(id, reason) {
+      selectedCancelReason = reason;
+      // UI - Toggle Active Class
+      document.querySelectorAll('.reason-option').forEach(el => el.classList.remove('active', 'border-pe-navy', 'bg-blue-50/50'));
+      const activeEl = document.querySelectorAll('.reason-option')[id - 1];
+      activeEl.classList.add('active', 'border-pe-navy', 'bg-blue-50/50');
+
+      // Enable Next Button
+      document.getElementById('btnNextCancel1').disabled = false;
+
+      // Update Summaries
+      document.getElementById('cancel-reason-summary').innerText = reason;
+      document.getElementById('cancel-final-motivo').innerText = reason;
     }
+
+    function nextStepCancel(step) {
+      // Hide all steps
+      [1, 2, 3].forEach(s => document.getElementById(`cancel-step-${s}`).classList.add('hidden'));
+
+      // Show Target Step
+      const target = document.getElementById(`cancel-step-${step}`);
+      target.classList.remove('hidden');
+
+      // Update ProgressBar
+      const p1 = document.getElementById('cancel-progress-1');
+      const p2 = document.getElementById('cancel-progress-2');
+      const p3 = document.getElementById('cancel-progress-3');
+
+      if (step === 1) {
+        p1.className = "h-full bg-pe-navy transition-all duration-500 w-1/3";
+        p2.className = "h-full bg-gray-100 transition-all duration-500 w-0";
+        p3.className = "h-full bg-gray-100 transition-all duration-500 w-0";
+      } else if (step === 2) {
+        p1.className = "h-full bg-pe-navy transition-all duration-500 w-1/3";
+        p2.className = "h-full bg-pe-navy transition-all duration-500 w-1/3";
+        p3.className = "h-full bg-gray-100 transition-all duration-500 w-0";
+      } else if (step === 3) {
+        p1.className = "h-full bg-pe-navy transition-all duration-500 w-1/3";
+        p2.className = "h-full bg-pe-navy transition-all duration-500 w-1/3";
+        p3.className = "h-full bg-pe-navy transition-all duration-500 w-1/3";
+
+        // Final Summary Update
+        const msg = document.getElementById('cancel-additional-msg').value;
+        const msgContainer = document.getElementById('cancel-final-msg-container');
+        if (msg.trim()) {
+          document.getElementById('cancel-final-msg').innerText = msg;
+          msgContainer.classList.remove('hidden');
+        } else {
+          msgContainer.classList.add('hidden');
+        }
+      }
+
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function insertCancelText(text) {
+      const area = document.getElementById('cancel-additional-msg');
+      area.value = text;
+      // Trigger input event to update char counter
+      area.dispatchEvent(new Event('input'));
+    }
+
+    // Char Counter
+    document.getElementById('cancel-additional-msg').addEventListener('input', function () {
+      document.getElementById('char-count').innerText = this.value.length;
+    });
+
+    async function cancelarAgendamento(agendamento) {
+      tempCancelId = agendamento.id;
+      cancelData = agendamento;
+
+      // Reset Modal State
+      selectedCancelReason = "";
+      document.getElementById('btnNextCancel1').disabled = true;
+      document.querySelectorAll('.reason-option').forEach(el => el.classList.remove('active', 'border-pe-navy', 'bg-blue-50/50'));
+      document.getElementById('cancel-additional-msg').value = "";
+      document.getElementById('char-count').innerText = "0";
+
+      // Update Summaries
+      document.getElementById('cancel-summary-spec').innerText = agendamento.especialidade;
+      const [y, m, d] = agendamento.data.split('-');
+      const dataFmt = `${d}/${m}/${y}`;
+      document.getElementById('cancel-summary-info').innerText = `${dataFmt} • ${agendamento.horario} • ${agendamento.medico}`;
+
+      document.getElementById('cancel-final-consulta').innerText = agendamento.especialidade;
+      document.getElementById('cancel-final-data').innerText = `${dataFmt} às ${agendamento.horario}`;
+
+      // Show first step
+      nextStepCancel(1);
+
+      // Open modal
+      const modalCancel = document.getElementById('modalCancelamento');
+      modalCancel.classList.remove('hidden');
+      modalCancel.classList.add('flex');
+
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    document.getElementById('btnConfirmarCancelamento').onclick = async () => {
+      const motivo = selectedCancelReason;
+      const notas = document.getElementById('cancel-additional-msg').value;
+
+      const btn = document.getElementById('btnConfirmarCancelamento');
+      const originalHTML = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<i class="animate-spin" data-lucide="loader-2"></i> Processando...';
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+
+      try {
+        const res = await fetch("/api/agendar_exame/cancelar", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            agendamento_id: tempCancelId,
+            motivo: motivo,
+            observacao: notas
+          })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          showToast("Consulta cancelada com sucesso! Você receberá uma confirmação por e-mail.", "success");
+          document.getElementById('modalCancelamento').classList.add('hidden');
+          if (pacienteGlobal) carregarAgendamentos(pacienteGlobal.id);
+        } else {
+          showToast("Erro: " + (data.error || "Não foi possível cancelar."), "error");
+        }
+      } catch (err) {
+        console.error(err);
+        showToast("Erro de conexão ao cancelar.", "error");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalHTML;
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      }
+    };
 
     window.carregarAgendamentos = carregarAgendamentos;
     window.cancelarAgendamento = cancelarAgendamento;
@@ -2203,7 +2782,7 @@
           if (v.length === 11) {
             // Formata como CPF apenas se tiver os 11 dígitos completos
             formatted = v.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
-            
+
             // FEEDBACK VISUAL: Adiciona ícone de sucesso sutil se for CPF válido (lógica visual)
             docInput.classList.add('border-green-500', 'bg-green-50/10');
             docInput.classList.remove('border-gray-300');
@@ -2212,7 +2791,7 @@
             const prefixo = v.slice(0, -2);
             const sufixo = v.slice(-2);
             formatted = prefixo ? `${prefixo}/${sufixo}` : sufixo;
-            
+
             docInput.classList.remove('border-green-500', 'bg-green-50/10');
             docInput.classList.add('border-gray-300');
           } else {
