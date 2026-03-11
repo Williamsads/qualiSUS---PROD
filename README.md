@@ -1,4 +1,4 @@
-# QualiSUS Enterprise v1.6.0
+# QualiSUS  v1.1.0
 
 ![Ambiente de Homologação](https://img.shields.io/badge/Status-Homologação-amber?style=for-the-badge)
 ![Tech Stack](https://img.shields.io/badge/Stack-Flask_%7C_Tailwind-blue?style=for-the-badge)
@@ -82,3 +82,4 @@ O sistema possui indicadores visuais dinâmicos no cabeçalho e na sidebar para 
 ---
 
 © 2026 QualiSUS Enterprise - Gestão de Estado.
+
