@@ -420,3 +420,27 @@ def api_deletar(id):
     finally:
         cur.close()
         conn.close()
+
+@bp_agendamento.route("/api/cancelar/<int:id>", methods=["POST"])
+def api_cancelar(id):
+    user_email = session.get("email") or "Sistema/Admin"
+    conn = get_connection()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    try:
+        cur.execute("""
+            UPDATE agendamento_exames 
+            SET status = 'Cancelado', 
+                atualizado_em = NOW(),
+                atualizado_por = %s
+            WHERE id = %s
+        """, (user_email, id))
+        
+        conn.commit()
+        return jsonify({"success": True})
+    except Exception as e:
+        conn.rollback()
+        return jsonify({"success": False, "error": str(e)}), 500
+    finally:
+        cur.close()
+        conn.close()
+

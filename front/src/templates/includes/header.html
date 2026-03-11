@@ -1,8 +1,7 @@
-<header
-    class="h-20 bg-white border-b border-slate-200/50 flex items-center justify-between px-10 flex-shrink-0 z-20 relative">
+<header class="h-20 glass-ui flex items-center justify-between px-10 flex-shrink-0 z-30 sticky top-0">
 
-    <!-- Pernambuco Signature Bar -->
-    <div class="absolute top-0 left-0 right-0 h-[3px] flex">
+    <!-- Pernambuco Signature Bar - Elite Refined -->
+    <div class="absolute top-0 left-0 right-0 h-[2px] flex opacity-80">
         <div class="h-full flex-1 bg-pe-blue"></div>
         <div class="h-full flex-1 bg-pe-red"></div>
         <div class="h-full flex-1 bg-pe-yellow"></div>
@@ -11,71 +10,103 @@
 
     <!-- Mobile: Toggle Button -->
     <button id="btnMobileMenu" onclick="toggleMobileSidebar()"
-        class="md:hidden p-4 text-slate-400 hover:text-blue-600 transition-all">
+        class="md:hidden p-3 text-slate-400 hover:text-royal transition-all hover:bg-royal/5 rounded-xl">
         <i data-lucide="menu" class="w-6 h-6"></i>
     </button>
 
-    <!-- Left: Section Title (Replaced Search) -->
-    <div class="flex-1 flex items-center">
+    <!-- Left: Branding Focus -->
+    <div class="hidden md:flex items-center gap-4">
         <div class="flex flex-col">
-            <h2 class="text-xs font-black text-slate-400 uppercase tracking-[0.2em] leading-none mb-1">QualiSUS</h2>
-            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest leading-none">Plataforma de Gestão
-                em Saúde</p>
+            <h2 class="text-[10px] font-black text-royal uppercase tracking-[0.25em] leading-none mb-1 shadow-sm">
+                QualiSUS</h2>
+            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none">Intelligence Engine
+            </p>
         </div>
     </div>
 
-    <!-- Right: Actions & Profile -->
+    <!-- Right: Elite Actions & Profile -->
     <div class="flex items-center gap-6">
-        <!-- Environment Indicator -->
-        <div class="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-amber-50 border border-amber-100/50 rounded-xl">
-            <div class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></div>
-            <span class="text-[9px] font-black text-amber-600 uppercase tracking-widest">Ambiente de Homologação</span>
+
+        <!-- Environment Indicator (Premium) -->
+        <div
+            class="hidden lg:flex items-center gap-2.5 px-4 py-2 bg-amber-50/50 border border-amber-200/30 rounded-2xl">
+            <span class="relative flex h-2 w-2">
+                <span
+                    class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+            </span>
+            <span class="text-[9px] font-black text-amber-700 uppercase tracking-widest">HML / Sandbox</span>
         </div>
 
-        <button
-            class="w-11 h-11 rounded-2xl flex items-center justify-center text-slate-400 hover:bg-slate-50 hover:text-blue-600 transition-all relative">
-            <i data-lucide="bell" class="w-5 h-5"></i>
-            <span class="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
-        </button>
-        <button
-            class="w-11 h-11 rounded-2xl flex items-center justify-center text-slate-400 hover:bg-slate-50 hover:text-blue-600 transition-all">
-            <i data-lucide="help-circle" class="w-5 h-5"></i>
-        </button>
-
-        <div class="h-8 w-px bg-slate-200"></div>
-
-        <!-- Profile -->
-        <div class="flex items-center gap-3 relative group">
-            <div class="text-right">
-                <p class="text-sm font-black text-slate-900 leading-none">{{ session.get('nome', 'Usuário')
-                    }}</p>
-                <p class="text-[10px] font-black text-blue-600 uppercase tracking-widest mt-1">
-                    {% set role = session.get('tipo', '').upper() %}
-                    {% if role == 'MEDICO' %} Médico/Especialista
-                    {% elif role == 'ADMIN' %} Administrador
-                    {% elif role == 'DESENVOLVEDOR' or role == 'DEV' %} Desenvolvedor
-                    {% elif role == 'ASSISTENTE_SOCIAL' %} Assistente Social
-                    {% else %} Usuário
-                    {% endif %}
-                </p>
-            </div>
+        <!-- Notification Center -->
+        <div class="flex items-center gap-2 bg-slate-100/50 p-1 rounded-2xl border border-slate-200/30">
             <button
-                class="w-11 h-11 rounded-2xl overflow-hidden border-2 border-white shadow-sm ring-2 ring-slate-100 group-hover:ring-blue-200 transition-all">
-                <img src="https://ui-avatars.com/api/?name={{ session.get('nome', 'User') }}&background=0063F7&color=FFFFFF&bold=true"
-                    class="w-full h-full object-cover">
+                class="w-10 h-10 rounded-xl flex items-center justify-center text-slate-500 hover:text-royal hover:bg-white hover:shadow-sm transition-all relative group">
+                <i data-lucide="bell" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
+                <span
+                    class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white shadow-sm"></span>
             </button>
-            <!-- Dropdown -->
+            <button
+                class="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-royal hover:bg-white hover:shadow-sm transition-all group">
+                <i data-lucide="search" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
+            </button>
+        </div>
+
+        <div class="h-8 w-px bg-slate-200/60 hidden sm:block"></div>
+
+        <!-- Profile: Master Styling -->
+        <div class="relative group">
             <div
-                class="absolute right-0 top-14 mt-2 w-52 bg-white border border-slate-100 rounded-2xl shadow-xl py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                <a href="{{ url_for('perfil') }}"
-                    class="flex items-center gap-3 px-4 py-2.5 text-xs font-bold text-slate-600 hover:bg-slate-50 transition">
-                    <i data-lucide="settings" class="w-4 h-4"></i> Meu Perfil
-                </a>
-                <div class="h-px bg-slate-50 mx-4 my-1"></div>
-                <a href="{{ url_for('logout') }}"
-                    class="flex items-center gap-3 px-4 py-2.5 text-xs font-bold text-red-600 hover:bg-red-50 transition">
-                    <i data-lucide="log-out" class="w-4 h-4"></i> Sair do Sistema
-                </a>
+                class="flex items-center gap-4 cursor-pointer p-1.5 pr-4 rounded-2xl hover:bg-slate-100/50 transition-all border border-transparent hover:border-slate-200/30">
+                <div class="relative">
+                    <div
+                        class="w-11 h-11 rounded-xl overflow-hidden shadow-premium p-0.5 bg-gradient-to-tr from-royal to-indigo-400">
+                        <img src="https://ui-avatars.com/api/?name={{ session.get('nome', 'User') }}&background=FFFFFF&color=2563eb&bold=true"
+                            class="w-full h-full object-cover rounded-[10px]">
+                    </div>
+                </div>
+                <div class="text-left hidden sm:block">
+                    <p class="text-xs font-black text-slate-900 leading-none truncate max-w-[120px]">{{
+                        session.get('nome', 'Usuário') }}</p>
+                    <p class="text-[9px] font-bold text-royal uppercase tracking-widest mt-1.5">
+                        {% set role = session.get('tipo', '').upper() %}
+                        {% if role == 'MEDICO' %} Especialista
+                        {% elif role == 'ADMIN' %} Diretor Adm.
+                        {% elif role == 'DESENVOLVEDOR' or role == 'DEV' %} Eng. de Software
+                        {% else %} Operacional
+                        {% endif %}
+                    </p>
+                </div>
+                <i data-lucide="chevron-down"
+                    class="w-3.5 h-3.5 text-slate-400 group-hover:rotate-180 transition-transform duration-300"></i>
+            </div>
+
+            <!-- Elite Dropdown Menu -->
+            <div
+                class="absolute right-0 top-full mt-3 w-60 bg-white border border-slate-200/50 rounded-3xl shadow-xl-premium opacity-0 invisible group-hover:opacity-100 group-hover:visible translate-y-2 group-hover:translate-y-0 transition-all duration-300 z-50 overflow-hidden">
+                <div class="p-4 bg-slate-50 border-b border-slate-100">
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Acesso Logado como:
+                    </p>
+                    <p class="text-[11px] font-bold text-slate-700 truncate">{{ session.get('email',
+                        'usuario@saude.pe.gov.br') }}</p>
+                </div>
+                <div class="p-2">
+                    <a href="{{ url_for('perfil') }}"
+                        class="flex items-center gap-3 px-4 py-3 text-xs font-bold text-slate-600 hover:bg-royal/5 hover:text-royal rounded-2xl transition-all group/item">
+                        <div
+                            class="w-8 h-8 rounded-lg bg-slate-100 group-hover/item:bg-royal/10 flex items-center justify-center transition-all">
+                            <i data-lucide="user-cog" class="w-4 h-4"></i>
+                        </div>
+                        Configurações
+                    </a>
+                    <a href="{{ url_for('logout') }}"
+                        class="flex items-center gap-3 px-4 py-3 text-xs font-bold text-red-600 hover:bg-red-50 rounded-2xl transition-all group/item">
+                        <div class="w-8 h-8 rounded-lg bg-red-50 flex items-center justify-center transition-all">
+                            <i data-lucide="log-out" class="w-4 h-4"></i>
+                        </div>
+                        Encerrar Sessão
+                    </a>
+                </div>
             </div>
         </div>
     </div>

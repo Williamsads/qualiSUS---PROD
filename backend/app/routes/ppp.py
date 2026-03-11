@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, session, flash,
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from datetime import datetime
-from app.database import get_connection
+from app.database import get_connection as get_db_connection
 
 ppp_bp = Blueprint('ppp', __name__)
 

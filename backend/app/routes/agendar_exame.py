@@ -286,7 +286,23 @@ def unidades_disponiveis():
             SELECT DISTINCT u.id, u.nome, u.endereco 
             FROM unidades_saude u
             JOIN unidades_especialidades ue ON ue.unidade_id = u.id
+            JOIN funcionarios f ON f.unidade_atendimento ILIKE u.nome AND f.ativo = TRUE AND f.atendimento = TRUE
+            JOIN funcionarios_especialidades fe ON fe.funcionario_id = f.id AND fe.especialidade_id = ue.especialidade_id
+            JOIN horarios_funcionarios hf ON hf.funcionario_id = f.id
             WHERE ue.especialidade_id = %s
+              AND EXISTS (
+                  SELECT 1 
+                  FROM generate_series(0, 30) i
+                  CROSS JOIN LATERAL (SELECT CURRENT_DATE + i AS data) d
+                  WHERE hf.dia_semana = CASE WHEN EXTRACT(ISODOW FROM d.data) = 7 THEN 0 ELSE CAST(EXTRACT(ISODOW FROM d.data) AS INTEGER) END
+                    AND NOT EXISTS (
+                        SELECT 1 FROM agendamento_exames ae 
+                        WHERE ae.data_consulta = d.data 
+                          AND ae.funcionario_id = f.id 
+                          AND ae.horario = hf.horario
+                          AND ae.status != 'Cancelado'
+                    )
+              )
             ORDER BY u.nome
         """, (especialidade_id,))
     else:
@@ -296,6 +312,34 @@ def unidades_disponiveis():
     cur.close()
     conn.close()
     return jsonify({"unidades": unidades})
+
+
+@agendamento_bp.route("/api/agendar_exame/dias_disponiveis_especialidade")
+def dias_disponiveis_especialidade():
+    especialidade_id = request.args.get("especialidade_id")
+    unidade_nome = request.args.get("unidade_nome")
+    
+    if not especialidade_id or not unidade_nome:
+        return jsonify([])
+
+    conn = get_connection()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    
+    cur.execute("""
+        SELECT DISTINCT hf.dia_semana 
+        FROM horarios_funcionarios hf
+        JOIN funcionarios f ON f.id = hf.funcionario_id
+        JOIN funcionarios_especialidades fe ON fe.funcionario_id = f.id
+        WHERE fe.especialidade_id = %s 
+          AND f.unidade_atendimento ILIKE %s
+          AND f.ativo = TRUE
+          AND f.atendimento = TRUE
+    """, (especialidade_id, unidade_nome))
+    
+    dias = [row['dia_semana'] for row in cur.fetchall()]
+    cur.close()
+    conn.close()
+    return jsonify(dias)
 
 # ====================
 # Especialidades disponíveis
@@ -870,6 +914,86 @@ def cancelar_agendamento():
         conn.close()
 
 
+
+# ====================
+# Datas com vagas disponíveis
+# ====================
+@agendamento_bp.route("/api/agendar_exame/datas_com_vagas")
+def datas_com_vagas():
+    unidade_nome = request.args.get("unidade_nome")
+    especialidade_id = request.args.get("especialidade_id")
+    mes = request.args.get("mes")
+    ano = request.args.get("ano")
+
+    if not unidade_nome or not especialidade_id or not mes or not ano:
+        return jsonify([])
+
+    conn = get_connection()
+    cur = conn.cursor()
+    
+    mes_str = str(mes).zfill(2)
+    ano_str = str(ano)
+
+    query = '''
+    WITH dias_mes AS (
+        SELECT generate_series(
+            TO_DATE(%s || '-' || %s || '-01', 'YYYY-MM-DD'),
+            TO_DATE(%s || '-' || %s || '-01', 'YYYY-MM-DD') + interval '1 month' - interval '1 day',
+            interval '1 day'
+        )::date as data_consulta
+    ),
+    profissionais_habis AS (
+        SELECT f.id, f.unidade_atendimento
+        FROM funcionarios f
+        JOIN funcionarios_especialidades fe ON fe.funcionario_id = f.id
+        WHERE fe.especialidade_id = %s
+          AND f.unidade_atendimento ILIKE %s
+          AND f.ativo = TRUE
+          AND f.atendimento = TRUE
+          AND COALESCE(f.situacao, 'Ativo') = 'Ativo'
+    ),
+    horarios_totais AS (
+        SELECT d.data_consulta, 
+               CASE WHEN EXTRACT(ISODOW FROM d.data_consulta) = 7 THEN 0 ELSE CAST(EXTRACT(ISODOW FROM d.data_consulta) AS INTEGER) END AS dia_semana_oficial,
+               hf.funcionario_id,
+               hf.horario
+        FROM dias_mes d
+        CROSS JOIN profissionais_habis p
+        JOIN horarios_funcionarios hf ON hf.funcionario_id = p.id
+        WHERE d.data_consulta >= CURRENT_DATE
+          AND hf.dia_semana = CASE WHEN EXTRACT(ISODOW FROM d.data_consulta) = 7 THEN 0 ELSE CAST(EXTRACT(ISODOW FROM d.data_consulta) AS INTEGER) END
+    ),
+    agendamentos_ocupados AS (
+        SELECT data_consulta, funcionario_id, horario
+        FROM agendamento_exames
+        WHERE data_consulta >= CURRENT_DATE
+          AND status != 'Cancelado'
+    ),
+    horarios_livres AS (
+        SELECT ht.data_consulta, ht.funcionario_id, ht.horario
+        FROM horarios_totais ht
+        LEFT JOIN agendamentos_ocupados ao 
+          ON ht.data_consulta = ao.data_consulta 
+         AND ht.funcionario_id = ao.funcionario_id 
+         AND ht.horario = ao.horario
+        WHERE ao.horario IS NULL
+          AND (ht.data_consulta > CURRENT_DATE OR (ht.data_consulta = CURRENT_DATE AND ht.horario > LOCALTIME))
+    )
+    SELECT DISTINCT hl.data_consulta
+    FROM horarios_livres hl
+    ORDER BY hl.data_consulta;
+    '''
+    try:
+        cur.execute(query, (ano_str, mes_str, ano_str, mes_str, especialidade_id, unidade_nome))
+        datas = [row[0].strftime('%Y-%m-%d') for row in cur.fetchall()]
+    except Exception as e:
+        print("Erro na query de datas com vagas:", e)
+        datas = []
+    finally:
+        cur.close()
+        conn.close()
+    
+    return jsonify(datas)
 
 # ====================
 # REGISTRAR BLUEPRINT

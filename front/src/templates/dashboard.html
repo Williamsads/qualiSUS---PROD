@@ -1,227 +1,275 @@
 {% extends "base.html" %}
 
-{% block title %}Dashboard QualiSUS{% endblock %}
+{% block title %}Dashboard Estratégico | QualiSUS{% endblock %}
 
 {% block extra_css %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://unpkg.com/lucide@latest"></script>
 <style>
-    .dashboard-card {
-        background: white;
-        border-radius: 1.5rem;
+    /* Estilos Adicionais para o Dashboard Elite */
+    .metric-card {
         padding: 1.5rem;
-        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        border: 1px solid rgba(0, 0, 0, 0.05);
-        height: 100%;
         display: flex;
         flex-direction: column;
+        justify-content: space-between;
+        min-height: 160px;
     }
 
-    .dashboard-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-    }
-
-    .stat-value {
-        font-size: 2.25rem;
-        font-weight: 800;
-        line-height: 1;
-        letter-spacing: -0.025em;
-    }
-
-    .stat-label {
-        font-size: 0.75rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        color: #64748b;
-        /* Slate 500 */
-        margin-top: 0.5rem;
-    }
-
-    .pe-navy {
-        background-color: #001F3F;
-    }
-
-    .pe-royal {
-        background-color: #0063F7;
-    }
-
-    .pe-red {
-        background-color: #EE3124;
-    }
-
-    .pe-yellow {
-        background-color: #FFD100;
-    }
-
-    .pe-green {
-        background-color: #009639;
-    }
-
-    .pe-sky {
-        background-color: #00A3E0;
-    }
-
-    .text-pe-navy {
-        color: #001F3F;
-    }
-
-    .text-pe-royal {
-        color: #0063F7;
-    }
-
-    .text-pe-red {
-        color: #EE3124;
-    }
-
-    .text-pe-green {
-        color: #009639;
-    }
-
-    .chart-container {
+    .pulse-indicator {
+        width: 8px;
+        height: 8px;
+        border-radius: 9999px;
         position: relative;
-        height: 260px;
-        width: 100%;
-        margin-top: auto;
+    }
+
+    .pulse-indicator::after {
+        content: '';
+        position: absolute;
+        inset: -2px;
+        border-radius: 9999px;
+        background: inherit;
+        opacity: 0.4;
+        animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
+
+    .chart-box {
+        background: rgba(255, 255, 255, 0.4);
+        border: 1px solid rgba(226, 232, 240, 0.3);
+        border-radius: 2.5rem;
+        padding: 2.5rem;
+    }
+
+    .unit-item {
+        transition: all 0.3s ease;
+        border: 1px solid transparent;
+    }
+
+    .unit-item:hover {
+        background: white;
+        border-color: rgba(37, 99, 235, 0.1);
+        transform: scale(1.01);
+        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04);
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="max-w-7xl mx-auto space-y-8 animate-fade-in-up pb-12">
+<div class="space-y-10 animate-fade-in pb-12">
 
-    <!-- Header -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-4">
-        <div class="flex items-center gap-5">
-            <div class="bg-pe-royal rounded-[1.5rem] p-4 flex items-center justify-center shadow-lg shadow-pe-royal/20">
-                <i data-lucide="bar-chart-3" class="w-8 h-8 text-white"></i>
-            </div>
-            <div>
-                <h1 class="text-3xl font-black text-slate-900 tracking-tight">Indicadores de Gestão</h1>
-                <p class="text-[10px] font-black text-pe-royal uppercase tracking-[0.2em] mt-1">Dashboard Estratégico
-                    QualiSUS PE</p>
-            </div>
+    <!-- BREADCRUMBS & HEADER -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 px-4">
+        <div>
+            <nav class="flex items-center text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4">
+                <span
+                    class="hover:text-royal transition-all after:content-['/'] after:mx-2 after:text-slate-300">Inteligência
+                    Estratégica</span>
+                <span class="text-royal">Dashboard de Gestão</span>
+            </nav>
+            <h1 class="heading-elite text-4xl mb-2">
+                Indicadores de Gestão
+            </h1>
+            <p class="text-slate-500 max-w-2xl font-medium opacity-70">
+                Monitoramento em tempo real do fluxo clínico e administrativo da rede.
+            </p>
         </div>
 
-        <div class="flex flex-col md:flex-row items-center gap-4">
+        <div class="flex items-center gap-4">
             <div id="last-update"
-                class="text-[10px] font-bold text-slate-400 uppercase tracking-widest hidden md:block">
-                Aguardando atualização...
+                class="hidden md:flex items-center gap-2 px-4 py-2 bg-royal/5 rounded-xl border border-royal/10">
+                <div class="pulse-indicator bg-royal"></div>
+                <span class="text-[10px] font-black text-royal uppercase tracking-widest" id="last-update-text">
+                    Aguardando...
+                </span>
             </div>
-            <button onclick="fetchStats()"
-                class="px-6 py-3 bg-white border border-slate-200 text-slate-600 rounded-2xl hover:bg-slate-50 transition-all flex items-center gap-2 font-black text-[10px] uppercase tracking-widest shadow-sm">
-                <i data-lucide="refresh-cw" class="w-4 h-4"></i>
-                <span>Atualizar Agora</span>
+            <button onclick="fetchStats()" class="btn-elite-primary shadow-glow group">
+                <i data-lucide="refresh-cw"
+                    class="w-4 h-4 group-hover:rotate-180 transition-transform duration-500"></i>
+                Atualizar Engine
             </button>
         </div>
     </div>
 
-    <!-- Summary Widgets -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <!-- METRICS GRID (ELITE STYLE) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         <!-- Altas Médicas -->
-        <div class="dashboard-card border-l-4 border-pe-green">
-            <div class="flex justify-between items-start">
-                <div>
-                    <h3 class="stat-value text-pe-green" id="stat-altas">--</h3>
-                    <p class="stat-label">Altas Médicas</p>
-                </div>
-                <div class="p-3 bg-green-50 rounded-xl text-pe-green">
-                    <i data-lucide="user-check" class="w-6 h-6"></i>
-                </div>
+        <div class="card-elite metric-card relative overflow-hidden group">
+            <div
+                class="absolute -right-6 -top-6 w-32 h-32 bg-clinical-500/5 rounded-full blur-3xl group-hover:bg-clinical-500/10 transition-all">
             </div>
-            <p class="text-[10px] text-slate-400 mt-4 font-bold uppercase tracking-wider">Altas acumuladas no período
-            </p>
+            <div class="flex items-center justify-between mb-4">
+                <div
+                    class="w-12 h-12 bg-clinical-500/10 rounded-2xl flex items-center justify-center text-clinical-500">
+                    <i data-lucide="user-plus" class="w-6 h-6"></i>
+                </div>
+                <span
+                    class="text-[9px] font-black text-clinical-500 uppercase tracking-widest bg-clinical-500/10 px-3 py-1 rounded-full">Recuperação</span>
+            </div>
+            <div>
+                <h3 class="heading-elite text-4xl text-slate-900 mb-1" id="stat-altas">--</h3>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em]">Altas Médicas</p>
+            </div>
+            <div class="mt-4 pt-4 border-t border-slate-50 flex items-center gap-2">
+                <i data-lucide="trending-up" class="w-3 h-3 text-clinical-500"></i>
+                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-tighter">Acumulado do período
+                    estratégico</span>
+            </div>
         </div>
 
         <!-- Faltas -->
-        <div class="dashboard-card border-l-4 border-pe-red">
-            <div class="flex justify-between items-start">
-                <div>
-                    <h3 class="stat-value text-pe-red" id="stat-faltas">--</h3>
-                    <p class="stat-label">Total de Faltas</p>
-                </div>
-                <div class="p-3 bg-red-50 rounded-xl text-pe-red">
-                    <i data-lucide="user-minus" class="w-6 h-6"></i>
-                </div>
+        <div class="card-elite metric-card relative overflow-hidden group">
+            <div
+                class="absolute -right-6 -top-6 w-32 h-32 bg-rose-500/5 rounded-full blur-3xl group-hover:bg-rose-500/10 transition-all">
             </div>
-            <p class="text-[10px] text-slate-400 mt-4 font-bold uppercase tracking-wider">Pacientes ausentes no período
-            </p>
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 bg-rose-500/10 rounded-2xl flex items-center justify-center text-rose-500">
+                    <i data-lucide="calendar-x" class="w-6 h-6"></i>
+                </div>
+
+                <span
+                    class="text-[9px] font-black text-rose-500 uppercase tracking-widest bg-rose-500/10 px-3 py-1 rounded-full">Absenteísmo</span>
+            </div>
+            <div>
+                <h3 class="heading-elite text-4xl text-slate-900 mb-1" id="stat-faltas">--</h3>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em]">Total de Faltas</p>
+            </div>
+            <div class="mt-4 pt-4 border-t border-slate-50 flex items-center gap-2 text-rose-500">
+                <i data-lucide="info" class="w-3 h-3"></i>
+                <span class="text-[9px] font-bold uppercase tracking-tighter">Pacientes não localizados em
+                    plantão</span>
+            </div>
         </div>
 
-        <!-- Faltas sem Justificativa -->
-        <div class="dashboard-card border-l-4 border-pe-yellow">
-            <div class="flex justify-between items-start">
-                <div>
-                    <h3 class="stat-value text-amber-600" id="stat-faltas-sem">--</h3>
-                    <p class="stat-label">Faltas s/ Justificativa</p>
-                </div>
-                <div class="p-3 bg-amber-50 rounded-xl text-amber-600">
+        <!-- Sem Justificativa -->
+        <div class="card-elite metric-card relative overflow-hidden group">
+            <div
+                class="absolute -right-6 -top-6 w-32 h-32 bg-amber-500/5 rounded-full blur-3xl group-hover:bg-amber-500/10 transition-all">
+            </div>
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 bg-amber-500/10 rounded-2xl flex items-center justify-center text-amber-500">
                     <i data-lucide="alert-triangle" class="w-6 h-6"></i>
                 </div>
+                <span
+                    class="text-[9px] font-black text-amber-500 uppercase tracking-widest bg-amber-500/10 px-3 py-1 rounded-full">Crítico</span>
             </div>
-            <p class="text-[10px] text-slate-400 mt-4 font-bold uppercase tracking-wider">Sem justificativa clínica</p>
+            <div>
+                <h3 class="heading-elite text-4xl text-slate-900 mb-1" id="stat-faltas-sem">--</h3>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em]">Sem Justificativa</p>
+            </div>
+            <div class="mt-4 pt-4 border-t border-slate-50 flex items-center gap-2">
+                <div class="w-1 h-1 rounded-full bg-amber-500"></div>
+                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-tighter">Requer atenção
+                    administrativa imediata</span>
+            </div>
         </div>
 
-        <!-- Atendimentos Realizados -->
-        <div class="dashboard-card border-l-4 border-pe-royal">
-            <div class="flex justify-between items-start">
-                <div>
-                    <h3 class="stat-value text-pe-royal" id="stat-realizados">--</h3>
-                    <p class="stat-label">Atendimentos</p>
-                </div>
-                <div class="p-3 bg-blue-50 rounded-xl text-pe-royal">
-                    <i data-lucide="check-circle" class="w-6 h-6"></i>
-                </div>
+        <!-- Atendimentos -->
+        <div class="card-elite metric-card relative overflow-hidden group">
+            <div
+                class="absolute -right-6 -top-6 w-32 h-32 bg-royal/5 rounded-full blur-3xl group-hover:bg-royal/10 transition-all">
             </div>
-            <p class="text-[10px] text-slate-400 mt-4 font-bold uppercase tracking-wider">Concluídos com sucesso</p>
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 bg-royal/10 rounded-2xl flex items-center justify-center text-royal">
+                    <i data-lucide="activity" class="w-6 h-6"></i>
+                </div>
+                <span
+                    class="text-[9px] font-black text-royal uppercase tracking-widest bg-royal/10 px-3 py-1 rounded-full">Output</span>
+            </div>
+            <div>
+                <h3 class="heading-elite text-4xl text-slate-900 mb-1" id="stat-realizados">--</h3>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em]">Atendimentos Médicos</p>
+            </div>
+            <div class="mt-4 pt-4 border-t border-slate-50 flex items-center gap-2 text-royal">
+                <i data-lucide="shield-check" class="w-3 h-3"></i>
+                <span class="text-[9px] font-bold uppercase tracking-tighter">Procedimentos finalizados com
+                    sucesso</span>
+            </div>
         </div>
     </div>
 
-    <!-- Charts Row -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <!-- 1. Evolução de Atendimentos -->
-        <div class="dashboard-card">
-            <h3 class="text-sm font-black text-slate-900 uppercase tracking-widest mb-6 flex items-center gap-2">
-                <i data-lucide="trending-up" class="w-4 h-4 text-pe-royal"></i>
-                Evolução Mensal de Atendimentos
-            </h3>
-            <div class="chart-container">
+    <!-- CHARTS GRID -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+        <div class="card-elite p-10">
+            <div class="flex items-center justify-between mb-10">
+                <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 bg-royal/10 rounded-xl flex items-center justify-center text-royal">
+                        <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="heading-elite text-lg tracking-tight">Evolução de Fluxo</h3>
+                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Atendimento Mensal
+                            Consolidado</p>
+                    </div>
+                </div>
+                <div
+                    class="px-3 py-1 bg-slate-50 border border-slate-100 rounded-lg text-[9px] font-black text-slate-400 uppercase tracking-widest">
+                    Real Time
+                </div>
+            </div>
+            <div class="h-[300px] relative">
                 <canvas id="evolutionChart"></canvas>
             </div>
         </div>
 
-        <!-- 2. Top Especialidades -->
-        <div class="dashboard-card">
-            <h3 class="text-sm font-black text-slate-900 uppercase tracking-widest mb-6 flex items-center gap-2">
-                <i data-lucide="activity" class="w-4 h-4 text-pe-red"></i>
-                Atendimentos por Especialidade
-            </h3>
-            <div class="chart-container">
+        <div class="card-elite p-10">
+            <div class="flex items-center justify-between mb-10">
+                <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 bg-indigo-500/10 rounded-xl flex items-center justify-center text-indigo-500">
+                        <i data-lucide="pie-chart" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="heading-elite text-lg tracking-tight">Especialidades</h3>
+                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Distribuição por
+                            Categoria Clínica</p>
+                    </div>
+                </div>
+            </div>
+            <div class="h-[300px] relative">
                 <canvas id="specialtyChart"></canvas>
             </div>
         </div>
     </div>
 
-    <!-- Secondary Info Row -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div class="lg:col-span-2 dashboard-card overflow-hidden">
-            <h3 class="text-sm font-black text-slate-900 uppercase tracking-widest mb-6">Detalhamento por Unidade</h3>
-            <div class="flex flex-col gap-4" id="units-container">
-                <!-- JS Populado -->
+    <!-- UNITS & HIGHLIGHT -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        <div class="lg:col-span-2 card-elite p-10">
+            <div class="flex items-center gap-4 mb-8">
+                <div class="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center text-white">
+                    <i data-lucide="map-pin" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h3 class="heading-elite text-lg tracking-tight">Detalhamento por Unidade</h3>
+                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Performance e Rendimento
+                        por lotação</p>
+                </div>
+            </div>
+
+            <div class="space-y-3" id="units-container">
+                <!-- Populado via JS -->
             </div>
         </div>
 
         <!-- Today Summary -->
         <div
-            class="dashboard-card bg-pe-navy text-white border-none shadow-xl shadow-pe-navy/20 flex flex-col justify-center items-center text-center p-10">
-            <div class="w-20 h-20 bg-white/10 rounded-3xl flex items-center justify-center mb-6 backdrop-blur-md">
-                <i data-lucide="calendar" class="w-10 h-10 text-pe-sky"></i>
+            class="card-elite bg-slate-900 !border-slate-800 text-white p-10 flex flex-col items-center justify-center text-center relative overflow-hidden group">
+            <div class="absolute inset-0 bg-gradient-to-br from-royal/20 to-transparent pointer-events-none"></div>
+            <div
+                class="w-24 h-24 bg-white/10 rounded-[2.5rem] flex items-center justify-center mb-8 backdrop-blur-xl border border-white/10 group-hover:scale-110 transition-transform duration-500">
+                <i data-lucide="calendar" class="w-10 h-10 text-white"></i>
             </div>
-            <h4 class="text-lg font-black uppercase tracking-widest mb-2">Hoje</h4>
-            <h2 class="text-6xl font-black mb-4" id="stat-hoje">--</h2>
-            <p class="text-sm font-medium text-slate-400 max-w-[200px]">Atendimentos agendados para a data corrente</p>
+            <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mb-2">Ciclo de Atendimento</h4>
+            <h2 class="text-7xl font-black heading-elite mb-2" id="stat-hoje">--</h2>
+            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Agendamentos para Hoje</p>
+
+            <div class="mt-12 w-full pt-8 border-t border-white/5 flex items-center justify-center gap-6">
+                <div class="text-center">
+                    <p class="text-xs font-black">100%</p>
+                    <p class="text-[8px] font-black text-slate-500 uppercase">SLA</p>
+                </div>
+                <div class="w-px h-8 bg-white/10"></div>
+                <div class="text-center">
+                    <p class="text-xs font-black text-clinical-500">Ativo</p>
+                    <p class="text-[8px] font-black text-slate-500 uppercase">Status</p>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -230,83 +278,69 @@
     let evolutionChart = null;
     let specialtyChart = null;
 
+    Chart.defaults.font.family = "'Inter', sans-serif";
+    Chart.defaults.color = "#94a3b8";
+
     async function fetchStats() {
         try {
+            const btn = document.querySelector('button[onclick="fetchStats()"]');
+            btn.classList.add('opacity-50', 'pointer-events-none');
+
             const res = await fetch("/dashboard/api/stats");
             const data = await res.json();
 
+            btn.classList.remove('opacity-50', 'pointer-events-none');
+
             if (data.error) {
-                if (typeof showToast !== 'undefined') showToast("Erro ao carregar dados", "error");
+                if (typeof showToast !== 'undefined') showToast("Erro Crítico Médicos", "error");
                 return;
             }
 
-            // Update simple numbers with animation
             animateValue("stat-altas", data.altas);
             animateValue("stat-faltas", data.faltas);
             animateValue("stat-faltas-sem", data.faltas_sem_justificativa);
             animateValue("stat-realizados", data.realizados);
             animateValue("stat-hoje", data.hoje);
 
-            // Update Charts
             renderEvolutionChart(data.evolucao);
             renderSpecialtyChart(data.por_especialidade);
             renderUnits(data.unidades);
 
             if (window.lucide) lucide.createIcons();
 
-            // Update timestamp
-            const now = new Date();
-            const timeStr = now.toLocaleTimeString('pt-BR');
-            const label = document.getElementById('last-update');
+            const label = document.getElementById('last-update-text');
             if (label) {
-                label.innerText = `Dados atualizados em: ${timeStr}`;
-                label.classList.remove('hidden');
+                label.innerText = `Update: ${new Date().toLocaleTimeString('pt-BR')}`;
+                document.getElementById('last-update').classList.remove('hidden');
             }
 
         } catch (err) {
             console.error(err);
-            if (typeof showToast !== 'undefined') showToast("Erro de conexão", "error");
+            if (typeof showToast !== 'undefined') showToast("Falha de Rede", "error");
         }
     }
 
     function animateValue(id, value) {
         const obj = document.getElementById(id);
         if (!obj) return;
-        const start = 0;
         const end = parseInt(value) || 0;
-        const duration = 1000;
-        let startTimestamp = null;
-        const step = (timestamp) => {
-            if (!startTimestamp) startTimestamp = timestamp;
-            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-            obj.innerText = Math.floor(progress * (end - start) + start);
-            if (progress < 1) {
-                window.requestAnimationFrame(step);
-            }
-        };
-        window.requestAnimationFrame(step);
+        let start = 0;
+        const duration = 1500;
+        const startTime = performance.now();
+
+        function update(currentTime) {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const easeOutQuad = progress * (2 - progress);
+            obj.innerText = Math.floor(easeOutQuad * end);
+            if (progress < 1) requestAnimationFrame(update);
+        }
+        requestAnimationFrame(update);
     }
 
     function renderEvolutionChart(data) {
         const el = document.getElementById('evolutionChart');
         if (!el) return;
-
-        // Check for empty data
-        if (!data || data.length === 0 || data.every(d => d.total === 0)) {
-            const container = el.parentElement;
-            container.innerHTML = `
-                <div class="flex flex-col items-center justify-center h-full text-slate-400 bg-slate-50/50 rounded-2xl border-2 border-dashed border-slate-100 p-8">
-                    <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mb-4 shadow-sm">
-                        <i data-lucide="bar-chart-2" class="w-8 h-8 opacity-20"></i>
-                    </div>
-                    <p class="text-[11px] font-black uppercase tracking-widest leading-none">Sem dados evolutivos</p>
-                    <p class="text-[10px] font-bold opacity-60 mt-2">Nenhum atendimento registrado nos últimos meses.</p>
-                </div>
-            `;
-            if (window.lucide) lucide.createIcons();
-            return;
-        }
-
         const ctx = el.getContext('2d');
         if (evolutionChart) evolutionChart.destroy();
 
@@ -317,33 +351,25 @@
                 datasets: [{
                     label: 'Atendimentos',
                     data: data.map(d => d.total),
-                    borderColor: '#0063F7',
-                    backgroundColor: 'rgba(0, 99, 247, 0.1)',
+                    borderColor: '#2563eb',
+                    backgroundColor: 'rgba(37, 99, 235, 0.05)',
                     fill: true,
-                    tension: 0.4,
-                    borderWidth: 4,
-                    pointRadius: 6,
-                    pointBackgroundColor: '#FFFFFF',
-                    pointBorderColor: '#0063F7',
-                    pointBorderWidth: 3
+                    tension: 0.5,
+                    borderWidth: 5,
+                    pointRadius: 0,
+                    pointHoverRadius: 8,
+                    pointHoverBackgroundColor: '#2563eb',
+                    pointHoverBorderColor: '#fff',
+                    pointHoverBorderWidth: 4
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false }
-                },
+                plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } },
                 scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: { borderDash: [5, 5], color: '#f1f5f9' },
-                        ticks: { font: { weight: 'bold' } }
-                    },
-                    x: {
-                        grid: { display: false },
-                        ticks: { font: { weight: 'bold' } }
-                    }
+                    y: { beginAtZero: true, grid: { color: 'rgba(241, 245, 249, 0.5)', borderDash: [5, 5] }, ticks: { padding: 10 } },
+                    x: { grid: { display: false }, ticks: { padding: 10 } }
                 }
             }
         });
@@ -352,29 +378,8 @@
     function renderSpecialtyChart(data) {
         const el = document.getElementById('specialtyChart');
         if (!el) return;
-
-        // Check for empty data
-        if (!data || data.length === 0 || data.every(d => d.total === 0)) {
-            const container = el.parentElement;
-            container.innerHTML = `
-                <div class="flex flex-col items-center justify-center h-full text-slate-400 bg-slate-50/50 rounded-2xl border-2 border-dashed border-slate-100 p-8">
-                    <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mb-4 shadow-sm">
-                        <i data-lucide="pie-chart" class="w-8 h-8 opacity-20"></i>
-                    </div>
-                    <p class="text-[11px] font-black uppercase tracking-widest leading-none">Sem especialidades</p>
-                    <p class="text-[10px] font-bold opacity-60 mt-2">Aguardando dados demográficos de consultas.</p>
-                </div>
-            `;
-            if (window.lucide) lucide.createIcons();
-            return;
-        }
-
         const ctx = el.getContext('2d');
         if (specialtyChart) specialtyChart.destroy();
-
-        const colors = [
-            '#001F3F', '#0063F7', '#EE3124', '#009639', '#FFD100'
-        ];
 
         specialtyChart = new Chart(ctx, {
             type: 'bar',
@@ -382,27 +387,19 @@
                 labels: data.map(d => d.especialidade),
                 datasets: [{
                     data: data.map(d => d.total),
-                    backgroundColor: data.map((_, i) => colors[i % colors.length]),
+                    backgroundColor: ['#0f172a', '#2563eb', '#10b981', '#f59e0b', '#ef4444'],
                     borderRadius: 12,
-                    barThickness: 24
+                    barThickness: 15
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
                 indexAxis: 'y',
-                plugins: {
-                    legend: { display: false }
-                },
+                plugins: { legend: { display: false } },
                 scales: {
-                    x: {
-                        grid: { borderDash: [5, 5], color: '#f1f5f9' },
-                        ticks: { font: { weight: 'bold' } }
-                    },
-                    y: {
-                        grid: { display: false },
-                        ticks: { font: { weight: 'bold' } }
-                    }
+                    x: { grid: { color: 'rgba(241, 245, 249, 0.5)', borderDash: [5, 5] } },
+                    y: { grid: { display: false } }
                 }
             }
         });
@@ -411,40 +408,28 @@
     function renderUnits(units) {
         const container = document.getElementById('units-container');
         if (!container) return;
-        container.innerHTML = "";
-
-        if (!units || units.length === 0) {
-            container.innerHTML = '<p class="text-slate-400 text-xs font-bold py-4 text-center">Nenhuma unidade com dados registrados.</p>';
-            return;
-        }
-
-        units.forEach(u => {
-            const char = u.unidade ? u.unidade[0].toUpperCase() : 'U';
-            const efficiencyClass = u.eficiencia > 80 ? 'text-pe-green' : (u.eficiencia > 50 ? 'text-pe-royal' : 'text-pe-red');
-
-            container.innerHTML += `
-                <div class="flex items-center justify-between p-4 bg-slate-50 rounded-2xl hover:bg-slate-100 transition-colors">
-                     <div class="flex items-center gap-4">
-                         <div class="w-10 h-10 rounded-xl bg-pe-navy text-white flex items-center justify-center font-black font-sans shadow-md">${char}</div>
-                         <div>
-                             <p class="text-sm font-bold text-slate-800">${u.unidade}</p>
-                             <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Total: ${u.total} agendamentos</p>
-                         </div>
+        container.innerHTML = units.map(u => `
+            <div class="unit-item flex items-center justify-between p-5 bg-slate-50/50 rounded-[2rem]">
+                 <div class="flex items-center gap-5">
+                     <div class="w-12 h-12 rounded-2xl bg-white border border-slate-100 flex items-center justify-center font-black text-slate-900 shadow-sm">
+                        ${u.unidade ? u.unidade[0] : 'U'}
                      </div>
-                      <div class="flex flex-col items-end gap-2">
-                        <div class="group relative">
-                            <i data-lucide="info" class="w-3 h-3 text-slate-300 cursor-help"></i>
-                            <div class="absolute bottom-full right-0 mb-2 w-48 p-2 bg-slate-800 text-white text-[9px] rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-xl">
-                                Eficiência calculada com base na relação entre agendamentos confirmados e atendimentos realizados nesta unidade.
-                            </div>
-                        </div>
-                        <span class="px-4 py-1.5 bg-white border border-slate-100 rounded-xl text-[11px] font-black ${efficiencyClass}">
-                            ${u.eficiencia}% EFICIÊNCIA
-                        </span>
-                      </div>
+                     <div>
+                         <p class="text-sm font-black text-slate-800">${u.unidade}</p>
+                         <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">${u.total} Agendamentos hoje</p>
+                     </div>
                  </div>
-            `;
-        });
+                 <div class="flex items-center gap-6">
+                    <div class="flex flex-col items-end">
+                        <span class="text-xs font-black ${u.eficiencia > 70 ? 'text-clinical-500' : 'text-amber-500'}">${u.eficiencia}%</span>
+                        <span class="text-[8px] font-black text-slate-400 uppercase">Eficiência</span>
+                    </div>
+                    <div class="w-12 h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                        <div class="h-full ${u.eficiencia > 70 ? 'bg-clinical-500' : 'bg-amber-500'}" style="width: ${u.eficiencia}%"></div>
+                    </div>
+                 </div>
+            </div>
+        `).join('') || '<p class="text-center py-10 text-[10px] font-black uppercase text-slate-400">Nenhum dado por unidade</p>';
     }
 
     document.addEventListener('DOMContentLoaded', fetchStats);

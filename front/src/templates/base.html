@@ -16,46 +16,64 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
-            darkMode: 'class', // Keeping it for compatibility if needed, but removing active triggers
+            darkMode: 'class',
             theme: {
                 extend: {
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
                     },
                     colors: {
                         brand: {
-                            50: '#F0F9FF',
-                            100: '#E0F2FE',
-                            200: '#BAE6FD',
-                            300: '#7DD3FC',
-                            400: '#38BDF8',
-                            500: '#0063F7',  // Gov-Tech Blue (Coragem/Tecnologia)
-                            600: '#0284C7',
-                            700: '#0369A1',
-                            800: '#075985',
-                            900: '#0C4A6E',
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            200: '#e2e8f0',
+                            300: '#cbd5e1',
+                            400: '#94a3b8',
+                            500: '#2563eb',  // Royal Primary
+                            600: '#1d4ed8',
+                            700: '#1e40af',
+                            800: '#1e3a8a',
+                            900: '#0f172a',
+                        },
+                        royal: {
+                            light: '#3b82f6',
+                            DEFAULT: '#2563eb',
+                            dark: '#1e40af',
+                            deep: '#0f172a',
                         },
                         clinical: {
-                            bg: '#F8FAFC',      // Fundo Ghost White (Moderno)
-                            sidebar: '#0B1120', // Twilight Navy (SaaS Enterprise)
-                            surface: '#FFFFFF',
-                            border: '#E2E8F0',  // Borda sutil
-                            blue: '#0063F7',
-                            green: '#059669',   // Sucesso AA
-                            yellow: '#D97706',  // Alerta AA
-                            red: '#DC2626',     // Erro AA
-                            text: '#0F172A',
-                            muted: '#64748B',
+                            bg: '#f8fafc',
+                            surface: '#ffffff',
+                            border: '#f1f5f9',
+                            blue: '#2563eb',
+                            green: '#10b981',
+                            yellow: '#f59e0b',
+                            red: '#ef4444',
+                            text: '#0f172a',
+                            muted: '#64748b',
                         }
                     },
                     boxShadow: {
-                        'premium': '0 1px 3px 0 rgba(0, 0, 0, 0.02), 0 1px 2px -1px rgba(0, 0, 0, 0.02)',
-                        'xl-premium': '0 20px 25px -5px rgba(0, 0, 0, 0.03), 0 8px 10px -6px rgba(0, 0, 0, 0.02)',
+                        'premium': '0 4px 20px -1px rgba(0, 0, 0, 0.03), 0 2px 10px -1px rgba(0, 0, 0, 0.02)',
+                        'xl-premium': '0 25px 50px -12px rgba(0, 0, 0, 0.08)',
+                        'glow': '0 0 20px rgba(37, 99, 235, 0.15)',
                     },
                     borderRadius: {
                         '2xl': '1rem',
                         '3xl': '1.5rem',
                         '4xl': '2rem',
+                        '5xl': '2.5rem',
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
+                        'slide-up': 'slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'scale-up': 'scaleUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
+                    },
+                    keyframes: {
+                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+                        slideUp: { '0%': { transform: 'translateY(20px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } },
+                        scaleUp: { '0%': { transform: 'scale(0.95)', opacity: '0' }, '100%': { transform: 'scale(1)', opacity: '1' } },
                     }
                 }
             }
@@ -74,62 +92,104 @@
         localStorage.removeItem('color-theme');
     </script>
 
-    <!-- Custom Styles for Scrollbar & Transitions -->
+    <!-- Quality of Life CSS -->
     <style>
-        /* Smooth transitions */
-        .sidebar-transition {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+
+        :root {
+            --royal-main: #2563eb;
+            --royal-deep: #0f172a;
         }
 
-        /* Sidebar Mini State */
-        .sidebar-mini {
-            width: 88px !important;
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
         }
 
-        .sidebar-mini .sidebar-label,
-        .sidebar-mini .sidebar-footer-text,
-        .sidebar-mini .sidebar-header-text {
-            display: none;
+        /* --- ELITE DESIGN SYSTEM CLASSES --- */
+
+        /* Premium Card */
+        .card-elite {
+            background: rgba(255, 255, 255, 0.8) !important;
+            backdrop-filter: blur(12px) !important;
+            -webkit-backdrop-filter: blur(12px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.6) !important;
+            border-radius: 2rem !important;
+            box-shadow: 0 4px 20px -1px rgba(0, 0, 0, 0.03), 0 2px 10px -1px rgba(0, 0, 0, 0.02) !important;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
         }
 
-        .sidebar-mini .sidebar-nav {
-            padding-left: 1rem;
-            padding-right: 1rem;
-        }
-
-        .sidebar-mini .nav-link {
-            justify-content: center;
-            padding-left: 0;
-            padding-right: 0;
-            width: 52px;
-            margin: 0 auto;
-        }
-
-        .sidebar-mini .nav-link span {
-            display: none;
-        }
-
-        .sidebar-mini .sidebar-logo-container {
-            justify-content: center;
-            padding-left: 0;
-            padding-right: 0;
+        .card-elite:hover {
+            transform: translateY(-4px) !important;
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.05) !important;
+            border-color: rgba(37, 99, 235, 0.2) !important;
         }
 
         /* Glassmorphism Logic */
         .glass-ui {
-            background: rgba(255, 255, 255, 0.75);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+            background: rgba(255, 255, 255, 0.75) !important;
+            backdrop-filter: blur(12px) !important;
+            -webkit-backdrop-filter: blur(12px) !important;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.4) !important;
         }
 
-        /* Modern Navy Sidebar (Premium SaaS) - Accessibility Focus */
+        /* Elite Button */
+        .btn-elite-primary {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+            color: white !important;
+            padding: 0.875rem 1.75rem !important;
+            border-radius: 1.25rem !important;
+            font-weight: 700 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.05em !important;
+            font-size: 0.75rem !important;
+            transition: all 0.3s ease !important;
+            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.25) !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 0.75rem !important;
+        }
+
+        .btn-elite-primary:hover {
+            box-shadow: 0 20px 25px -5px rgba(37, 99, 235, 0.35) !important;
+            transform: translateY(-2px) !important;
+            filter: brightness(1.05) !important;
+        }
+
+        /* Typography */
+        .heading-elite {
+            font-family: 'Outfit', sans-serif !important;
+            font-weight: 900 !important;
+            letter-spacing: -0.02em !important;
+            color: #0f172a !important;
+        }
+
+        /* Sidebar Transition */
+        .sidebar-transition {
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        }
+
+        /* Modern Royal Blue Sidebar (Premium SaaS) */
         .sidebar-royal {
-            background: #0b1120;
-            /* Darker navy for better contrast */
-            border-right: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(180deg, #0f172a 0%, #1e3a8a 100%) !important;
+            border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+            box-shadow: 10px 0 40px rgba(0, 0, 0, 0.2) !important;
             position: relative;
+            overflow: hidden;
+        }
+
+        /* Ambient Blue Glow - Optimized */
+        .sidebar-royal::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            left: -50px;
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.12) 0%, transparent 70%) !important;
+            pointer-events: none !important;
+            z-index: -1 !important;
         }
 
         /* Contrast Divider */
@@ -140,49 +200,56 @@
             top: 0;
             bottom: 0;
             width: 1px;
-            background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.1), transparent);
+            background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.05), transparent) !important;
         }
 
         /* Group Containers */
         .nav-group {
-            background: transparent;
-            margin: 0 10px 15px 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            padding-left: 12px;
-            border-left: 1px solid rgba(255, 255, 255, 0.1);
-            /* Linha guia nos submenus */
+            background: transparent !important;
+            margin: 0 10px 8px 10px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 4px !important;
+            padding-left: 12px !important;
+            border-left: 1px solid rgba(255, 255, 255, 0.1) !important;
         }
 
         .nav-section-title {
-            font-size: 13px;
-            /* Aumentado conforme solicitado */
-            font-weight: 700;
-            letter-spacing: 0.05em;
-            color: #94a3b8;
-            margin-top: 20px;
-            margin-bottom: 12px;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            color: rgba(255, 255, 255, 0.4);
+            margin-top: 24px;
+            margin-bottom: 8px;
             padding-left: 16px;
             text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(to right, rgba(255, 255, 255, 0.08), transparent);
         }
 
 
         .nav-link {
             display: flex;
             align-items: center;
-            padding: 11px 16px;
-            /* Área de clique generosa */
+            padding: 12px 16px;
             border-radius: 12px;
             font-size: 14px;
-            /* Texto maior */
             font-weight: 500;
             color: #f0f6ff;
-            /* Alto contraste */
             transition: all 0.2s ease;
             position: relative;
             text-decoration: none;
             gap: 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            /* Linha separadora suave */
             margin-bottom: 2px;
         }
 
@@ -193,7 +260,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.08);
+            /* Slightly more visible */
             border-radius: 8px;
             flex-shrink: 0;
             transition: all 0.2s ease;
@@ -206,29 +274,30 @@
         }
 
         .nav-link:hover {
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(37, 99, 235, 0.12);
             color: #ffffff;
+            transform: translateX(4px);
         }
 
         .nav-link:hover .nav-icon-tile {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(37, 99, 235, 0.25);
+            box-shadow: 0 0 15px rgba(37, 99, 235, 0.3);
         }
 
         .nav-link:hover i {
-            color: #ffffff;
+            color: #60a5fa;
         }
 
-        /* Active State: Solid Blue for clarity */
+        /* Active State: Vibrant Blue Gradient */
         .nav-item-active {
-            background: #1d4ed8 !important;
-            /* Azul sólido conforme solicitado */
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
             color: #ffffff !important;
             font-weight: 700 !important;
-            box-shadow: none !important;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3) !important;
         }
 
         .nav-item-active .nav-icon-tile {
-            background: rgba(255, 255, 255, 0.2) !important;
+            background: rgba(255, 255, 255, 0.15) !important;
         }
 
         .nav-item-active i {
@@ -495,88 +564,6 @@
         <!-- SIDEBAR -->
         {% include 'includes/sidebar.html' %}
 
-        <!-- BACKDROP MOBILE -->
-        <div id="sidebarBackdrop"
-            class="fixed inset-0 bg-slate-950/60 z-30 hidden backdrop-blur-sm transition-all duration-300 opacity-0"
-            onclick="toggleMobileSidebar()">
-        </div>
-
-        <!-- GLOBAL COMMAND CENTER (CMD+K) -->
-        <div id="commandCenter" class="fixed inset-0 z-[100] hidden items-start justify-center pt-[15vh] px-4 sm:px-6">
-            <div id="commandCenterBackdrop"
-                class="fixed inset-0 bg-slate-900/40 backdrop-blur-xl transition-opacity animate-fade-in"
-                onclick="toggleCommandCenter()"></div>
-
-            <div
-                class="relative w-full max-w-2xl bg-white/80 backdrop-blur-2xl rounded-[2.5rem] shadow-2xl border border-white/20 overflow-hidden transform transition-all animate-scale-in">
-                <!-- Search Header -->
-                <div class="flex items-center px-6 py-5 border-b border-slate-200/50">
-                    <i data-lucide="search" class="h-6 w-6 text-blue-600 mr-4"></i>
-                    <input type="text" id="commandCenterInput"
-                        class="flex-1 bg-transparent border-none outline-none text-lg font-bold text-slate-800 placeholder-slate-400"
-                        placeholder="Pesquisar arquivos, pacientes, ações...">
-                    <button onclick="toggleCommandCenter()"
-                        class="p-2 rounded-xl hover:bg-slate-100 transition-colors text-slate-400">
-                        <span class="text-[10px] font-black tracking-widest uppercase px-2">ESC</span>
-                    </button>
-                </div>
-
-                <!-- Quick Actions / Results -->
-                <div class="max-h-[60vh] overflow-y-auto p-4 custom-scrollbar">
-                    <div class="mb-6">
-                        <h4 class="px-4 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Navegação
-                            Rápida</h4>
-                        <div class="grid grid-cols-1 gap-1">
-                            <a href="{{ url_for('home') }}"
-                                class="flex items-center gap-4 px-4 py-3 rounded-2xl hover:bg-blue-600/5 group transition-all">
-                                <div
-                                    class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-all">
-                                    <i data-lucide="home" class="w-5 h-5"></i>
-                                </div>
-                                <div class="flex-1">
-                                    <p class="text-sm font-black text-slate-800">Ir para Início</p>
-                                    <p class="text-[10px] text-slate-500 font-medium">Dashboard Geral</p>
-                                </div>
-                                <span
-                                    class="text-[10px] font-black text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity">IR
-                                    PARA</span>
-                            </a>
-                            <a href="{{ url_for('trabalhadores.lista_trabalhadores') }}"
-                                class="flex items-center gap-4 px-4 py-3 rounded-2xl hover:bg-blue-600/5 group transition-all">
-                                <div
-                                    class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-all">
-                                    <i data-lucide="users" class="w-5 h-5"></i>
-                                </div>
-                                <div class="flex-1">
-                                    <p class="text-sm font-black text-slate-800">Base de Trabalhadores</p>
-                                    <p class="text-[10px] text-slate-500 font-medium">Gestão de Equipe</p>
-                                </div>
-                                <span
-                                    class="text-[10px] font-black text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity">VER
-                                    TODA LISTA</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Footer Info -->
-                <div class="px-6 py-4 bg-slate-50 border-t border-slate-200/50 flex justify-end gap-6">
-                    <div
-                        class="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                        <span
-                            class="w-5 h-5 rounded bg-white shadow-sm flex items-center justify-center border border-slate-200">↵</span>
-                        Escolher
-                    </div>
-                    <div
-                        class="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                        <span
-                            class="w-5 h-5 rounded bg-white shadow-sm flex items-center justify-center border border-slate-200">↓↑</span>
-                        Mover
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- CONTENT WRAPPER -->
         <div class="flex-1 flex flex-col overflow-hidden">
 
@@ -627,8 +614,88 @@
                 </footer>
             </main>
 
-        </div>
+        </div> <!-- End Content Wrapper -->
 
+    </div> <!-- End Main Flex Layout -->
+
+    <!-- BACKDROP MOBILE -->
+    <div id="sidebarBackdrop"
+        class="fixed inset-0 bg-slate-950/60 z-30 hidden backdrop-blur-sm transition-all duration-300 opacity-0"
+        onclick="toggleMobileSidebar()">
+    </div>
+
+    <!-- GLOBAL COMMAND CENTER (CMD+K) -->
+    <div id="commandCenter" class="fixed inset-0 z-[100] hidden items-start justify-center pt-[15vh] px-4 sm:px-6">
+        <div id="commandCenterBackdrop"
+            class="fixed inset-0 bg-slate-900/40 backdrop-blur-xl transition-opacity animate-fade-in"
+            onclick="toggleCommandCenter()"></div>
+
+        <div
+            class="relative w-full max-w-2xl bg-white/80 backdrop-blur-2xl rounded-[2.5rem] shadow-2xl border border-white/20 overflow-hidden transform transition-all animate-scale-in">
+            <!-- Search Header -->
+            <div class="flex items-center px-6 py-5 border-b border-slate-200/50">
+                <i data-lucide="search" class="h-6 w-6 text-blue-600 mr-4"></i>
+                <input type="text" id="commandCenterInput"
+                    class="flex-1 bg-transparent border-none outline-none text-lg font-bold text-slate-800 placeholder-slate-400"
+                    placeholder="Pesquisar arquivos, pacientes, ações...">
+                <button onclick="toggleCommandCenter()"
+                    class="p-2 rounded-xl hover:bg-slate-100 transition-colors text-slate-400">
+                    <span class="text-[10px] font-black tracking-widest uppercase px-2">ESC</span>
+                </button>
+            </div>
+
+            <!-- Quick Actions / Results -->
+            <div class="max-h-[60vh] overflow-y-auto p-4 custom-scrollbar">
+                <div class="mb-6">
+                    <h4 class="px-4 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Navegação
+                        Rápida</h4>
+                    <div class="grid grid-cols-1 gap-1">
+                        <a href="{{ url_for('home') }}"
+                            class="flex items-center gap-4 px-4 py-3 rounded-2xl hover:bg-blue-600/5 group transition-all">
+                            <div
+                                class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-all">
+                                <i data-lucide="home" class="w-5 h-5"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-black text-slate-800">Ir para Início</p>
+                                <p class="text-[10px] text-slate-500 font-medium">Dashboard Geral</p>
+                            </div>
+                            <span
+                                class="text-[10px] font-black text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity">IR
+                                PARA</span>
+                        </a>
+                        <a href="{{ url_for('trabalhadores.lista_trabalhadores') }}"
+                            class="flex items-center gap-4 px-4 py-3 rounded-2xl hover:bg-blue-600/5 group transition-all">
+                            <div
+                                class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-all">
+                                <i data-lucide="users" class="w-5 h-5"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-black text-slate-800">Base de Trabalhadores</p>
+                                <p class="text-[10px] text-slate-500 font-medium">Gestão de Equipe</p>
+                            </div>
+                            <span
+                                class="text-[10px] font-black text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity">VER
+                                TODA LISTA</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Info -->
+            <div class="px-6 py-4 bg-slate-50 border-t border-slate-200/50 flex justify-end gap-6">
+                <div class="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                    <span
+                        class="w-5 h-5 rounded bg-white shadow-sm flex items-center justify-center border border-slate-200">↵</span>
+                    Escolher
+                </div>
+                <div class="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                    <span
+                        class="w-5 h-5 rounded bg-white shadow-sm flex items-center justify-center border border-slate-200">↓↑</span>
+                    Mover
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- GLOBAL CONFIRM MODAL (PREMIUM UPGRADE) -->
@@ -675,9 +742,6 @@
         // Init Icons
         lucide.createIcons();
 
-
-        /* --- Legacy Accordion Logic Removed --- */
-
         /* --- Mobile Sidebar Toggle --- */
         function toggleMobileSidebar() {
             const sidebar = document.getElementById('sidebar');
@@ -690,7 +754,6 @@
 
         /* --- Toast System Logic Unified --- */
         window.showToast = function (title, message, type = 'success') {
-            // Handle single argument call
             if (arguments.length === 1 || (arguments.length === 2 && !message)) {
                 message = title;
                 title = type === 'success' ? 'Sucesso' : (type === 'error' ? 'Erro' : 'Aviso');
@@ -745,7 +808,6 @@
             titleEl.textContent = title;
             messageEl.textContent = message;
 
-            // Cores dinâmicas para o tema Premium
             if (type === 'danger') {
                 iconBg.className = 'w-24 h-24 bg-gradient-to-br from-red-50 to-red-100 rounded-[2rem] flex items-center justify-center text-red-600 mb-8 shadow-inner relative group';
                 yesBtn.className = 'flex-1 px-6 py-4 bg-red-600 text-white rounded-2xl font-black hover:bg-red-700 shadow-[0_12px_24px_-8px_rgba(220,38,38,0.4)] transition-all active:scale-95 uppercase text-[10px] tracking-[0.2em]';
@@ -790,7 +852,7 @@
         /* --- Mask CPF Logic --- */
         window.maskCPF = function (input) {
             let v = input.value.replace(/\D/g, "");
-            v = v.substring(0, 11); // Limit strictly to 11 digits
+            v = v.substring(0, 11);
             v = v.replace(/(\d{3})(\d)/, "$1.$2");
             v = v.replace(/(\d{3})(\d)/, "$1.$2");
             v = v.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
@@ -801,19 +863,8 @@
             const btn = e.submitter;
             if (btn && (btn.tagName === 'BUTTON' || btn.tagName === 'INPUT')) {
                 btn.classList.add('btn-loading');
-                // Protection against hanging states if submit fails
                 setTimeout(() => btn.classList.remove('btn-loading'), 10000);
             }
-        });
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const toasts = document.querySelectorAll('.toast-item');
-            toasts.forEach((toast, index) => {
-                setTimeout(() => {
-                    toast.classList.add('opacity-0', 'translate-x-full');
-                    setTimeout(() => toast.remove(), 300);
-                }, 5000 + (index * 500));
-            });
         });
 
         // ======================= SIDEBAR ACCORDION LOGIC =======================
@@ -834,7 +885,6 @@
             }
         }
 
-        // Auto-open: section with active item or previously open state
         document.addEventListener('DOMContentLoaded', () => {
             const accordions = document.querySelectorAll('.nav-accordion');
             accordions.forEach(acc => {
@@ -895,13 +945,11 @@
             }
         }
 
-        // Desktop Toggle
         if (btnToggleSidebar) {
             btnToggleSidebar.addEventListener('click', () => {
                 sidebar.classList.toggle('sidebar-mini');
                 const nowMini = sidebar.classList.contains('sidebar-mini');
                 localStorage.setItem('sidebar-mini', nowMini);
-
                 if (toggleIcon) {
                     toggleIcon.setAttribute('data-lucide', nowMini ? 'chevron-right' : 'chevron-left');
                     lucide.createIcons();
@@ -909,7 +957,6 @@
             });
         }
 
-        // Mobile Toggle Function
         function toggleMobileSidebar() {
             if (!sidebar) return;
             sidebar.classList.toggle('-translate-x-full');
@@ -924,7 +971,6 @@
         if (btnMobileMenu) btnMobileMenu.addEventListener('click', toggleMobileSidebar);
         if (sidebarBackdrop) sidebarBackdrop.addEventListener('click', toggleMobileSidebar);
 
-        // Sidebar Navigation Confirmation
         function confirmExternalNavigation(url) {
             window.confirmAction({
                 title: 'Agendamento de Consultas',
@@ -936,12 +982,9 @@
                 }
             });
         }
-
     </script>
 
     {% block extra_js %}{% endblock %}
-
-    </script>
-</body>
+</body>\n\n
 
 </html>

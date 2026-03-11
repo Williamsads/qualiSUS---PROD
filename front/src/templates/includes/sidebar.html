@@ -8,7 +8,7 @@
         <div class="sidebar-header-text w-full flex flex-col items-center gap-2">
             <img src="{{ url_for('static', filename='img/Logo da QualiSUS com pinwheel colorido.png') }}"
                 alt="QualiSUS Logo"
-                class="w-32 h-auto object-contain hover:scale-105 transition-transform duration-300 drop-shadow-lg">
+                class="w-44 h-auto object-contain hover:scale-110 transition-transform duration-500 drop-shadow-2xl">
         </div>
 
         <!-- Modern Separator (Beam Gradient) -->
@@ -21,8 +21,8 @@
     <nav class="flex-1 overflow-y-auto px-4 pt-2 pb-6 scrollbar-hide sidebar-nav">
 
         <!-- SECTION: VISÃO GERAL -->
-        <h4 class="nav-section-title">Visão Geral</h4>
-        <div class="mb-6">
+        <h4 class="nav-section-title">Painel Operativo</h4>
+        <div class="space-y-1 mb-4">
             <a href="{{ url_for('home') }}"
                 class="nav-link {% if request.endpoint == 'home' %} nav-item-active {% endif %}"
                 title="Painel de Monitoramento">
@@ -39,152 +39,163 @@
                 </div>
                 <span>Dashboard</span>
             </a>
-
         </div>
+
+        <div class="h-px bg-gradient-to-r from-transparent via-white/5 to-transparent my-4"></div>
 
         <!-- SECTION: OPERAÇÃO CLÍNICA -->
         <h4 class="nav-section-title">Operação Clínica</h4>
-
-        <!-- AMBULATÓRIO (accordion) -->
-        <div class="nav-accordion mb-1" id="acc-ambulatorial">
-            <button class="nav-accordion-trigger" onclick="toggleAccordion('acc-ambulatorial')">
-                <div class="flex items-center gap-3">
-                    <div class="nav-icon-tile">
-                        <i data-lucide="stethoscope"></i>
+        <div class="space-y-1">
+            <!-- AMBULATÓRIO (accordion) -->
+            <div class="nav-accordion mb-1" id="acc-ambulatorial">
+                <button class="nav-accordion-trigger" onclick="toggleAccordion('acc-ambulatorial')">
+                    <div class="flex items-center gap-3">
+                        <div class="nav-icon-tile">
+                            <i data-lucide="stethoscope"></i>
+                        </div>
+                        <span>Ambulatório</span>
                     </div>
-                    <span>Ambulatório</span>
-                </div>
-                <i data-lucide="chevron-right" class="acc-chevron w-4 h-4"></i>
-            </button>
+                    <i data-lucide="chevron-right" class="acc-chevron w-4 h-4"></i>
+                </button>
 
-            <div class="nav-accordion-body">
-                <div class="nav-group">
-                    <a href="javascript:void(0)" data-nav-url="{{ url_for('agendamento_bp.pagina_agendamento') }}"
-                        onclick="confirmExternalNavigation(this.dataset.navUrl)"
-                        class="nav-link {% if 'agendamento_bp' in request.endpoint %} nav-item-active {% endif %}"
-                        title="Novo Agendamento">
-                        <div class="nav-icon-tile">
-                            <i data-lucide="calendar-plus"></i>
-                        </div>
-                        <span>Agendamento</span>
-                    </a>
-                    <a href="{{ url_for('log_agendamento.index') }}"
-                        class="nav-link {% if 'log_agendamento' in request.endpoint and request.endpoint != 'log_agendamento.meus_pacientes' %} nav-item-active {% endif %}"
-                        title="Histórico de Atendimentos">
-                        <div class="nav-icon-tile">
-                            <i data-lucide="history"></i>
-                        </div>
-                        <span>Histórico</span>
-                    </a>
-                    <a href="{{ url_for('gerenciamento.index') }}"
-                        class="nav-link {% if 'gerenciamento' in request.endpoint %} nav-item-active {% endif %}"
-                        title="Parâmetros de Agenda">
-                        <div class="nav-icon-tile">
-                            <i data-lucide="settings-2"></i>
-                        </div>
-                        <span>Configurar Agenda</span>
-                    </a>
+                <div class="nav-accordion-body">
+                    <div class="nav-group">
+                        <a href="javascript:void(0)" data-nav-url="{{ url_for('agendamento_bp.pagina_agendamento') }}"
+                            onclick="confirmExternalNavigation(this.dataset.navUrl)"
+                            class="nav-link {% if 'agendamento_bp' in request.endpoint %} nav-item-active {% endif %}"
+                            title="Novo Agendamento">
+                            <div class="nav-icon-tile">
+                                <i data-lucide="calendar-plus"></i>
+                            </div>
+                            <span>Agendamento</span>
+                        </a>
+                        <a href="{{ url_for('log_agendamento.index') }}"
+                            class="nav-link {% if 'log_agendamento' in request.endpoint and request.endpoint != 'log_agendamento.meus_pacientes' %} nav-item-active {% endif %}"
+                            title="Histórico de Atendimentos">
+                            <div class="nav-icon-tile">
+                                <i data-lucide="history"></i>
+                            </div>
+                            <span>Histórico</span>
+                        </a>
+                        <a href="{{ url_for('gerenciamento.index') }}"
+                            class="nav-link {% if 'gerenciamento' in request.endpoint %} nav-item-active {% endif %}"
+                            title="Parâmetros de Agenda">
+                            <div class="nav-icon-tile">
+                                <i data-lucide="settings-2"></i>
+                            </div>
+                            <span>Configurar Agenda</span>
+                        </a>
 
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- PACIENTES (accordion - condicional médico/dev) -->
-        {% if session.get('tipo', '').upper() in ['MEDICO', 'DESENVOLVEDOR', 'DEV'] %}
-        <div class="nav-accordion mb-6" id="acc-pacientes">
-            <button class="nav-accordion-trigger" onclick="toggleAccordion('acc-pacientes')">
-                <div class="flex items-center gap-3">
-                    <div class="nav-icon-tile">
-                        <i data-lucide="heart-pulse"></i>
-                    </div>
-                    <span>Pacientes</span>
-                </div>
-                <i data-lucide="chevron-right" class="acc-chevron w-4 h-4"></i>
-            </button>
-
-            <div class="nav-accordion-body">
-                <div class="nav-group">
-                    <a href="{{ url_for('gestao_pacientes.index') }}"
-                        class="nav-link {% if 'gestao_pacientes' in request.endpoint %} nav-item-active {% endif %}"
-                        title="Ciclo de Tratamento">
+            <!-- PACIENTES (accordion - condicional médico/dev) -->
+            {% if session.get('tipo', '').upper() in ['MEDICO', 'DESENVOLVEDOR', 'DEV'] %}
+            <div class="nav-accordion" id="acc-pacientes">
+                <button class="nav-accordion-trigger" onclick="toggleAccordion('acc-pacientes')">
+                    <div class="flex items-center gap-3">
                         <div class="nav-icon-tile">
-                            <i data-lucide="clipboard-list"></i>
+                            <i data-lucide="heart-pulse"></i>
                         </div>
-                        <span>Em Tratamento</span>
-                    </a>
+                        <span>Pacientes</span>
+                    </div>
+                    <i data-lucide="chevron-right" class="acc-chevron w-4 h-4"></i>
+                </button>
 
+                <div class="nav-accordion-body">
+                    <div class="nav-group">
+                        <a href="{{ url_for('gestao_pacientes.index') }}"
+                            class="nav-link {% if 'gestao_pacientes' in request.endpoint %} nav-item-active {% endif %}"
+                            title="Ciclo de Tratamento">
+                            <div class="nav-icon-tile">
+                                <i data-lucide="clipboard-list"></i>
+                            </div>
+                            <span>Em Tratamento</span>
+                        </a>
+
+                    </div>
                 </div>
             </div>
+            {% else %}
+            <div class="mb-6"></div>
+            {% endif %}
         </div>
-        {% else %}
-        <div class="mb-6"></div>
-        {% endif %}
+
+        <div class="h-px bg-gradient-to-r from-transparent via-white/5 to-transparent my-4"></div>
 
         <!-- SECTION: CAPITAL HUMANO -->
         <h4 class="nav-section-title">Capital Humano</h4>
-
-        <!-- GESTÃO DE PESSOAS (accordion) -->
-        <div class="nav-accordion mb-1" id="acc-pessoas">
-            <button class="nav-accordion-trigger" onclick="toggleAccordion('acc-pessoas')">
-                <div class="flex items-center gap-2">
-                    <i data-lucide="users" class="w-3.5 h-3.5"></i>
-                    <span>Gestão de Pessoas</span>
-                </div>
-                <i data-lucide="chevron-right" class="acc-chevron w-3.5 h-3.5"></i>
-            </button>
-            <div class="nav-accordion-body">
-                <div class="nav-group">
-                    <a href="{{ url_for('trabalhadores.lista_trabalhadores') }}"
-                        class="nav-link {% if 'trabalhadores' in request.endpoint %} nav-item-active {% endif %}"
-                        title="Base de Servidores SES">
+        <div class="space-y-1">
+            <!-- GESTÃO DE PESSOAS (accordion) -->
+            <div class="nav-accordion mb-1" id="acc-pessoas">
+                <button class="nav-accordion-trigger" onclick="toggleAccordion('acc-pessoas')">
+                    <div class="flex items-center gap-3">
                         <div class="nav-icon-tile">
-                            <i data-lucide="database"></i>
+                            <i data-lucide="users"></i>
                         </div>
-                        <span>Base SES</span>
-                    </a>
-                    <a href="{{ url_for('servidor.lista_funcionarios') }}"
-                        class="nav-link {% if 'servidor' in request.endpoint %} nav-item-active {% endif %}"
-                        title="Equipe QualiVida">
-                        <div class="nav-icon-tile">
-                            <i data-lucide="user-cog"></i>
-                        </div>
-                        <span>Equipe QualiVida</span>
-                    </a>
+                        <span>Gestão de Pessoas</span>
+                    </div>
+                    <i data-lucide="chevron-right" class="acc-chevron w-4 h-4"></i>
+                </button>
+                <div class="nav-accordion-body">
+                    <div class="nav-group">
+                        <a href="{{ url_for('trabalhadores.lista_trabalhadores') }}"
+                            class="nav-link {% if 'trabalhadores' in request.endpoint %} nav-item-active {% endif %}"
+                            title="Base de Servidores SES">
+                            <div class="nav-icon-tile">
+                                <i data-lucide="database"></i>
+                            </div>
+                            <span>Base SES</span>
+                        </a>
+                        <a href="{{ url_for('servidor.lista_funcionarios') }}"
+                            class="nav-link {% if 'servidor' in request.endpoint %} nav-item-active {% endif %}"
+                            title="Equipe QualiVida">
+                            <div class="nav-icon-tile">
+                                <i data-lucide="user-cog"></i>
+                            </div>
+                            <span>Equipe QualiVida</span>
+                        </a>
 
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- SAÚDE OCUPACIONAL (accordion) -->
-        {% if session.get('email') == 'adm@gmail.com' %}
-        <div class="nav-accordion mb-6" id="acc-ocupacional">
-            <button class="nav-accordion-trigger" onclick="toggleAccordion('acc-ocupacional')">
-                <div class="flex items-center gap-2">
-                    <i data-lucide="hard-hat" class="w-3.5 h-3.5"></i>
-                    <span>Segurança & Saúde</span>
-                </div>
-                <i data-lucide="chevron-right" class="acc-chevron w-3.5 h-3.5"></i>
-            </button>
-            <div class="nav-accordion-body">
-                <div class="nav-group">
-                    <a href="{{ url_for('ppp.gestao_ppp') }}"
-                        class="nav-link {% if 'ppp' in request.endpoint %} nav-item-active {% endif %}"
-                        title="Perfil Profissiográfico Previdenciário">
+            <!-- SAÚDE OCUPACIONAL (accordion) -->
+            {% if session.get('email') == 'adm@gmail.com' %}
+            <div class="nav-accordion" id="acc-ocupacional">
+                <button class="nav-accordion-trigger" onclick="toggleAccordion('acc-ocupacional')">
+                    <div class="flex items-center gap-3">
                         <div class="nav-icon-tile">
-                            <i data-lucide="file-text"></i>
+                            <i data-lucide="hard-hat"></i>
                         </div>
-                        <span>Gestão de PPP</span>
-                    </a>
+                        <span>Segurança & Saúde</span>
+                    </div>
+                    <i data-lucide="chevron-right" class="acc-chevron w-4 h-4"></i>
+                </button>
+                <div class="nav-accordion-body">
+                    <div class="nav-group">
+                        <a href="{{ url_for('ppp.gestao_ppp') }}"
+                            class="nav-link {% if 'ppp' in request.endpoint %} nav-item-active {% endif %}"
+                            title="Perfil Profissiográfico Previdenciário">
+                            <div class="nav-icon-tile">
+                                <i data-lucide="file-text"></i>
+                            </div>
+                            <span>Gestão de PPP</span>
+                        </a>
 
+                    </div>
                 </div>
             </div>
+            {% endif %}
         </div>
-        {% endif %}
+
+        <div class="h-px bg-gradient-to-r from-transparent via-white/5 to-transparent my-4"></div>
 
         <!-- SECTION: ADMINISTRAÇÃO -->
         {% if session.get('tipo', '').upper() in ['DESENVOLVEDOR', 'DEV'] %}
         <h4 class="nav-section-title">Administração</h4>
-        <div class="mb-1">
+        <div class="space-y-1">
             <a href="{{ url_for('usuarios.lista_usuarios') }}"
                 class="nav-link {% if 'usuarios' in request.endpoint %} nav-item-active {% endif %}"
                 title="Configurações de Usuários e Permissões">
@@ -193,23 +204,38 @@
                 </div>
                 <span>Controle de Acessos</span>
             </a>
-
         </div>
         {% endif %}
 
     </nav>
 
-    <!-- SIDEBAR FOOTER -->
-    <div class="px-6 py-8 mt-auto border-t border-white/5">
-        <div class="space-y-4">
-            <div class="flex items-center gap-2.5 px-2">
-                <div class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></div>
-                <span class="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Estado do Sistema</span>
+    <!-- SIDEBAR FOOTER: ELITE REFINED -->
+    <div class="p-6 mt-auto">
+        <div class="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4 shadow-xl">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="relative flex h-2 w-2">
+                    <span
+                        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500 shadow-glow"></span>
+                </div>
+                <span class="text-[9px] font-black text-white/40 uppercase tracking-[0.2em] leading-none">Status da
+                    Rede</span>
             </div>
-            <div class="px-2 space-y-1">
-                <p class="text-[8px] font-bold text-slate-300 uppercase tracking-widest">Homologação Estável</p>
-                <p class="text-[8px] font-medium text-slate-500">QUALISUS • v1.6.0-S</p>
+
+            <div class="space-y-1.5 border-t border-white/5 pt-3">
+                <div class="flex items-center justify-between">
+                    <span class="text-[8px] font-black text-white/50 uppercase tracking-widest">Server:</span>
+                    <span class="text-[9px] font-black text-blue-400 uppercase tracking-widest">HML / Sandbox</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-[8px] font-black text-white/50 uppercase tracking-widest">Versão:</span>
+                    <span class="text-[9px] font-medium text-white/30 tracking-widest leading-none">v1.6.0-SES</span>
+                </div>
             </div>
+        </div>
+
+        <div class="mt-4 px-2 text-center">
+            <p class="text-[7px] font-bold text-white/20 uppercase tracking-[0.3em]">Qualisus Intelligence Engine</p>
         </div>
     </div>
 

@@ -2,201 +2,261 @@
 
 {% block extra_css %}
 <style>
+    /* Status Badge Refinement */
     .status-badge {
-        padding: 4px 12px;
-        border-radius: 9999px;
-        font-size: 11px;
-        font-weight: 700;
+        padding: 5px 14px;
+        border-radius: 12px;
+        font-size: 10px;
+        font-weight: 900;
         text-transform: uppercase;
-        letter-spacing: 0.05em;
+        letter-spacing: 0.1em;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
     }
 
     .status-elaboracao {
-        background: #F1F5F9;
-        color: #475569;
+        background: #f1f5f9;
+        color: #64748b;
+        border: 1px solid #e2e8f0;
     }
 
     .status-finalizado {
-        background: #E0F2FE;
-        color: #0369A1;
+        background: #eff6ff;
+        color: #2563eb;
+        border: 1px solid #dbeafe;
     }
 
     .status-assinado {
-        background: #DCFCE7;
-        color: #15803D;
+        background: #ecfdf5;
+        color: #10b981;
+        border: 1px solid #d1fae5;
     }
 
-    .filter-card {
-        background: white;
-        border: 1px solid #E2E8F0;
-        border-radius: 1.5rem;
-        padding: 1.5rem;
-        margin-bottom: 1.5rem;
+    /* Table Scrollbar Customization */
+    .custom-scrollbar::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #e2e8f0;
+        border-radius: 10px;
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="space-y-6">
-    <!-- HEADER -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="space-y-10 animate-fade-in pb-12">
+
+    <!-- BREADCRUMBS & HEADER -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 px-4">
         <div>
-            <h1 class="text-3xl font-black text-slate-900 tracking-tight">Gestão de PPP</h1>
-            <p class="text-slate-500 font-medium">Controle e rastreabilidade de Perfil Profissiográfico Previdenciário
+            <nav class="flex items-center text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4">
+                <span
+                    class="hover:text-royal transition-all after:content-['/'] after:mx-2 after:text-slate-300">Segurança
+                    & Saúde</span>
+                <span class="text-royal">Gestão de PPP</span>
+            </nav>
+            <h1 class="heading-elite text-4xl mb-2">
+                Gestão de PPP
+            </h1>
+            <p class="text-slate-500 max-w-2xl font-medium opacity-70">
+                Rastreabilidade total e conformidade do Perfil Profissiográfico Previdenciário.
             </p>
         </div>
-        <div class="flex items-center gap-3">
-            <a href="{{ url_for('ppp.novo_ppp') }}"
-                class="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-bold transition-all shadow-lg shadow-blue-600/20 active:scale-95">
-                <i data-lucide="plus" class="w-5 h-5"></i>
-                <span>Criar PPP</span>
+
+        <div class="flex items-center gap-4">
+            <a href="{{ url_for('ppp.novo_ppp') }}" class="btn-elite-primary shadow-glow">
+                <i data-lucide="file-plus-2" class="w-5 h-5"></i>
+                Gerar Novo PPP
             </a>
         </div>
     </div>
 
-    <!-- FILTERS -->
-    <div class="filter-card shadow-premium">
-        <form class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            <div class="md:col-span-2">
-                <label
-                    class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Servidor
-                    (Nome ou CPF)</label>
-                <div class="relative">
-                    <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
-                    <input type="text" placeholder="Pesquisar..."
-                        class="w-full pl-11 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none font-medium">
+    <!-- ELITE FILTERS (GLASSMOPHISM) -->
+    <div class="card-elite p-8">
+        <div class="flex items-center gap-4 mb-8">
+            <div class="w-12 h-12 bg-royal/10 rounded-2xl flex items-center justify-center text-royal">
+                <i data-lucide="filter" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <h3 class="heading-elite text-sm uppercase tracking-wider">Centro de Busca</h3>
+                <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest opacity-60">Filtre por
+                    servidor, status ou lotação</p>
+            </div>
+        </div>
+
+        <form class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+            <div class="lg:col-span-2">
+                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Servidor
+                    (Nome/CPF)</label>
+                <div class="relative group">
+                    <i data-lucide="search"
+                        class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-royal transition-colors"></i>
+                    <input type="text" placeholder="Ex: João da Silva ou 000.000..."
+                        class="w-full pl-11 pr-4 py-3 bg-slate-50/50 border border-slate-200/50 rounded-2xl text-sm focus:bg-white focus:ring-4 focus:ring-royal/5 focus:border-royal transition-all outline-none font-medium">
                 </div>
             </div>
+
             <div>
-                <label
-                    class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Status</label>
-                <select
-                    class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none font-medium appearance-none">
-                    <option value="">Todos Status</option>
-                    <option value="ELABORACAO">Em Elaboração</option>
-                    <option value="FINALIZADO">Finalizado</option>
-                    <option value="ASSINADO">Assinado</option>
-                </select>
+                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Status do
+                    Documento</label>
+                <div class="relative">
+                    <select
+                        class="w-full pl-4 pr-10 py-3 bg-slate-50/50 border border-slate-200/50 rounded-2xl text-sm focus:bg-white focus:ring-4 focus:ring-royal/5 focus:border-royal transition-all outline-none font-bold appearance-none cursor-pointer">
+                        <option value="">Todos os Status</option>
+                        <option value="ELABORACAO">Em Elaboração</option>
+                        <option value="FINALIZADO">Pendente Assinatura</option>
+                        <option value="ASSINADO">Assinado / Válido</option>
+                    </select>
+                    <i data-lucide="chevron-down"
+                        class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none"></i>
+                </div>
             </div>
+
             <div>
-                <label
-                    class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Unidade</label>
-                <select
-                    class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none font-medium appearance-none">
-                    <option value="">Todas Unidades</option>
-                </select>
+                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Unidade
+                    de Lotação</label>
+                <div class="relative">
+                    <select
+                        class="w-full pl-4 pr-10 py-3 bg-slate-50/50 border border-slate-200/50 rounded-2xl text-sm focus:bg-white focus:ring-4 focus:ring-royal/5 focus:border-royal transition-all outline-none font-bold appearance-none cursor-pointer">
+                        <option value="">Todas as Unidades</option>
+                    </select>
+                    <i data-lucide="chevron-down"
+                        class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none"></i>
+                </div>
             </div>
+
             <div>
-                <label
-                    class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Período</label>
+                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Data de
+                    Criação</label>
                 <input type="date"
-                    class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none">
+                    class="w-full px-4 py-3 bg-slate-50/50 border border-slate-200/50 rounded-2xl text-sm outline-none focus:bg-white focus:ring-4 focus:ring-royal/5 focus:border-royal transition-all font-medium">
             </div>
+
             <div class="flex items-end">
                 <button type="button"
-                    class="w-full py-2.5 bg-slate-900 text-white rounded-xl font-bold text-sm hover:bg-slate-800 transition-all active:scale-95">
-                    Filtrar
+                    class="w-full py-3.5 bg-slate-900 text-white rounded-2xl font-black text-[11px] uppercase tracking-widest hover:bg-royal transition-all active:scale-95 shadow-lg shadow-slate-900/10">
+                    Aplicar Filtros
                 </button>
             </div>
         </form>
     </div>
 
-    <!-- TABLE -->
-    <div class="bg-white rounded-[2rem] border border-slate-200 overflow-hidden shadow-premium">
-        <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
+    <!-- ELITE TABLE CONTAINER -->
+    <div class="card-elite overflow-hidden">
+        <div class="overflow-x-auto custom-scrollbar">
+            <table class="w-full text-left">
                 <thead>
                     <tr class="bg-slate-50/50 border-b border-slate-100">
-                        <th class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Servidor
-                        </th>
-                        <th class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Unidade /
-                            Matrícula</th>
-                        <th class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Criação
-                        </th>
+                        <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Servidor
+                            Beneficiário</th>
+                        <th class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Matrícula
+                            / Unidade</th>
                         <th
                             class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">
-                            Status</th>
+                            Data Emissão</th>
                         <th
-                            class="px-12 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">
-                            Ações</th>
+                            class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">
+                            Status V2</th>
+                        <th
+                            class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">
+                            Controle Administrativo</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     {% for p in ppps %}
-                    <tr class="hover:bg-slate-50/50 transition-colors group">
-                        <td class="px-6 py-5">
+                    <tr class="hover:bg-royal/5 transition-all group">
+                        <td class="px-8 py-6">
                             <div class="flex flex-col">
-                                <span class="font-bold text-slate-900">{{ p.nome_trabalhador }}</span>
-                                <div class="flex items-center gap-2">
-                                    <span class="text-[10px] text-slate-500 font-medium">{{ p.cpf_trabalhador }}</span>
+                                <span
+                                    class="heading-elite text-sm text-slate-900 group-hover:text-royal transition-colors">{{
+                                    p.nome_trabalhador }}</span>
+                                <div class="flex items-center gap-2 mt-1.5">
+                                    <span
+                                        class="text-[10px] text-slate-500 font-bold uppercase tracking-wider bg-slate-100 px-2 py-0.5 rounded-md">{{
+                                        p.cpf_trabalhador }}</span>
                                     {% if p.parent_id %}
                                     <span
-                                        class="px-1.5 py-0.5 bg-amber-50 text-amber-600 text-[8px] font-black rounded uppercase tracking-tighter border border-amber-100">Repub.
+                                        class="px-2 py-0.5 bg-amber-100/50 text-amber-600 text-[8px] font-black rounded uppercase tracking-tighter border border-amber-200/30">Versão:
                                         #{{ p.parent_id }}</span>
                                     {% endif %}
                                 </div>
                             </div>
                         </td>
-                        <td class="px-6 py-5">
+                        <td class="px-6 py-6">
                             <div class="flex flex-col">
-                                <span class="text-sm font-semibold text-slate-700">{{ p.unidade_trabalhador or 'Unidade
-                                    não
-                                    informada' }}</span>
-                                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">MAT: {{
-                                    p.matricula_trabalhador or '---' }}</span>
+                                <span class="text-xs font-bold text-slate-700 leading-tight">{{ p.unidade_trabalhador or
+                                    'Unidade não informada' }}</span>
+                                <span class="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-1">MAT:
+                                    {{ p.matricula_trabalhador or '---' }}</span>
                             </div>
                         </td>
-                        <td class="px-6 py-5">
-                            <div class="flex flex-col">
-                                <span class="text-sm font-semibold text-slate-700">{{
-                                    p.data_criacao.strftime('%d/%m/%Y') }}</span>
-                                <span class="text-[10px] text-slate-400 font-medium italic">por {{ p.criado_por_nome
+                        <td class="px-6 py-6 text-center">
+                            <div class="flex flex-col items-center">
+                                <span class="text-xs font-black text-slate-700">{{ p.data_criacao.strftime('%d/%m/%Y')
                                     }}</span>
+                                <span class="text-[9px] text-slate-400 font-bold uppercase tracking-tighter mt-1">Por:
+                                    {{ (p.criado_por_nome or '---').split(' ')[0] }}</span>
                             </div>
                         </td>
-                        <td class="px-6 py-5 text-center">
-                            <span class="status-badge status-{{ p.status|lower }}">
-                                {{ p.status.replace('_', ' ') }}
+                        <td class="px-6 py-6 text-center">
+                            <span class="status-badge status-{{ (p.status or 'INDETERMINADO')|lower }}">
+                                <div class="w-1.5 h-1.5 rounded-full bg-current"></div>
+                                {{ (p.status or '---').replace('_', ' ') }}
                             </span>
                         </td>
-                        <td class="px-6 py-5">
-                            <div class="flex items-center justify-end gap-2">
+                        <td class="px-8 py-6">
+                            <div class="flex items-center justify-end gap-3">
                                 <button data-id="{{ p.id }}" onclick="abrirHistorico(this.dataset.id)"
-                                    title="Ver Histórico"
-                                    class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all">
-                                    <i data-lucide="history" class="w-5 h-5"></i>
+                                    title="Consultar Histórico"
+                                    class="w-10 h-10 flex items-center justify-center bg-slate-100 text-slate-400 hover:bg-royal/10 hover:text-royal rounded-xl transition-all group/item shadow-sm">
+                                    <i data-lucide="history"
+                                        class="w-4 h-4 group-hover/item:scale-110 transition-transform"></i>
                                 </button>
-                                <div class="h-4 w-px bg-slate-100"></div>
+
+                                <div class="h-6 w-px bg-slate-100"></div>
+
                                 {% if p.status == 'ASSINADO' %}
                                 <button data-id="{{ p.id }}" onclick="republicarPPP(this.dataset.id)"
-                                    title="Republicar (Criar Nova Versão)"
-                                    class="p-2 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-xl transition-all">
-                                    <i data-lucide="refresh-cw" class="w-5 h-5"></i>
+                                    title="Gerar Nova Versão (Retificar)"
+                                    class="w-10 h-10 flex items-center justify-center bg-amber-50 text-amber-500 hover:bg-amber-100 rounded-xl transition-all shadow-sm">
+                                    <i data-lucide="refresh-ccw" class="w-4 h-4"></i>
                                 </button>
                                 {% endif %}
+
                                 {% if p.status != 'ASSINADO' %}
                                 <a href="{{ url_for('ppp.editar_ppp', id=p.id) }}"
-                                    class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all">
-                                    <i data-lucide="edit-3" class="w-5 h-5"></i>
+                                    class="w-10 h-10 flex items-center justify-center bg-royal/10 text-royal hover:bg-royal hover:text-white rounded-xl transition-all shadow-sm">
+                                    <i data-lucide="edit-3" class="w-4 h-4"></i>
                                 </a>
                                 {% endif %}
+
                                 <button
-                                    class="p-2 text-slate-400 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-all">
-                                    <i data-lucide="more-vertical" class="w-5 h-5"></i>
+                                    class="w-10 h-10 flex items-center justify-center bg-slate-50 text-slate-400 hover:bg-slate-900 hover:text-white rounded-xl transition-all shadow-sm">
+                                    <i data-lucide="more-horizontal" class="w-4 h-4"></i>
                                 </button>
                             </div>
                         </td>
                     </tr>
                     {% else %}
                     <tr>
-                        <td colspan="5" class="px-6 py-20 text-center">
-                            <div class="flex flex-col items-center gap-3">
+                        <td colspan="5" class="px-8 py-32 text-center">
+                            <div class="flex flex-col items-center gap-4">
                                 <div
-                                    class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center text-slate-300">
-                                    <i data-lucide="file-text" class="w-8 h-8"></i>
+                                    class="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center text-slate-200 border border-slate-100">
+                                    <i data-lucide="file-warning" class="w-10 h-10"></i>
                                 </div>
-                                <p class="text-sm font-black text-slate-400 uppercase tracking-[0.2em]">Nenhum PPP
-                                    encontrado</p>
+                                <div>
+                                    <p class="heading-elite text-lg text-slate-400">Nenhum PPP Disponível</p>
+                                    <p class="text-xs text-slate-400 font-bold uppercase tracking-widest mt-1">Ajuste os
+                                        filtros ou crie um novo documento</p>
+                                </div>
                             </div>
                         </td>
                     </tr>
@@ -205,50 +265,59 @@
             </table>
         </div>
 
-        <!-- Pagination -->
-        <div class="px-6 py-4 bg-slate-50/50 border-t border-slate-100 flex items-center justify-between">
-            <span class="text-xs font-bold text-slate-500 uppercase tracking-widest">Exibindo {{ ppps|length }}
-                registros</span>
-            <div class="flex gap-1">
+        <!-- Pagination: Elite Style -->
+        <div class="px-8 py-5 bg-slate-50/50 border-t border-slate-100 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <span class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Total de Registros: <span
+                        class="text-royal">{{ ppps|length }}</span></span>
+            </div>
+            <div class="flex items-center gap-2">
                 <button
-                    class="p-2 bg-white border border-slate-200 rounded-lg text-slate-400 disabled:opacity-50 cursor-not-allowed">
-                    <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                    class="w-10 h-10 flex items-center justify-center bg-white border border-slate-200 rounded-xl text-slate-400 disabled:opacity-30 cursor-not-allowed group hover:border-royal transition-all">
+                    <i data-lucide="chevron-left" class="w-4 h-4 group-hover:text-royal"></i>
                 </button>
+                <div
+                    class="flex items-center px-4 h-10 bg-white border border-slate-200 rounded-xl text-[10px] font-black text-royal uppercase tracking-widest">
+                    Pag. 01</div>
                 <button
-                    class="p-2 bg-white border border-slate-200 rounded-lg text-slate-400 disabled:opacity-50 cursor-not-allowed">
-                    <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    class="w-10 h-10 flex items-center justify-center bg-white border border-slate-200 rounded-xl text-slate-400 disabled:opacity-30 cursor-not-allowed group hover:border-royal transition-all">
+                    <i data-lucide="chevron-right" class="w-4 h-4 group-hover:text-royal"></i>
                 </button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- MODAL HISTÓRICO -->
+<!-- MODAL HISTÓRICO: ELITE VERSION -->
 <div id="modalHistorico"
-    class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
+    class="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-[100] hidden items-center justify-center p-6 animate-fade-in">
     <div
-        class="bg-white rounded-[2.5rem] w-full max-w-lg shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
-        <div class="px-8 py-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+        class="bg-white rounded-[3rem] w-full max-w-xl shadow-2xl-premium overflow-hidden transform transition-all border border-slate-200/50 shadow-2xl">
+        <div class="px-10 py-8 border-b border-slate-100 flex items-center justify-between bg-white relative">
+            <div class="absolute top-0 left-0 right-0 h-1.5 bg-royal/20"></div>
             <div>
-                <h3 class="text-xl font-black text-slate-800 tracking-tight">Histórico de Ações</h3>
-                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Rastreabilidade
-                    Completa</p>
+                <h3 class="heading-elite text-2xl tracking-tight">Timeline de Operações</h3>
+                <p
+                    class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1.5 flex items-center gap-2">
+                    <i data-lucide="shield-check" class="w-3 h-3 text-royal"></i>
+                    Audit Log Disponível
+                </p>
             </div>
             <button onclick="fecharHistorico()"
-                class="p-2 hover:bg-white rounded-xl text-slate-400 hover:text-slate-900 transition-all border border-transparent hover:border-slate-100">
+                class="w-11 h-11 flex items-center justify-center bg-slate-50 text-slate-400 hover:text-royal hover:bg-royal/10 rounded-2xl transition-all">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
         </div>
-        <div class="p-8 max-h-[60vh] overflow-y-auto">
+        <div class="px-10 py-10 max-h-[60vh] overflow-y-auto custom-scrollbar">
             <div id="timeline-container"
-                class="relative space-y-8 before:absolute before:inset-y-0 before:left-0 before:w-0.5 before:bg-slate-100 ml-4 pl-8">
+                class="relative space-y-10 before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-100 ml-4 pl-10">
                 <!-- Conteúdo via JS -->
             </div>
         </div>
-        <div class="px-8 py-6 bg-slate-50/50 border-t border-slate-100 flex justify-end">
+        <div class="px-10 py-8 bg-slate-50 border-t border-slate-100 flex justify-end gap-3">
             <button onclick="fecharHistorico()"
-                class="px-6 py-2.5 bg-slate-900 text-white rounded-xl font-bold text-sm hover:bg-slate-800 transition-all active:scale-95">
-                Fechar
+                class="btn-elite-primary !bg-slate-900 hover:!bg-slate-800 shadow-none !rounded-2xl">
+                Fechar Janela
             </button>
         </div>
     </div>
@@ -257,7 +326,12 @@
 <script>
     async function abrirHistorico(id) {
         const container = document.getElementById('timeline-container');
-        container.innerHTML = '<div class="text-center py-10"><div class="animate-spin w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-2"></div><p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Carregando...</p></div>';
+        container.innerHTML = `
+            <div class="text-center py-20 flex flex-col items-center">
+                <div class="animate-spin w-10 h-10 border-4 border-royal border-t-transparent rounded-full mb-4"></div>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest animate-pulse">Consultando Audit Log...</p>
+            </div>
+        `;
 
         document.getElementById('modalHistorico').classList.remove('hidden');
         document.getElementById('modalHistorico').classList.add('flex');
@@ -268,46 +342,63 @@
 
             container.innerHTML = '';
             if (data.length === 0) {
-                container.innerHTML = '<p class="text-center text-slate-400 text-sm">Nenhum histórico registrado.</p>';
+                container.innerHTML = `
+                    <div class="text-center py-10">
+                        <i data-lucide="info" class="w-8 h-8 text-slate-200 mx-auto mb-2"></i>
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Nenhum evento registrado no log.</p>
+                    </div>
+                `;
+                lucide.createIcons();
                 return;
             }
 
-            data.forEach(item => {
+            data.forEach((item, index) => {
+                const isLast = index === data.length - 1;
                 const html = `
-                    <div class="relative">
-                        <div class="absolute -left-[27px] top-1.5 w-[14px] h-[14px] rounded-full border-2 border-white bg-blue-600 shadow-sm shadow-blue-600/50"></div>
-                        <div class="flex flex-col">
-                            <div class="flex items-center gap-3 mb-1">
-                                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">${item.data}</span>
-                                <span class="px-2 py-0.5 bg-blue-50 text-blue-600 text-[9px] font-black rounded-md uppercase tracking-wider">${item.acao}</span>
+                    <div class="relative group/log">
+                        <div class="absolute -left-[45px] top-1 w-2.5 h-2.5 rounded-full border-2 border-white bg-royal shadow-glow group-hover/log:scale-150 transition-transform"></div>
+                        <div class="flex flex-col bg-slate-50 p-6 rounded-3xl border border-transparent hover:border-royal/10 hover:bg-white transition-all shadow-sm hover:shadow-premium">
+                            <div class="flex items-center gap-4 mb-2">
+                                <span class="text-[9px] font-black text-royal uppercase tracking-widest">${item.data}</span>
+                                <span class="px-2.5 py-0.5 bg-royal/10 text-royal text-[9px] font-black rounded-lg uppercase tracking-wider">${item.acao}</span>
                             </div>
-                            <p class="text-sm font-bold text-slate-800">${item.usuario_nome}</p>
-                            <p class="text-xs text-slate-500 font-medium">${item.descricao}</p>
+                            <p class="heading-elite text-xs text-slate-900">${item.usuario_nome}</p>
+                            <p class="text-[11px] text-slate-500 font-semibold mt-1 leading-relaxed">${item.descricao}</p>
                         </div>
                     </div>
                 `;
                 container.innerHTML += html;
             });
+            lucide.createIcons();
         } catch (error) {
-            container.innerHTML = '<p class="text-center text-red-500 text-sm">Erro ao carregar histórico.</p>';
+            container.innerHTML = `
+                <div class="bg-red-50 text-red-600 p-6 rounded-3xl border border-red-100 flex flex-col items-center">
+                    <i data-lucide="alert-circle" class="w-6 h-6 mb-2"></i>
+                    <p class="text-[10px] font-black uppercase tracking-widest">Erro Crítico de Conexão</p>
+                </div>
+            `;
+            lucide.createIcons();
         }
     }
 
     async function republicarPPP(id) {
         const { value: motivo } = await Swal.fire({
-            title: 'Republicar PPP',
+            title: 'Audit: Republicação',
+            text: 'Esta ação criará uma nova versão rastreável deste PPP.',
             input: 'textarea',
-            inputLabel: 'Motivo da Republicação',
-            inputPlaceholder: 'Descreva o motivo desta nova versão (ex: Correção de CBO, Adição de fator de risco...)',
-            inputAttributes: {
-                'aria-label': 'Descreva o motivo desta nova versão'
+            inputLabel: 'Justificativa Técnica',
+            inputPlaceholder: 'Descreva detalhadamente o motivo da retificação...',
+            customClass: {
+                popup: 'rounded-[3rem] p-10',
+                confirmButton: 'bg-royal text-white rounded-2xl px-10 py-4 font-black uppercase text-[10px] tracking-widest shadow-glow',
+                cancelButton: 'bg-slate-100 text-slate-500 rounded-2xl px-10 py-4 font-black uppercase text-[10px] tracking-widest'
             },
             showCancelButton: true,
-            confirmButtonText: 'Republicar',
-            cancelButtonText: 'Cancelar',
+            confirmButtonText: 'Confirmar Republicação',
+            cancelButtonText: 'Abortar',
             inputValidator: (value) => {
                 if (!value) {
-                    return 'Você precisa informar o motivo!'
+                    return 'A justificativa técnica é obrigatória!'
                 }
             }
         });
@@ -321,15 +412,15 @@
                 });
                 const result = await response.json();
                 if (result.success) {
-                    showToast('Sucesso', 'Nova versão do PPP criada com sucesso!', 'success');
+                    showToast('Versão Gerada', 'O sistema criou um novo documento para edição.', 'success');
                     setTimeout(() => {
                         window.location.href = `/ppp/editar/${result.id}`;
                     }, 1500);
                 } else {
-                    showToast('Erro', result.error || 'Erro ao republicar.', 'error');
+                    showToast('Falha Administrativa', result.error || 'Erro ao processar.', 'error');
                 }
             } catch (error) {
-                showToast('Erro', 'Falha na conexão.', 'error');
+                showToast('Erro de Rede', 'Verifique sua conexão com o servidor.', 'error');
             }
         }
     }
