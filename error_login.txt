@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "C:\Users\williams.sobrinho\sistema_qualivida\backend\create_user_login.py", line 22, in create_user_debug
+    cur.execute("""
+psycopg2.errors.InvalidTextRepresentation: invalid input value for enum tipo_usuario: "Médico"
+LINE 3: ...adf27c5303d8b573672bf21c3a62c85fd57f40cd2e8a683', 'Médico', ...
+                                                             ^
+

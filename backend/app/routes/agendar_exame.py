@@ -1,10 +1,17 @@
+<<<<<<< HEAD
 from flask import Flask, Blueprint, request, jsonify, render_template, session
+=======
+from flask import Flask, Blueprint, request, jsonify, render_template,session
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import os
 from datetime import datetime, timedelta
+<<<<<<< HEAD
 from app.utils import validar_cpf
 from app.database import get_connection
+=======
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
 
 # ----------------------
 # CONFIGURAÇÃO DO FLASK
@@ -19,7 +26,18 @@ agendamento_bp = Blueprint("agendamento_bp", __name__, template_folder="template
 
 # ----------------------
 # CONEXÃO COM O BANCO
+<<<<<<< HEAD
 from app.database import get_connection
+=======
+# ----------------------
+def get_connection():
+    return psycopg2.connect(
+        host="10.24.59.104",
+        user="qualisus",
+        password="h5eXAx59gJ3h84Xa",
+        database="qualisus"
+    )
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
 
 # ----------------------
 # ROTA PRINCIPAL (HTML)
@@ -38,10 +56,13 @@ def validar_trabalhador():
     # Limpa apenas para o CPF (que no banco geralmente é numérico)
     doc_limpo = "".join(filter(str.isdigit, doc))
     
+<<<<<<< HEAD
     # Validação de CPF se o documento tiver 11 dígitos
     if len(doc_limpo) == 11 and not validar_cpf(doc_limpo):
         return jsonify({"found": False, "error": "CPF mathematicamente inválido."}), 400
     
+=======
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
     conn = get_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
 
@@ -55,7 +76,10 @@ def validar_trabalhador():
             t.data_nascimento,
             t.telefone,
             t.email,
+<<<<<<< HEAD
             t.acolhimento_realizado,
+=======
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
             vt.id AS vinculo_id,
             vt.numero_funcional,
             vt.tipo_vinculo,
@@ -113,6 +137,7 @@ def validar_trabalhador():
 
 
 
+<<<<<<< HEAD
 @agendamento_bp.route("/api/agendar_exame/trabalhador/by-id")
 def get_trabalhador_by_id():
     tid = request.args.get("id")
@@ -150,12 +175,18 @@ def get_trabalhador_by_id():
         cur.close()
         conn.close()
 
+=======
+# ====================
+# ATUALIZAR TRABALHADOR + VÍNCULO
+# ====================
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
 @agendamento_bp.route("/api/agendar_exame/trabalhador/atualizar-completo", methods=["POST", "PUT"])
 def atualizar_cadastro():
     data = request.json
     trabalhador = data.get("trabalhador", {})
     vinculo = data.get("vinculo", {})
 
+<<<<<<< HEAD
     trabalhador_id_sessao = session.get("trabalhador_id")
     trabalhador_id_corpo = data.get("trabalhador_id")
     
@@ -175,6 +206,15 @@ def atualizar_cadastro():
         if len(t_cpf_limpo) == 11 and not validar_cpf(t_cpf_limpo):
             return jsonify({"success": False, "error": "O CPF informado é inválido."}), 400
     
+=======
+    trabalhador_id = session.get("trabalhador_id")
+    if not trabalhador_id:
+        return jsonify({
+            "success": False,
+            "error": "Sessão expirada. Valide o trabalhador novamente."
+        }), 401
+    
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
     # Sanitização Helper
     def clean(val):
         if isinstance(val, str):
@@ -277,6 +317,7 @@ def atualizar_cadastro():
 # ====================
 @agendamento_bp.route("/api/agendar_exame/unidades_disponiveis")
 def unidades_disponiveis():
+<<<<<<< HEAD
     especialidade_id = request.args.get("especialidade_id")
     conn = get_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
@@ -308,11 +349,17 @@ def unidades_disponiveis():
     else:
         cur.execute("SELECT id, nome, endereco FROM unidades_saude ORDER BY nome")
         
+=======
+    conn = get_connection()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    cur.execute("SELECT id, nome, endereco FROM unidades_saude")
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
     unidades = cur.fetchall()
     cur.close()
     conn.close()
     return jsonify({"unidades": unidades})
 
+<<<<<<< HEAD
 
 @agendamento_bp.route("/api/agendar_exame/dias_disponiveis_especialidade")
 def dias_disponiveis_especialidade():
@@ -341,6 +388,8 @@ def dias_disponiveis_especialidade():
     conn.close()
     return jsonify(dias)
 
+=======
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
 # ====================
 # Especialidades disponíveis
 # ====================
@@ -357,7 +406,11 @@ def especialidades_disponiveis():
 
     if unidade_id:
         cur.execute(f"""
+<<<<<<< HEAD
             SELECT e.id, e.nome, e.icone, e.tipo_fluxo, e.exige_acolhimento_previo 
+=======
+            SELECT e.id, e.nome, e.icone 
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
             FROM especialidades e
             JOIN unidades_especialidades ue ON ue.especialidade_id = e.id
             WHERE ue.unidade_id = %s {visivel_filter}
@@ -365,7 +418,11 @@ def especialidades_disponiveis():
         """, (unidade_id,))
     else:
         # Corrigido: Se não for para incluir ocultos, usa WHERE (ou 1=1 se for para incluir)
+<<<<<<< HEAD
         query = f"SELECT id, nome, icone, tipo_fluxo, exige_acolhimento_previo FROM especialidades {visivel_filter_no_alias} ORDER BY nome"
+=======
+        query = f"SELECT id, nome, icone FROM especialidades {visivel_filter_no_alias} ORDER BY nome"
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
         cur.execute(query)
         
     especialidades = cur.fetchall()
@@ -379,15 +436,23 @@ def especialidades_disponiveis():
 @agendamento_bp.route("/api/agendar_exame/check-acolhimento")
 def check_acolhimento():
     trabalhador_id = request.args.get("trabalhador_id")
+<<<<<<< HEAD
     especialidade_nome = request.args.get("especialidade")
 
     user_tipo = str(session.get("tipo", "")).upper()
     perfil_paciente = ["TRABALHADOR", "USUARIO", "PACIENTE", ""]
+=======
+    especialidade = request.args.get("especialidade", "")
+    
+    if not trabalhador_id or especialidade not in ["Psicólogo", "Psiquiatra"]:
+        return jsonify({"blocked": False})
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
 
     conn = get_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
     
     try:
+<<<<<<< HEAD
         # 1. Busca regra da especialidade (Case Insensitive)
         cur.execute("SELECT id, nome, exige_acolhimento_previo FROM especialidades WHERE LOWER(nome) = LOWER(%s)", (especialidade_nome,))
         spec = cur.fetchone()
@@ -418,6 +483,45 @@ def check_acolhimento():
         return jsonify({"blocked": False})
     except Exception as e:
         return jsonify({"blocked": False, "error": str(e)}) # Em caso de erro, libera para não travar o fluxo
+=======
+        # Regra: Bloqueia se NÃO houver um acolhimento 'Validado'
+        cur.execute("""
+            SELECT id, status, validado_para_psico FROM agendamento_exames 
+            WHERE trabalhador_id = %s 
+              AND especialidade = 'Acolhimento'
+              AND status != 'Cancelado'
+            ORDER BY data_consulta DESC, horario DESC
+            LIMIT 1
+        """, (trabalhador_id,))
+        
+        acolhimento = cur.fetchone()
+        
+        if not acolhimento:
+            return jsonify({
+                "blocked": True, 
+                "reason": "missing",
+                "message": "Antes do atendimento em Psicologia ou Psiquiatria, é necessário passar pelo Acolhimento Presencial e ser validado pelo profissional."
+            })
+            
+        if not acolhimento['validado_para_psico']:
+            if acolhimento['status'] == 'Finalizado':
+                return jsonify({
+                    "blocked": True, 
+                    "reason": "not_eligible",
+                    "message": "Seu acolhimento foi finalizado, mas o profissional indicou que você ainda não está apto para seguir para Psicologia/Psiquiatria neste momento."
+                })
+            else:
+                return jsonify({
+                    "blocked": True, 
+                    "reason": "pending",
+                    "message": "Seu acolhimento ainda não foi realizado ou validado pelo profissional responsável."
+                })
+            
+        return jsonify({"blocked": False})
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
     finally:
         cur.close()
         conn.close()
@@ -458,6 +562,7 @@ def profissionais_por_especialidade():
     return jsonify({"profissionais": profissionais})
 
 # ====================
+<<<<<<< HEAD
 # Horários Disponíveis por Profissional e Data
 # ====================
 @agendamento_bp.route("/api/agendar_exame/horarios")
@@ -533,16 +638,25 @@ def dias_disponiveis_profissional():
     return jsonify(dias)
 
 # ====================
+=======
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
 # Confirmar Agendamento
 # ====================
 @agendamento_bp.route("/api/agendar_exame/confirmar", methods=["POST"])
 def confirmar_agendamento():
     data = request.json
+<<<<<<< HEAD
     # Prioriza trabalhador_id do corpo para evitar concorrência de abas
     trabalhador_id = data.get("trabalhador_id") or session.get("trabalhador_id")
 
     if not trabalhador_id:
         return jsonify({"success": False, "error": "Identificação do trabalhador ausente. Valide o trabalhador novamente."}), 401
+=======
+    
+    trabalhador_id = session.get("trabalhador_id")
+    if not trabalhador_id:
+        return jsonify({"success": False, "error": "Sessão expirada. Valide o trabalhador novamente."}), 401
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
 
     vinculo_id = data.get("vinculo_id")
     funcionario_id = data.get("funcionario_id") # Este é o ID do Profissional
@@ -551,6 +665,7 @@ def confirmar_agendamento():
     unidade = data.get("unidade")
     especialidade = data.get("especialidade")
 
+<<<<<<< HEAD
     # --- [A] IDENTIFICAÇÃO DO PERFIL ---
     user_tipo = str(session.get("tipo", "")).upper()
     user_email = session.get("email")
@@ -743,6 +858,85 @@ def confirmar_agendamento():
             print(f"Erro ao enviar e-mail de confirmação: {mail_err}")
 
         return jsonify({"success": True, "message": "Agendamento realizado com sucesso.", "agendamento_id": agendamento_id})
+=======
+    if not all([data_consulta, horario, funcionario_id]):
+        return jsonify({"success": False, "error": "Dados incompletos para o agendamento."}), 400
+
+    conn = get_connection()
+    cur = conn.cursor()
+
+    try:
+        # --- REGRA DE NEGÓCIO: Acolhimento obrigatório e validado para Psicologia/Psiquiatria ---
+        if especialidade in ["Psicólogo", "Psiquiatra"]:
+            cur.execute("""
+                SELECT validado_para_psico FROM agendamento_exames 
+                WHERE trabalhador_id = %s AND especialidade = 'Acolhimento' AND status != 'Cancelado'
+                ORDER BY data_consulta DESC, horario DESC LIMIT 1
+            """, (trabalhador_id,))
+            acolhimento = cur.fetchone()
+            if not acolhimento or not acolhimento[0]:
+                return jsonify({
+                    "success": False, 
+                    "error": "Acolhimento obrigatório não realizado ou não autorizado pelo profissional."
+                }), 403
+
+        # --- VALIDAÇÃO DE DATA E HORA ---
+        try:
+            # Combina data e hora para validação completa
+            agendamento_datetime = datetime.strptime(f"{data_consulta} {horario}", '%Y-%m-%d %H:%M')
+            agora = datetime.now()
+
+            # 1. Bloqueio de passado: não permitir retroativos
+            if agendamento_datetime < agora:
+                return jsonify({
+                    "success": False, 
+                    "error": "Não é possível realizar agendamentos para datas ou horários que já passaram."
+                }), 400
+
+            # 2. Bloqueio mensal: Validar se a data é do mês atual
+            if agendamento_datetime.year != agora.year or agendamento_datetime.month != agora.month:
+                return jsonify({
+                    "success": False, 
+                    "error": "Agendamentos só podem ser realizados para datas dentro do mês atual."
+                }), 400
+
+        except ValueError:
+            return jsonify({"success": False, "error": "Formato de data ou hora inválido."}), 400
+
+        # Verificar duplicidade para o paciente (mesmo horário)
+        cur.execute("""
+            SELECT id FROM agendamento_exames 
+            WHERE trabalhador_id = %s 
+              AND data_consulta = %s 
+              AND horario = %s 
+              AND status != 'Cancelado'
+        """, (trabalhador_id, data_consulta, horario))
+        if cur.fetchone():
+            return jsonify({"success": False, "error": "Você já possui um agendamento neste horário."}), 400
+
+        # Verificar duplicidade para o médico (mesmo horário) - Evita conflito de agenda
+        cur.execute("""
+            SELECT id FROM agendamento_exames 
+            WHERE funcionario_id = %s 
+              AND data_consulta = %s 
+              AND horario = %s 
+              AND status != 'Cancelado'
+        """, (funcionario_id, data_consulta, horario))
+        if cur.fetchone():
+            return jsonify({"success": False, "error": "Este horário já foi preenchido por outro paciente."}), 400
+
+        cur.execute("""
+            INSERT INTO agendamento_exames (
+                trabalhador_id, vinculo_id, funcionario_id, 
+                data_consulta, horario, unidade, especialidade, status
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, 'Agendado')
+        """, (
+            trabalhador_id, vinculo_id, funcionario_id,
+            data_consulta, horario, unidade, especialidade
+        ))
+        conn.commit()
+        return jsonify({"success": True})
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
     except Exception as e:
         conn.rollback()
         return jsonify({"success": False, "error": str(e)}), 500
@@ -776,7 +970,11 @@ def agendamentos_por_trabalhador():
                 ae.unidade
             FROM agendamento_exames ae
             JOIN funcionarios f ON ae.funcionario_id = f.id
+<<<<<<< HEAD
             WHERE ae.trabalhador_id = %s AND ae.status = 'Agendado'
+=======
+            WHERE ae.trabalhador_id = %s AND ae.status != 'Cancelado'
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
             ORDER BY ae.data_consulta DESC, ae.horario DESC
         """, (trabalhador_id,))
         rows = cur.fetchall()
@@ -794,8 +992,11 @@ def agendamentos_por_trabalhador():
 def cancelar_agendamento():
     data = request.json
     agendamento_id = data.get("agendamento_id")
+<<<<<<< HEAD
     motivo = data.get("motivo", "Não informado")
     notas = data.get("observacao", "")
+=======
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
     
     if not agendamento_id:
         return jsonify({"success": False, "error": "ID do agendamento não informado."}), 400
@@ -804,6 +1005,7 @@ def cancelar_agendamento():
     cur = conn.cursor(cursor_factory=RealDictCursor)
     
     try:
+<<<<<<< HEAD
         # Busca detalhes do agendamento para validar prazo e pegar dados para o e-mail
         cur.execute("""
             SELECT ae.data_consulta, ae.horario, ae.especialidade, ae.unidade,
@@ -812,6 +1014,13 @@ def cancelar_agendamento():
             JOIN trabalhadores t ON ae.trabalhador_id = t.id
             JOIN funcionarios f ON ae.funcionario_id = f.id
             WHERE ae.id = %s
+=======
+        # Busca detalhes do agendamento para validar prazo
+        cur.execute("""
+            SELECT data_consulta, horario 
+            FROM agendamento_exames 
+            WHERE id = %s
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
         """, (agendamento_id,))
         agendamento = cur.fetchone()
         
@@ -822,6 +1031,7 @@ def cancelar_agendamento():
         consulta_datetime = datetime.combine(agendamento['data_consulta'], agendamento['horario'])
         agora = datetime.now()
         
+<<<<<<< HEAD
         # Validação de antecedência (12h)
         if (consulta_datetime - agora) < timedelta(hours=12):
             return jsonify({
@@ -905,6 +1115,16 @@ def cancelar_agendamento():
                 print(f"Erro ao enviar e-mail de cancelamento: {mail_err}")
                 # Não interrompemos o sucesso do cancelamento se o e-mail falhar
 
+=======
+        if (consulta_datetime - agora) < timedelta(hours=24):
+            return jsonify({
+                "success": False, 
+                "error": "O cancelamento só é permitido com pelo menos 24 horas de antecedência."
+            }), 403
+            
+        cur.execute("UPDATE agendamento_exames SET status = 'Cancelado' WHERE id = %s", (agendamento_id,))
+        conn.commit()
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
         return jsonify({"success": True})
     except Exception as e:
         conn.rollback()
@@ -916,6 +1136,7 @@ def cancelar_agendamento():
 
 
 # ====================
+<<<<<<< HEAD
 # Datas com vagas disponíveis
 # ====================
 @agendamento_bp.route("/api/agendar_exame/datas_com_vagas")
@@ -996,6 +1217,8 @@ def datas_com_vagas():
     return jsonify(datas)
 
 # ====================
+=======
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
 # REGISTRAR BLUEPRINT
 # ====================
 app.register_blueprint(agendamento_bp)
@@ -1004,4 +1227,8 @@ app.register_blueprint(agendamento_bp)
 # RODAR SERVIDOR
 # ====================
 if __name__ == "__main__":
+<<<<<<< HEAD
     app.run(debug=True, host="0.0.0.0", port=5000)
+=======
+    app.run(debug=False, host="0.0.0.0", port=5000)
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a

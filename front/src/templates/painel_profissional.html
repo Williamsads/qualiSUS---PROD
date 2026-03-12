@@ -1,0 +1,364 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="space-y-6 animate-fade-in pb-12">
+
+    <!-- BREADCRUMBS -->
+    <nav class="flex items-center text-[11px] font-bold uppercase tracking-widest text-gray-400">
+        <a href="{{ url_for('home') }}" class="breadcrumb-item hover:text-clinical-blue transition-colors">QualiSUS</a>
+        <span class="breadcrumb-item text-clinical-blue">Painel do Profissional</span>
+    </nav>
+
+    <!-- HEADER -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+            <h1 class="text-3xl font-black text-gray-900 tracking-tight">Painel de Acompanhamento</h1>
+            <p class="text-gray-500 font-medium">Gerencie seus pacientes em tratamento contínuo.</p>
+        </div>
+        <div class="flex gap-2">
+            <button onclick="abrirModalInicio()"
+                class="flex items-center gap-2 px-5 py-3 bg-clinical-blue text-white rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg hover:shadow-blue-500/20 active:scale-95">
+                <i data-lucide="user-plus" class="w-5 h-5"></i>
+                <span>Iniciar Novo Tratamento</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- TABELA DE PACIENTES -->
+    <div class="bg-white rounded-3xl border border-clinical-border shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr
+                        class="bg-gray-50 border-b border-gray-100 text-[10px] uppercase tracking-widest text-gray-400 font-bold">
+                        <th class="px-6 py-4">Nome do Paciente</th>
+                        <th class="px-6 py-4">Início</th>
+                        <th class="px-6 py-4">Frequência</th>
+                        <th class="px-6 py-4">Última Consulta</th>
+                        <th class="px-6 py-4">Status</th>
+                        <th class="px-6 py-4 text-right">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="listaPacientes" class="divide-y divide-gray-100 text-sm font-medium text-gray-600">
+                    <!-- Preenchido via JS -->
+                    <tr>
+                        <td colspan="6" class="px-6 py-8 text-center text-gray-400">Carregando pacientes...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<!-- MODAL INICIAR TRATAMENTO -->
+<div id="modalInicio" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity opacity-0" id="modalBackdropInicio">
+    </div>
+    <div class="fixed inset-0 z-10 overflow-y-auto">
+        <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+            <div class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-lg opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                id="modalPanelInicio">
+                <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div
+                            class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 sm:mx-0 sm:h-10 sm:w-10">
+                            <i data-lucide="play-circle" class="w-6 h-6 text-clinical-blue"></i>
+                        </div>
+                        <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left w-full">
+                            <h3 class="text-lg font-black leading-6 text-gray-900" id="modal-title">Iniciar Tratamento
+                            </h3>
+                            <div class="mt-2 text-sm text-gray-500">
+                                <p class="mb-4">Selecione o paciente e defina o plano inicial de tratamento.</p>
+                                <form id="formInicio" class="space-y-4">
+                                    <div>
+                                        <label
+                                            class="block text-xs font-bold uppercase text-gray-500 mb-1">Paciente</label>
+                                        <select id="selectPaciente" name="trabalhador_id"
+                                            class="w-full rounded-xl border-gray-300 py-2.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-clinical-blue sm:text-sm sm:leading-6">
+                                            <option value="">Carregando...</option>
+                                        </select>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Data
+                                                Início</label>
+                                            <input type="date" name="data_inicio" required
+                                                class="w-full rounded-xl border-gray-300 py-2.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-clinical-blue sm:text-sm sm:leading-6">
+                                        </div>
+                                        <div>
+                                            <label
+                                                class="block text-xs font-bold uppercase text-gray-500 mb-1">Frequência</label>
+                                            <select name="frequencia" required
+                                                class="w-full rounded-xl border-gray-300 py-2.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-clinical-blue sm:text-sm sm:leading-6">
+                                                <option value="Semanal">Semanal</option>
+                                                <option value="Quinzenal">Quinzenal</option>
+                                                <option value="Mensal">Mensal</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 gap-2">
+                    <button type="button" onclick="submitInicio()"
+                        class="inline-flex w-full justify-center rounded-xl bg-clinical-blue px-3 py-2 text-sm font-bold text-white shadow-sm hover:bg-blue-700 sm:w-auto">Confirmar
+                        Início</button>
+                    <button type="button" onclick="fecharModalInicio()"
+                        class="mt-3 inline-flex w-full justify-center rounded-xl bg-white px-3 py-2 text-sm font-bold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL ALTA -->
+<div id="modalAlta" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity opacity-0" id="modalBackdropAlta">
+    </div>
+    <div class="fixed inset-0 z-10 overflow-y-auto">
+        <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+            <div class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-lg opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                id="modalPanelAlta">
+                <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div
+                            class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
+                            <i data-lucide="check-circle" class="w-6 h-6 text-green-600"></i>
+                        </div>
+                        <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left w-full">
+                            <h3 class="text-lg font-black leading-6 text-gray-900">Registrar Alta</h3>
+                            <div class="mt-2 text-sm text-gray-500">
+                                <p class="mb-4">Ao dar alta, o paciente precisará passar por novo acolhimento para
+                                    retornar.</p>
+                                <form id="formAlta" class="space-y-4">
+                                    <input type="hidden" name="tratamento_id" id="altaTratamentoId">
+                                    <div>
+                                        <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Data da
+                                            Alta</label>
+                                        <input type="date" name="data_alta" required
+                                            class="w-full rounded-xl border-gray-300 py-2.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-green-600 sm:text-sm sm:leading-6">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Observação
+                                            Final</label>
+                                        <textarea name="observacao" rows="3"
+                                            class="w-full rounded-xl border-gray-300 py-2.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-green-600 sm:text-sm sm:leading-6"
+                                            placeholder="Resumo do desfecho clínico..."></textarea>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 gap-2">
+                    <button type="button" onclick="submitAlta()"
+                        class="inline-flex w-full justify-center rounded-xl bg-green-600 px-3 py-2 text-sm font-bold text-white shadow-sm hover:bg-green-700 sm:w-auto">Confirmar
+                        Alta</button>
+                    <button type="button" onclick="fecharModalAlta()"
+                        class="mt-3 inline-flex w-full justify-center rounded-xl bg-white px-3 py-2 text-sm font-bold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // --- LOAD DATA ---
+    async function loadPacientes() {
+        const tbody = document.getElementById('listaPacientes');
+        try {
+            const res = await fetch('/api/painel/pacientes');
+            const data = await res.json();
+
+            tbody.innerHTML = '';
+            if (!data.pacientes || data.pacientes.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-gray-400">Nenhum paciente em acompanhamento encontrado.</td></tr>`;
+                return;
+            }
+
+            data.pacientes.forEach(p => {
+                let statusClass = '';
+                let btnAction = '';
+
+                if (p.status === 'Em tratamento') {
+                    statusClass = 'bg-blue-50 text-blue-700 border border-blue-100';
+                    btnAction = `<button onclick="abrirModalAlta(${p.tratamento_id})" class="text-green-600 hover:text-green-800 font-bold text-xs uppercase tracking-wide border border-green-200 px-3 py-1 rounded-lg hover:bg-green-50 transition-colors">Dar Alta</button>`;
+                } else if (p.status === 'Aguardando Início') {
+                    statusClass = 'bg-amber-50 text-amber-700 border border-amber-100';
+                    btnAction = `<button onclick="abrirModalInicioPara(${p.trabalhador_id}, '${p.nome_paciente}')" class="text-blue-600 hover:text-blue-800 font-bold text-xs uppercase tracking-wide border border-blue-200 px-3 py-1 rounded-lg hover:bg-blue-50 transition-colors">Iniciar</button>`;
+                } else {
+                    statusClass = 'bg-gray-50 text-gray-500 border border-gray-100'; // Alta ou finalizado
+                    btnAction = `<span class="text-gray-400 text-xs italic">Encerrado</span>`;
+                }
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-gray-50 transition-colors group">
+                        <td class="px-6 py-4 font-bold text-gray-900">${p.nome_paciente}</td>
+                        <td class="px-6 py-4">${p.data_inicio || '-'}</td>
+                        <td class="px-6 py-4">${p.frequencia || '-'}</td>
+                        <td class="px-6 py-4">${p.data_ultima_consulta || '-'}</td>
+                        <td class="px-6 py-4">
+                            <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${statusClass}">${p.status}</span>
+                        </td>
+                        <td class="px-6 py-4 text-right">
+                            ${btnAction}
+                        </td>
+                    </tr>
+                `;
+            });
+
+        } catch (err) {
+            console.error(err);
+            tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-red-400">Erro ao carregar dados.</td></tr>`;
+        }
+    }
+
+    async function loadSelectPacientes() {
+        const select = document.getElementById('selectPaciente');
+        try {
+            const res = await fetch('/api/painel/pacientes_sem_tratamento');
+            const data = await res.json();
+
+            select.innerHTML = '<option value="">Selecione um paciente...</option>';
+            if (data.pacientes) {
+                data.pacientes.forEach(p => {
+                    select.innerHTML += `<option value="${p.trabalhador_id}">${p.nome_completo}</option>`;
+                });
+            }
+        } catch (err) {
+            console.error(err);
+            select.innerHTML = '<option value="">Erro ao carregar</option>';
+        }
+    }
+
+    // --- MODAL INICIO ---
+    const modalInicio = document.getElementById("modalInicio");
+    const backdropInicio = document.getElementById("modalBackdropInicio");
+    const panelInicio = document.getElementById("modalPanelInicio");
+
+    function abrirModalInicio() {
+        abrirModalInicioPara(null, null);
+    }
+
+    function abrirModalInicioPara(trabalhadorId, nomePaciente) {
+        modalInicio.classList.remove("hidden");
+
+        // Se vier da tabela, preenche direto
+        if (trabalhadorId) {
+            const select = document.getElementById('selectPaciente');
+            select.innerHTML = `<option value="${trabalhadorId}" selected>${nomePaciente}</option>`;
+        } else {
+            // Se for do botão global, carrega a lista
+            loadSelectPacientes();
+        }
+
+        setTimeout(() => {
+            backdropInicio.classList.remove("opacity-0");
+            panelInicio.classList.remove("opacity-0", "translate-y-4", "sm:translate-y-0", "sm:scale-95");
+            panelInicio.classList.add("opacity-100", "translate-y-0", "sm:scale-100");
+        }, 10);
+    }
+
+    function fecharModalInicio() {
+        backdropInicio.classList.add("opacity-0");
+        panelInicio.classList.remove("opacity-100", "translate-y-0", "sm:scale-100");
+        panelInicio.classList.add("opacity-0", "translate-y-4", "sm:translate-y-0", "sm:scale-95");
+        setTimeout(() => modalInicio.classList.add("hidden"), 300);
+    }
+
+    async function submitInicio() {
+        const form = document.getElementById('formInicio');
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+
+        if (!data.trabalhador_id || !data.data_inicio) {
+            showToast("Erro", "Preencha todos os campos obrigatórios.", "error");
+            return;
+        }
+
+        try {
+            const res = await fetch('/api/painel/iniciar_tratamento', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const json = await res.json();
+
+            if (json.success) {
+                showToast("Sucesso", "Tratamento iniciado!", "success");
+                fecharModalInicio();
+                loadPacientes(); // Recarrega tabela
+            } else {
+                showToast("Erro", json.error || "Falha ao iniciar tratamento", "error");
+            }
+        } catch (err) {
+            console.error(err);
+            showToast("Erro", "Erro de conexão", "error");
+        }
+    }
+
+
+    // --- MODAL ALTA ---
+    const modalAlta = document.getElementById("modalAlta");
+    const backdropAlta = document.getElementById("modalBackdropAlta");
+    const panelAlta = document.getElementById("modalPanelAlta");
+
+    function abrirModalAlta(id) {
+        document.getElementById('altaTratamentoId').value = id;
+        modalAlta.classList.remove("hidden");
+        setTimeout(() => {
+            backdropAlta.classList.remove("opacity-0");
+            panelAlta.classList.remove("opacity-0", "translate-y-4", "sm:translate-y-0", "sm:scale-95");
+            panelAlta.classList.add("opacity-100", "translate-y-0", "sm:scale-100");
+        }, 10);
+    }
+
+    function fecharModalAlta() {
+        backdropAlta.classList.add("opacity-0");
+        panelAlta.classList.remove("opacity-100", "translate-y-0", "sm:scale-100");
+        panelAlta.classList.add("opacity-0", "translate-y-4", "sm:translate-y-0", "sm:scale-95");
+        setTimeout(() => modalAlta.classList.add("hidden"), 300);
+    }
+
+    async function submitAlta() {
+        const form = document.getElementById('formAlta');
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+
+        if (!data.data_alta) {
+            showToast("Erro", "Informe a data da alta.", "error");
+            return;
+        }
+
+        try {
+            const res = await fetch('/api/painel/alta', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const json = await res.json();
+
+            if (json.success) {
+                showToast("Sucesso", "Alta registrada com sucesso.", "success");
+                fecharModalAlta();
+                loadPacientes();
+            } else {
+                showToast("Erro", json.error || "Falha ao registrar alta", "error");
+            }
+        } catch (err) {
+            console.error(err);
+            showToast("Erro", "Erro de conexão", "error");
+        }
+    }
+
+    // Init
+    document.addEventListener('DOMContentLoaded', loadPacientes);
+    lucide.createIcons();
+</script>
+{% endblock %}

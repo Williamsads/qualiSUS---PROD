@@ -2,9 +2,23 @@ from flask import request, render_template
 from psycopg2.extras import RealDictCursor
 from flask import Blueprint
 import psycopg2
+<<<<<<< HEAD
 from app.database import get_connection
 trabalhadores_bp = Blueprint('trabalhadores', __name__, url_prefix="/trabalhadores")
 
+=======
+trabalhadores_bp = Blueprint('trabalhadores', __name__, url_prefix="/trabalhadores")
+
+# --- Função de conexão com o banco ---
+def get_connection():
+    return psycopg2.connect(
+        host="10.24.59.104",
+        user="qualisus",
+        password="h5eXAx59gJ3h84Xa",
+        database="qualisus"
+    )
+
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
 @trabalhadores_bp.route("/lista")
 def lista_trabalhadores():
     # Parâmetros
@@ -39,6 +53,7 @@ def lista_trabalhadores():
     cursor.execute(f"SELECT COUNT(*) as total FROM trabalhadores t {where_sql}", params)
     total = cursor.fetchone()["total"]
 
+<<<<<<< HEAD
     # Seleção dos IDs dos trabalhadores da página atual
     cursor.execute(f"""
         SELECT t.id FROM trabalhadores t {where_sql}
@@ -77,6 +92,36 @@ def lista_trabalhadores():
             ORDER BY t.nome_completo
         """, (tuple(target_ids),))
         rows = cursor.fetchall()
+=======
+    # Seleção com limite e offset
+    cursor.execute(f"""
+        SELECT
+            t.id AS trabalhador_id,
+            t.nome_completo,
+            t.cpf,
+            t.cns,
+            t.data_nascimento,
+            t.telefone,
+            t.email,
+            t.cidade,
+            t.uf,
+            v.id AS vinculo_id,
+            v.tipo_vinculo,
+            v.numero_funcional,
+            v.especialidade,
+            v.unidade_lotacao,
+            v.data_admissao,
+            v.situacao
+        FROM trabalhadores t
+        LEFT JOIN vinculos_trabalhadores v
+               ON v.trabalhador_id = t.id
+        {where_sql}
+        ORDER BY t.nome_completo
+        LIMIT %s OFFSET %s
+    """, params + [per_page, offset])
+
+    rows = cursor.fetchall()
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
     cursor.close()
     conn.close()
 

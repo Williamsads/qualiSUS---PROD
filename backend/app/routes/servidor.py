@@ -7,7 +7,18 @@ import io
 
 servidor_bp = Blueprint('servidor', __name__)
 
+<<<<<<< HEAD
 from app.database import get_connection
+=======
+# ================= CONEXÃO =================
+def get_connection():
+    return psycopg2.connect(
+        host="10.24.59.104",
+        user="qualisus",
+        password="h5eXAx59gJ3h84Xa",
+        database="qualisus"
+    )
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
 
 # ================= LISTAR FUNCIONÁRIOS =================
 @servidor_bp.route('/funcionarios')
@@ -28,9 +39,13 @@ def lista_funcionarios():
                 atendimento,
                 situacao,
                 situacao_data_inicio,
+<<<<<<< HEAD
                 situacao_data_fim,
                 email,
                 telefone
+=======
+                situacao_data_fim
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
             FROM funcionarios
             ORDER BY nome
         """)
@@ -78,8 +93,11 @@ def exportar_funcionarios():
                 unidade_atendimento as "Unidade",
                 CASE WHEN atendimento THEN 'Sim' ELSE 'Não' END as "Atendimento",
                 situacao as "Situação Atual",
+<<<<<<< HEAD
                 email as "E-mail",
                 telefone as "Contato",
+=======
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
                 CASE WHEN ativo THEN 'Ativo' ELSE 'Inativo' END as "Status"
             FROM funcionarios
             WHERE 1=1
@@ -256,8 +274,11 @@ def editar_funcionario(id):
         situacao_data_inicio = request.form.get('situacao_data_inicio') or None
         situacao_data_fim = request.form.get('situacao_data_fim') or None
         atendimento = request.form.get('atendimento') == 'on'
+<<<<<<< HEAD
         email = request.form.get('email')
         telefone = request.form.get('telefone')
+=======
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
         # Normaliza CPF
         if cpf:
             cpf = cpf.replace('.', '').replace('-', '').strip()
@@ -272,9 +293,13 @@ def editar_funcionario(id):
                 atendimento = %s,
                 situacao = %s,
                 situacao_data_inicio = %s,
+<<<<<<< HEAD
                 situacao_data_fim = %s,
                 email = %s,
                 telefone = %s
+=======
+                situacao_data_fim = %s
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
             WHERE id = %s
         """
 
@@ -305,8 +330,11 @@ def editar_funcionario(id):
                 situacao,
                 situacao_data_inicio,
                 situacao_data_fim,
+<<<<<<< HEAD
                 email,
                 telefone,
+=======
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
                 id
             ))
 
@@ -539,11 +567,15 @@ def cadastro_paciente():
 
     # -------- GET (abrir tela) --------
     trabalhador_id = request.args.get('id')
+<<<<<<< HEAD
     trabalhador = None
+=======
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
 
     conn = get_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
 
+<<<<<<< HEAD
     if trabalhador_id and trabalhador_id.strip():
         # Busca dados base do trabalhador
         cur.execute("SELECT * FROM trabalhadores WHERE id = %s", (trabalhador_id,))
@@ -559,17 +591,50 @@ def cadastro_paciente():
             trabalhador['vinculos'] = cur.fetchall()
 
     # Busca listas para os selects
+=======
+    cur.execute("""
+        SELECT
+            t.*,
+            v.tipo_vinculo,
+            v.numero_funcional,
+            v.especialidade,
+            v.unidade_lotacao,
+            v.data_admissao,
+            v.data_desligamento
+        FROM trabalhadores t
+        LEFT JOIN vinculos_trabalhadores v
+               ON v.trabalhador_id = t.id
+        WHERE t.id = %s
+    """, (trabalhador_id,))
+
+    trabalhador = cur.fetchone()
+
+    if trabalhador:
+        # Busca TODOS os vínculos do trabalhador
+        cur.execute("""
+            SELECT * FROM vinculos_trabalhadores 
+            WHERE trabalhador_id = %s 
+            ORDER BY id ASC
+        """, (trabalhador_id,))
+        trabalhador['vinculos'] = cur.fetchall()
+
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
     cur.execute("SELECT nome FROM unidades_saude ORDER BY nome")
     unidades = cur.fetchall()
 
     cur.execute("SELECT nome FROM especialidades ORDER BY nome")
     especialidades = cur.fetchall()
 
+<<<<<<< HEAD
     # Tipos de vínculo comuns no banco (EST=Estatutário, CTD=Contratado)
     tipos_vinculo = [
         {'nome': 'EST'}, {'nome': 'CTD'}, {'nome': 'CLT'}, {'nome': 'COM'}, 
         {'nome': 'Servidor'}, {'nome': 'Contratado'}, {'nome': 'Terceirizado'}, {'nome': 'Jovem Aprendiz'}
     ]
+=======
+    # Tabela tipos_vinculo não existe, usando lista fixa por enquanto
+    tipos_vinculo = [{'nome': 'Servidor'}, {'nome': 'Contratado'}, {'nome': 'Terceirizado'}, {'nome': 'Jovem Aprendiz'}]
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
 
     cur.close()
     conn.close()

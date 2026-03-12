@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -987,4 +988,472 @@
     {% block extra_js %}{% endblock %}
 </body>\n\n
 
+=======
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png"
+        href="{{ url_for('static', filename='img/Logo da QualiSUS com pinwheel colorido.png') }}">
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class', // Keeping it for compatibility if needed, but removing active triggers
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#F0FDF4',
+                            100: '#DCFCE7',
+                            200: '#BBF7D0',
+                            300: '#86EFAC',
+                            400: '#4ADE80',  // Verde Suave
+                            500: '#22C55E',  // Verde Saúde (Primária)
+                            600: '#16A34A',
+                            700: '#15803D',
+                            800: '#166534',
+                            900: '#14532D',
+                        },
+                        clinical: {
+                            bg: '#F5F7FA',      // Fundo Clínico (Contraste)
+                            sidebar: '#F8FAFC', // Painel Estrutural (Ice Blue)
+                            surface: '#FFFFFF', // Cards Brancos
+                            border: '#E2E8F0',  // Borda mais definida
+                            blue: '#2563EB',    // Estrutura
+                            green: '#16A34A',   // Ação
+                            yellow: '#FBBF24',
+                            red: '#EF4444',
+                            text: '#1E293B',
+                            muted: '#64748B',
+                        }
+                    },
+                    boxShadow: {
+                        'premium': '0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02)',
+                        'xl-premium': '0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02)',
+                    },
+                    borderRadius: {
+                        '2xl': '1rem',
+                        '3xl': '1.5rem',
+                        '4xl': '2rem',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+    <!-- SheetJS for Excel Export -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+
+    <!-- Force Light Mode Reset -->
+    <script>
+        document.documentElement.classList.remove('dark');
+        localStorage.removeItem('color-theme');
+    </script>
+
+    <!-- Custom Styles for Scrollbar & Transitions -->
+    <style>
+        /* Smooth transitions */
+        .sidebar-transition {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Glassmorphism Logic */
+        .glass-ui {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+        }
+
+        /* Premium Dark Sidebar */
+        .sidebar-dark {
+            background: #020617;
+            /* Slate-950 */
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Nav Link Premium Interaction */
+        .nav-link {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            color: #94A3B8;
+            /* slate-400 */
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            color: #FFFFFF;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-item-active {
+            color: #FFFFFF !important;
+            background: #1E40AF !important;
+            /* blue-800 */
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #E2E8F0;
+            border-radius: 20px;
+        }
+
+        /* Breadcrumb separator */
+        .breadcrumb-item:not(:last-child)::after {
+            content: '/';
+            margin: 0 0.5rem;
+            color: #CBD5E1;
+            font-weight: 300;
+        }
+    </style>
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col font-sans overflow-hidden">
+
+    <!-- ======================= MAIN LAYOUT ======================= -->
+    <div class="flex h-screen overflow-hidden bg-slate-50">
+
+        <!-- SIDEBAR -->
+        {% include 'includes/sidebar.html' %}
+
+        <!-- BACKDROP MOBILE -->
+        <div id="sidebarBackdrop"
+            class="fixed inset-0 bg-gray-900/50 z-20 hidden md:hidden glass transition-opacity opacity-0"></div>
+
+        <!-- CONTENT WRAPPER -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+
+            <!-- TOP HEADER BAR -->
+            {% include 'includes/header.html' %}
+
+            <!-- MAIN CONTENT AREA -->
+            <main class="flex-1 flex flex-col overflow-y-auto bg-slate-50">
+                <div class="w-full max-w-[1600px] mx-auto p-4 sm:p-6 lg:p-10 flex-1">
+                    {% block content %}
+                    {% endblock %}
+                </div>
+
+                <!-- Toast Container -->
+                <div id="toast-container"
+                    class="fixed top-24 right-6 z-[60] flex flex-col gap-3 max-w-md w-full pointer-events-none">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                    {% for category, message in messages %}
+                    <div class="toast-item border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-2xl rounded-2xl p-4 flex items-center gap-4 animate-slide-in-right pointer-events-auto transition-all duration-300"
+                        data-category="{{ category }}">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0
+                            {% if category == 'success' %} bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400
+                            {% elif category in ['error', 'danger'] %} bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400
+                            {% elif category == 'warning' %} bg-amber-50 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400
+                            {% else %} bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400
+                            {% endif %}">
+                            <i data-lucide="{% if category == 'success' %}check-circle{% elif category in ['error', 'danger'] %}alert-circle{% elif category == 'warning' %}alert-triangle{% else %}info{% endif %}"
+                                class="w-5 h-5"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-sm font-bold text-gray-900 dark:text-gray-100 leading-tight">{{ message }}
+                            </p>
+                        </div>
+                        <button onclick="this.parentElement.remove()"
+                            class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                            <i data-lucide="x" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                    {% endwith %}
+                </div>
+
+                <!-- Footer -->
+                <footer class="w-full py-6 text-center text-xs text-slate-400 border-t border-slate-100 bg-white">
+                    <p>&copy; 2025 Governo do Estado de Pernambuco. Todos os direitos reservados.</p>
+                </footer>
+            </main>
+
+        </div>
+
+    </div>
+
+    <!-- GLOBAL CONFIRM MODAL -->
+    <div id="confirm-modal"
+        class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-gray-950/80 backdrop-blur-sm transition-all duration-300">
+        <div class="bg-white dark:bg-gray-900 rounded-[2.5rem] shadow-2xl w-full max-w-sm transform scale-95 opacity-0 transition-all duration-300 border border-gray-100 dark:border-gray-800 p-8 flex flex-col items-center"
+            id="confirm-modal-content">
+            <div id="confirm-icon-bg"
+                class="w-20 h-20 bg-red-50 dark:bg-red-900/20 rounded-3xl flex items-center justify-center text-red-600 dark:text-red-400 mb-6 transition-all duration-500">
+                <i data-lucide="trash-2" class="w-10 h-10" id="confirm-icon"></i>
+            </div>
+            <h3 id="confirm-title" class="text-2xl font-black text-gray-900 dark:text-gray-100 mb-2 text-center">
+                Confirmar
+                Exclusão</h3>
+            <p id="confirm-message" class="text-gray-500 dark:text-gray-400 text-sm text-center mb-8 font-medium">
+                Tem
+                certeza que deseja remover este item? Esta ação não pode ser desfeita.</p>
+            <div class="flex w-full gap-3">
+                <button id="confirm-cancel-btn"
+                    class="flex-1 px-6 py-4 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-2xl font-bold hover:bg-gray-200 dark:hover:bg-gray-700 transition-all active:scale-95 uppercase text-[10px] tracking-widest">Cancelar</button>
+                <button id="confirm-yes-btn"
+                    class="flex-1 px-6 py-4 bg-red-600 text-white rounded-2xl font-bold hover:bg-red-700 shadow-xl shadow-red-600/20 transition-all active:scale-95 uppercase text-[10px] tracking-widest">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script -->
+    <script>
+        // Init Icons
+        lucide.createIcons();
+
+        /* --- Sidebar Logic --- */
+        const sidebar = document.getElementById('sidebar');
+        const backdrop = document.getElementById('sidebarBackdrop');
+        const btnMenu = document.getElementById('btnMobileMenu');
+        let isSidebarOpen = false;
+
+        function toggleSidebar() {
+            isSidebarOpen = !isSidebarOpen;
+            if (isSidebarOpen) {
+                sidebar.classList.remove('-translate-x-full');
+                backdrop.classList.remove('hidden');
+                setTimeout(() => backdrop.classList.remove('opacity-0'), 10);
+                document.body.style.overflow = 'hidden'; // Prevent body scroll
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                backdrop.classList.add('opacity-0');
+                setTimeout(() => backdrop.classList.add('hidden'), 300);
+                document.body.style.overflow = '';
+            }
+        }
+
+        if (btnMenu) {
+            btnMenu.addEventListener('click', toggleSidebar);
+        }
+        if (backdrop) {
+            backdrop.addEventListener('click', toggleSidebar);
+        }
+
+        /* --- Accordion Logic --- */
+        function setupAccordion(btnId, subId, arrowId) {
+            const btn = document.getElementById(btnId);
+            const sub = document.getElementById(subId);
+            const arrow = document.getElementById(arrowId);
+
+            if (!btn) return;
+
+            btn.addEventListener('click', () => {
+                const isHidden = sub.classList.contains('hidden');
+
+                // Close others (Optional - prefer keeping open for utility)
+                // ... 
+
+                if (isHidden) {
+                    sub.classList.remove('hidden');
+                    arrow.classList.add('rotate-180');
+                    btn.classList.add('bg-gray-50', 'text-brand-900', 'dark:bg-gray-800', 'dark:text-brand-400');
+                } else {
+                    sub.classList.add('hidden');
+                    arrow.classList.remove('rotate-180');
+                    btn.classList.remove('bg-gray-50', 'text-brand-900', 'dark:bg-gray-800', 'dark:text-brand-400');
+                }
+            });
+        }
+
+        setupAccordion('btnCadastros', 'subCadastros', 'arrowCadastros');
+        setupAccordion('btnListas', 'subListas', 'arrowListas');
+
+        // Restore Accordion State based on URL (Simple check)
+        const currentPath = window.location.pathname;
+        if (currentPath.includes('cadastro') || currentPath.includes('adicionar')) {
+            document.getElementById('subCadastros').classList.remove('hidden');
+            document.getElementById('arrowCadastros').classList.add('rotate-180');
+            document.getElementById('btnCadastros').classList.add('bg-gray-50', 'text-brand-900', 'dark:bg-gray-800', 'dark:text-brand-400');
+        }
+        if (currentPath.includes('lista')) {
+            document.getElementById('subListas').classList.remove('hidden');
+            document.getElementById('arrowListas').classList.add('rotate-180');
+            document.getElementById('btnListas').classList.add('bg-gray-50', 'text-brand-900', 'dark:bg-gray-800', 'dark:text-brand-400');
+        }
+
+        /* --- Dark Mode Toggle Logic Removed --- */
+
+        /* --- Toast Logic --- */
+        window.showToast = function (message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+
+            const toast = document.createElement('div');
+            toast.className = `toast-item border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-2xl rounded-2xl p-4 flex items-center gap-4 animate-slide-in-right pointer-events-auto transition-all duration-300`;
+
+            let icon = 'info';
+            let colorClass = 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400';
+            if (type === 'success') {
+                icon = 'check-circle';
+                colorClass = 'bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400';
+            } else if (type === 'error' || type === 'danger') {
+                icon = 'alert-circle';
+                colorClass = 'bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400';
+            } else if (type === 'warning') {
+                icon = 'alert-triangle';
+                colorClass = 'bg-amber-50 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400';
+            }
+
+            toast.innerHTML = `
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${colorClass}">
+                    <i data-lucide="${icon}" class="w-5 h-5"></i>
+                </div>
+                <div class="flex-1">
+                    <p class="text-sm font-bold text-gray-900 dark:text-gray-100 leading-tight">${message}</p>
+                </div>
+                <button onclick="this.parentElement.remove()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            `;
+
+            container.appendChild(toast);
+            lucide.createIcons();
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-x-full');
+                setTimeout(() => toast.remove(), 300);
+            }, 5000);
+        };
+
+        window.confirmAction = function ({ title, message, icon = 'trash-2', type = 'danger', onConfirm }) {
+            const modal = document.getElementById('confirm-modal');
+            const content = document.getElementById('confirm-modal-content');
+            const titleEl = document.getElementById('confirm-title');
+            const messageEl = document.getElementById('confirm-message');
+            const iconBg = document.getElementById('confirm-icon-bg');
+            const yesBtn = document.getElementById('confirm-yes-btn');
+            const cancelBtn = document.getElementById('confirm-cancel-btn');
+
+            titleEl.textContent = title;
+            messageEl.textContent = message;
+
+            // Update colors based on type
+            if (type === 'danger') {
+                iconBg.className = 'w-20 h-20 bg-red-50 dark:bg-red-900/20 rounded-3xl flex items-center justify-center text-red-600 dark:text-red-400 mb-6';
+                yesBtn.className = 'flex-1 px-6 py-4 bg-red-600 text-white rounded-2xl font-bold hover:bg-red-700 shadow-xl shadow-red-600/20 transition-all active:scale-95 uppercase text-[10px] tracking-widest';
+            } else {
+                iconBg.className = 'w-20 h-20 bg-brand-50 dark:bg-brand-900/20 rounded-3xl flex items-center justify-center text-brand-600 dark:text-brand-400 mb-6';
+                yesBtn.className = 'flex-1 px-6 py-4 bg-brand-600 text-white rounded-2xl font-bold hover:bg-brand-700 shadow-xl shadow-brand-600/20 transition-all active:scale-95 uppercase text-[10px] tracking-widest';
+            }
+
+            iconBg.innerHTML = `<i data-lucide="${icon}" class="w-10 h-10"></i>`;
+            lucide.createIcons();
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 10);
+
+            const closeModal = () => {
+                content.classList.remove('scale-100', 'opacity-100');
+                content.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                    yesBtn.onclick = null;
+                }, 200);
+            };
+
+            yesBtn.onclick = () => {
+                onConfirm();
+                closeModal();
+            };
+            cancelBtn.onclick = closeModal;
+            modal.onclick = (e) => { if (e.target === modal) closeModal(); };
+        };
+
+        /* --- Mask CPF Logic --- */
+        window.maskCPF = function (input) {
+            let v = input.value.replace(/\D/g, "");
+            v = v.substring(0, 11); // Limit strictly to 11 digits
+            v = v.replace(/(\d{3})(\d)/, "$1.$2");
+            v = v.replace(/(\d{3})(\d)/, "$1.$2");
+            v = v.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+            input.value = v;
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const toasts = document.querySelectorAll('.toast-item');
+            toasts.forEach((toast, index) => {
+                setTimeout(() => {
+                    toast.classList.add('opacity-0', 'translate-x-full');
+                    setTimeout(() => toast.remove(), 300);
+                }, 5000 + (index * 500));
+            });
+        });
+
+    </script>
+
+    {% block extra_js %}{% endblock %}
+
+    <script>
+        // Global Toast System
+        function showToast(title, message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+
+            const config = {
+                success: { bg: 'bg-white', text: 'text-clinical-green', icon: 'check-circle', border: 'border-clinical-green/20' },
+                error: { bg: 'bg-white', text: 'text-clinical-red', icon: 'alert-circle', border: 'border-clinical-red/20' },
+                warning: { bg: 'bg-white', text: 'text-clinical-yellow', icon: 'info', border: 'border-clinical-yellow/20' }
+            };
+
+            const s = config[type];
+            toast.className = `toast ${s.bg} border-l-4 ${s.border} p-4 rounded-xl shadow-xl border flex items-start gap-3 transition-all`;
+
+            toast.innerHTML = `
+                <div class="${s.text} mt-0.5">
+                    <i data-lucide="${s.icon}" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h4 class="text-sm font-black text-gray-900 leading-none mb-1">${title}</h4>
+                    <p class="text-xs text-gray-500 font-medium">${message}</p>
+                </div>
+            `;
+
+            container.appendChild(toast);
+            lucide.createIcons();
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(20px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        // Example trigger: showToast('Bem-vindo', 'Sistema QualiSUS operacional.', 'success');
+    </script>
+</body>
+
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
 </html>

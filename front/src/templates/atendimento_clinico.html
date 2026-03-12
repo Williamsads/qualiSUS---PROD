@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 
+<<<<<<< HEAD
 {% block extra_css %}
 <style>
     /* Enterprise Premium Tokens & Animations */
@@ -788,12 +789,299 @@
         const btn = finalizar ? document.getElementById('btn-finalizar') : document.getElementById('btn-salvar-rascunho');
         const original = btn.innerHTML;
         btn.innerHTML = "<i class='lucide-loader-2 animate-spin mr-2'></i> Aguarde...";
+=======
+{% block content %}
+<!-- Hidden data for JS -->
+<div id="appt-data" data-id="{{ appt.id }}" data-status="{{ appt.status }}"
+    data-especialidade="{{ appt.especialidade }}" data-validado="{{ 'true' if appt.validado_para_psico else 'false' }}"
+    class="hidden"></div>
+
+<div class="max-w-5xl mx-auto space-y-8 animate-fade-in pb-12">
+
+    <!-- BREADCRUMBS -->
+    <nav class="flex items-center text-[11px] font-bold uppercase tracking-widest text-gray-400">
+        <a href="{{ url_for('home') }}" class="breadcrumb-item hover:text-clinical-blue transition-colors">QualiSUS</a>
+        <a href="{{ url_for('log_agendamento.index') }}"
+            class="breadcrumb-item hover:text-clinical-blue transition-colors">Log de Agendamentos</a>
+        <span class="breadcrumb-item text-clinical-blue">Desfecho Clínico</span>
+    </nav>
+
+    <!-- PATIENT MINI HEADER -->
+    <header
+        class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6 transition-all">
+        <div class="flex items-center gap-6 text-center md:text-left">
+            <div
+                class="w-16 h-16 rounded-2xl bg-blue-600 text-white flex items-center justify-center font-black text-2xl shadow-lg shadow-blue-500/20">
+                {{ appt.paciente[0] }}
+            </div>
+            <div>
+                <h1 class="text-3xl font-black text-slate-900 tracking-tight leading-none">{{ appt.paciente }}</h1>
+                <div class="flex flex-wrap items-center justify-center md:justify-start gap-4 mt-3">
+                    <span class="flex items-center gap-1.5 text-xs font-bold text-slate-400">
+                        <i data-lucide="id-card" class="w-4 h-4 text-blue-500/50"></i> CPF: {{ appt.cpf_paciente }}
+                    </span>
+                    <span class="flex items-center gap-1.5 text-xs font-bold text-slate-400">
+                        <i data-lucide="calendar-days" class="w-4 h-4 text-blue-500/50"></i> MAT.: {{
+                        appt.num_func_vinculo or 'N/A' }}
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="flex flex-col items-center md:items-end">
+            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Status Atual</span>
+            <span
+                class="px-5 py-2 rounded-xl bg-blue-50 text-blue-600 text-[10px] font-black uppercase tracking-widest border border-blue-100/50">
+                {{ appt.status }}
+            </span>
+        </div>
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+        <!-- LEFT COLUMN: CONTEXT -->
+        <aside class="lg:col-span-4 space-y-6">
+            <div class="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm">
+                <h3
+                    class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-8 flex items-center gap-2">
+                    <i data-lucide="info" class="w-4 h-4 text-blue-500"></i>
+                    Informações Clínicas
+                </h3>
+
+                <div class="space-y-8">
+                    <div class="group">
+                        <p
+                            class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mb-1.5 group-hover:text-blue-500 transition-colors">
+                            Especialidade</p>
+                        <p class="text-slate-800 font-black flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
+                            <i data-lucide="stethoscope" class="w-4.5 h-4.5"></i>
+                        </div>
+                        <span class="text-sm">{{ appt.especialidade }}</span>
+                        </p>
+                    </div>
+                    <div>
+                        <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mb-1.5">Profissional
+                            Responsável</p>
+                        <p class="text-slate-800 font-black flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
+                            <i data-lucide="user-check" class="w-4.5 h-4.5"></i>
+                        </div>
+                        <span class="text-sm">{{ appt.medico }}</span>
+                        </p>
+                    </div>
+                    <div>
+                        <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mb-1.5">Data e Horário
+                        </p>
+                        <p class="text-slate-800 font-black flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
+                            <i data-lucide="calendar" class="w-4.5 h-4.5"></i>
+                        </div>
+                        <span class="text-sm">{{ appt.data_consulta.strftime('%d/%m/%Y') }} • {{
+                            appt.horario.strftime('%H:%M') }}</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- WhatsApp Context -->
+            <div
+                class="bg-emerald-50/50 rounded-3xl p-8 border border-emerald-100/50 shadow-sm relative overflow-hidden group">
+                <div
+                    class="absolute -right-4 -top-4 w-24 h-24 bg-emerald-500/5 rounded-full group-hover:scale-150 transition-transform duration-1000">
+                </div>
+                <h3 class="text-[9px] font-black text-emerald-600 uppercase tracking-widest mb-4">Contato do Paciente
+                </h3>
+                <p class="text-xl font-black text-slate-800 mb-6 tracking-tight">{{ appt.telefone }}</p>
+                <a href="https://wa.me/55{{ appt.telefone|replace('(', '')|replace(')', '')|replace('-', '')|replace(' ', '') }}"
+                    target="_blank"
+                    class="w-full flex items-center justify-center gap-3 py-4 bg-emerald-500 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-500/20 active:scale-95">
+                    <i data-lucide="message-circle" class="w-5 h-5"></i>
+                    Chamar no WhatsApp
+                </a>
+            </div>
+        </aside>
+
+        <!-- MAIN AREA: DECISION MAKING -->
+        <main class="lg:col-span-8 space-y-8">
+
+            <section class="bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-sm relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-blue-50/20 rounded-full blur-3xl -mr-16 -mt-16"></div>
+
+                <h3 class="text-xs font-black text-slate-800 uppercase tracking-widest mb-10 flex items-center gap-3">
+                    <i data-lucide="clipboard-check" class="w-5 h-5 text-emerald-500"></i>
+                    Definição do Desfecho Clínico
+                </h3>
+
+                <!-- DESFECHO CARDS -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                    <button type="button" onclick="setDesfecho('nao_compareceu')" id="btn-desfecho-nc"
+                        class="desfecho-card group relative p-6 rounded-3xl border-2 border-slate-100 bg-white hover:bg-rose-50/50 hover:border-rose-200 hover:shadow-lg hover:shadow-rose-500/10 transition-all text-center">
+                        <div
+                            class="w-16 h-16 rounded-2xl bg-rose-50 flex items-center justify-center text-rose-500 mb-4 mx-auto group-hover:scale-110 group-hover:bg-rose-100 transition-all">
+                            <i data-lucide="user-x" class="w-7 h-7"></i>
+                        </div>
+                        <p class="text-[9px] font-black text-rose-400 uppercase tracking-widest mb-2">Ausência</p>
+                        <p class="text-sm font-black text-slate-900 leading-tight">Não Compareceu</p>
+                        <div class="check-indicator absolute top-5 right-5 opacity-0 transition-opacity">
+                            <div class="bg-rose-500 text-white p-1.5 rounded-full shadow-lg shadow-rose-500/30"><i
+                                    data-lucide="check" class="w-4 h-4"></i></div>
+                        </div>
+                    </button>
+
+                    <button type="button" onclick="setDesfecho('reagendar')" id="btn-desfecho-re"
+                        class="desfecho-card group relative p-6 rounded-3xl border-2 border-slate-100 bg-white hover:bg-amber-50/50 hover:border-amber-200 hover:shadow-lg hover:shadow-amber-500/10 transition-all text-center">
+                        <div
+                            class="w-16 h-16 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-500 mb-4 mx-auto group-hover:scale-110 group-hover:bg-amber-100 transition-all">
+                            <i data-lucide="calendar-clock" class="w-7 h-7"></i>
+                        </div>
+                        <p class="text-[9px] font-black text-amber-400 uppercase tracking-widest mb-2">Pendente</p>
+                        <p class="text-sm font-black text-slate-900 leading-tight">Reagendar</p>
+                        <div class="check-indicator absolute top-5 right-5 opacity-0 transition-opacity">
+                            <div class="bg-amber-500 text-white p-1.5 rounded-full shadow-lg shadow-amber-500/30"><i
+                                    data-lucide="check" class="w-4 h-4"></i></div>
+                        </div>
+                    </button>
+
+                    <button type="button" onclick="setDesfecho('atendido')" id="btn-desfecho-at"
+                        class="desfecho-card group relative p-6 rounded-3xl border-2 border-emerald-200 bg-emerald-50/30 hover:bg-emerald-50 hover:border-emerald-300 hover:shadow-lg hover:shadow-emerald-500/10 transition-all text-center">
+                        <div
+                            class="w-16 h-16 rounded-2xl bg-emerald-100 flex items-center justify-center text-emerald-600 mb-4 mx-auto group-hover:scale-110 group-hover:bg-emerald-200 transition-all">
+                            <i data-lucide="check-circle-2" class="w-7 h-7"></i>
+                        </div>
+                        <p class="text-[9px] font-black text-emerald-500 uppercase tracking-widest mb-2">Concluído</p>
+                        <p class="text-sm font-black text-slate-900 leading-tight">Atendimento Normal</p>
+                        <div class="check-indicator absolute top-5 right-5 opacity-0 transition-opacity">
+                            <div class="bg-emerald-500 text-white p-1.5 rounded-full shadow-lg shadow-emerald-500/30"><i
+                                    data-lucide="check" class="w-4 h-4"></i></div>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- CONDITIONAL: Aptitude (Only for Acolhimento) -->
+                {% if appt.especialidade == 'Acolhimento' %}
+                <div id="psico-validation-container"
+                    class="mt-10 pt-10 border-t border-slate-50 hidden animate-fade-in-up">
+                    <div class="bg-slate-50 rounded-[2rem] p-8 text-center space-y-6">
+                        <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                            Triagem de Saúde Mental</h4>
+                        <p class="text-sm text-slate-600 font-bold">O servidor está apto para encaminhamento à
+                            Especialidade (Psicologia/Psiquiatria)?</p>
+
+                        <div class="flex gap-4 max-w-sm mx-auto">
+                            <button type="button" onclick="setApto(true)" id="btn-apto-sim"
+                                class="apto-btn flex-1 py-4 rounded-2xl border-2 border-slate-200 text-slate-400 font-black text-[10px] hover:border-emerald-500 hover:text-emerald-500 transition-all uppercase tracking-widest active:scale-95 shadow-soft">
+                                Sim, Liberar
+                            </button>
+                            <button type="button" onclick="setApto(false)" id="btn-apto-nao"
+                                class="apto-btn flex-1 py-4 rounded-2xl border-2 border-slate-200 text-slate-400 font-black text-[10px] hover:border-rose-500 hover:text-rose-500 transition-all uppercase tracking-widest active:scale-95 shadow-soft">
+                                Não, Bloquear
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- CLINICAL NOTES -->
+                <div class="mt-10">
+                    <label
+                        class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-4 block ml-1">Evolução
+                        Clínica / Anotações</label>
+                    <textarea id="clin-observacao"
+                        class="w-full px-7 py-6 bg-slate-50/50 border border-slate-100 rounded-3xl focus:ring-4 focus:ring-blue-500/5 focus:bg-white focus:border-blue-200 outline-none text-sm text-slate-700 font-medium transition-all min-h-[160px] placeholder:text-slate-300"
+                        placeholder="Descreva de forma concisa a conduta adotada e observações relevantes...">{{ appt.observacao or "" }}</textarea>
+                </div>
+
+                <!-- ACTION BUTTONS -->
+                <div class="mt-12 flex flex-col sm:flex-row justify-end gap-4">
+                    <a href="{{ url_for('log_agendamento.index') }}"
+                        class="px-8 py-5 bg-white border-2 border-slate-200 text-slate-600 text-sm font-black uppercase tracking-wider rounded-2xl hover:bg-slate-50 hover:border-slate-300 transition-all text-center">
+                        Descartar e Voltar
+                    </a>
+                    <button onclick="salvarDesfecho()" id="btn-finalizar"
+                        class="px-12 py-5 bg-emerald-500 text-white text-sm font-black uppercase tracking-wider rounded-2xl shadow-xl shadow-emerald-500/20 hover:bg-emerald-600 transition-all transform active:scale-95 text-center">
+                        Finalizar Atendimento
+                    </button>
+                </div>
+            </section>
+
+        </main>
+    </div>
+</div>
+
+<script>
+    let desfechoAtual = null;
+    let aptoAtual = null;
+
+    // Get info from hidden DOM element to avoid Jinja/JS syntax issues
+    const dataEl = document.getElementById('appt-data');
+    const apptId = dataEl.dataset.id;
+    const currentStatus = dataEl.dataset.status;
+    const isAcolhimento = dataEl.dataset.especialidade === 'Acolhimento';
+    const isValidadoInicial = dataEl.dataset.validado === 'true';
+
+    function setDesfecho(tipo) {
+        desfechoAtual = tipo;
+
+        document.querySelectorAll('.desfecho-card').forEach(card => {
+            card.classList.remove('border-rose-500', 'border-amber-500', 'border-emerald-500', 'bg-rose-50', 'bg-amber-50', 'bg-emerald-50', 'ring-8', 'ring-rose-500/5', 'ring-amber-500/5', 'ring-emerald-500/5', 'scale-[1.02]');
+            card.querySelector('.check-indicator').classList.add('opacity-0');
+        });
+
+        const btnId = tipo === 'nao_compareceu' ? 'nc' : (tipo === 'reagendar' ? 're' : 'at');
+        const card = document.getElementById(`btn-desfecho-${btnId}`);
+        const color = { 'nao_compareceu': 'rose', 'reagendar': 'amber', 'atendido': 'emerald' }[tipo];
+
+        card.classList.add(`border-${color}-500`, `bg-${color}-50`, 'ring-8', `ring-${color}-500/5`, 'scale-[1.02]');
+        card.querySelector('.check-indicator').classList.remove('opacity-0');
+
+        if (isAcolhimento) {
+            const container = document.getElementById('psico-validation-container');
+            if (tipo === 'atendido') {
+                container.classList.remove('hidden');
+            } else {
+                container.classList.add('hidden');
+                aptoAtual = null;
+            }
+        }
+    }
+
+    function setApto(val) {
+        aptoAtual = val;
+        const btnSim = document.getElementById('btn-apto-sim');
+        const btnNao = document.getElementById('btn-apto-nao');
+
+        btnSim.classList.remove('bg-emerald-600', 'text-white', 'border-emerald-600', 'shadow-lg', 'shadow-emerald-500/20');
+        btnNao.classList.remove('bg-rose-600', 'text-white', 'border-rose-600', 'shadow-lg', 'shadow-rose-500/20');
+
+        if (val) {
+            btnSim.classList.add('bg-emerald-600', 'text-white', 'border-emerald-600', 'shadow-lg', 'shadow-emerald-500/20');
+        } else {
+            btnNao.classList.add('bg-rose-600', 'text-white', 'border-rose-600', 'shadow-lg', 'shadow-rose-500/20');
+        }
+    }
+
+    async function salvarDesfecho() {
+        if (!desfechoAtual) {
+            showToast("Selecione o desfecho do atendimento.", "warning");
+            return;
+        }
+
+        if (isAcolhimento && desfechoAtual === 'atendido' && aptoAtual === null) {
+            showToast("Informe se o servidor está apto para Psicologia/Psiquiatria.", "warning");
+            return;
+        }
+
+        const btn = document.getElementById('btn-finalizar');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = "<span class='animate-pulse'>Gravando...</span>";
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
         btn.disabled = true;
 
         try {
             const res = await fetch(`/log_agendamento/api/atualizar/${apptId}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
+<<<<<<< HEAD
                 body: JSON.stringify(payload)
             });
             const data = await res.json();
@@ -976,5 +1264,43 @@
     window.addEventListener('click', e => {
         if (e.target.id === 'modal-historico') fecharModal('modal-historico');
     });
+=======
+                body: JSON.stringify({
+                    status: desfechoAtual === 'atendido' ? 'Finalizado' : (desfechoAtual === 'nao_compareceu' ? 'NAO_COMPARECEU' : 'Agendado'),
+                    observacao: document.getElementById('clin-observacao').value,
+                    desfecho: desfechoAtual,
+                    apto_psico: aptoAtual
+                })
+            });
+
+            const data = await res.json();
+            if (data.success) {
+                showToast("Atendimento finalizado com sucesso!", "success");
+                setTimeout(() => {
+                    window.location.href = "{{ url_for('log_agendamento.index') }}";
+                }, 1000);
+            } else {
+                showToast(data.error || "Erro ao salvar desfecho.", "error");
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        } catch (err) {
+            console.error(err);
+            showToast("Erro de conexão.", "error");
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+    }
+
+    window.addEventListener('load', () => {
+        if (currentStatus === 'NAO_COMPARECEU') setDesfecho('nao_compareceu');
+        else if (currentStatus === 'Finalizado') {
+            setDesfecho('atendido');
+            if (isAcolhimento) {
+                setApto(isValidadoInicial);
+            }
+        }
+    });
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
 </script>
 {% endblock %}

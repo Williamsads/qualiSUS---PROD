@@ -15,6 +15,7 @@
         extend: {
           colors: {
             brand: {
+<<<<<<< HEAD
               50: '#F0F9FF',
               100: '#E0F2FE',
               200: '#BAE6FD',
@@ -36,6 +37,24 @@
               orange: '#FF6700',
               purple: '#4400FF',
               cyan: '#3AE8C6'
+=======
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              200: '#bae6fd',
+              300: '#7dd3fc',
+              400: '#38bdf8',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              700: '#0369a1',
+              800: '#075985',
+              900: '#0c4a6e',
+            },
+            pe: {
+              blue: '#004b90',  // Gov PE Oficial
+              gold: '#FFD700',
+              red: '#ED1C24',
+              green: '#00A859'
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
             }
           },
           boxShadow: {
@@ -71,6 +90,7 @@
       }
     }
 
+<<<<<<< HEAD
     @keyframes fadeInRight {
       from {
         opacity: 0;
@@ -87,6 +107,8 @@
       animation: fadeInRight 0.4s ease-out forwards;
     }
 
+=======
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
     .animate-fade-in-up {
       animation: fadeInUp 0.4s ease-out forwards;
     }
@@ -177,6 +199,7 @@
   </style>
 </head>
 
+<<<<<<< HEAD
 <body class="bg-gray-50 min-h-screen font-sans flex flex-col">
 
   <!-- Header estilo Gov PE -->
@@ -201,6 +224,23 @@
             class="text-pe-red">SUS</span> PE</span>
         <span class="text-[8px] md:text-[10px] uppercase tracking-[0.2em] text-pe-sky font-black">Governo do Estado de
           Pernambuco</span>
+=======
+<body class="bg-gray-50 min-h-screen font-sans">
+
+  <!-- Header estilo Gov PE -->
+  <header
+    class="bg-pe-blue shadow-xl-premium flex items-center justify-between px-4 md:px-12 py-4 text-white sticky top-0 z-50 backdrop-blur-md bg-pe-blue/95">
+    <div class="flex items-center gap-4">
+      <div class="hover:scale-110 transition-transform duration-500 ease-out cursor-pointer group">
+        <img src="{{ url_for('static', filename='img/Logo da QualiSUS com pinwheel colorido.png') }}"
+          alt="QualiSUS Logo" class="h-16 md:h-20 w-auto object-contain drop-shadow-2xl brightness-110" />
+      </div>
+      <div class="h-10 w-px bg-white/30 hidden md:block"></div>
+      <div class="hidden md:block">
+        <span class="font-black text-2xl tracking-tighter block leading-none mb-1">Quali<span
+            class="text-pe-red">SUS</span> PE</span>
+        <span class="text-[10px] uppercase tracking-[0.2em] text-blue-100 font-black">Saúde do Trabalhador</span>
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
       </div>
     </div>
 
@@ -223,19 +263,30 @@
 
   <!-- Conteúdo principal -->
   <main
+<<<<<<< HEAD
     class="flex-grow max-w-3xl mx-auto w-full md:mt-10 bg-white p-4 sm:p-6 md:p-8 rounded-none sm:rounded-xl md:rounded-2xl shadow-lg mb-0 sm:mb-12">
 
     <h1 class="text-2xl sm:text-3xl md:text-4xl font-black text-center mb-2 text-pe-navy tracking-tighter">
+=======
+    class="max-w-3xl mx-auto md:mt-10 bg-white p-4 sm:p-6 md:p-8 rounded-b-xl sm:rounded-xl md:rounded-2xl shadow-lg">
+
+    <h1 class="text-2xl sm:text-3xl md:text-4xl font-black text-center mb-2 text-pe-blue tracking-tighter">
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
       Agende sua Consulta <span class="text-pe-red">Qualivida</span>
     </h1>
 
 
+<<<<<<< HEAD
     <p class="text-center text-xs sm:text-base text-gray-500 mb-8 md:mb-10 px-4 leading-relaxed font-semibold">
+=======
+    <p class="text-center text-sm sm:text-base text-gray-500 mb-8 md:mb-10 px-4 leading-relaxed font-medium">
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
       Escolha a especialidade, unidade e horário com praticidade.<br class="hidden sm:block">
       Processo 100% digital e seguro para o servidor.
     </p>
 
     <!-- Steps / Linha de progresso -->
+<<<<<<< HEAD
     <div id="step-progress-container"
       class="relative flex justify-between items-start mb-8 md:mb-12 px-2 overflow-x-hidden">
       <!-- Background Connecting Line -->
@@ -289,6 +340,65 @@
         </div>
         <span
           class="mt-2 text-gray-300 font-bold text-[8px] md:text-xs uppercase tracking-tighter text-center line-clamp-1 max-w-[60px] md:max-w-none">Confirmação</span>
+=======
+    <div class="flex justify-between items-center mb-8 md:mb-12 px-1 sm:px-2 gap-1">
+      <!-- Step 1 -->
+      <div class="flex flex-col items-center flex-1 min-w-0">
+        <div
+          class="w-8 h-8 md:w-12 md:h-12 rounded-full bg-brand-600 text-white flex items-center justify-center font-bold text-xs md:text-lg shadow-md transition-all ring-4 ring-blue-50">
+          1
+        </div>
+        <span
+          class="mt-2 text-brand-600 font-bold block text-[9px] md:text-sm uppercase tracking-tight truncate w-full text-center">Paciente</span>
+      </div>
+
+      <div class="flex-[0.5] h-0.5 bg-gray-100 mt-[-20px] md:mt-[-40px]"></div>
+
+      <!-- Step 2 -->
+      <div class="flex flex-col items-center flex-1 min-w-0">
+        <div
+          class="w-8 h-8 md:w-12 md:h-12 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center font-bold text-xs md:text-lg transition-all">
+          2
+        </div>
+        <span
+          class="mt-2 text-gray-400 font-medium block text-[9px] md:text-sm uppercase tracking-tight truncate w-full text-center">Unidade</span>
+      </div>
+
+      <div class="flex-[0.5] h-0.5 bg-gray-100 mt-[-20px] md:mt-[-40px]"></div>
+
+      <!-- Step 3 -->
+      <div class="flex flex-col items-center flex-1 min-w-0">
+        <div
+          class="w-8 h-8 md:w-12 md:h-12 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center font-bold text-xs md:text-lg transition-all">
+          3
+        </div>
+        <span
+          class="mt-2 text-gray-400 font-medium block text-[9px] md:text-sm uppercase tracking-tight truncate w-full text-center">Especialidade</span>
+      </div>
+
+      <div class="flex-[0.5] h-0.5 bg-gray-100 mt-[-20px] md:mt-[-40px]"></div>
+
+      <!-- Step 4 -->
+      <div class="flex flex-col items-center flex-1 min-w-0">
+        <div
+          class="w-8 h-8 md:w-12 md:h-12 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center font-bold text-xs md:text-lg transition-all">
+          4
+        </div>
+        <span
+          class="mt-2 text-gray-400 font-medium block text-[9px] md:text-sm uppercase tracking-tight truncate w-full text-center">Horário</span>
+      </div>
+
+      <div class="flex-[0.5] h-0.5 bg-gray-100 mt-[-20px] md:mt-[-40px]"></div>
+
+      <!-- Step 5 -->
+      <div class="flex flex-col items-center flex-1 min-w-0">
+        <div
+          class="w-8 h-8 md:w-12 md:h-12 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center font-bold text-xs md:text-lg transition-all">
+          5
+        </div>
+        <span
+          class="mt-2 text-gray-400 font-medium block text-[9px] md:text-sm uppercase tracking-tight truncate w-full text-center">CONFIRMAÇÃO</span>
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
       </div>
     </div>
 
@@ -309,6 +419,7 @@
         </label>
 
 
+<<<<<<< HEAD
         <div class="relative flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
           <input type="text" id="doc" name="doc" autocomplete="off"
             class="w-full pl-5 pr-5 sm:pr-24 py-4 border border-gray-300 rounded-xl focus:ring-4 focus:ring-pe-navy/10 focus:border-pe-royal outline-none text-gray-900 font-bold bg-white shadow-sm transition-all"
@@ -316,6 +427,15 @@
           <button id="btnValidar"
             class="sm:absolute sm:right-2 sm:top-2 sm:bottom-2 bg-pe-red text-white font-black px-8 py-3 sm:py-0 rounded-lg hover:bg-pe-red/90 transition-colors shadow-md active:scale-95 flex items-center gap-2">
             Buscar <i data-lucide="search" class="w-5 h-5"></i>
+=======
+        <div class="relative flex items-center z-10">
+          <input type="text" id="doc" name="doc" autocomplete="off"
+            class="w-full pl-5 pr-24 py-4 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 outline-none text-gray-900 font-bold bg-white shadow-sm transition-all dark:border-gray-700 cursor-text"
+            placeholder="CPF ou Matrícula...">
+          <button id="btnValidar"
+            class="absolute right-2 top-2 bottom-2 bg-red-600 text-white font-extrabold px-6 rounded-lg hover:bg-red-700 transition-colors z-20 shadow-md active:scale-95">
+            Buscar
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
           </button>
         </div>
         <p class="text-xs text-dark-600 mt-2 font-medium dark:text-dark-400">Exemplos: CPF&nbsp;Nº Funcional / Nº
@@ -324,8 +444,13 @@
 
       <!-- Card Paciente Encontrado (Hidden by default) -->
       <div id="card-paciente-encontrado"
+<<<<<<< HEAD
         class="hidden w-full max-w-lg mt-8 bg-pe-royal/5 border border-blue-100 rounded-2xl p-6 animate-fade-in-up">
         <div class="flex items-center gap-2 mb-4 text-pe-navy font-bold">
+=======
+        class="hidden w-full max-w-lg mt-8 bg-blue-50/50 border border-blue-100 rounded-2xl p-6 animate-fade-in-up">
+        <div class="flex items-center gap-2 mb-4 text-blue-700 font-bold">
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
           <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z">
             </path>
@@ -378,8 +503,13 @@
         </div>
 
         <button id="btnStep1Next"
+<<<<<<< HEAD
           class="mt-6 w-full bg-pe-navy text-white font-bold py-3.5 rounded-xl hover:bg-pe-navy/90 shadow-lg shadow-pe-navy/20 transition-all transform hover:scale-[1.01] flex items-center justify-center gap-2">
           Continuar para Agendamento <i data-lucide="arrow-right" class="w-5 h-5"></i>
+=======
+          class="mt-6 w-full bg-blue-900 text-white font-bold py-3.5 rounded-xl hover:bg-blue-800 shadow-lg shadow-blue-900/20 transition-all transform hover:scale-[1.01]">
+          Continuar para Agendamento
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
         </button>
       </div>
 
@@ -387,6 +517,7 @@
 
     <!-- MODAL ATUALIZAR CADASTRO -->
     <div id="modalCadastro"
+<<<<<<< HEAD
       class="fixed inset-0 bg-black/60 hidden items-center justify-center z-[80] p-4 backdrop-blur-md">
       <div
         class="bg-white rounded-3xl w-full max-w-2xl shadow-2xl flex flex-col animate-fade-in-up overflow-hidden max-h-[90vh]">
@@ -506,10 +637,89 @@
                   <button type="button" id="btnBuscarCep"
                     class="px-3.5 bg-pe-navy text-white rounded-xl hover:bg-pe-navy/90 transition-all shadow-md active:scale-95 group">
                     <i data-lucide="search" class="w-5 h-5 transition-transform group-hover:scale-110"></i>
+=======
+      class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 p-4 backdrop-blur-sm">
+      <div class="bg-white rounded-2xl w-full max-w-2xl shadow-2xl flex flex-col max-h-[90vh] animate-fade-in-up">
+
+        <!-- Header -->
+        <div class="flex justify-between items-center p-6 border-b border-gray-100">
+          <div>
+            <h2 class="text-xl font-bold text-blue-900">Completar Cadastro</h2>
+            <p class="text-sm text-gray-500 mt-1">Atualize seus dados para prosseguir com o
+              agendamento.</p>
+          </div>
+          <button type="button" id="btnFecharModalTop"
+            class="text-gray-400 hover:text-red-500 transition-colors p-2 rounded-lg hover:bg-gray-100">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <form id="formCadastroPaciente" class="p-6 overflow-y-auto space-y-8">
+
+          <!-- DADOS PESSOAIS -->
+          <div class="bg-blue-50/50 p-5 rounded-xl border border-blue-100">
+            <div class="flex items-center gap-2 mb-4">
+              <div class="bg-blue-100 p-2 rounded-lg text-blue-600">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                </svg>
+              </div>
+              <h3 class="font-bold text-gray-800">Dados Pessoais</h3>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Nome completo*</label>
+                <input type="text" id="modal_nome"
+                  class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none bg-white">
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Cartão SUS*</label>
+                <input type="text" id="modal_cns"
+                  class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none bg-white">
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Data de
+                  nascimento*</label>
+                <input type="date" id="modal_nascimento"
+                  class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none bg-white">
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Telefone*</label>
+                <input type="text" id="modal_telefone"
+                  class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none bg-white">
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Email*</label>
+                <input type="email" id="modal_email"
+                  class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none bg-white">
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">CEP*</label>
+                <div class="flex gap-2">
+                  <input type="text" id="modal_cep" placeholder="00000-000"
+                    class="flex-1 p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none bg-white">
+                  <button type="button" id="btnBuscarCep"
+                    class="bg-blue-600 text-white px-3 py-2.5 rounded-lg hover:bg-blue-700 transition-colors"
+                    title="Buscar CEP">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
                   </button>
                 </div>
               </div>
 
+<<<<<<< HEAD
               <div class="md:col-span-3">
                 <label
                   class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 ml-1">Logradouro*</label>
@@ -555,12 +765,58 @@
             <button type="submit"
               class="px-10 py-4 bg-pe-navy text-white font-black rounded-2xl hover:bg-pe-navy/90 shadow-xl shadow-pe-navy/30 transition-all transform hover:scale-[1.02] active:scale-95 flex items-center gap-3">
               Salvar e Continuar <i data-lucide="arrow-right" class="w-5 h-5"></i>
+=======
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Logradouro*</label>
+                <input type="text" id="modal_logradouro"
+                  class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none bg-white">
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Número*</label>
+                <input type="text" id="modal_numero"
+                  class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none bg-white">
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Bairro*</label>
+                <input type="text" id="modal_bairro"
+                  class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none bg-white">
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Cidade*</label>
+                <input type="text" id="modal_cidade"
+                  class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none bg-white">
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">UF*</label>
+                <input type="text" id="modal_uf"
+                  class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none bg-white">
+              </div>
+
+            </div>
+          </div>
+
+
+          <!-- Actions -->
+          <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-100 dark:border-gray-800">
+            <button type="button" id="btnCancelarModal"
+              class="px-5 py-2.5 rounded-lg text-gray-700 font-medium hover:bg-gray-100 transition-colors dark:text-gray-400 dark:hover:bg-gray-800">
+              Cancelar
+            </button>
+            <button type="submit"
+              class="px-6 py-2.5 bg-blue-900 text-white font-bold rounded-lg hover:bg-blue-800 shadow-lg shadow-blue-900/20 transition-all transform hover:scale-[1.02]">
+              Salvar e Continuar
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
             </button>
           </div>
         </form>
       </div>
     </div>
 
+<<<<<<< HEAD
     <!-- MODAL CANCELAMENTO (Multi-passo) -->
     <div id="modalCancelamento"
       class="fixed inset-0 bg-black/60 hidden items-center justify-center z-[70] p-4 backdrop-blur-md">
@@ -808,6 +1064,8 @@
       </div>
     </div>
 
+=======
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
     <!-- MODAL ACOLHIMENTO OBRIGATÓRIO (Regra de Negócio) -->
     <div id="modalAcolhimento"
       class="fixed inset-0 bg-black/70 hidden items-center justify-center z-[60] p-4 backdrop-blur-md">
@@ -821,8 +1079,12 @@
             <i data-lucide="alert-circle" class="w-10 h-10"></i>
           </div>
 
+<<<<<<< HEAD
           <h2 class="text-2xl font-black text-gray-900 mb-4 leading-tight" id="modalAcolhimentoTitle">Acolhimento
             Obrigatório</h2>
+=======
+          <h2 class="text-2xl font-black text-gray-900 mb-4 leading-tight">Acolhimento Obrigatório</h2>
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
 
           <p class="text-gray-600 mb-8 leading-relaxed font-medium" id="acolhimento-msg">
             Antes do atendimento em Psicologia ou Psiquiatria, é necessário passar pelo Acolhimento Presencial.
@@ -854,6 +1116,7 @@
       </div>
     </div>
 
+<<<<<<< HEAD
     <!-- STEP 2: Especialidade (Redesigned) -->
     <div id="step-2" class="hidden mt-8 w-full max-w-4xl mx-auto">
       <div class="text-center mb-10">
@@ -898,6 +1161,13 @@
       <div class="text-center mb-10">
         <div class="inline-flex items-center justify-center p-3 bg-pe-royal/5 rounded-2xl mb-4">
           <svg class="w-8 h-8 text-pe-royal" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+=======
+    <!-- STEP 2: Unidade / Data (Redesigned) -->
+    <div id="step-2" class="hidden mt-8 w-full max-w-5xl mx-auto">
+      <div class="text-center mb-10">
+        <div class="inline-flex items-center justify-center p-3 bg-blue-50 rounded-2xl mb-4">
+          <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
             <path stroke-linecap="round" stroke-linejoin="round"
               d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
             </path>
@@ -912,7 +1182,11 @@
         <!-- Left Column: Unit Selection -->
         <div>
           <h3 class="flex items-center gap-2 text-lg font-bold text-gray-800 mb-6">
+<<<<<<< HEAD
             <svg class="w-5 h-5 text-pe-royal" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+=======
+            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
               <path stroke-linecap="round" stroke-linejoin="round"
                 d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
               </path>
@@ -932,7 +1206,11 @@
         <!-- Right Column: Date Selection (Calendar) -->
         <div>
           <h3 class="flex items-center gap-2 text-lg font-bold text-gray-800 mb-6">
+<<<<<<< HEAD
             <svg class="w-5 h-5 text-pe-royal" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+=======
+            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
               <path stroke-linecap="round" stroke-linejoin="round"
                 d="M8 7V3M16 7V3M4 11H20M5 19H19C20.1046 19 21 18.1046 21 17V7C21 5.89543 20.1046 5 19 5H5C3.89543 5 3 5.89543 3 7V17C3 18.1046 3.89543 19 5 19Z">
               </path>
@@ -985,13 +1263,18 @@
       </div>
 
       <!-- Warnings / Messages -->
+<<<<<<< HEAD
       <div id="step3-error-alt"
         class="hidden mt-6 p-4 bg-red-50 text-red-600 rounded-xl text-center text-sm font-medium">
+=======
+      <div id="step2-error" class="hidden mt-6 p-4 bg-red-50 text-red-600 rounded-xl text-center text-sm font-medium">
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
         Por favor, selecione uma unidade e uma data válida.
       </div>
 
       <!-- Navigation Buttons -->
       <div class="flex flex-col sm:flex-row justify-between gap-3 sm:gap-4 mt-12 pt-6 border-t border-gray-100">
+<<<<<<< HEAD
         <button type="button" id="btnBack3"
           class="w-full sm:w-auto px-6 py-3 rounded-xl text-gray-600 font-semibold hover:bg-gray-100 hover:text-gray-800 transition-colors flex items-center justify-center gap-2">
           <i data-lucide="arrow-left" class="w-5 h-5"></i> Voltar
@@ -999,6 +1282,59 @@
         <button type="button" id="btnStep3Next"
           class="w-full sm:w-auto bg-pe-navy text-white px-8 py-3 rounded-xl font-bold hover:bg-pe-navy/90 shadow-lg shadow-pe-navy/20 transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2">
           Próximo <i data-lucide="arrow-right" class="w-5 h-5"></i>
+=======
+        <button type="button" id="btnBack2"
+          class="w-full sm:w-auto px-6 py-3 rounded-xl text-gray-600 font-semibold hover:bg-gray-100 hover:text-gray-800 transition-colors flex items-center justify-center gap-2">
+          Voltar
+        </button>
+        <button type="button" id="btnStep2Next"
+          class="w-full sm:w-auto bg-blue-900 text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-800 shadow-lg shadow-blue-900/20 transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2">
+          Próximo
+        </button>
+      </div>
+    </div>
+
+    <!-- STEP 3: Especialidade (Redesigned) -->
+    <div id="step-3" class="hidden mt-8 w-full max-w-4xl mx-auto">
+      <div class="text-center mb-10">
+        <div class="inline-flex items-center justify-center p-3 bg-red-50 rounded-2xl mb-4">
+          <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z">
+            </path>
+          </svg>
+        </div>
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 px-2">Especialidade</h2>
+        <p class="text-sm sm:text-base text-gray-500 mt-2 px-2">Qual tipo de atendimento você precisa?</p>
+      </div>
+
+      <!-- Hidden Input for Logic -->
+      <input type="hidden" id="especialidadeEscolha" value="">
+      <input type="hidden" id="especialidadeIdEscolha" value="">
+
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6 mb-8" id="especialidades-grid">
+        <!-- Cards will be injected via JS -->
+      </div>
+
+      <div id="step3-error" class="hidden p-4 mb-6 bg-red-50 text-red-600 rounded-xl text-center text-sm font-medium">
+        Por favor, selecione uma especialidade.
+      </div>
+
+      <div class="flex flex-col sm:flex-row justify-between gap-3 sm:gap-4 border-t border-gray-100 pt-6">
+        <button id="btnBack3"
+          class="w-full sm:w-auto px-6 py-3 rounded-xl text-gray-600 font-semibold hover:bg-gray-100 hover:text-gray-800 transition-colors flex items-center justify-center gap-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+          </svg>
+          Voltar
+        </button>
+        <button id="btnStep3Next"
+          class="w-full sm:w-auto bg-red-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-red-700 shadow-lg shadow-red-600/20 transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2">
+          Próximo
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+          </svg>
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
         </button>
       </div>
     </div>
@@ -1007,11 +1343,19 @@
     <div id="step-4" class="hidden mt-8 w-full max-w-5xl mx-auto">
       <div class="text-center mb-10">
         <div class="inline-flex items-center justify-center p-3 bg-blue-50 rounded-2xl mb-4">
+<<<<<<< HEAD
           <svg class="w-8 h-8 text-pe-royal" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
           </svg>
         </div>
         <h2 class="text-3xl font-bold text-gray-900">Profissional e Horário</h2>
+=======
+          <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+        <h2 class="text-3xl font-bold text-gray-900">Médico e Horário</h2>
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
         <p class="text-gray-500 mt-2">Escolha o profissional e o melhor horário para você</p>
       </div>
 
@@ -1020,7 +1364,11 @@
         <!-- Left Column: Doctor Selection -->
         <div>
           <h3 class="flex items-center gap-2 text-lg font-bold text-gray-800 mb-6">
+<<<<<<< HEAD
             <svg class="w-5 h-5 text-pe-royal" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+=======
+            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
               <path stroke-linecap="round" stroke-linejoin="round"
                 d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
             </svg>
@@ -1037,7 +1385,11 @@
         <!-- Right Column: Time Selection -->
         <div>
           <h3 class="flex items-center gap-2 text-lg font-bold text-gray-800 mb-6">
+<<<<<<< HEAD
             <svg class="w-5 h-5 text-pe-royal" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+=======
+            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z">
               </path>
             </svg>
@@ -1063,11 +1415,25 @@
       <div class="flex flex-col sm:flex-row justify-between gap-3 sm:gap-4 mt-12 pt-6 border-t border-gray-100">
         <button type="button" id="btnBack4"
           class="w-full sm:w-auto px-6 py-3 rounded-xl text-gray-600 font-semibold hover:bg-gray-100 hover:text-gray-800 transition-colors flex items-center justify-center gap-2">
+<<<<<<< HEAD
           <i data-lucide="arrow-left" class="w-5 h-5"></i> Voltar
         </button>
         <button type="button" id="btnStep4Next"
           class="w-full sm:w-auto bg-pe-navy text-white px-8 py-3 rounded-xl font-bold hover:bg-pe-navy/90 shadow-lg shadow-pe-navy/20 transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2">
           Próximo <i data-lucide="arrow-right" class="w-5 h-5"></i>
+=======
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+          </svg>
+          Voltar
+        </button>
+        <button type="button" id="btnStep4Next"
+          class="w-full sm:w-auto bg-blue-900 text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-800 shadow-lg shadow-blue-900/20 transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2">
+          Próximo
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+          </svg>
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
         </button>
       </div>
     </div>
@@ -1102,6 +1468,7 @@
           </div>
         </div>
 
+<<<<<<< HEAD
         <!-- Ticket Body (Appointment Details) -->
         <div class="p-8 space-y-8 relative">
           <!-- Separator Line (Perforated Effect) -->
@@ -1121,10 +1488,24 @@
               <div>
                 <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Especialidade</p>
                 <p class="text-lg font-bold text-slate-800" id="conf-especialidade">Clínica Médica</p>
+=======
+        <!-- Ticket Body (Details) -->
+        <div class="p-8 space-y-8">
+          <!-- Unidade e Especialidade -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 flex-shrink-0">
+                <i data-lucide="map-pin" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Unidade de Saúde</p>
+                <p class="font-bold text-gray-800 text-lg leading-tight" id="conf-unidade">Unidade Central</p>
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
               </div>
             </div>
 
             <div class="flex items-start gap-4">
+<<<<<<< HEAD
               <div class="w-12 h-12 bg-pe-royal/5 rounded-xl flex items-center justify-center text-pe-royal shrink-0">
                 <i data-lucide="building-2" class="w-6 h-6"></i>
               </div>
@@ -1151,10 +1532,19 @@
               <div>
                 <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Horário</p>
                 <p class="text-lg font-bold text-slate-800" id="conf-hora">08:30</p>
+=======
+              <div class="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 flex-shrink-0">
+                <i data-lucide="stethoscope" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Especialidade</p>
+                <p class="font-bold text-gray-800 text-lg leading-tight" id="conf-especialidade">Cardiologia</p>
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
               </div>
             </div>
           </div>
 
+<<<<<<< HEAD
           <!-- Professional Highlight -->
           <div class="mt-8 p-6 bg-slate-50 rounded-2xl border border-slate-100 flex items-center gap-4">
             <div
@@ -1165,10 +1555,41 @@
               <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Profissional Responsável
               </p>
               <p class="text-xl font-black text-pe-navy" id="conf-medico">Dr. Alan Turing</p>
+=======
+          <!-- Divider with Ticket Cut - Use gray-50 to match main bg -->
+          <div class="ticket-cut border-t-2 border-dashed border-gray-100 my-8 py-2"></div>
+
+          <!-- Médico e Horário -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 flex-shrink-0">
+                <i data-lucide="user-check" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Profissional Responsável
+                </p>
+                <p class="font-bold text-gray-800 text-lg leading-tight" id="conf-medico">Dr. João Silva</p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-4">
+              <div
+                class="w-10 h-10 bg-brand-600 rounded-xl flex items-center justify-center text-white flex-shrink-0 shadow-lg shadow-blue-200">
+                <i data-lucide="clock" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Data e Horário</p>
+                <div class="flex items-baseline gap-2">
+                  <p class="font-bold text-gray-800 text-lg leading-tight" id="conf-data">15/10/2025</p>
+                  <p class="text-brand-600 font-black text-xl leading-tight" id="conf-hora">09:30</p>
+                </div>
+              </div>
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
             </div>
           </div>
         </div>
 
+<<<<<<< HEAD
         <!-- Decorative Footer (Cupom Bottom) -->
         <div class="bg-gray-50 px-8 py-6 border-t border-dashed border-gray-200 flex flex-col items-center">
           <div class="w-full flex justify-between items-center mb-4">
@@ -1180,6 +1601,24 @@
           </div>
           <p class="text-[10px] text-slate-400 font-medium text-center">Tire um print ou foto desta tela para apresentar
             na recepção.</p>
+=======
+        <!-- Decorative Barcode -->
+        <div class="bg-gray-50 p-4 border-t border-gray-100 flex flex-col items-center gap-2">
+          <div class="flex gap-1 h-8 opacity-20">
+            <div class="bg-black w-2"></div>
+            <div class="bg-black w-1"></div>
+            <div class="bg-black w-3"></div>
+            <div class="bg-black w-1"></div>
+            <div class="bg-black w-2"></div>
+            <div class="bg-black w-4"></div>
+            <div class="bg-black w-1"></div>
+            <div class="bg-black w-2"></div>
+            <div class="bg-black w-3"></div>
+            <div class="bg-black w-1"></div>
+            <div class="bg-black w-5"></div>
+          </div>
+          <span class="text-[8px] font-bold text-gray-400 tracking-[0.5em] uppercase">Validação Digital QualiSUS</span>
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
         </div>
       </div>
 
@@ -1192,16 +1631,31 @@
       <div class="flex flex-col sm:flex-row justify-between gap-3 sm:gap-4 pt-4 border-t border-gray-100">
         <button id="btnBack5"
           class="w-full sm:w-auto px-6 py-3 rounded-xl text-gray-600 font-semibold hover:bg-gray-100 hover:text-gray-800 transition-colors flex items-center justify-center gap-2">
+<<<<<<< HEAD
           <i data-lucide="arrow-left" class="w-5 h-5"></i> Corrigir Dados
         </button>
         <button id="btnConfirmar"
           class="w-full sm:w-auto bg-green-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-green-700 shadow-lg shadow-green-600/20 transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2">
           Finalizar Agendamento <i data-lucide="check" class="w-5 h-5"></i>
+=======
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+          </svg>
+          Voltar
+        </button>
+        <button id="btnConfirmar"
+          class="w-full sm:w-auto bg-blue-900 text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-800 shadow-lg shadow-blue-900/20 transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2">
+          Confirmar Agendamento
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+          </svg>
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
         </button>
       </div>
     </div>
   </main>
 
+<<<<<<< HEAD
   <!-- RODAPÉ INSTITUCIONAL PREMIUM -->
   <footer class="bg-pe-navy py-12 mt-auto relative overflow-hidden text-white/80">
 
@@ -1223,6 +1677,28 @@
           © 2026 • TODOS OS DIREITOS RESERVADOS
         </p>
       </div>
+=======
+  <!-- RODAPÉ INSTITUCIONAL -->
+  <footer class="bg-blue-900 text-white mt-12">
+    <div class="max-w-7xl mx-auto px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+
+      <!-- Logo Governo de Pernambuco -->
+      <div class="flex items-center gap-4">
+        <img src="{{ url_for('static', filename='img/GOV-JPG-1024x452-removebg-preview.png') }}"
+          alt="Governo de Pernambuco" class="h-14 w-auto brightness-0 invert" />
+        <div class="leading-tight">
+          <span class="text-sm block">Governo de</span>
+          <span class="font-bold text-lg">Pernambuco</span>
+        </div>
+      </div>
+
+      <!-- Texto institucional -->
+      <div class="text-sm text-gray-200 text-center sm:text-right">
+        <p>Secretaria Estadual de Saúde</p>
+        <p class="text-xs opacity-80">© 2025 • QualiSUS PE</p>
+      </div>
+
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
     </div>
   </footer>
 
@@ -1233,11 +1709,14 @@
     const step4 = document.getElementById('step-4');
     const step5 = document.getElementById('step-5');
 
+<<<<<<< HEAD
     // --- DADOS DE SESSÃO E PERFIS ---
     const userTipo = "{{ session.get('tipo', '').upper() }}";
     const perfilPaciente = ["TRABALHADOR", "USUARIO", "PACIENTE"];
 
 
+=======
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
     const modal = document.getElementById('modalCadastro');
     const formModal = document.getElementById('formCadastroPaciente');
 
@@ -1250,7 +1729,11 @@
       toast.className = `toast-item border border-gray-100 bg-white shadow-2xl rounded-2xl p-4 flex items-center gap-4 transition-all duration-300 mb-3`;
 
       let icon = 'info';
+<<<<<<< HEAD
       let colorClass = 'bg-blue-50 text-pe-royal';
+=======
+      let colorClass = 'bg-blue-50 text-blue-600';
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
       if (type === 'success') {
         icon = 'check-circle';
         colorClass = 'bg-green-50 text-green-600';
@@ -1322,6 +1805,7 @@
     }
 
     function updateStepProgress(step) {
+<<<<<<< HEAD
       const container = document.getElementById('step-progress-container');
       if (!container) return;
 
@@ -1361,6 +1845,39 @@
         }
       });
 
+=======
+      const stepItems = document.querySelectorAll('.flex.justify-between.items-center.mb-8 > div.flex-col');
+      const lines = document.querySelectorAll('.flex.justify-between.items-center.mb-8 > div.flex-1');
+
+      stepItems.forEach((item, idx) => {
+        const circle = item.querySelector('div');
+        const label = item.querySelector('span');
+
+        // Reset classes
+        circle.classList.remove('bg-brand-600', 'bg-green-600', 'bg-gray-100', 'text-white', 'text-gray-400', 'ring-4', 'ring-blue-50', 'ring-green-50');
+        label.classList.remove('text-brand-600', 'text-green-600', 'text-gray-400', 'font-bold', 'font-medium');
+
+        if (idx < step) {
+          // Concluído
+          circle.classList.add('bg-green-600', 'text-white', 'ring-4', 'ring-green-50');
+          circle.innerHTML = '<i data-lucide="check" class="w-5 h-5"></i>';
+          label.classList.add('text-green-600', 'font-bold');
+          if (lines[idx]) lines[idx].classList.replace('bg-gray-100', 'bg-green-600');
+        } else if (idx === step) {
+          // Ativo
+          circle.classList.add('bg-brand-600', 'text-white', 'ring-4', 'ring-blue-50');
+          circle.innerHTML = idx + 1;
+          label.classList.add('text-brand-600', 'font-bold');
+          if (lines[idx]) lines[idx].classList.replace('bg-green-600', 'bg-gray-100');
+        } else {
+          // Futuro
+          circle.classList.add('bg-gray-100', 'text-gray-400');
+          circle.innerHTML = idx + 1;
+          label.classList.add('text-gray-400', 'font-medium');
+          if (lines[idx]) lines[idx].classList.replace('bg-green-600', 'bg-gray-100');
+        }
+      });
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
       if (typeof lucide !== 'undefined') lucide.createIcons();
     }
 
@@ -1369,6 +1886,7 @@
     // ===============================
     let isDataComplete = false;
 
+<<<<<<< HEAD
     // --- FUNÇÃO PARA PREENCHER DADOS AUTOMATICAMENTE (USADA NO AUTO-LOAD) ---
     function preencherDadosPaciente(data) {
       if (!data.found) return;
@@ -1421,6 +1939,8 @@
       }
     });
 
+=======
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
     document.getElementById('btnValidar').onclick = async () => {
       const doc = document.getElementById('doc').value.trim();
       if (!doc) return showToast("Informe CPF, número funcional ou VIC", "warning");
@@ -1522,8 +2042,12 @@
           return;
         }
 
+<<<<<<< HEAD
         // 👉 OK → STEP 2 (Especialidade)
         carregarEspecialidades(); // Pre-load specialties
+=======
+        // 👉 OK → STEP 2
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
         step1.classList.add('hidden');
         step2.classList.remove('hidden');
         updateStepProgress(1);
@@ -1548,9 +2072,15 @@
         return;
       }
 
+<<<<<<< HEAD
       // Prepara objeto consolidado
       const payload = {
         trabalhador_id: pacienteGlobal.id,
+=======
+      const payload = {
+        trabalhador_id: pacienteGlobal.id,
+
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
         trabalhador: {
           nome_completo: document.getElementById('modal_nome').value,
           cns: document.getElementById('modal_cns').value,
@@ -1621,7 +2151,11 @@
         const url = unidadeId ? `/api/agendar_exame/especialidades?unidade_id=${unidadeId}` : '/api/agendar_exame/especialidades';
         const res = await fetch(url);
         const data = await res.json();
+<<<<<<< HEAD
         let specs = data.especialidades || [];
+=======
+        const specs = data.especialidades || [];
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
 
         if (specs.length === 0) {
           container.innerHTML = '<div class="col-span-3 text-center py-10 text-amber-600 bg-amber-50 rounded-xl border border-amber-100 font-medium">Nenhuma especialidade disponível nesta unidade.</div>';
@@ -1635,6 +2169,7 @@
 
           return `
             <div 
+<<<<<<< HEAD
               onclick="selecionarEspecialidade(${s.id}, '${s.nome}', ${s.exige_acolhimento_previo || false}, '${s.tipo_fluxo || 'CONSULTA'}')"
               class="specialty-card cursor-pointer group flex flex-col items-center p-6 rounded-2xl border-2 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl ${isSelected ? 'border-pe-royal bg-pe-royal/5 shadow-md ring-4 ring-pe-royal/20' : 'border-gray-50 bg-white hover:border-pe-sky shadow-sm'}"
             >
@@ -1643,6 +2178,16 @@
               </div>
               <h3 class="text-sm font-black text-gray-800 text-center uppercase tracking-tight group-hover:text-pe-navy transition-colors">${s.nome}</h3>
               ${isSelected ? '<div class="mt-3 py-1 px-4 bg-pe-royal text-white text-[10px] font-black rounded-full uppercase shadow-sm animate-pulse">Selecionado</div>' : '<div class="mt-3 h-6"></div>'}
+=======
+              onclick="selecionarEspecialidade(${s.id}, '${s.nome}')"
+              class="specialty-card cursor-pointer group flex flex-col items-center p-6 rounded-2xl border-2 transition-all duration-300 transform hover:-translate-y-1 ${isSelected ? 'border-brand-600 bg-blue-50/50 shadow-md ring-4 ring-blue-50' : 'border-gray-100 bg-white hover:border-brand-300 hover:shadow-sm'}"
+            >
+              <div class="w-16 h-16 rounded-2xl ${isSelected ? 'bg-brand-600 text-white shadow-lg' : 'bg-brand-50 text-brand-600'} flex items-center justify-center mb-4 transition-colors group-hover:bg-brand-600 group-hover:text-white group-hover:shadow-lg">
+                <i data-lucide="${iconName}" class="w-8 h-8"></i>
+              </div>
+              <h3 class="text-sm font-bold text-gray-800 text-center uppercase tracking-tight">${s.nome}</h3>
+              ${isSelected ? '<div class="mt-3 py-1 px-3 bg-brand-600 text-white text-[10px] font-black rounded-full uppercase">Selecionado</div>' : ''}
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
             </div>
           `;
         }).join('');
@@ -1654,6 +2199,7 @@
 
       } catch (err) {
         console.error(err);
+<<<<<<< HEAD
         container.innerHTML = '<div class="col-span-3 text-center py-10 text-pe-red">Erro ao carregar especialidades.</div>';
       }
     }
@@ -1710,6 +2256,83 @@
 
       const specId = specialtyIdInput.value;
       carregarEspecialidades(null, true);
+=======
+        container.innerHTML = '<div class="col-span-3 text-center py-10 text-red-500">Erro ao carregar especialidades.</div>';
+      }
+    }
+
+    function selecionarEspecialidade(id, nome) {
+      specialtyInput.value = nome;
+      specialtyIdInput.value = id;
+      document.getElementById('step3-error').classList.add('hidden');
+
+      const unidadeId = document.getElementById('selected_unidade_id').value;
+      carregarEspecialidades(unidadeId, true);
+    }
+
+    const btnStep3Next = document.getElementById('btnStep3Next');
+    if (btnStep3Next) {
+      btnStep3Next.onclick = async () => {
+        const val = document.getElementById('especialidadeIdEscolha').value;
+        const nome = document.getElementById('especialidadeEscolha').value;
+
+        if (!val) {
+          document.getElementById('step3-error').classList.remove('hidden');
+          return;
+        }
+
+        // --- REGRA DE NEGÓCIO: Acolhimento obrigatório ---
+        if (nome === "Psicólogo" || nome === "Psiquiatra") {
+          try {
+            const res = await fetch(`/api/agendar_exame/check-acolhimento?trabalhador_id=${pacienteGlobal.id}&especialidade=${encodeURIComponent(nome)}`);
+            const data = await res.json();
+
+            if (data.blocked) {
+              document.getElementById('acolhimento-msg').innerText = data.message;
+              const modalAcolhimento = document.getElementById('modalAcolhimento');
+              modalAcolhimento.classList.remove('hidden');
+              modalAcolhimento.classList.add('flex');
+
+              // Handler do Botão "Agendar Acolhimento"
+              document.getElementById('btnIrParaAcolhimento').onclick = async () => {
+                modalAcolhimento.classList.add('hidden');
+
+                // Busca o ID da especialidade 'Acolhimento' (pode estar oculta)
+                const resSpec = await fetch('/api/agendar_exame/especialidades?include_hidden=true');
+                const specsData = await resSpec.json();
+                const acolhimentoSpec = (specsData.especialidades || []).find(s => s.nome === 'Acolhimento');
+
+                if (acolhimentoSpec) {
+                  selecionarEspecialidade(acolhimentoSpec.id, acolhimentoSpec.nome);
+                  // Dispara o clique do "Próximo" automaticamente para Acolhimento
+                  btnStep3Next.click();
+                } else {
+                  showToast("Especialidade Acolhimento não encontrada no sistema.", "error");
+                }
+              };
+
+              document.getElementById('btnFecharAcolhimento').onclick = () => {
+                modalAcolhimento.classList.add('hidden');
+                modalAcolhimento.classList.remove('flex');
+              };
+
+              return;
+            }
+          } catch (err) {
+            console.error(err);
+            showToast("Erro ao validar regra de acolhimento.", "error");
+            return;
+          }
+        }
+
+        // Carrega médicos antes de mudar
+        await carregarMedicos(val);
+
+        step3.classList.add('hidden');
+        step4.classList.remove('hidden');
+        updateStepProgress(3);
+      }
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
     }
 
     // --- STEP NAVIGATION BACK BUTTONS ---
@@ -1759,18 +2382,31 @@
           return `
             <div 
               onclick="selecionarMedico(${p.id}, '${p.nome}')"
+<<<<<<< HEAD
               class="doctor-card cursor-pointer group flex items-center p-4 rounded-2xl border-2 transition-all duration-300 transform hover:scale-[1.01] ${isSelected ? 'border-pe-royal bg-pe-royal/5 shadow-md ring-4 ring-pe-royal/20' : 'border-gray-50 bg-white hover:border-pe-royal/20 hover:shadow-sm'}"
             >
               <div class="relative">
                 <div class="w-14 h-14 rounded-full ${isSelected ? 'bg-pe-royal text-white shadow-lg' : 'bg-pe-royal/10 text-pe-royal'} flex-shrink-0 flex items-center justify-center font-bold text-lg transition-all duration-300 group-hover:bg-pe-royal group-hover:text-white">
+=======
+              class="doctor-card cursor-pointer group flex items-center p-4 rounded-2xl border-2 transition-all duration-300 transform hover:scale-[1.01] ${isSelected ? 'border-brand-600 bg-blue-50/50 shadow-md ring-4 ring-blue-50' : 'border-gray-50 bg-white hover:border-brand-200 hover:shadow-sm'}"
+            >
+              <div class="relative">
+                <div class="w-14 h-14 rounded-full ${isSelected ? 'bg-brand-600 text-white shadow-lg' : 'bg-brand-100 text-brand-600'} flex-shrink-0 flex items-center justify-center font-bold text-lg transition-all duration-300 group-hover:bg-brand-600 group-hover:text-white">
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
                   ${initials}
                 </div>
                 ${isSelected ? '<div class="absolute -top-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-white flex items-center justify-center"><i data-lucide="check" class="w-3 h-3 text-white"></i></div>' : ''}
               </div>
               <div class="ml-4 flex-1">
+<<<<<<< HEAD
                 <h4 class="font-bold text-gray-800 text-base leading-tight group-hover:text-pe-navy">${p.nome}</h4>
               </div>
               <i data-lucide="chevron-right" class="w-5 h-5 text-gray-300 group-hover:text-pe-royal transition-colors"></i>
+=======
+                <h4 class="font-bold text-gray-800 text-base leading-tight group-hover:text-brand-700">${p.nome}</h4>
+              </div>
+              <i data-lucide="chevron-right" class="w-5 h-5 text-gray-300 group-hover:text-brand-500 transition-colors"></i>
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
             </div>
           `;
         }).join('');
@@ -1781,7 +2417,11 @@
 
       } catch (err) {
         console.error(err);
+<<<<<<< HEAD
         if (!silent) container.innerHTML = '<div class="text-center py-10 text-pe-red">Erro ao carregar profissionais.</div>';
+=======
+        if (!silent) container.innerHTML = '<div class="text-center py-10 text-red-500">Erro ao carregar profissionais.</div>';
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
       }
     }
 
@@ -1838,7 +2478,11 @@
 
         container.innerHTML = slots.map(s => `
           <div
+<<<<<<< HEAD
             class="time-slot p-3 rounded-xl border-2 text-center font-bold text-sm cursor-pointer transition-all duration-300 hover:scale-105 ${timeInput.value === s.horario ? 'bg-pe-royal border-pe-royal text-white shadow-lg' : 'border-gray-100 bg-white text-gray-600 hover:border-pe-royal/40 hover:text-pe-royal'}"
+=======
+            class="time-slot p-3 rounded-xl border-2 text-center font-bold text-sm cursor-pointer transition-all duration-300 hover:scale-105 ${timeInput.value === s.horario ? 'bg-brand-600 border-brand-600 text-white shadow-lg' : 'border-gray-100 bg-white text-gray-600 hover:border-brand-400 hover:text-brand-600'}"
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
             data-time="${s.horario}">${s.horario}</div>
         `).join('');
 
@@ -1846,18 +2490,30 @@
         container.querySelectorAll('.time-slot').forEach(slot => {
           slot.onclick = () => {
             container.querySelectorAll('.time-slot').forEach(s => {
+<<<<<<< HEAD
               s.classList.remove('bg-pe-royal', 'text-white', 'border-pe-royal', 'shadow-lg', 'scale-105');
               s.classList.add('text-gray-600', 'border-gray-100', 'bg-white');
             });
             slot.classList.remove('text-gray-600', 'border-gray-100', 'bg-white');
             slot.classList.add('bg-pe-royal', 'text-white', 'border-pe-royal', 'shadow-lg', 'scale-105');
+=======
+              s.classList.remove('bg-brand-600', 'text-white', 'border-brand-600', 'shadow-lg', 'scale-105');
+              s.classList.add('text-gray-600', 'border-gray-100', 'bg-white');
+            });
+            slot.classList.remove('text-gray-600', 'border-gray-100', 'bg-white');
+            slot.classList.add('bg-brand-600', 'text-white', 'border-brand-600', 'shadow-lg', 'scale-105');
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
             timeInput.value = slot.getAttribute('data-time');
             checkStep4Validity();
           };
         });
 
       } catch (err) {
+<<<<<<< HEAD
         container.innerHTML = '<div class="col-span-4 text-center py-4 text-pe-red">Erro ao carregar horários.</div>';
+=======
+        container.innerHTML = '<div class="col-span-4 text-center py-4 text-red-500">Erro ao carregar horários.</div>';
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
       }
     }
 
@@ -1925,14 +2581,21 @@
       btn.disabled = true;
 
       const payload = {
+<<<<<<< HEAD
         trabalhador_id: pacienteGlobal.id,
+=======
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
         vinculo_id: vinculoGlobal ? vinculoGlobal.id : null,
         funcionario_id: doctorIdInput.value,
         data_consulta: dateInput.value,
         horario: timeInput.value,
         unidade: unitNameInput.value,
+<<<<<<< HEAD
         especialidade: specialtyInput.value,
         origem_agendamento: new URLSearchParams(window.location.search).get('origem') || null
+=======
+        especialidade: specialtyInput.value
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
       };
 
       try {
@@ -1947,6 +2610,7 @@
         if (data.success) {
           showToast("Agendamento realizado com sucesso!", "success");
           updateStepProgress(5);
+<<<<<<< HEAD
 
           // Funções Auxiliares Globalizadas (Versão Definitiva)
           window.copyAppointmentDetails = (btn) => {
@@ -2096,6 +2760,23 @@
             </div>
           `;
           if (typeof lucide !== 'undefined') lucide.createIcons();
+=======
+          // Show Success state in UI
+          step5.innerHTML = `
+            <div class="text-center py-20 animate-fade-in-up">
+              <div class="w-24 h-24 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg class="w-12 h-12" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </div>
+              <h2 class="text-4xl font-black text-gray-900 mb-4">Agendamento Realizado!</h2>
+              <p class="text-xl text-gray-600 mb-10">Sua consulta foi confirmada e salva com sucesso no sistema.</p>
+              <button onclick="window.location.reload()" class="bg-brand-600 text-white px-10 py-4 rounded-2xl font-bold hover:bg-brand-700 transition-all shadow-xl shadow-brand-600/20">
+                Fazer Outro Agendamento
+              </button>
+            </div>
+          `;
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
         } else {
           showToast("Erro: " + (data.error || "Não foi possível salvar."), "error");
           btn.innerHTML = originalText;
@@ -2285,6 +2966,7 @@
           const [y, m, d] = a.data.split('-');
           const dataFmt = `${d}/${m}/${y}`;
 
+<<<<<<< HEAD
           // Verifica se falta menos de 12h para o cancelamento (apenas visual)
           const consultaTime = new Date(`${a.data}T${a.horario}`).getTime();
           const agora = new Date().getTime();
@@ -2329,6 +3011,32 @@
                       </button>
                     </div>
                   </div>
+=======
+          // Verifica se falta menos de 24h para o cancelamento (apenas visual)
+          const consultaTime = new Date(`${a.data}T${a.horario}`).getTime();
+          const agora = new Date().getTime();
+          const diffHoras = (consultaTime - agora) / (1000 * 60 * 60);
+          const podeCancelar = diffHoras >= 24;
+
+          return `
+                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-100 group hover:border-blue-200 transition-all">
+                  <div class="flex flex-col">
+                    <span class="text-xs font-black text-blue-900 uppercase tracking-tight">${a.especialidade}</span>
+                    <span class="text-sm font-bold text-gray-800">${a.medico}</span>
+                    <div class="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1 text-[11px] text-gray-500 font-medium">
+                      <span class="flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3"></i> ${a.unidade}</span>
+                      <span class="flex items-center gap-1"><i data-lucide="calendar" class="w-3 h-3"></i> ${dataFmt}</span>
+                      <span class="flex items-center gap-1"><i data-lucide="clock" class="w-3 h-3"></i> ${a.horario}</span>
+                    </div>
+                  </div>
+                  <button 
+                    onclick="cancelarAgendamento(${a.id}, '${a.especialidade}')"
+                    ${podeCancelar ? '' : 'disabled title="Cancelamento permitido apenas com 24h de antecedência"'}
+                    class="p-2.5 rounded-lg border border-gray-200 text-gray-400 hover:text-red-600 hover:bg-red-50 hover:border-red-200 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                  >
+                    <i data-lucide="trash-2" class="w-4.5 h-4.5"></i>
+                  </button>
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
                 </div>
               `;
         }).join('')}
@@ -2338,6 +3046,7 @@
 
       } catch (err) {
         console.error(err);
+<<<<<<< HEAD
         section.innerHTML = '<div class="py-4 text-pe-red text-sm font-bold">Erro ao carregar agendamentos.</div>';
       }
     }
@@ -2453,35 +3162,57 @@
       btn.disabled = true;
       btn.innerHTML = '<i class="animate-spin" data-lucide="loader-2"></i> Processando...';
       if (typeof lucide !== 'undefined') lucide.createIcons();
+=======
+        section.innerHTML = '<div class="py-4 text-red-500 text-sm font-bold">Erro ao carregar agendamentos.</div>';
+      }
+    }
+
+    async function cancelarAgendamento(id, especialidade) {
+      if (!confirm(`Tem certeza que deseja cancelar seu agendamento de ${especialidade}?`)) return;
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
 
       try {
         const res = await fetch("/api/agendar_exame/cancelar", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
+<<<<<<< HEAD
           body: JSON.stringify({
             agendamento_id: tempCancelId,
             motivo: motivo,
             observacao: notas
           })
+=======
+          body: JSON.stringify({ agendamento_id: id })
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
         });
         const data = await res.json();
 
         if (data.success) {
+<<<<<<< HEAD
           showToast("Consulta cancelada com sucesso! Você receberá uma confirmação por e-mail.", "success");
           document.getElementById('modalCancelamento').classList.add('hidden');
           if (pacienteGlobal) carregarAgendamentos(pacienteGlobal.id);
+=======
+          showToast("Agendamento cancelado com sucesso.", "success");
+          carregarAgendamentos(pacienteGlobal.id);
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
         } else {
           showToast("Erro: " + (data.error || "Não foi possível cancelar."), "error");
         }
       } catch (err) {
         console.error(err);
         showToast("Erro de conexão ao cancelar.", "error");
+<<<<<<< HEAD
       } finally {
         btn.disabled = false;
         btn.innerHTML = originalHTML;
         if (typeof lucide !== 'undefined') lucide.createIcons();
       }
     };
+=======
+      }
+    }
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
 
     window.carregarAgendamentos = carregarAgendamentos;
     window.cancelarAgendamento = cancelarAgendamento;
@@ -2490,7 +3221,11 @@
     // ===============================
     // UNIDADES CARD LOGIC
     // ===============================
+<<<<<<< HEAD
     async function carregarUnidadesCard(silent = false, especialidadeId = null) {
+=======
+    async function carregarUnidadesCard(silent = false) {
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
       const container = document.getElementById('unidades-container');
       const hiddenInput = document.getElementById('selected_unidade_id');
       if (!container) return;
@@ -2502,13 +3237,21 @@
       }
 
       try {
+<<<<<<< HEAD
         const url = especialidadeId ? `/api/agendar_exame/unidades_disponiveis?especialidade_id=${especialidadeId}` : '/api/agendar_exame/unidades_disponiveis';
         const res = await fetch(url);
+=======
+        const res = await fetch('/api/agendar_exame/unidades_disponiveis');
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
         const data = await res.json();
         const unidades = data.unidades || [];
 
         if (unidades.length === 0) {
+<<<<<<< HEAD
           container.innerHTML = '<div class="p-4 text-center text-amber-600 bg-amber-50 rounded-xl border border-amber-100 font-medium">Nenhuma unidade disponível para esta especialidade.</div>';
+=======
+          container.innerHTML = '<div class="p-4 text-center text-gray-500">Nenhuma unidade encontrada.</div>';
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
           return;
         }
 
@@ -2519,16 +3262,28 @@
           return `
             <div 
               onclick="selecionarUnidade(${u.id}, '${u.nome}')"
+<<<<<<< HEAD
               class="cursor-pointer group flex flex-col p-5 rounded-2xl border-2 transition-all duration-300 transform hover:scale-[1.01] ${isSelected ? 'border-pe-royal bg-pe-royal/5 shadow-md ring-4 ring-pe-royal/20' : 'border-gray-100 bg-white hover:border-pe-sky hover:shadow-sm'}"
             >
               <div class="flex items-start justify-between mb-3">
                 <h4 class="font-bold text-gray-800 text-lg group-hover:text-pe-navy transition-colors">${u.nome}</h4>
                 <div class="w-6 h-6 rounded-full border-2 ${isSelected ? 'border-pe-royal bg-pe-royal shadow-md' : 'border-gray-200'} flex items-center justify-center transition-all">
+=======
+              class="cursor-pointer group flex flex-col p-5 rounded-2xl border-2 transition-all duration-300 transform hover:scale-[1.01] ${isSelected ? 'border-brand-600 bg-blue-50/50 shadow-md ring-4 ring-blue-50' : 'border-gray-100 bg-white hover:border-brand-300 hover:shadow-sm'}"
+            >
+              <div class="flex items-start justify-between mb-3">
+                <h4 class="font-bold text-gray-800 text-lg group-hover:text-brand-700 transition-colors">${u.nome}</h4>
+                <div class="w-6 h-6 rounded-full border-2 ${isSelected ? 'border-brand-600 bg-brand-600 shadow-md' : 'border-gray-200'} flex items-center justify-center transition-all">
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
                   ${isSelected ? '<i data-lucide="check" class="w-4 h-4 text-white"></i>' : ''}
                 </div>
               </div>
               <div class="flex items-center gap-2 text-sm text-gray-500">
+<<<<<<< HEAD
                 <i data-lucide="map-pin" class="w-4 h-4 text-pe-sky"></i>
+=======
+                <i data-lucide="map-pin" class="w-4 h-4 text-brand-400"></i>
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
                 <span class="truncate">${u.endereco || 'Endereço não informado'}</span>
               </div>
             </div>
@@ -2542,7 +3297,11 @@
 
       } catch (err) {
         console.error(err);
+<<<<<<< HEAD
         if (!silent) container.innerHTML = '<div class="p-4 text-center text-pe-red">Erro ao carregar unidades.</div>';
+=======
+        if (!silent) container.innerHTML = '<div class="p-4 text-center text-red-500">Erro ao carregar unidades.</div>';
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
       }
     }
 
@@ -2553,10 +3312,16 @@
       if (hiddenInput) hiddenInput.value = id;
       if (nameInput) nameInput.value = nome;
 
+<<<<<<< HEAD
       const specId = document.getElementById('especialidadeIdEscolha').value;
       carregarUnidadesCard(true, specId);
 
       const errorMsg = document.getElementById('step3-error-alt');
+=======
+      carregarUnidadesCard(true);
+
+      const errorMsg = document.getElementById('step2-error');
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
       if (errorMsg) errorMsg.classList.add('hidden');
     }
 
@@ -2628,30 +3393,52 @@
           dayEl.classList.add("text-gray-300", "cursor-not-allowed");
           if (isWeekend) dayEl.title = "Fim de semana indisponível";
         } else {
+<<<<<<< HEAD
           dayEl.classList.add("cursor-pointer", "text-gray-700", "hover:bg-blue-50", "hover:text-pe-royal");
 
           // Check if selected
           if (hiddenInput.value === dateStr) {
             dayEl.classList.add("bg-pe-royal", "text-white", "shadow-md");
             dayEl.classList.remove("text-gray-700", "hover:bg-blue-50", "hover:text-pe-royal");
+=======
+          dayEl.classList.add("cursor-pointer", "text-gray-700", "hover:bg-blue-50", "hover:text-blue-600");
+
+          // Check if selected
+          if (hiddenInput.value === dateStr) {
+            dayEl.classList.add("bg-blue-600", "text-white", "shadow-md");
+            dayEl.classList.remove("text-gray-700", "hover:bg-blue-50", "hover:text-blue-600");
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
           }
 
           dayEl.onclick = () => {
             // Remove selection from others
             Array.from(daysContainer.children).forEach(child => {
               if (!child.classList.contains('text-gray-300')) {
+<<<<<<< HEAD
                 child.classList.remove("bg-pe-royal", "text-white", "shadow-md");
                 child.classList.add("text-gray-700", "hover:bg-blue-50", "hover:text-pe-royal");
+=======
+                child.classList.remove("bg-blue-600", "text-white", "shadow-md");
+                child.classList.add("text-gray-700", "hover:bg-blue-50", "hover:text-blue-600");
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
               }
             });
 
             hiddenInput.value = dateStr;
+<<<<<<< HEAD
             const errorMsg = document.getElementById('step3-error-alt');
             if (errorMsg) errorMsg.classList.add('hidden');
 
             // Add selection style
             dayEl.classList.remove("text-gray-700", "hover:bg-blue-50", "hover:text-pe-royal");
             dayEl.classList.add("bg-pe-royal", "text-white", "shadow-md");
+=======
+            document.getElementById('step2-error').classList.add('hidden');
+
+            // Add selection style
+            dayEl.classList.remove("text-gray-700", "hover:bg-blue-50", "hover:text-blue-600");
+            dayEl.classList.add("bg-blue-600", "text-white", "shadow-md");
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
           };
         }
 
@@ -2681,11 +3468,16 @@
 
 
     // ===============================
+<<<<<<< HEAD
     // STEP 2 NAVIGATION HANDLER (SPECIALTY)
+=======
+    // STEP 2 NAVIGATION HANDLER (NEW)
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
     // ===============================
     const btnStep2Next = document.getElementById('btnStep2Next');
     if (btnStep2Next) {
       btnStep2Next.onclick = async () => {
+<<<<<<< HEAD
         const specialtyId = document.getElementById('especialidadeIdEscolha').value;
 
         if (!specialtyId) {
@@ -2695,6 +3487,29 @@
 
         // 👉 CARREGAR UNIDADES FILTRADAS PELA ESPECIALIDADE
         await carregarUnidadesCard(false, specialtyId);
+=======
+        const unidadeId = document.getElementById('selected_unidade_id').value;
+        const dataConsulta = document.getElementById('selected_data_consulta').value;
+
+        if (!unidadeId || !dataConsulta) {
+          document.getElementById('step2-error').classList.remove('hidden');
+          return;
+        }
+
+        // --- FRONTEND VALIDATION: BLOQUEIO MENSAL ---
+        const [y, m, d] = dataConsulta.split('-').map(Number);
+        const agora = new Date();
+        const mesAtual = agora.getMonth() + 1; // getMonth is 0-indexed
+        const anoAtual = agora.getFullYear();
+
+        if (y !== anoAtual || m !== mesAtual) {
+          showToast("Agendamentos só podem ser realizados para datas dentro do mês atual.", "error");
+          return;
+        }
+
+        // 👉 CARREGAR ESPECIALIDADES DA UNIDADE
+        await carregarEspecialidades(unidadeId);
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
 
         // Proceed to Step 3
         step2.classList.add('hidden');
@@ -2704,6 +3519,7 @@
     }
 
     // ===============================
+<<<<<<< HEAD
     // STEP 3 NAVIGATION HANDLER (UNIT/DATE)
     // ===============================
     const btnStep3Next = document.getElementById('btnStep3Next');
@@ -2739,11 +3555,14 @@
     }
 
     // ===============================
+=======
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
     // REAL-TIME POLLING
     // ===============================
     setInterval(() => {
       if (document.hidden) return;
 
+<<<<<<< HEAD
       if (!step1.classList.contains('hidden')) {
         if (pacienteGlobal) carregarAgendamentos(pacienteGlobal.id);
       } else if (!step2.classList.contains('hidden')) {
@@ -2751,6 +3570,14 @@
       } else if (!step3.classList.contains('hidden')) {
         const specId = document.getElementById('especialidadeIdEscolha').value;
         carregarUnidadesCard(true, specId);
+=======
+      if (!step1.classList.contains('hidden') || !step2.classList.contains('hidden')) {
+        carregarUnidadesCard(true);
+        if (pacienteGlobal) carregarAgendamentos(pacienteGlobal.id);
+      } else if (!step3.classList.contains('hidden')) {
+        const unidadeId = document.getElementById('selected_unidade_id').value;
+        carregarEspecialidades(unidadeId, true);
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
       } else if (!step4.classList.contains('hidden')) {
         const specId = specialtyIdInput.value;
         carregarMedicos(specId, true);
@@ -2761,7 +3588,13 @@
 
     // Call onload
     window.addEventListener('DOMContentLoaded', () => {
+<<<<<<< HEAD
       // Prioridade: Configurar a máscara do documento imediatamente
+=======
+      carregarUnidadesCard();
+      renderCalendar(currentMonth, currentYear);
+
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
       const docInput = document.getElementById('doc');
       if (docInput) {
         setTimeout(() => docInput.focus(), 500);
@@ -2773,6 +3606,7 @@
 
           let formatted = v;
 
+<<<<<<< HEAD
           // REGRA DE MÁSCARA DINÂMICA (Auditoria UX)
           if (v.length === 11) {
             // Formata como CPF apenas se tiver os 11 dígitos completos
@@ -2794,11 +3628,26 @@
             docInput.classList.add('border-gray-300');
           }
 
+=======
+          if (v.length === 11) {
+            // Formata como CPF apenas se tiver os 11 dígitos completos
+            formatted = v.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+          } else if (v.length >= 3) {
+            // Formata como Matrícula (#######/##) para qualquer tamanho entre 3 e 10
+            // A barra sempre fica antes dos últimos 2 dígitos
+            const prefixo = v.slice(0, -2);
+            const sufixo = v.slice(-2);
+            formatted = `${prefixo}/${sufixo}`;
+          }
+
+          // Só atualiza o valor se for diferente, para não perder a posição do cursor inutilmente
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
           if (e.target.value !== formatted) {
             e.target.value = formatted;
           }
         });
       }
+<<<<<<< HEAD
 
       // Outras inicializações da página
       try {
@@ -2808,6 +3657,8 @@
       } catch (err) {
         console.warn("Erro não-crítico durante inicialização:", err);
       }
+=======
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
     });
   </script>
 

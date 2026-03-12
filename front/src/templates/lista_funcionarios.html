@@ -1,7 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
+<<<<<<< HEAD
 <div class="max-w-full mx-auto space-y-8 animate-fade-in-up">
+=======
+<div class="max-w-7xl mx-auto space-y-8 animate-fade-in-up">
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
 
   <!-- CABEÇALHO -->
   <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
@@ -10,7 +14,11 @@
         Equipe de Especialistas
       </h1>
       <p class="text-gray-500 dark:text-gray-400 max-w-2xl transition-colors font-medium">
+<<<<<<< HEAD
         Gerencie os profissionais de saúde cadastrados no sistema. (v2)
+=======
+        Gerencie os profissionais de saúde cadastrados no sistema, suas especialidades e lotações.
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
       </p>
     </div>
 
@@ -98,6 +106,7 @@
         </div>
 
         <div class="relative group">
+<<<<<<< HEAD
           <i data-lucide="shield-check"
             class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
           <select id="filterStatus" onchange="filterTable()"
@@ -105,6 +114,15 @@
             <option value="">Acesso: Todos</option>
             <option value="ativo">Acesso: Habilitado</option>
             <option value="inativo">Acesso: Bloqueado</option>
+=======
+          <i data-lucide="check-circle"
+            class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
+          <select id="filterStatus" onchange="filterTable()"
+            class="w-full pl-11 pr-10 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 font-bold transition-all dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 appearance-none cursor-pointer">
+            <option value="">Status: Todos</option>
+            <option value="ativo">Status: Ativo</option>
+            <option value="inativo">Status: Inativo</option>
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
           </select>
           <i data-lucide="chevron-down"
             class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"></i>
@@ -151,6 +169,7 @@
         <thead>
           <tr
             class="bg-gray-50/50 dark:bg-clinical-bg/30 border-b border-gray-100 dark:border-gray-800 transition-colors">
+<<<<<<< HEAD
             <th
               class="px-6 py-5 text-[10px] font-extrabold text-gray-500 dark:text-gray-400 uppercase tracking-widest whitespace-nowrap">
               Nome do Profissional</th>
@@ -187,13 +206,45 @@
           {% for f in funcionarios %}
           <tr
             class="funcionario-row hover:bg-blue-50/40 dark:hover:bg-blue-900/10 even:bg-slate-50/30 dark:even:bg-gray-800/20 transition-all duration-200"
+=======
+            <th class="px-6 py-5 text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
+              Nome do Profissional</th>
+            <th class="px-6 py-5 text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
+              CPF / Matrícula</th>
+            <th class="px-6 py-5 text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
+              Especialidade</th>
+            <th scope="col"
+              class="px-6 py-5 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              Unidade
+            </th>
+            <th scope="col"
+              class="px-6 py-5 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              Atendimento
+            </th>
+            <th class="px-6 py-5 text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
+              Situação</th>
+            <th class="px-6 py-5 text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
+              Status</th>
+            <th
+              class="px-6 py-5 text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest text-center">
+              Ações</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody" class="divide-y divide-gray-50 dark:divide-gray-800">
+          {% for f in funcionarios %}
+          <tr class="funcionario-row hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors"
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
             data-status="{{ 'ativo' if f.ativo else 'inativo' }}"
             data-atendimento="{{ 'sim' if f.atendimento else 'não' }}">
             <td class="px-6 py-5">
               <div class="flex items-center gap-3">
                 <div
+<<<<<<< HEAD
                   class="avatar-circle w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm transition-all shadow-sm"
                   data-name="{{ f.nome }}">
+=======
+                  class="w-10 h-10 bg-brand-50 dark:bg-brand-900/20 rounded-xl flex items-center justify-center text-brand-600 dark:text-brand-400 font-bold text-sm">
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
                   {{ f.nome[:1] }}
                 </div>
                 <span class="font-bold text-gray-800 dark:text-gray-200">{{ f.nome }}</span>
@@ -215,6 +266,7 @@
               {{ f.unidade_atendimento or '-' }}
             </td>
             <td class="px-6 py-5 whitespace-nowrap">
+<<<<<<< HEAD
               <div class="flex flex-col gap-1">
                 <div class="flex items-center gap-1.5 text-xs font-bold text-gray-700 dark:text-gray-300">
                   <i data-lucide="mail" class="w-3.5 h-3.5 text-gray-400"></i>
@@ -227,6 +279,8 @@
               </div>
             </td>
             <td class="px-6 py-5 whitespace-nowrap">
+=======
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
               {% if f.atendimento %}
               <span
                 class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 transition-all border border-blue-200 dark:border-blue-800">
@@ -260,6 +314,7 @@
               </span>
             </td>
             <td class="px-6 py-5">
+<<<<<<< HEAD
               <select onchange="alterarStatus(this.getAttribute('data-id'), this.value)" data-id="{{ f.id }}" class="text-[9px] font-black uppercase px-3 py-1.5 rounded-xl border-none ring-1 ring-gray-100 dark:ring-gray-800 focus:ring-2 focus:ring-brand-500/20 bg-white dark:bg-gray-800 outline-none cursor-pointer transition-all tracking-wider
                                            {{ 'text-emerald-600' if f.ativo else 'text-rose-500' }}">
                 <option value="ativo" {% if f.ativo %}selected{% endif %}>Habilitado</option>
@@ -293,6 +348,21 @@
                     <i data-lucide="user-minus" class="w-4 h-4"></i> Desativar Acesso
                   </button>
                 </div>
+=======
+              <select onchange="alterarStatus(this.getAttribute('data-id'), this.value)" data-id="{{ f.id }}" class="text-[10px] font-bold px-3 py-1.5 rounded-xl border-none ring-1 ring-gray-100 dark:ring-gray-800 focus:ring-2 focus:ring-brand-500/20 bg-white dark:bg-gray-800 outline-none cursor-pointer transition-all
+                                           {{ 'text-green-600' if f.ativo else 'text-red-500' }}">
+                <option value="ativo" {% if f.ativo %}selected{% endif %}>Ativo</option>
+                <option value="inativo" {% if not f.ativo %}selected{% endif %}>Inativo</option>
+              </select>
+            </td>
+            <td class="px-6 py-5">
+              <div class="flex justify-center">
+                <button type="button"
+                  class="btn-edit-funcionario w-9 h-9 flex items-center justify-center rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-400 hover:text-brand-600 hover:bg-brand-50 dark:hover:bg-brand-900/30 transition-all"
+                  data-funcionario='{{ f | tojson | forceescape }}'>
+                  <i data-lucide="edit-3" class="w-4.5 h-4.5"></i>
+                </button>
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
               </div>
             </td>
           </tr>
@@ -372,6 +442,7 @@
               <input id="editMatriculaField" name="num_func_vinculo"
                 class="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 dark:text-gray-100 transition-all font-medium">
             </div>
+<<<<<<< HEAD
 
             <div class="grid grid-cols-2 gap-4">
               <div class="group/field">
@@ -387,6 +458,8 @@
                   class="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 dark:text-gray-100 transition-all font-medium text-xs">
               </div>
             </div>
+=======
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
           </div>
         </div>
 
@@ -508,6 +581,7 @@
   </div>
 </div>
 
+<<<<<<< HEAD
 <!-- MODAL VISUALIZAÇÃO DE PERFIL -->
 <div id="viewProfileModal"
   class="fixed inset-0 bg-gray-950/80 backdrop-blur-md hidden items-center justify-center z-50 p-4 transition-all duration-300">
@@ -586,6 +660,8 @@
   </div>
 </div>
 
+=======
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
 <script>
   function toggleFilters() {
     const filterArea = document.getElementById('filterArea');
@@ -624,8 +700,11 @@
     document.getElementById('editSituacaoDataInicio').value = f.situacao_data_inicio || "";
     document.getElementById('editSituacaoDataFim').value = f.situacao_data_fim || "";
     document.getElementById('editAtendimento').checked = f.atendimento;
+<<<<<<< HEAD
     document.getElementById('editEmail').value = f.email || '';
     document.getElementById('editTelefone').value = f.telefone || '';
+=======
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
     document.getElementById('editForm').action = `/funcionario/editar/${f.id}`;
 
     // Apply initial situation styling
@@ -726,6 +805,7 @@
   window.addEventListener('DOMContentLoaded', () => {
     if (typeof lucide !== 'undefined') lucide.createIcons();
 
+<<<<<<< HEAD
     // Dinamic Avatar Colors
     const colors = [
       { bg: '#E0F2FE', text: '#0369A1' }, // Blue
@@ -849,6 +929,20 @@
       .replace(/^(\d{2})(\d)/g, '($1) $2')
       .replace(/(\d{5})(\d{4})$/, '$1-$2');
   }
+=======
+    // Event listener for edit buttons
+    document.querySelectorAll('.btn-edit-funcionario').forEach(btn => {
+      btn.addEventListener('click', () => {
+        try {
+          const funcData = JSON.parse(btn.getAttribute('data-funcionario'));
+          openEditModal(funcData);
+        } catch (e) {
+          console.error('Error parsing funcionario data:', e);
+        }
+      });
+    });
+  });
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
 </script>
 
 {% endblock %}

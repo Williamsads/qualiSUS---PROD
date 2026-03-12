@@ -65,6 +65,7 @@
 
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<<<<<<< HEAD
 
     <style>
         .solid-panel {
@@ -126,6 +127,8 @@
             box-shadow: 0 20px 30px -10px rgba(0, 99, 247, 0.5);
         }
     </style>
+=======
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
 </head>
 
 <body
@@ -133,7 +136,11 @@
 
     <!-- ======================= LEFT: LOGIN FORM ======================= -->
     <div
+<<<<<<< HEAD
         class="w-full md:w-[480px] lg:w-[550px] solid-panel min-h-screen flex flex-col relative z-20 shadow-xl flex-shrink-0 animate-fade-in transition-colors duration-500">
+=======
+        class="w-full md:w-[480px] lg:w-[550px] bg-white dark:bg-gray-900 min-h-screen flex flex-col relative z-20 shadow-[0_0_50px_rgba(0,0,0,0.1)] dark:shadow-[0_0_50px_rgba(0,0,0,0.5)] border-r-2 border-gray-900 dark:border-gray-800 flex-shrink-0 animate-fade-in transition-colors duration-500">
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
 
         <!-- Header / Logo -->
         <div class="px-10 py-8 flex flex-col items-center flex-none">
@@ -145,8 +152,13 @@
             <img src="{{ url_for('static', filename='img/Logo da QualiSUS com pinwheel colorido.png') }}"
                 alt="Logo QualiSUS"
                 class="h-20 md:h-28 mb-4 drop-shadow-xl hover:scale-105 transition-all duration-500 w-auto object-contain hidden dark:block">
+<<<<<<< HEAD
             <!-- Arco-íris da Bandeira de PE (Mais sutil) -->
             <div class="flex h-1 w-20 rounded-full overflow-hidden shadow-inner opacity-80">
+=======
+            <!-- Arco-íris da Bandeira de PE -->
+            <div class="flex h-1.5 w-24 rounded-full overflow-hidden shadow-sm">
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
                 <div class="flex-1 bg-pe-blue"></div>
                 <div class="flex-1 bg-pe-gold"></div>
                 <div class="flex-1 bg-pe-red"></div>
@@ -161,6 +173,7 @@
             <div class="w-full max-w-sm mx-auto space-y-8">
 
                 <div class="text-center space-y-2 animate-slide-up" style="animation-delay: 0.1s;">
+<<<<<<< HEAD
                     <h2 class="text-3xl font-extrabold text-white tracking-tight-custom">Bem-vindo de volta
                     </h2>
                     <p class="text-sm text-slate-400 font-medium">
@@ -171,6 +184,13 @@
                         <span class="text-[10px] font-bold uppercase tracking-widest text-emerald-500">Ambiente
                             monitorado e protegido</span>
                     </div>
+=======
+                    <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">Bem-vindo de volta
+                    </h2>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">
+                        Acesse sua conta para gerenciar agendamentos e serviços.
+                    </p>
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
                 </div>
 
                 <!-- Flash Messages -->
@@ -178,6 +198,7 @@
                 {% if messages %}
                 <div class="space-y-3 animate-slide-up" style="animation-delay: 0.2s;">
                     {% for categoria, mensagem in messages %}
+<<<<<<< HEAD
                     {% if mensagem == "Se o e-mail estiver cadastrado, você receberá um link para redefinir sua senha."
                     %}
                     <script>window.showFeedbackModal = true;</script>
@@ -187,22 +208,37 @@
                                             {% if categoria == 'erro' %} bg-red-50/80 border-red-200 text-red-700 dark:bg-red-900/20 dark:border-red-800 dark:text-red-400
                                             {% elif categoria == 'sucesso' %} bg-green-50/80 border-green-200 text-green-700 dark:bg-green-900/20 dark:border-green-800 dark:text-green-400
                                             {% else %} bg-blue-50/80 border-blue-200 text-blue-700 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-400 {% endif %}">
+=======
+                    <div
+                        class="flex items-center gap-3 p-4 rounded-2xl border text-sm font-bold shadow-sm backdrop-blur-md
+                                    {% if categoria == 'erro' %} bg-red-50/80 border-red-200 text-red-700 dark:bg-red-900/20 dark:border-red-800 dark:text-red-400
+                                    {% elif categoria == 'sucesso' %} bg-green-50/80 border-green-200 text-green-700 dark:bg-green-900/20 dark:border-green-800 dark:text-green-400
+                                    {% else %} bg-blue-50/80 border-blue-200 text-blue-700 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-400 {% endif %}">
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
                         <i data-lucide="{% if categoria == 'erro' %}alert-circle{% elif categoria == 'sucesso' %}check-circle{% else %}info{% endif %}"
                             class="w-5 h-5"></i>
                         <span>{{ mensagem }}</span>
                     </div>
+<<<<<<< HEAD
                     {% endif %}
+=======
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
                     {% endfor %}
                 </div>
                 {% endif %}
                 {% endwith %}
 
                 <!-- Form -->
+<<<<<<< HEAD
                 <form id="formLogin" autocomplete="off" method="POST" action="/login" class="space-y-6">
+=======
+                <form id="formLogin" autocomplete="off" method="POST" action="/index" class="space-y-6">
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
 
                     <!-- Email -->
                     <div class="space-y-2 animate-slide-up" style="animation-delay: 0.3s;">
                         <label for="email"
+<<<<<<< HEAD
                             class="block text-xs font-black uppercase tracking-widest text-slate-500 ml-1">Email
                             Institucional</label>
                         <div class="relative group">
@@ -212,6 +248,17 @@
                             </div>
                             <input type="email" id="email" name="email" placeholder="usuario@saude.pe.gov.br" required
                                 class="w-full pl-12 pr-4 py-4 input-solid rounded-2xl outline-none placeholder-slate-400 font-bold tracking-tight">
+=======
+                            class="block text-xs font-black uppercase tracking-widest text-gray-500 dark:text-gray-400 ml-1">Email
+                            Corporativo</label>
+                        <div class="relative group">
+                            <div
+                                class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-brand-600 dark:group-focus-within:text-brand-400 transition-colors">
+                                <i data-lucide="mail" class="w-5 h-5"></i>
+                            </div>
+                            <input type="email" id="email" name="email" placeholder="usuario@saude.pe.gov.br" required
+                                class="w-full pl-12 pr-4 py-4 bg-white dark:bg-gray-800/50 border-2 border-gray-900 dark:border-gray-700 rounded-2xl focus:bg-white dark:focus:bg-gray-800 focus:ring-4 focus:ring-pe-blue/10 focus:border-pe-blue outline-none transition-all duration-300 text-gray-900 dark:text-white placeholder-gray-400 font-semibold shadow-sm">
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
                         </div>
                     </div>
 
@@ -220,12 +267,17 @@
                         <!-- Label -->
                         <div class="ml-1">
                             <label for="senha"
+<<<<<<< HEAD
                                 class="block text-xs font-black uppercase tracking-widest text-slate-500">Senha</label>
+=======
+                                class="block text-xs font-black uppercase tracking-widest text-gray-500 dark:text-gray-400">Senha</label>
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
                         </div>
 
                         <!-- Input Group -->
                         <div class="relative group">
                             <div
+<<<<<<< HEAD
                                 class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-600 transition-colors">
                                 <i data-lucide="lock" class="w-5 h-5"></i>
                             </div>
@@ -234,6 +286,16 @@
 
                             <button type="button" id="toggleSenha"
                                 class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-blue-600 cursor-pointer transition-colors"
+=======
+                                class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-brand-600 dark:group-focus-within:text-brand-400 transition-colors">
+                                <i data-lucide="lock" class="w-5 h-5"></i>
+                            </div>
+                            <input type="password" id="senha" name="senha" placeholder="••••••••" required
+                                class="w-full pl-12 pr-12 py-4 bg-white dark:bg-gray-800/50 border-2 border-gray-900 dark:border-gray-700 rounded-2xl focus:bg-white dark:focus:bg-gray-800 focus:ring-4 focus:ring-pe-blue/10 focus:border-pe-blue outline-none transition-all duration-300 text-gray-900 dark:text-white placeholder-gray-400 font-semibold shadow-sm">
+
+                            <button type="button" id="toggleSenha"
+                                class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-brand-600 dark:hover:text-brand-400 cursor-pointer transition-colors"
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
                                 tabindex="-1">
                                 <i data-lucide="eye" id="iconEyeOpen" class="w-5 h-5 hidden"></i>
                                 <i data-lucide="eye-off" id="iconEyeClosed" class="w-5 h-5"></i>
@@ -241,6 +303,7 @@
                         </div>
 
                         <!-- Forgot Password Link -->
+<<<<<<< HEAD
                         <div class="flex items-center justify-between pt-1">
                             <label class="flex items-center gap-2 cursor-pointer group">
                                 <div class="relative flex items-center">
@@ -256,6 +319,12 @@
                             <button type="button" onclick="abrirModalSenha()"
                                 class="text-[11px] font-bold uppercase tracking-widest text-blue-400 hover:text-blue-300 transition-all hover:underline decoration-2 underline-offset-4">
                                 Esqueceu sua senha?
+=======
+                        <div class="flex justify-end pt-1 pr-1">
+                            <button type="button" onclick="abrirModalSenha()"
+                                class="text-[10px] font-black uppercase tracking-widest text-brand-600 hover:text-brand-800 dark:text-brand-400 dark:hover:text-brand-300 transition-all">
+                                Esqueceu a senha?
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
                             </button>
                         </div>
                     </div>
@@ -263,7 +332,11 @@
                     <!-- Submit Button -->
                     <div class="pt-4 animate-slide-up" style="animation-delay: 0.5s;">
                         <button type="submit" id="btnSubmit"
+<<<<<<< HEAD
                             class="group w-full bg-system-blue hover:brightness-110 text-white py-4 rounded-2xl font-black text-lg btn-glow hover:-translate-y-1 active:scale-95 transition-all duration-300 flex items-center justify-center gap-3">
+=======
+                            class="group w-full bg-pe-blue hover:brightness-110 text-white py-4 rounded-2xl font-black text-lg shadow-lg shadow-pe-blue/20 hover:shadow-xl hover:shadow-pe-blue/30 hover:-translate-y-1 active:scale-95 transition-all duration-300 flex items-center justify-center gap-3">
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
                             <span id="btnText">Entrar no Sistema</span>
                             <div id="btnLoader"
                                 class="hidden w-6 h-6 border-4 border-white/30 border-t-white rounded-full animate-spin">
@@ -289,6 +362,7 @@
         <!-- Footer -->
         <div class="p-10 text-center flex-none">
             <div
+<<<<<<< HEAD
                 class="flex items-center justify-center gap-4 mb-4 opacity-40 brightness-0 invert transition-all hover:opacity-100 duration-500">
                 <img src="{{ url_for('static', filename='img/GOV-JPG-1024x452-removebg-preview.png') }}" class="h-8"
                     alt="Gov PE">
@@ -304,6 +378,17 @@
                     Precisa de ajuda? Contate o suporte
                 </a>
             </div>
+=======
+                class="flex items-center justify-center gap-4 mb-4 opacity-30 grayscale transition-all hover:grayscale-0 hover:opacity-100 duration-500">
+                <img src="{{ url_for('static', filename='img/GOV-JPG-1024x452-removebg-preview.png') }}"
+                    class="h-8 dark:brightness-0 dark:invert" alt="Gov PE">
+            </div>
+            <p
+                class="text-[10px] text-gray-400 dark:text-gray-500 font-black uppercase tracking-[0.3em] leading-relaxed">
+                © 2025 • QualiSUS PE<br>
+                <span class="font-medium normal-case tracking-normal opacity-50">Secretaria Estadual de Saúde</span>
+            </p>
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
         </div>
     </div>
 
@@ -312,7 +397,11 @@
 
         <!-- Overlay Gradient -->
         <div
+<<<<<<< HEAD
             class="absolute inset-0 bg-gradient-to-t from-brand-900 via-brand-900/80 to-brand-900/20 z-10 pointer-events-none transition-all duration-700">
+=======
+            class="absolute inset-0 bg-gradient-to-t from-brand-900 via-brand-900/60 to-transparent z-10 pointer-events-none">
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
         </div>
 
         <!-- Images -->
@@ -336,12 +425,21 @@
                 </p>
 
                 <!-- Dots -->
+<<<<<<< HEAD
                 <div class="flex gap-2 mt-6">
                     <button class="w-10 h-1 rounded-full bg-white transition-all duration-300 opacity-100"
                         data-slide="0"></button>
                     <button class="w-2 h-1 rounded-full bg-white/50 hover:bg-white transition-all duration-300"
                         data-slide="1"></button>
                     <button class="w-2 h-1 rounded-full bg-white/50 hover:bg-white transition-all duration-300"
+=======
+                <div class="flex gap-2 mt-8">
+                    <button class="w-10 h-1.5 rounded-full bg-white transition-all duration-300 opacity-100"
+                        data-slide="0"></button>
+                    <button class="w-2 h-2 rounded-full bg-white/50 hover:bg-white transition-all duration-300"
+                        data-slide="1"></button>
+                    <button class="w-2 h-2 rounded-full bg-white/50 hover:bg-white transition-all duration-300"
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
                         data-slide="2"></button>
                 </div>
             </div>
@@ -358,6 +456,7 @@
         <div class="fixed inset-0 z-10 overflow-y-auto">
             <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
 
+<<<<<<< HEAD
                 <div class="relative transform overflow-hidden rounded-[2.5rem] solid-card text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-md opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                     id="modalPanel">
                     <div class="absolute top-0 left-0 w-full h-1.5 flex">
@@ -375,10 +474,26 @@
                                 <h3 class="text-lg font-semibold leading-6 text-white" id="modal-title">Recuperar
                                     Senha</h3>
                                 <div class="mt-2 text-sm text-slate-400">
+=======
+                <div class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-md opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                    id="modalPanel">
+
+                    <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                        <div class="sm:flex sm:items-start">
+                            <div
+                                class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-brand-100 sm:mx-0 sm:h-10 sm:w-10">
+                                <i data-lucide="key-round" class="w-6 h-6 text-brand-600"></i>
+                            </div>
+                            <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left w-full">
+                                <h3 class="text-lg font-semibold leading-6 text-gray-900" id="modal-title">Recuperar
+                                    Senha</h3>
+                                <div class="mt-2 text-sm text-gray-500">
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
                                     <p class="mb-4">Digite seu email institucional para receber as instruções de
                                         redefinição de senha.</p>
 
                                     <form method="POST" action="/recuperar-senha" id="formRecovery"
+<<<<<<< HEAD
                                         class="mt-6 space-y-4">
                                         <div>
                                             <div class="relative group">
@@ -388,6 +503,18 @@
                                                 </div>
                                                 <input type="email" name="email" required
                                                     class="block w-full rounded-2xl input-solid pl-11 py-3.5 text-white shadow-sm placeholder:text-slate-500 outline-none text-sm font-bold"
+=======
+                                        class="mt-4 space-y-4">
+                                        <div>
+                                            <label class="sr-only">Email</label>
+                                            <div class="relative">
+                                                <div
+                                                    class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                                                    <i data-lucide="at-sign" class="w-4 h-4"></i>
+                                                </div>
+                                                <input type="email" name="email" required
+                                                    class="block w-full rounded-lg border-gray-300 pl-10 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-brand-600 sm:text-sm sm:leading-6 outline-none"
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
                                                     placeholder="seu.email@saude.pe.gov.br">
                                             </div>
                                         </div>
@@ -397,6 +524,7 @@
                         </div>
                     </div>
 
+<<<<<<< HEAD
                     <div class="px-8 py-6 sm:flex sm:flex-row-reverse sm:px-10 gap-3">
                         <button type="submit" form="formRecovery"
                             class="inline-flex w-full justify-center rounded-xl bg-blue-600 px-6 py-2.5 text-xs font-black uppercase tracking-widest text-white shadow-xl shadow-blue-500/20 hover:bg-blue-700 sm:w-auto transition-all">
@@ -404,6 +532,15 @@
                         </button>
                         <button type="button" onclick="fecharModalSenha()"
                             class="mt-3 inline-flex w-full justify-center rounded-xl bg-slate-800 px-6 py-2.5 text-xs font-black uppercase tracking-widest text-slate-400 hover:bg-slate-700 sm:mt-0 sm:w-auto transition-all">
+=======
+                    <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 gap-2">
+                        <button type="submit" form="formRecovery"
+                            class="inline-flex w-full justify-center rounded-xl bg-brand-900 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-800 sm:w-auto transition-colors">
+                            Enviar Link
+                        </button>
+                        <button type="button" onclick="fecharModalSenha()"
+                            class="mt-3 inline-flex w-full justify-center rounded-xl bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto transition-colors">
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
                             Cancelar
                         </button>
                     </div>
@@ -412,6 +549,7 @@
         </div>
     </div>
 
+<<<<<<< HEAD
     <!-- ======================= MODAL: FEEDBACK ======================= -->
     <div id="modalFeedback" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog"
         aria-modal="true">
@@ -447,6 +585,8 @@
         </div>
     </div>
 
+=======
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
     <!-- ======================= SCRIPTS ======================= -->
     <script>
         // Init Icons
@@ -468,7 +608,11 @@
             formLogin.addEventListener('submit', () => {
                 btnSubmit.disabled = true;
                 btnSubmit.classList.add('opacity-80', 'cursor-not-allowed');
+<<<<<<< HEAD
                 btnText.innerText = "Entrando...";
+=======
+                btnText.innerText = "Verificando...";
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
                 btnLoader.classList.remove('hidden');
                 btnIcon.classList.add('hidden');
             });
@@ -576,6 +720,7 @@
                 modal.classList.add("hidden");
             }, 300); // Wait for transition
         }
+<<<<<<< HEAD
 
         // --- Feedback Modal Logic ---
         const feedbackModal = document.getElementById("modalFeedback");
@@ -605,6 +750,8 @@
         if (window.showFeedbackModal) {
             abrirModalFeedback();
         }
+=======
+>>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
     </script>
 </body>
 
