@@ -26,55 +26,67 @@
         <div class="space-y-1">
             <a href="{{ url_for('home') }}"
                 class="nav-link flex items-center gap-4 px-5 py-4 rounded-2xl text-[13px] transition-all {% if request.endpoint == 'home' %} nav-item-active {% endif %}">
-                <i data-lucide="layout-grid" class="w-5 h-5"></i>
-                <span class="font-black uppercase tracking-wider text-[11px]">Dashboard Principal</span>
+                <i data-lucide="home" class="w-5 h-5"></i>
+                <span class="font-black uppercase tracking-wider text-[11px]">Home</span>
             </a>
         </div>
 
-        <!-- CLINICAL MANAGEMENT -->
+        <!-- ATENDIMENTO CLÍNICO -->
         <div class="space-y-5">
-            <p class="px-5 text-[10px] font-black text-slate-600 uppercase tracking-[0.3em]">Agenda Clínica</p>
+            <p class="px-5 text-[10px] font-black text-slate-600 uppercase tracking-[0.3em]">Atendimento</p>
             <div class="space-y-2">
                 <a href="{{ url_for('agendamento_bp.pagina_agendamento') }}"
                     class="nav-link flex items-center gap-4 px-5 py-3.5 rounded-2xl text-[13px] transition-all {% if 'agendamento_bp' in request.endpoint %} nav-item-active {% endif %}">
                     <i data-lucide="calendar-plus" class="w-5 h-5 opacity-70"></i>
-                    <span class="font-bold">Agendar Consulta</span>
+                    <span class="font-bold">Nova Consulta</span>
                 </a>
                 <a href="{{ url_for('log_agendamento.index') }}"
                     class="nav-link flex items-center gap-4 px-5 py-3.5 rounded-2xl text-[13px] transition-all {% if 'log_agendamento' in request.endpoint %} nav-item-active {% endif %}">
-                    <i data-lucide="history" class="w-5 h-5 opacity-70"></i>
-                    <span class="font-bold">Histórico de Consultas</span>
+                    <i data-lucide="clipboard-list" class="w-5 h-5 opacity-70"></i>
+                    <span class="font-bold">Fila de Atendimento</span>
                 </a>
-                <a href="{{ url_for('gerenciamento.index') }}"
-                    class="nav-link flex items-center gap-4 px-5 py-3.5 rounded-2xl text-[13px] transition-all {% if 'gerenciamento' in request.endpoint %} nav-item-active {% endif %}">
-                    <i data-lucide="settings" class="w-5 h-5 opacity-70"></i>
-                    <span class="font-bold">Configurações da Agenda</span>
+                <a href="{{ url_for('painel_bp.pagina_painel') }}"
+                    class="nav-link flex items-center gap-4 px-5 py-3.5 rounded-2xl text-[13px] transition-all {% if 'painel_bp' in request.endpoint %} nav-item-active {% endif %}">
+                    <i data-lucide="heart-pulse" class="w-5 h-5 opacity-70"></i>
+                    <span class="font-bold">Meus Pacientes</span>
                 </a>
             </div>
         </div>
 
-        <!-- STAFF & ACCESS -->
+        <!-- GESTÃO -->
         <div class="space-y-5">
-            <p class="px-5 text-[10px] font-black text-slate-600 uppercase tracking-[0.3em]">Recursos Humanos
-            </p>
+            <p class="px-5 text-[10px] font-black text-slate-600 uppercase tracking-[0.3em]">Gestão</p>
             <div class="space-y-2">
+                <a href="{{ url_for('gerenciamento.index') }}"
+                    class="nav-link flex items-center gap-4 px-5 py-3.5 rounded-2xl text-[13px] transition-all {% if 'gerenciamento' in request.endpoint %} nav-item-active {% endif %}">
+                    <i data-lucide="calendar-clock" class="w-5 h-5 opacity-70"></i>
+                    <span class="font-bold">Agenda</span>
+                </a>
                 <a href="{{ url_for('trabalhadores.lista_trabalhadores') }}"
                     class="nav-link flex items-center gap-4 px-5 py-3.5 rounded-2xl text-[13px] transition-all {% if 'trabalhadores' in request.endpoint %} nav-item-active {% endif %}">
                     <i data-lucide="users" class="w-5 h-5 opacity-70"></i>
-                    <span class="font-bold">Base de Servidores</span>
+                    <span class="font-bold">Pacientes</span>
                 </a>
                 <a href="{{ url_for('servidor.lista_funcionarios') }}"
                     class="nav-link flex items-center gap-4 px-5 py-3.5 rounded-2xl text-[13px] transition-all {% if 'servidor' in request.endpoint %} nav-item-active {% endif %}">
-                    <i data-lucide="stethoscope" class="w-5 h-5 opacity-70"></i>
-                    <span class="font-bold">Corpo Clínico</span>
-                </a>
-                <a href="{{ url_for('usuarios.lista_usuarios') }}"
-                    class="nav-link flex items-center gap-4 px-5 py-3.5 rounded-2xl text-[13px] transition-all {% if 'usuarios' in request.endpoint %} nav-item-active {% endif %}">
-                    <i data-lucide="shield-check" class="w-5 h-5 opacity-70"></i>
-                    <span class="font-bold">Gestão de Acessos</span>
+                    <i data-lucide="user-round-cog" class="w-5 h-5 opacity-70"></i>
+                    <span class="font-bold">Profissionais</span>
                 </a>
             </div>
         </div>
+
+        <!-- ADMINISTRAÇÃO -->
+        <div class="space-y-5">
+            <p class="px-5 text-[10px] font-black text-slate-600 uppercase tracking-[0.3em]">Administração</p>
+            <div class="space-y-2">
+                <a href="{{ url_for('usuarios.lista_usuarios') }}"
+                    class="nav-link flex items-center gap-4 px-5 py-3.5 rounded-2xl text-[13px] transition-all {% if 'usuarios' in request.endpoint %} nav-item-active {% endif %}">
+                    <i data-lucide="shield-check" class="w-5 h-5 opacity-70"></i>
+                    <span class="font-bold">Controle de Acesso</span>
+                </a>
+            </div>
+        </div>
+
     </nav>
 
     <!-- SIDEBAR FOOTER -->

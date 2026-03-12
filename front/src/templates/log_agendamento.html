@@ -24,7 +24,7 @@
         <i data-lucide="printer" class="w-4 h-4 text-slate-400 group-hover:text-blue-500"></i>
         <span>Imprimir</span>
       </button>
-      <button onclick="alert('Funcionalidade em desenvolvimento')"
+      <button onclick="showToast('O módulo de exportação está sendo processado e estará disponível em breve.', 'info')"
         class="group px-8 py-3.5 bg-blue-600 text-white rounded-2xl hover:bg-blue-700 transition-all flex items-center gap-2.5 font-black text-[10px] uppercase tracking-widest shadow-xl shadow-blue-600/20 active:scale-95">
         <i data-lucide="download" class="w-4 h-4"></i>
         <span>Exportar Excel</span>
@@ -92,8 +92,7 @@
           <label
             class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2.5 block ml-1">Profissional</label>
           <input id="filtro-medico" type="text"
-            class="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition-all outline-none text-sm font-bold text-slate-600 placeholder:text-slate-300"
-            </div>
+            class="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition-all outline-none text-sm font-bold text-slate-600 placeholder:text-slate-300">
         </div>
 
         <!-- Data -->
@@ -548,13 +547,13 @@
               <button onclick="showDetails(${i})" class="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-brand-50 dark:hover:bg-brand-900/20 transition-all rounded-xl" title="Ver Detalhes">
                 <i data-lucide="eye" class="w-4.5 h-4.5"></i>
               </button>
-              {% if user_tipo in ['admin', 'assistente_social', 'desenvolvedor', 'dev'] %}
+              ${(loggedUserTipo === 'admin' || loggedUserTipo === 'assistente_social' || loggedUserTipo === 'desenvolvedor' || loggedUserTipo === 'dev' || loggedUserTipo === 'medico') && a.especialidade === 'Acolhimento' ? `
               <a href="/log_agendamento/atendimento/${a.id}" class="w-9 h-9 flex items-center justify-center text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all rounded-xl border border-transparent hover:border-emerald-100" title="Realizar Atendimento">
                 <i data-lucide="stethoscope" class="w-4.5 h-4.5"></i>
               </a>
-              {% endif %}
-              <button onclick="deletarAgendamento(${i})" class="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-all rounded-xl" title="Cancelar Agendamento">
-                <i data-lucide="trash-2" class="w-4.5 h-4.5"></i>
+              ` : ''}
+              <button onclick="cancelarAgendamento(${i})" class="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-all rounded-xl" title="Cancelar Agendamento">
+                <i data-lucide="x-circle" class="w-4.5 h-4.5"></i>
               </button>
             </div>
           </td>
@@ -759,34 +758,63 @@
     window.open(url, '_blank');
   }
 
-  async function deletarAgendamento(i) {
+  async function cancelarAgendamento(i) {
+    console.log('cancelarAgendamento chamado com índice:', i);
     const a = listaFiltrada[i];
-    if (!a) return;
+    console.log('Agendamento encontrado:', a);
 
-    confirmAction({
+    if (!a) {
+      console.error('Agendamento não encontrado no índice:', i);
+      showToast('Erro: Agendamento não encontrado', 'error');
+      return;
+    }
+
+    console.log('Abrindo modal de confirmação...');
+    window.confirmAction({
       title: 'Cancelar Agendamento',
-      message: `Tem certeza que deseja cancelar e remover o agendamento de ${a.paciente}?`,
+      message: `Tem certeza que deseja cancelar o agendamento de ${a.paciente}? O registro será mantido no histórico.`,
       onConfirm: async () => {
+        console.log('Confirmação aceita, enviando requisição...');
         try {
-          const res = await fetch(`/log_agendamento/api/deletar/${a.id}`, {
-            method: "DELETE"
+          const url = `/log_agendamento/api/atualizar/${a.id}`;
+          const body = {
+            status: 'Cancelado',
+            observacao: a.observacao || ''
+          };
+
+          console.log('URL:', url);
+          console.log('Body:', body);
+
+          const res = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
           });
+
+          console.log('Response status:', res.status);
           const data = await res.json();
+          console.log('Response data:', data);
 
           if (data.success) {
             showToast('Agendamento cancelado com sucesso!', 'success');
-            appointments = appointments.filter(ap => ap.id !== a.id);
+            const originalAppt = appointments.find(ap => ap.id === a.id);
+            if (originalAppt) {
+              originalAppt.status = 'Cancelado';
+            }
             filtrar();
           } else {
-            showToast("Erro ao deletar: " + data.error, 'error');
+            console.error('Erro retornado pelo servidor:', data.error);
+            showToast("Erro ao cancelar: " + data.error, 'error');
           }
         } catch (err) {
-          console.error(err);
-          showToast("Erro de conexão ao deletar.", 'error');
+          console.error('Erro na requisição:', err);
+          showToast("Erro de conexão ao cancelar: " + err.message, 'error');
         }
       }
     });
   }
+
+
 
   function closeDetails() {
     const modal = document.getElementById("details-modal");

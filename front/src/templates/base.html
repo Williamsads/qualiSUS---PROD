@@ -143,10 +143,10 @@
     {% block extra_css %}{% endblock %}
 </head>
 
-<body class="bg-[#EAECF0] text-slate-900 min-h-screen flex flex-col font-sans overflow-hidden">
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col font-sans overflow-hidden">
 
     <!-- ======================= MAIN LAYOUT ======================= -->
-    <div class="flex h-screen overflow-hidden bg-[#EAECF0]">
+    <div class="flex h-screen overflow-hidden bg-slate-50">
 
         <!-- SIDEBAR -->
         {% include 'includes/sidebar.html' %}
@@ -162,7 +162,7 @@
             {% include 'includes/header.html' %}
 
             <!-- MAIN CONTENT AREA -->
-            <main class="flex-1 flex flex-col overflow-y-auto bg-[#EAECF0]">
+            <main class="flex-1 flex flex-col overflow-y-auto bg-slate-50">
                 <div class="w-full max-w-[1600px] mx-auto p-4 sm:p-6 lg:p-10 flex-1">
                     {% block content %}
                     {% endblock %}
@@ -259,8 +259,12 @@
             }
         }
 
-        btnMenu.addEventListener('click', toggleSidebar);
-        backdrop.addEventListener('click', toggleSidebar);
+        if (btnMenu) {
+            btnMenu.addEventListener('click', toggleSidebar);
+        }
+        if (backdrop) {
+            backdrop.addEventListener('click', toggleSidebar);
+        }
 
         /* --- Accordion Logic --- */
         function setupAccordion(btnId, subId, arrowId) {

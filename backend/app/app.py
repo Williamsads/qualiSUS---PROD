@@ -12,6 +12,7 @@ from routes.agendar_exame import agendamento_bp
 from routes.lista_usuario import usuarios_bp
 from routes.lista_trabalhador import trabalhadores_bp
 from routes.gerenciamento_agendamento import gerenciamento_bp
+from routes.painel_profissional import painel_bp
 
 
 # --------------------------
@@ -36,6 +37,7 @@ app.register_blueprint(agendamento_bp)
 app.register_blueprint(usuarios_bp)
 app.register_blueprint(trabalhadores_bp)
 app.register_blueprint(gerenciamento_bp)
+app.register_blueprint(painel_bp)
 
 app.secret_key = "chave_muito_secreta"  # troque depois
 
@@ -290,4 +292,4 @@ def perfil():
 
 # --------------------------
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)

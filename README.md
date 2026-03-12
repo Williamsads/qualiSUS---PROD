@@ -7,7 +7,7 @@ Sistema moderno para gestão de saúde ocupacional dos servidores públicos do E
 - `backend/` — API e lógica de negócio (Flask)
 - `db/` — Scripts e migrações do banco de dados
 - `assets/` — Imagens, ícones, logos
-- `configs/` — Configurações de ambiente
+- `configs/` — Configurações do sistema
 - `deploy/` — Docker, scripts de deploy
 - `docs/` — Documentação
 - `tests/` — Testes automatizados
