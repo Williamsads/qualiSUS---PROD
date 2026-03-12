@@ -116,6 +116,41 @@ def verificar_status_usuario():
             session.clear()
             return redirect("/login")
 
+# --------------------------
+# SIDEBAR CONTEXT PROCESSOR
+# --------------------------
+@app.context_processor
+def inject_sidebar_stats():
+    """Injeta dados reais para o sidebar em todas as páginas"""
+    if "user_id" not in session:
+        return {}
+    
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        
+        # Agendamentos de Hoje (Real)
+        cursor.execute("SELECT COUNT(*) FROM agendamento_exames WHERE data_consulta = CURRENT_DATE AND status != 'Cancelado'")
+        atendimentos_hoje = cursor.fetchone()[0]
+        
+        # Total de Trabalhadores (para os indicadores se quiser usar)
+        cursor.execute("SELECT COUNT(*) FROM trabalhadores")
+        total_trab = cursor.fetchone()[0]
+        
+        cursor.close()
+        conn.close()
+        
+        return {
+            'count_agendamentos_hoje': atendimentos_hoje,
+            'count_total_trabalhadores': total_trab
+        }
+    except Exception as e:
+        print(f"Erro ao carregar stats do sidebar: {e}")
+        return {
+            'count_agendamentos_hoje': 0,
+            'count_total_trabalhadores': 0
+        }
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -179,7 +214,7 @@ def home():
     worker_trend = f"+{((novos_30_dias / total_raw) * 100):.1f}%" if total_raw > 0 else "+0.0%"
     
     # Atendimentos de Hoje
-    cursor.execute("SELECT COUNT(*) FROM agendamento_exames WHERE data_consulta = CURRENT_DATE")
+    cursor.execute("SELECT COUNT(*) FROM agendamento_exames WHERE data_consulta = CURRENT_DATE AND status != 'Cancelado'")
     atendimentos_hoje = cursor.fetchone()[0]
     
     cursor.close()
@@ -241,24 +276,39 @@ def recuperar_senha():
             
             try:
                 msg = MIMEMultipart()
-                msg['From'] = "Agendamento QualiVida <naorespondases@saude.pe.gov.br>"
+                msg['From'] = f"Redefinição de Senha <{os.getenv('MAIL_DEFAULT_SENDER')}>"
                 msg['To'] = email
-                msg['Subject'] = "Recuperação de Senha - QualiVida"
+                msg['Subject'] = "Chave de Acesso - Recuperação de Senha"
                 
-                body = f"""Olá,
+                html_body = f"""
+                <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f8fafc; border-radius: 16px; overflow: hidden; border: 1px solid #e2e8f0;">
+                    <div style="background-color: #ffffff; padding: 40px 30px; text-align: center;">
+                        <div style="margin-bottom: 24px;">
+                            <h2 style="color: #0f172a; margin: 0; font-size: 22px; font-weight: 800;">Quali<span style="color: #2563eb;">SUS</span></h2>
+                            <p style="color: #64748b; font-size: 12px; font-weight: 600; text-transform: uppercase; margin-top: 4px; letter-spacing: 1px;">Secretaria de Saúde de PE</p>
+                        </div>
+                        
+                        <div style="margin-bottom: 32px;">
+                            <h3 style="color: #1e293b; font-size: 18px; margin-bottom: 12px;">Solicitação de Nova Senha</h3>
+                            <p style="color: #64748b; font-size: 14px; line-height: 1.6;">Recebemos um pedido para redefinir a senha da sua conta. Se você não fez essa solicitação, pode ignorar este e-mail com segurança.</p>
+                        </div>
 
-Você solicitou a recuperação de senha no sistema QualiVida.
-Clique no link abaixo para redefinir sua senha:
+                        <a href="{reset_link}" style="display: inline-block; background-color: #2563eb; color: #ffffff; padding: 14px 32px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 14px; transition: background-color 0.2s; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);">
+                            Redefinir Minha Senha
+                        </a>
 
-{reset_link}
-
-Este link é válido por apenas 15 minutos e foi gerado como um token criptograficamente seguro com expiração.
-Se você não solicitou a redefinição de sua senha, limpe este e-mail da sua caixa de entrada; nenhuma alteração será processada no seu usuário.
-
-Atenciosamente,
-Equipe QualiVida
-"""
-                msg.attach(MIMEText(body, 'plain', 'utf-8'))
+                        <p style="color: #94a3b8; font-size: 12px; margin-top: 32px;">
+                            O link acima é válido por <strong>15 minutos</strong>.<br>
+                            Após esse período, uma nova solicitação será necessária.
+                        </p>
+                    </div>
+                    
+                    <div style="background-color: #f1f5f9; padding: 20px; text-align: center;">
+                        <p style="color: #94a3b8; font-size: 11px; margin: 0;">Equipe de Tecnologia QualiVida • SES-PE</p>
+                    </div>
+                </div>
+                """
+                msg.attach(MIMEText(html_body, 'html', 'utf-8'))
                 
                 # Envio utilizando as credenciais SMTP do ambiente
                 server = smtplib.SMTP(os.getenv("SMTP_SERVER"), int(os.getenv("SMTP_PORT", 587)))

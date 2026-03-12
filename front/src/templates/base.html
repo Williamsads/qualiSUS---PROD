@@ -170,99 +170,36 @@
             transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
         }
 
-        /* Modern Royal Blue Sidebar (Premium SaaS) */
+        /* --- LIGHT CLINICAL PREMIUM SIDEBAR --- */
         .sidebar-royal {
-            background: linear-gradient(180deg, #0f172a 0%, #1e3a8a 100%) !important;
-            border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
-            box-shadow: 10px 0 40px rgba(0, 0, 0, 0.2) !important;
-            position: relative;
-            overflow: hidden;
+            background: #ffffff !important;
+            border-right: 1px solid #e2e8f0 !important;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.03) !important;
         }
-
-        /* Ambient Blue Glow - Optimized */
-        .sidebar-royal::before {
-            content: '';
-            position: absolute;
-            top: -50px;
-            left: -50px;
-            width: 250px;
-            height: 250px;
-            background: radial-gradient(circle, rgba(37, 99, 235, 0.12) 0%, transparent 70%) !important;
-            pointer-events: none !important;
-            z-index: -1 !important;
-        }
-
-        /* Contrast Divider */
-        .sidebar-royal::after {
-            content: '';
-            position: absolute;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            width: 1px;
-            background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.05), transparent) !important;
-        }
-
-        /* Group Containers */
-        .nav-group {
-            background: transparent !important;
-            margin: 0 10px 8px 10px !important;
-            display: flex !important;
-            flex-direction: column !important;
-            gap: 4px !important;
-            padding-left: 12px !important;
-            border-left: 1px solid rgba(255, 255, 255, 0.1) !important;
-        }
-
-        .nav-section-title {
-            font-size: 10px;
-            font-weight: 800;
-            letter-spacing: 0.1em;
-            color: rgba(255, 255, 255, 0.4);
-            margin-top: 24px;
-            margin-bottom: 8px;
-            padding-left: 16px;
-            text-transform: uppercase;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .nav-section-title::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: linear-gradient(to right, rgba(255, 255, 255, 0.08), transparent);
-        }
-
 
         .nav-link {
             display: flex;
             align-items: center;
-            padding: 12px 16px;
+            padding: 10px 14px;
             border-radius: 12px;
-            font-size: 14px;
-            font-weight: 500;
-            color: #f0f6ff;
-            transition: all 0.2s ease;
-            position: relative;
+            font-size: 13px;
+            font-weight: 600;
+            color: #64748b;
+            /* Slate Gray for soft text */
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             text-decoration: none;
-            gap: 14px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-            /* Linha separadora suave */
+            gap: 12px;
             margin-bottom: 2px;
         }
 
-        /* Ícone com estilo "Tile" */
         .nav-icon-tile {
             width: 32px;
             height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(255, 255, 255, 0.08);
-            /* Slightly more visible */
-            border-radius: 8px;
+            background: #f1f5f9;
+            border-radius: 10px;
             flex-shrink: 0;
             transition: all 0.2s ease;
         }
@@ -271,41 +208,75 @@
             width: 18px;
             height: 18px;
             color: #94a3b8;
+            transition: color 0.2s ease;
         }
 
         .nav-link:hover {
-            background: rgba(37, 99, 235, 0.12);
-            color: #ffffff;
-            transform: translateX(4px);
+            background: #f8fafc;
+            color: #2563eb;
         }
 
         .nav-link:hover .nav-icon-tile {
-            background: rgba(37, 99, 235, 0.25);
-            box-shadow: 0 0 15px rgba(37, 99, 235, 0.3);
+            background: #e0e7ff;
         }
 
-        .nav-link:hover i {
-            color: #60a5fa;
-        }
-
-        /* Active State: Vibrant Blue Gradient */
+        /* Active State: Premium Blue Glow */
         .nav-item-active {
-            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+            background: #2563eb !important;
             color: #ffffff !important;
             font-weight: 700 !important;
-            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3) !important;
+            box-shadow: 0 8px 20px -4px rgba(37, 99, 235, 0.4) !important;
         }
 
         .nav-item-active .nav-icon-tile {
-            background: rgba(255, 255, 255, 0.15) !important;
+            background: rgba(255, 255, 255, 0.2) !important;
         }
 
         .nav-item-active i {
             color: #ffffff !important;
         }
 
+        /* Better Icon Visibility */
+        .nav-link i {
+            width: 18px;
+            height: 18px;
+            color: #64748b;
+            /* Decidedly darker for accessibility */
+            transition: color 0.2s ease;
+        }
 
-        /* Sidebar Mini state removed for "Zero Truques" */
+        .nav-link:hover i {
+            color: #2563eb;
+        }
+
+        /* Section Titles Refinement */
+        .nav-section-title {
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: 0.15em;
+            color: #94a3b8;
+            margin-top: 28px;
+            margin-bottom: 12px;
+            padding-left: 14px;
+            text-transform: uppercase;
+        }
+
+        /* Group Containers (Nested Items) */
+        .nav-group {
+            background: transparent !important;
+            margin: 4px 0 8px 10px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 2px !important;
+            padding-left: 12px !important;
+            border-left: 1px solid #e2e8f0 !important;
+        }
+
+        /* Sidebar Backdrop (Mobile) */
+        #sidebarBackdrop {
+            background: rgba(15, 23, 42, 0.4) !important;
+            backdrop-filter: blur(4px) !important;
+        }
 
 
         /* Loading Button States */
@@ -463,27 +434,55 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 11px 16px;
-            /* Padding generoso */
+            padding: 10px 14px;
             border-radius: 12px;
-            font-size: 14px;
-            /* Aumentado */
+            font-size: 13px;
             font-weight: 600;
-            color: #f0f6ff;
+            color: #64748b;
+            /* Slate Gray */
             background: transparent;
             border: none;
             cursor: pointer;
             transition: all 0.2s ease;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
 
         .nav-accordion-trigger:hover {
-            background: rgba(255, 255, 255, 0.05);
-            color: #ffffff;
+            background: #f8fafc;
+            color: #2563eb;
+        }
+
+        .nav-accordion-trigger i:not(.acc-chevron) {
+            width: 18px;
+            height: 18px;
+            color: #64748b;
+            transition: color 0.2s ease;
+        }
+
+        .nav-accordion-trigger:hover i:not(.acc-chevron) {
+            color: #2563eb;
+        }
+
+        .nav-accordion-trigger .nav-icon-tile {
+            background: #f1f5f9;
+        }
+
+        .nav-accordion-trigger:hover .nav-icon-tile {
+            background: #e0e7ff;
+        }
+
+        .acc-chevron {
+            color: #94a3b8;
+            transition: transform 0.3s ease, color 0.2s ease;
         }
 
         .nav-accordion.is-open .acc-chevron {
             transform: rotate(90deg);
+            color: #2563eb;
+        }
+
+        .nav-accordion-trigger:hover .acc-chevron {
+            color: #2563eb;
         }
 
 
@@ -550,6 +549,158 @@
 
         .animate-scale-in {
             animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        /* --- PREMIUM UPGRADE: SIDEBAR REFINEMENTS --- */
+
+        /* Badges */
+        .nav-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2px 6px;
+            border-radius: 99px;
+            font-size: 10px;
+            font-weight: 800;
+            line-height: 1;
+            min-width: 1.5rem;
+            height: 1.5rem;
+            margin-left: auto;
+        }
+
+        .badge-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .badge-warning {
+            background: #f59e0b;
+            color: #000;
+        }
+
+        /* Context Switcher Light */
+        .context-switcher {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 0 16px 24px 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .context-switcher:hover {
+            background: #f1f5f9;
+        }
+
+        /* User Profile Sidebar Light */
+        .sidebar-user-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 12px;
+            margin: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-user-card:hover {
+            background: #f1f5f9;
+            transform: translateY(-2px);
+        }
+
+        /* Mini Sidebar Logic (Preparation) */
+        .sidebar-mini {
+            width: 80px !important;
+        }
+
+        .sidebar-mini .nav-link span,
+        .sidebar-mini .nav-section-title,
+        .sidebar-mini .sidebar-user-card .user-info,
+        .sidebar-mini .context-switcher,
+        /* Hide switcher entirely */
+        .sidebar-mini .context-label {
+            /* Hide all context labels */
+            display: none !important;
+        }
+
+        .sidebar-mini .nav-link {
+            justify-content: center;
+            padding: 12px;
+        }
+
+        .sidebar-logo-area-custom {
+            padding: 40px 24px 32px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+            margin-bottom: 16px;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(4px);
+            transition: all 0.3s ease;
+        }
+
+        /* Adjust Top Area when Mini */
+        .sidebar-mini .sidebar-logo-area-custom {
+            padding: 24px 0 !important;
+            justify-content: center !important;
+            border-bottom: none !important;
+            margin-bottom: 8px !important;
+            background: transparent !important;
+            backdrop-filter: none !important;
+        }
+
+        .sidebar-mini .sidebar-logo-area-custom img {
+            height: 42px !important;
+            width: 42px !important;
+            object-fit: cover !important;
+            object-position: left !important;
+            border-radius: 10px;
+            margin-left: 0 !important;
+        }
+
+        .sidebar-mini .toggle-btn-mini {
+            position: absolute;
+            right: -12px;
+            top: 45px;
+            transform: translateY(-50%);
+            background: #2563eb;
+            color: white !important;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            z-index: 50;
+            border: 2px solid #ffffff;
+        }
+
+        .sidebar:not(.sidebar-mini) .toggle-btn-mini-show {
+            display: none;
+        }
+
+        .sidebar-mini .nav-icon-tile {
+            margin: 0;
+        }
+
+        .sidebar-mini .nav-badge {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            margin: 0;
+            width: 8px;
+            height: 8px;
+            min-width: 0;
+            padding: 0;
+            font-size: 0;
         }
     </style>
 
@@ -752,6 +903,40 @@
             setTimeout(() => backdrop.classList.toggle('opacity-100'), 10);
         }
 
+        /* --- Sidebar Mini Toggle --- */
+        function toggleSidebarMini() {
+            const sidebar = document.getElementById('sidebar');
+            const toggleIcon = document.getElementById('toggleIcon');
+
+            sidebar.classList.toggle('sidebar-mini');
+
+            const isMini = sidebar.classList.contains('sidebar-mini');
+            localStorage.setItem('sidebar-mini', isMini);
+
+            if (toggleIcon) {
+                toggleIcon.setAttribute('data-lucide', isMini ? 'chevron-right' : 'chevron-left');
+            }
+
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+        }
+
+        // Shortcut CMD+B or CTRL+B
+        document.addEventListener('keydown', (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'b') {
+                e.preventDefault();
+                toggleSidebarMini();
+            }
+        });
+
+        // Initialize state from localStorage
+        document.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('sidebar-mini') === 'true') {
+                document.getElementById('sidebar')?.classList.add('sidebar-mini');
+            }
+        });
+
         /* --- Toast System Logic Unified --- */
         window.showToast = function (title, message, type = 'success') {
             if (arguments.length === 1 || (arguments.length === 2 && !message)) {
@@ -928,48 +1113,20 @@
             }
         });
 
-        // ======================= GLOBAL SIDEBAR LOGIC =======================
-        const sidebar = document.getElementById('sidebar');
-        const sidebarBackdrop = document.getElementById('sidebarBackdrop');
-        const btnToggleSidebar = document.getElementById('btnToggleSidebar');
-        const btnMobileMenu = document.getElementById('btnMobileMenu');
-        const toggleIcon = document.getElementById('toggleIcon');
+        // ======================= GLOBAL SIDEBAR LOGIC CLEANUP =======================
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebar = document.getElementById('sidebar');
+            const toggleIcon = document.getElementById('toggleIcon');
+            const isMini = localStorage.getItem('sidebar-mini') === 'true';
 
-        // Restore Desktop Sidebar State
-        const isMini = localStorage.getItem('sidebar-mini') === 'true';
-        if (isMini && sidebar && window.innerWidth >= 768) {
-            sidebar.classList.add('sidebar-mini');
-            if (toggleIcon) {
-                toggleIcon.setAttribute('data-lucide', 'chevron-right');
-                lucide.createIcons();
-            }
-        }
-
-        if (btnToggleSidebar) {
-            btnToggleSidebar.addEventListener('click', () => {
-                sidebar.classList.toggle('sidebar-mini');
-                const nowMini = sidebar.classList.contains('sidebar-mini');
-                localStorage.setItem('sidebar-mini', nowMini);
+            if (isMini && sidebar) {
+                sidebar.classList.add('sidebar-mini');
                 if (toggleIcon) {
-                    toggleIcon.setAttribute('data-lucide', nowMini ? 'chevron-right' : 'chevron-left');
+                    toggleIcon.setAttribute('data-lucide', 'chevron-right');
                     lucide.createIcons();
                 }
-            });
-        }
-
-        function toggleMobileSidebar() {
-            if (!sidebar) return;
-            sidebar.classList.toggle('-translate-x-full');
-            if (sidebarBackdrop) {
-                sidebarBackdrop.classList.toggle('hidden');
-                setTimeout(() => {
-                    sidebarBackdrop.classList.toggle('opacity-100');
-                }, 10);
             }
-        }
-
-        if (btnMobileMenu) btnMobileMenu.addEventListener('click', toggleMobileSidebar);
-        if (sidebarBackdrop) sidebarBackdrop.addEventListener('click', toggleMobileSidebar);
+        });
 
         function confirmExternalNavigation(url) {
             window.confirmAction({

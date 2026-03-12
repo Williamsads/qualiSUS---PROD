@@ -68,26 +68,24 @@
 
     <style>
         .solid-panel {
-            background-color: #0B1120;
-            border-right: 1px solid #1e293b;
-        }
-
-        .dark .solid-panel {
-            background-color: #0B1120;
-            border-right: 1px solid #1e293b;
+            background-color: #ffffff;
+            border-right: 1px solid #f1f5f9;
         }
 
         .input-solid {
-            background-color: #1e293b;
-            border: 1px solid #334155;
+            background-color: #ffffff;
+            border: 1.5px solid #cbd5e1;
             transition: all 0.2s ease;
-            color: white !important;
+            color: #0f172a !important;
+        }
+
+        .input-solid::placeholder {
+            color: #64748b;
         }
 
         .input-solid:focus {
-            background-color: #0f172a;
-            border-color: #0063F7;
-            box-shadow: 0 0 0 4px rgba(0, 99, 247, 0.2);
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
         }
 
         /* Prevent background change on autofill */
@@ -95,23 +93,23 @@
         input:-webkit-autofill:hover,
         input:-webkit-autofill:focus,
         input:-webkit-autofill:active {
-            -webkit-box-shadow: 0 0 0 30px #1e293b inset !important;
-            -webkit-text-fill-color: white !important;
+            -webkit-box-shadow: 0 0 0 30px #ffffff inset !important;
+            -webkit-text-fill-color: #0f172a !important;
             transition: background-color 5000s ease-in-out 0s;
         }
 
         .bg-system-blue {
-            background-color: #0063F7;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
         }
 
         .solid-card {
-            background: #0B1120;
-            border: 1px solid #1e293b;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.1);
         }
 
         .text-system-gray {
-            color: #94a3b8;
+            color: #475569;
         }
 
         .tracking-tight-custom {
@@ -119,32 +117,26 @@
         }
 
         .btn-glow {
-            box-shadow: 0 10px 25px -5px rgba(0, 99, 247, 0.4);
+            box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.2);
         }
 
         .btn-glow:hover {
-            box-shadow: 0 20px 30px -10px rgba(0, 99, 247, 0.5);
+            box-shadow: 0 20px 30px -10px rgba(37, 99, 235, 0.3);
         }
     </style>
 </head>
 
-<body
-    class="bg-gray-50 dark:bg-gray-950 min-h-screen w-full flex font-sans text-gray-800 dark:text-gray-100 transition-colors duration-500">
+<body class="bg-white min-h-screen w-full flex font-sans text-slate-800 transition-colors duration-500">
 
     <!-- ======================= LEFT: LOGIN FORM ======================= -->
     <div
-        class="w-full md:w-[480px] lg:w-[550px] solid-panel min-h-screen flex flex-col relative z-20 shadow-xl flex-shrink-0 animate-fade-in transition-colors duration-500">
+        class="w-full md:w-[480px] lg:w-[550px] solid-panel min-h-screen flex flex-col relative z-20 shadow-2xl flex-shrink-0 animate-fade-in transition-all duration-500 bg-[radial-gradient(at_0%_0%,rgba(37,99,235,0.03)_0,transparent_50%),radial-gradient(at_100%_100%,rgba(37,99,235,0.03)_0,transparent_50%)]">
 
         <!-- Header / Logo -->
         <div class="px-10 py-8 flex flex-col items-center flex-none">
-            <!-- Logo Light Mode -->
+            <!-- Logo -->
             <img src="{{ url_for('static', filename='img/Logo_QUALISUS_COR_PRETO.png') }}" alt="Logo QualiSUS"
-                class="h-20 md:h-28 mb-4 drop-shadow-xl hover:scale-105 transition-all duration-500 w-auto object-contain block dark:hidden">
-
-            <!-- Logo Dark Mode -->
-            <img src="{{ url_for('static', filename='img/Logo da QualiSUS com pinwheel colorido.png') }}"
-                alt="Logo QualiSUS"
-                class="h-20 md:h-28 mb-4 drop-shadow-xl hover:scale-105 transition-all duration-500 w-auto object-contain hidden dark:block">
+                class="h-20 md:h-28 mb-4 drop-shadow-sm hover:scale-105 transition-all duration-500 w-auto object-contain">
             <!-- Arco-íris da Bandeira de PE (Mais sutil) -->
             <div class="flex h-1 w-20 rounded-full overflow-hidden shadow-inner opacity-80">
                 <div class="flex-1 bg-pe-blue"></div>
@@ -164,14 +156,14 @@
             <div class="w-full max-w-sm mx-auto space-y-8">
 
                 <div class="text-center space-y-2 animate-slide-up" style="animation-delay: 0.1s;">
-                    <h2 class="text-3xl font-extrabold text-white tracking-tight-custom">Bem-vindo de volta
+                    <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight-custom">Bem-vindo de volta
                     </h2>
-                    <p class="text-sm text-slate-400 font-medium">
+                    <p class="text-sm text-slate-500 font-medium">
                         Acesse sua conta para gerenciar agendamentos e serviços.
                     </p>
-                    <div class="flex items-center justify-center gap-2 pt-2 opacity-60">
-                        <i data-lucide="shield-check" class="w-4 h-4 text-emerald-500"></i>
-                        <span class="text-[10px] font-bold uppercase tracking-widest text-emerald-500">Ambiente
+                    <div class="flex items-center justify-center gap-2 pt-2">
+                        <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600"></i>
+                        <span class="text-[10px] font-black uppercase tracking-widest text-emerald-700">Ambiente
                             monitorado e protegido</span>
                     </div>
                 </div>
@@ -206,7 +198,7 @@
                     <!-- Email -->
                     <div class="space-y-2 animate-slide-up" style="animation-delay: 0.3s;">
                         <label for="email"
-                            class="block text-xs font-black uppercase tracking-widest text-slate-500 ml-1">Email
+                            class="block text-xs font-black uppercase tracking-widest text-slate-800 ml-1">Email
                             Institucional</label>
                         <div class="relative group">
                             <div
@@ -223,7 +215,7 @@
                         <!-- Label -->
                         <div class="ml-1">
                             <label for="senha"
-                                class="block text-xs font-black uppercase tracking-widest text-slate-500">Senha</label>
+                                class="block text-xs font-black uppercase tracking-widest text-slate-800">Senha</label>
                         </div>
 
                         <!-- Input Group -->
@@ -248,16 +240,16 @@
                             <label class="flex items-center gap-2 cursor-pointer group">
                                 <div class="relative flex items-center">
                                     <input type="checkbox" name="remember"
-                                        class="peer appearance-none w-4 h-4 rounded border border-slate-600 bg-slate-800 checked:bg-blue-600 checked:border-blue-600 transition-all">
+                                        class="peer appearance-none w-4 h-4 rounded border border-slate-200 bg-white checked:bg-blue-600 checked:border-blue-600 transition-all">
                                     <i data-lucide="check"
                                         class="w-3 h-3 text-white absolute left-0.5 opacity-0 peer-checked:opacity-100 transition-opacity"></i>
                                 </div>
                                 <span
-                                    class="text-[11px] font-bold uppercase tracking-widest text-slate-500 group-hover:text-slate-400 transition-colors">Lembrar
+                                    class="text-[11px] font-black uppercase tracking-widest text-slate-700 group-hover:text-blue-800 transition-colors">Lembrar
                                     de mim</span>
                             </label>
                             <button type="button" onclick="abrirModalSenha()"
-                                class="text-[11px] font-bold uppercase tracking-widest text-blue-400 hover:text-blue-300 transition-all hover:underline decoration-2 underline-offset-4">
+                                class="text-[11px] font-black uppercase tracking-widest text-blue-700 hover:text-blue-900 transition-all hover:underline decoration-2 underline-offset-4">
                                 Esqueceu sua senha?
                             </button>
                         </div>
@@ -292,17 +284,17 @@
         <!-- Footer -->
         <div class="p-10 text-center flex-none">
             <div
-                class="flex items-center justify-center gap-4 mb-4 opacity-40 brightness-0 invert transition-all hover:opacity-100 duration-500">
+                class="flex items-center justify-center gap-4 mb-4 opacity-40 hover:opacity-100 transition-all duration-500">
                 <img src="{{ url_for('static', filename='img/GOV-JPG-1024x452-removebg-preview.png') }}" class="h-8"
                     alt="Gov PE">
             </div>
-            <p class="text-[10px] text-slate-500 font-black uppercase tracking-[0.3em] leading-relaxed">
+            <p class="text-[10px] text-slate-700 font-black uppercase tracking-[0.3em] leading-relaxed">
                 © 2026 • QualiSUS PE<br>
-                <span class="font-medium normal-case tracking-normal opacity-50">Secretaria Estadual de Saúde</span>
+                <span class="font-bold normal-case tracking-normal opacity-70">Secretaria Estadual de Saúde</span>
             </p>
             <div class="mt-4">
                 <a href="#"
-                    class="text-[10px] font-bold uppercase tracking-widest text-slate-600 hover:text-blue-400 transition-colors flex items-center justify-center gap-1">
+                    class="text-[10px] font-black uppercase tracking-widest text-slate-800 hover:text-blue-700 transition-colors flex items-center justify-center gap-1">
                     <i data-lucide="help-circle" class="w-3 h-3"></i>
                     Precisa de ajuda? Contate o suporte
                 </a>
@@ -315,7 +307,7 @@
 
         <!-- Overlay Gradient -->
         <div
-            class="absolute inset-0 bg-gradient-to-t from-brand-900 via-brand-900/80 to-brand-900/20 z-10 pointer-events-none transition-all duration-700">
+            class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent z-10 pointer-events-none transition-all duration-700">
         </div>
 
         <!-- Images -->
@@ -375,9 +367,9 @@
                                 <i data-lucide="key-round" class="w-6 h-6 text-blue-600"></i>
                             </div>
                             <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left w-full">
-                                <h3 class="text-lg font-semibold leading-6 text-white" id="modal-title">Recuperar
+                                <h3 class="text-lg font-semibold leading-6 text-slate-900" id="modal-title">Recuperar
                                     Senha</h3>
-                                <div class="mt-2 text-sm text-slate-400">
+                                <div class="mt-2 text-sm text-slate-500">
                                     <p class="mb-4">Digite seu email institucional para receber as instruções de
                                         redefinição de senha.</p>
 
@@ -434,8 +426,8 @@
                             class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-50/10 shadow-inner mb-6 border border-emerald-500/20">
                             <i data-lucide="check-circle" class="w-8 h-8 text-emerald-500"></i>
                         </div>
-                        <h3 class="text-xl font-bold text-white mb-3">Solicitação Enviada!</h3>
-                        <p class="text-sm text-slate-400 leading-relaxed">Se o e-mail estiver cadastrado, você receberá
+                        <h3 class="text-xl font-bold text-slate-900 mb-3">Solicitação Enviada!</h3>
+                        <p class="text-sm text-slate-500 leading-relaxed">Se o e-mail estiver cadastrado, você receberá
                             um link para redefinir sua senha.</p>
                     </div>
 
