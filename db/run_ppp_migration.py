@@ -22,7 +22,7 @@ def run_migration():
         for t in cursor.fetchall():
             print(f"Found: {t[0]}")
 
-        migration_path = r'c:\Users\Williams\qualiSUS---HML\db\migration_ppp.sql'
+        migration_path = os.path.join(os.path.dirname(__file__), 'migration_ppp.sql')
         with open(migration_path, 'r', encoding='utf-8') as f:
             sql = f.read()
             
