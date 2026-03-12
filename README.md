@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # QualiSUS  v1.1.0
 
 ![Status](https://img.shields.io/badge/Status-Produção-success?style=for-the-badge)
@@ -77,22 +76,3 @@ O **QualiSUS** é uma plataforma de elite desenvolvida para a gestão inteligent
 ---
 
 © 2026 QualiSUS Enterprise - Gestão de Estado.
-=======
-# Sistema qualiSUS
-
-Sistema moderno para gestão de saúde ocupacional dos servidores públicos do Estado de Pernambuco.
-
-## Estrutura
-- `front/` — Front-end (HTML, Tailwind, JS)
-- `backend/` — API e lógica de negócio (Flask)
-- `db/` — Scripts e migrações do banco de dados
-- `assets/` — Imagens, ícones, logos
-- `configs/` — Configurações do sistema
-- `deploy/` — Docker, scripts de deploy
-- `docs/` — Documentação
-- `tests/` — Testes automatizados
-
-## Como rodar
-Veja instruções em `docs/` e arquivos de configuração de cada módulo.
-
->>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a

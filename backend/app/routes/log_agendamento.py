@@ -2,11 +2,8 @@ from flask import Blueprint, render_template, jsonify, request, session
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from datetime import datetime, timedelta
-<<<<<<< HEAD
 import json
 from app.database import get_connection
-=======
->>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
 
 bp_agendamento = Blueprint(
     "log_agendamento",
@@ -14,17 +11,7 @@ bp_agendamento = Blueprint(
     url_prefix="/log_agendamento"
 )
 
-<<<<<<< HEAD
-=======
-def get_connection():
-    return psycopg2.connect(
-        host="10.24.59.104",
-        user="qualisus",
-        password="h5eXAx59gJ3h84Xa",
-        database="qualisus"
-    )
 
->>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
 @bp_agendamento.route("/")
 def index():
     user_email = session.get("email")
@@ -43,7 +30,6 @@ def index():
 
     return render_template("log_agendamento.html", user_tipo=user_tipo, servidor_id=servidor_id)
 
-<<<<<<< HEAD
 # --- GESTÃO DO CICLO DE CUIDADO (MEUS PACIENTES) ---
 
 @bp_agendamento.route("/meus-pacientes")
@@ -189,12 +175,6 @@ def api_dar_alta(ciclo_id):
 def atendimento(id):
     if "user_id" not in session:
         return redirect("/login")
-=======
-@bp_agendamento.route("/atendimento/<int:id>")
-def atendimento(id):
-    if "user_id" not in session:
-        return redirect("/index")
->>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
         
     conn = get_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
@@ -215,7 +195,6 @@ def atendimento(id):
     """, (id,))
     
     appt = cur.fetchone()
-<<<<<<< HEAD
 
     # Busca desfecho se houver (Modo Edição/Visualização)
     cur.execute("""
@@ -226,8 +205,6 @@ def atendimento(id):
     """, (id,))
     desfecho = cur.fetchone()
 
-=======
->>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
     cur.close()
     conn.close()
     
@@ -235,11 +212,7 @@ def atendimento(id):
         flash("Agendamento não encontrado.", "erro")
         return redirect(url_for("log_agendamento.index"))
         
-<<<<<<< HEAD
     return render_template("atendimento_clinico.html", appt=appt, desfecho=desfecho)
-=======
-    return render_template("atendimento_clinico.html", appt=appt)
->>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
 
 @bp_agendamento.route("/api/atualizar/<int:id>", methods=["POST"])
 def api_atualizar(id):
@@ -247,10 +220,7 @@ def api_atualizar(id):
     status = data.get("status")
     observacao = data.get("observacao")
     desfecho = data.get("desfecho")  # 'nao_compareceu', 'reagendar', 'atendido'
-<<<<<<< HEAD
-=======
-    apto_psico = data.get("apto_psico") # True/False
->>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
+
     
     conn = get_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
@@ -263,7 +233,6 @@ def api_atualizar(id):
 
         user_email = session.get("email") or "Sistema"
         
-<<<<<<< HEAD
         # --- REGRAS DE NEGÓCIO DE ACOLHIMENTO E DESFECHO ---
         final_status = status
         validado = False
@@ -367,38 +336,6 @@ def api_atualizar(id):
                 INSERT INTO desfecho_logs (desfecho_id, usuario_id, acao, antes, depois)
                 VALUES (%s, %s, 'CREATE', NULL, %s)
             """, (new_desfecho_id, user_email, json.dumps(data, default=str)))
-=======
-        # --- REGRAS DE NEGÓCIO DE ACOLHIMENTO ---
-        final_status = status
-        validado = False
-
-        if appt['especialidade'] == 'Acolhimento' and desfecho:
-            if desfecho == 'nao_compareceu':
-                final_status = 'NAO_COMPARECEU'
-            
-            elif desfecho == 'reagendar':
-                # Gera novo agendamento automaticamente (+7 dias no mesmo horário)
-                nova_data = appt['data_consulta'] + timedelta(days=7)
-                cur.execute("""
-                    INSERT INTO agendamento_exames 
-                    (trabalhador_id, vinculo_id, funcionario_id, data_consulta, horario, unidade, especialidade, status, observacao, atualizado_por)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                """, (
-                    appt['trabalhador_id'], appt['vinculo_id'], appt['funcionario_id'], 
-                    nova_data, appt['horario'], appt['unidade'], appt['especialidade'], 
-                    'Agendado', f"Reagendamento automático do ID {id}", user_email
-                ))
-            
-            elif desfecho == 'atendido':
-                final_status = 'Finalizado'
-                if apto_psico is True:
-                    validado = True
-                    # Cria ciclo_cuidado ATIVO
-                    cur.execute("""
-                        INSERT INTO ciclo_cuidado (trabalhador_id, status)
-                        VALUES (%s, 'ATIVO')
-                    """, (appt['trabalhador_id'],))
->>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
 
         # Atualiza o agendamento atual
         cur.execute("""
@@ -409,10 +346,7 @@ def api_atualizar(id):
         
         conn.commit()
         return jsonify({"success": True})
-<<<<<<< HEAD
 
-=======
->>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
     except Exception as e:
         conn.rollback()
         return jsonify({"success": False, "error": str(e)}), 500
@@ -441,25 +375,17 @@ def api_lista():
                 ae.unidade,
                 ae.observacao,
                 ae.validado_para_psico,
-<<<<<<< HEAD
                 ae.trabalhador_id,
                 ae.funcionario_id,
                 ae.atualizado_por,
                 dc.conduta,
                 dc.cid,
                 dc.tipo_desfecho as desfecho_clinico
-=======
-                ae.funcionario_id,
-                ae.atualizado_por
->>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
             FROM agendamento_exames ae
             JOIN trabalhadores t ON ae.trabalhador_id = t.id
             JOIN funcionarios f ON ae.funcionario_id = f.id
             LEFT JOIN vinculos_trabalhadores vt ON ae.vinculo_id = vt.id
-<<<<<<< HEAD
             LEFT JOIN desfechos_clinicos dc ON ae.id = dc.atendimento_id
-=======
->>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
             ORDER BY ae.data_consulta DESC, ae.horario DESC
         """)
         rows = cur.fetchall()
@@ -475,7 +401,6 @@ def api_deletar(id):
     conn = get_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
     try:
-<<<<<<< HEAD
         # Busca ID do desfecho para limpar logs primeiro
         cur.execute("SELECT id FROM desfechos_clinicos WHERE atendimento_id = %s", (id,))
         desfecho = cur.fetchone()
@@ -489,9 +414,6 @@ def api_deletar(id):
         # Deleta o agendamento
         cur.execute("DELETE FROM agendamento_exames WHERE id = %s", (id,))
         
-=======
-        cur.execute("DELETE FROM agendamento_exames WHERE id = %s", (id,))
->>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
         conn.commit()
         return jsonify({"success": True})
     except Exception as e:
@@ -500,7 +422,6 @@ def api_deletar(id):
     finally:
         cur.close()
         conn.close()
-<<<<<<< HEAD
 
 @bp_agendamento.route("/api/cancelar/<int:id>", methods=["POST"])
 def api_cancelar(id):
@@ -525,5 +446,3 @@ def api_cancelar(id):
         cur.close()
         conn.close()
 
-=======
->>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a

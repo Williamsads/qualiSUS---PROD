@@ -1,23 +1,10 @@
 from flask import Blueprint, render_template, request, jsonify, session
 import psycopg2
 from psycopg2.extras import RealDictCursor
-<<<<<<< HEAD
 from app.database import get_connection
 
 gerenciamento_bp = Blueprint('gerenciamento', __name__)
 
-=======
-
-gerenciamento_bp = Blueprint('gerenciamento', __name__)
-
-def get_connection():
-    return psycopg2.connect(
-        host="10.24.59.104",
-        user="qualisus",
-        password="h5eXAx59gJ3h84Xa",
-        database="qualisus"
-    )
->>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
 
 @gerenciamento_bp.route("/gerenciamento/agendamento")
 def index():
@@ -418,7 +405,6 @@ def add_horario():
     days_to_add = dias_semana if dias_semana else ([dia_semana] if dia_semana is not None else [])
     
     conn = get_connection()
-<<<<<<< HEAD
     cur = conn.cursor(cursor_factory=RealDictCursor)
     try:
         if days_to_add:
@@ -456,16 +442,6 @@ def add_horario():
                 
             return jsonify({"success": True, "message": msg})
             
-=======
-    cur = conn.cursor()
-    try:
-        if days_to_add:
-            # Prepara os dados para inserção em lote
-            args = [(prof_id, horario, d) for d in days_to_add]
-            cur.executemany("INSERT INTO horarios_funcionarios (funcionario_id, horario, dia_semana) VALUES (%s, %s, %s)", args)
-            conn.commit()
-            return jsonify({"success": True})
->>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
         return jsonify({"success": False, "error": "Nenhum dia selecionado"}), 400
     except Exception as e:
         conn.rollback()

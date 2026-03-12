@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import sys
 import os
 
@@ -14,15 +13,11 @@ if sys.path and (sys.path[0] == current_dir or sys.path[0] == ''):
 if parent_dir not in sys.path:
     sys.path.insert(0, parent_dir)
 
-=======
->>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
 from flask import Flask, render_template, request, redirect, session, flash, url_for
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import hashlib
-<<<<<<< HEAD
 import uuid
-import os
 from datetime import datetime, timedelta
 import smtplib
 import secrets
@@ -44,19 +39,6 @@ from app.routes.gerenciamento_agendamento import gerenciamento_bp
 from app.routes.gestao_pacientes import gestao_pacientes_bp
 from app.routes.ppp import ppp_bp
 from app.routes.dashboard import dashboard_bp
-=======
-import os
-import uuid
-from datetime import datetime, timedelta
-from werkzeug.security import generate_password_hash, check_password_hash
-from routes.servidor import servidor_bp
-from routes.log_agendamento import bp_agendamento
-from routes.agendar_exame import agendamento_bp
-from routes.lista_usuario import usuarios_bp
-from routes.lista_trabalhador import trabalhadores_bp
-from routes.gerenciamento_agendamento import gerenciamento_bp
-from routes.painel_profissional import painel_bp
->>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
 
 
 # --------------------------
@@ -81,43 +63,23 @@ app.register_blueprint(agendamento_bp)
 app.register_blueprint(usuarios_bp)
 app.register_blueprint(trabalhadores_bp)
 app.register_blueprint(gerenciamento_bp)
-<<<<<<< HEAD
 app.register_blueprint(gestao_pacientes_bp)
 app.register_blueprint(ppp_bp)
 app.register_blueprint(dashboard_bp)
 
 app.secret_key = os.getenv("SECRET_KEY", "fallback-key-se-nao-definido")
-=======
-app.register_blueprint(painel_bp)
-
-app.secret_key = "chave_muito_secreta"  # troque depois
->>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
 
 # --------------------------
 # CONEXÃO COM postgreSQL
 # --------------------------
-<<<<<<< HEAD
 # A conexão agora é gerenciada por app.database.get_connection
-=======
-def get_connection():
-    return psycopg2.connect(
-        host="10.24.59.104",
-        user="qualisus",
-        password="h5eXAx59gJ3h84Xa",
-        database="qualisus"
-    )
->>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
 
 # --------------------------
 # ROTA RAIZ
 # --------------------------
 @app.route("/")
 def raiz():
-<<<<<<< HEAD
     return redirect("/login")
-=======
-    return redirect("/index")
->>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
 
 # --------------------------
 # LOGIN
@@ -128,11 +90,7 @@ def raiz():
 @app.before_request
 def verificar_status_usuario():
     # Rotas que não precisam de verificação (estáticos e o próprio login)
-<<<<<<< HEAD
     if request.endpoint in ['static', 'login', 'raiz', 'logout', 'recuperar_senha', 'resetar_senha']:
-=======
-    if request.endpoint in ['static', 'login', 'raiz', 'logout', 'recuperar_senha', 'redefinir_senha_token']:
->>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
         return
     
     # Se usuário estiver logado na sessão
@@ -149,25 +107,15 @@ def verificar_status_usuario():
             if not user_status or not user_status[0]:
                 session.clear()
                 flash("Sua conta foi desativada. Entre em contato com o suporte.", "erro")
-<<<<<<< HEAD
                 return redirect("/login")
-=======
-                return redirect("/index")
->>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
                 
         except Exception as e:
             # Em caso de erro de conexão, faz logout por segurança
             print(f"Erro ao verificar status: {e}")
             session.clear()
-<<<<<<< HEAD
             return redirect("/login")
 
 @app.route("/login", methods=["GET", "POST"])
-=======
-            return redirect("/index")
-
-@app.route("/index", methods=["GET", "POST"])
->>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
 def login():
     if request.method == "POST":
         email = request.form["email"]
@@ -214,11 +162,7 @@ def login():
 @app.route("/home")
 def home():
     if "user_id" not in session:
-<<<<<<< HEAD
         return redirect("/login")
-=======
-        return redirect("/index")
->>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
 
     conn = get_connection()
     cursor = conn.cursor()
@@ -228,14 +172,11 @@ def home():
     total_raw = cursor.fetchone()[0]
     total_trabalhadores = f"{total_raw:,}".replace(",", ".")
     
-<<<<<<< HEAD
     # Cálculo de Tendência (Trabalhadores admitidos nos últimos 30 dias)
     cursor.execute("SELECT COUNT(*) FROM vinculos_trabalhadores WHERE data_admissao >= CURRENT_DATE - interval '30 days'")
     novos_30_dias = cursor.fetchone()[0]
     worker_trend = f"+{((novos_30_dias / total_raw) * 100):.1f}%" if total_raw > 0 else "+0.0%"
     
-=======
->>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
     # Atendimentos de Hoje
     cursor.execute("SELECT COUNT(*) FROM agendamento_exames WHERE data_consulta = CURRENT_DATE")
     atendimentos_hoje = cursor.fetchone()[0]
@@ -247,10 +188,7 @@ def home():
                          nome=session["nome"], 
                          tipo=session["tipo"], 
                          total_trabalhadores=total_trabalhadores,
-<<<<<<< HEAD
                          worker_trend=worker_trend,
-=======
->>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
                          atendimentos_hoje=atendimentos_hoje)
 
 # --------------------------
@@ -259,11 +197,7 @@ def home():
 @app.route("/logout")
 def logout():
     session.clear()
-<<<<<<< HEAD
     return redirect("/login")
-=======
-    return redirect("/index")
->>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
 
 # --------------------------
 # RECUPERAR SENHA
@@ -271,13 +205,9 @@ def logout():
 @app.route("/recuperar-senha", methods=["POST"])
 def recuperar_senha():
     email = request.form.get("email")
-<<<<<<< HEAD
     if not email:
         return redirect("/login")
         
-=======
-    
->>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
     conn = get_connection()
     cursor = conn.cursor(cursor_factory=RealDictCursor)
     
@@ -285,7 +215,6 @@ def recuperar_senha():
     user = cursor.fetchone()
     
     if user:
-<<<<<<< HEAD
         # Proteção contra abuso: Verifica se existe um token gerado a menos de 1 minuto (expira em > 14 min)
         minuto_expiracao_recente = datetime.now() + timedelta(minutes=14)
         cursor.execute("SELECT id FROM recuperacao_senha WHERE email = %s AND data_expiracao > %s", 
@@ -357,35 +286,6 @@ def resetar_senha():
     cursor = conn.cursor(cursor_factory=RealDictCursor)
     
     # Verifica se o token não expirou (validação rigorosa de 15 minutos)
-=======
-        token = str(uuid.uuid4())
-        expiracao = datetime.now() + timedelta(hours=1)
-        
-        cursor.execute(
-            "INSERT INTO recuperacao_senha (email, token, data_expiracao) VALUES (%s, %s, %s)",
-            (email, token, expiracao)
-        )
-        conn.commit()
-        
-        # Simula o envio de e-mail imprimindo no console
-        reset_link = url_for('redefinir_senha_token', token=token, _external=True)
-        print(f"\n--- LINK DE RECUPERAÇÃO PARA {email} ---\n{reset_link}\n-----------------------------------\n")
-        
-        flash("Se o e-mail estiver cadastrado, você receberá um link para redefinir sua senha.", "sucesso")
-    else:
-        # Por segurança, não confirmamos se o e-mail existe ou não
-        flash("Se o e-mail estiver cadastrado, você receberá um link para redefinir sua senha.", "sucesso")
-    
-    cursor.close()
-    conn.close()
-    return redirect("/index")
-
-@app.route("/redefinir-senha/<token>", methods=["GET", "POST"])
-def redefinir_senha_token(token):
-    conn = get_connection()
-    cursor = conn.cursor(cursor_factory=RealDictCursor)
-    
->>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
     cursor.execute(
         "SELECT * FROM recuperacao_senha WHERE token = %s AND data_expiracao > %s",
         (token, datetime.now())
@@ -394,25 +294,16 @@ def redefinir_senha_token(token):
     
     if not request_data:
         flash("Link de recuperação inválido ou expirado.", "erro")
-<<<<<<< HEAD
         cursor.close()
         conn.close()
         return redirect("/login")
-=======
-        return redirect("/index")
->>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
     
     if request.method == "POST":
         nova_senha = request.form.get("senha")
         confirmar_senha = request.form.get("confirmar_senha")
         
-<<<<<<< HEAD
         if not nova_senha or nova_senha != confirmar_senha:
             flash("As senhas não coincidem ou estão vazias.", "erro")
-=======
-        if nova_senha != confirmar_senha:
-            flash("As senhas não coincidem.", "erro")
->>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
             return render_template("reset_senha.html", token=token)
         
         senha_hash = generate_password_hash(nova_senha)
@@ -423,11 +314,7 @@ def redefinir_senha_token(token):
             (senha_hash, request_data["email"])
         )
         
-<<<<<<< HEAD
         # Invalida/remove esse token especifico para que não seja mais usado
-=======
-        # Remove o token usado
->>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
         cursor.execute("DELETE FROM recuperacao_senha WHERE token = %s", (token,))
         
         conn.commit()
@@ -435,11 +322,7 @@ def redefinir_senha_token(token):
         conn.close()
         
         flash("Senha redefinida com sucesso! Agora você pode fazer login.", "sucesso")
-<<<<<<< HEAD
         return redirect("/login")
-=======
-        return redirect("/index")
->>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
     
     cursor.close()
     conn.close()
@@ -450,11 +333,7 @@ def redefinir_senha_token(token):
 @app.route("/perfil", methods=["GET", "POST"])
 def perfil():
     if "user_id" not in session:
-<<<<<<< HEAD
         return redirect("/login")
-=======
-        return redirect("/index")
->>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
     
     conn = get_connection()
     cursor = conn.cursor(cursor_factory=RealDictCursor)
@@ -488,7 +367,6 @@ def perfil():
     return render_template("perfil.html", user=user)
 
 # --------------------------
-<<<<<<< HEAD
 # GLOBAL ERROR HANDLER
 # --------------------------
 @app.errorhandler(psycopg2.Error)
@@ -499,7 +377,3 @@ def handle_db_error(e):
 
 if __name__ == "__main__":
     app.run(debug=os.getenv("FLASK_DEBUG", "False").lower() == "true")
-=======
-if __name__ == "__main__":
-    app.run(debug=False)
->>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a

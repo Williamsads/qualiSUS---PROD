@@ -1,31 +1,14 @@
 # backend/app/usuarios.py
-<<<<<<< HEAD
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
-=======
-from flask import Blueprint, render_template, request, redirect, url_for, flash
->>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from psycopg2.errors import UniqueViolation
 usuarios_bp = Blueprint('usuarios', __name__)
 from werkzeug.security import generate_password_hash
-<<<<<<< HEAD
 from app.utils import validar_cpf
 
 
 from app.database import get_connection
-=======
-
-
-# --- Função de conexão com o banco ---
-def get_connection():
-    return psycopg2.connect(
-        host="10.24.59.104",
-        user="qualisus",
-        password="h5eXAx59gJ3h84Xa",
-        database="qualisus"
-    )
->>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
 # ================= LISTA DE USUÁRIOS =================
 @usuarios_bp.route('/usuarios')
 def lista_usuarios():
@@ -53,15 +36,12 @@ def cadastro_usuario():
             flash("Preencha todos os campos obrigatórios!", "error")
             return redirect(url_for('usuarios.cadastro_usuario'))
 
-<<<<<<< HEAD
         if cpf:
             cpf_limpo = "".join(filter(str.isdigit, str(cpf)))
             if not validar_cpf(cpf_limpo):
                 flash("O CPF informado é inválido!", "error")
                 return redirect(url_for('usuarios.cadastro_usuario'))
 
-=======
->>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
         senha_hash = generate_password_hash(senha)
 
         conn = get_connection()
@@ -103,7 +83,6 @@ def cadastro_usuario():
 
 
 # ================= EDITAR =================
-<<<<<<< HEAD
 @usuarios_bp.route('/usuarios/editar/<int:id>', methods=['POST'])
 def editar_usuario(id):
     # Security check: only devs or admins can edit (optional, but good)
@@ -170,74 +149,6 @@ def editar_usuario(id):
         conn.close()
 
     return redirect(url_for('usuarios.lista_usuarios'))
-=======
-@usuarios_bp.route('/usuarios/editar/<int:id>', methods=['GET', 'POST'])
-def editar_usuario(id):
-    conn = get_connection()
-    cursor = conn.cursor(cursor_factory=RealDictCursor)
-
-    if request.method == 'POST':
-        nome = request.form['nome']
-        email = request.form['email']
-        tipo = request.form['tipo']
-        cpf = request.form['cpf']
-        num_func_vinculo = request.form['num_func_vinculo']
-        ativo = request.form.get('ativo') == 'on'  # Checkbox returns 'on' if checked
-        nova_senha = request.form.get('senha')
-
-        conn = get_connection()
-        cursor = conn.cursor(cursor_factory=RealDictCursor)
-
-        try:
-            # Check for duplicates (CPF)
-            if cpf:
-                cursor.execute("SELECT id FROM usuarios WHERE cpf = %s AND id != %s", (cpf, id))
-                if cursor.fetchone():
-                    flash("CPF já cadastrado para outro usuário!", "error")
-                    return redirect(url_for('usuarios.editar_usuario', id=id))
-
-            # Check for duplicates (Matrícula)
-            if num_func_vinculo:
-                cursor.execute("SELECT id FROM usuarios WHERE num_func_vinculo = %s AND id != %s", (num_func_vinculo, id))
-                if cursor.fetchone():
-                    flash("Matrícula (Vínculo) já cadastrada para outro usuário!", "error")
-                    return redirect(url_for('usuarios.editar_usuario', id=id))
-
-            if nova_senha:
-                # Se nova senha foi fornecida, atualiza com hash
-                senha_hash = generate_password_hash(nova_senha)
-                cursor.execute("""
-                    UPDATE usuarios
-                    SET nome=%s, email=%s, tipo=%s, cpf=%s, num_func_vinculo=%s, ativo=%s, senha=%s
-                    WHERE id=%s
-                """, (nome, email, tipo, cpf, num_func_vinculo, ativo, senha_hash, id))
-            else:
-                # Se não, mantém a senha atual
-                cursor.execute("""
-                    UPDATE usuarios
-                    SET nome=%s, email=%s, tipo=%s, cpf=%s, num_func_vinculo=%s, ativo=%s
-                    WHERE id=%s
-                """, (nome, email, tipo, cpf, num_func_vinculo, ativo, id))
-
-            conn.commit()
-            flash("Usuário atualizado com sucesso!", "success")
-
-        except UniqueViolation:
-            conn.rollback()
-            flash("CPF ou Número de vínculo já está em uso!", "error")
-
-        finally:
-            cursor.close()
-            conn.close()
-
-        return redirect(url_for('usuarios.lista_usuarios'))
-
-    cursor.execute("SELECT * FROM usuarios WHERE id=%s", (id,))
-    usuario = cursor.fetchone()
-    cursor.close()
-    conn.close()
-    return render_template("editar_usuario.html", usuario=usuario)
->>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
 @usuarios_bp.route('/usuarios/status/<int:id>', methods=['POST'])
 def alterar_status_usuario(id):
     data = request.get_json()
@@ -254,22 +165,7 @@ def alterar_status_usuario(id):
     conn.close()
     return {"success": True}
 
-<<<<<<< HEAD
-# ================= EXCLUIR =================
-@usuarios_bp.route('/usuarios/excluir/<int:id>')
-def excluir_usuario(id):
-    # Trava de Segurança: Apenas desenvolvedores podem excluir
-    user_tipo = str(session.get("tipo", "")).upper()
-    if user_tipo not in ["DESENVOLVEDOR", "DEV"]:
-        flash("Acesso negado: Apenas desenvolvedores podem excluir usuários.", "error")
-        return redirect(url_for('usuarios.lista_usuarios'))
-
-=======
-
-# ================= EXCLUIR =================
-@usuarios_bp.route('/usuarios/excluir/<int:id>')
-def excluir_usuario(id):
->>>>>>> e1d7adbe17fe5d378b7629e63d43beecc7762f1a
+# ================= EXCLUIR ==========
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("DELETE FROM usuarios WHERE id=%s", (id,))
