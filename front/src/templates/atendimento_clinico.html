@@ -348,6 +348,15 @@
 <!-- Content Container -->
 <div class="clinical-container animate-ent-fade">
 
+    <!-- Navigation -->
+    <div class="flex items-center justify-between mb-2">
+        <button onclick="window.location.href='{{ url_for('log_agendamento.index') }}'"
+            class="group flex items-center gap-2 text-slate-400 hover:text-slate-900 transition-all duration-200 font-bold text-[11px] uppercase tracking-widest">
+            <i data-lucide="chevron-left" class="w-4 h-4 group-hover:-translate-x-1 transition-transform"></i>
+            Voltar para Atendimentos
+        </button>
+    </div>
+
     <!-- HEADER: PATIENT INFO CARD -->
     <header class="ent-card p-5 flex flex-col md:flex-row items-center justify-between gap-6">
         <div class="flex items-center gap-5 w-full md:w-auto">
@@ -385,6 +394,19 @@
 
     <!-- MAIN SECTION: DESFECHO CLÍNICO -->
     <div class="grid grid-cols-1 gap-6">
+        <!-- Banner de Registro Encerrado (Read-only mode) -->
+        {% if appt.status in ['Finalizado', 'Realizado', 'Cancelado', 'NAO_COMPARECEU'] %}
+        <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-center gap-4 animate-ent-fade">
+            <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+                <i data-lucide="lock" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <h3 class="text-amber-900 font-bold text-sm">Registro em modo de visualização</h3>
+                <p class="text-amber-700 text-xs">Este atendimento já foi encerrado e não pode mais ser alterado.</p>
+            </div>
+        </div>
+        {% endif %}
+
         <section class="ent-card p-8 space-y-8">
             <div class="flex items-center gap-3 border-b border-slate-100 pb-5">
                 <div class="w-10 h-10 rounded-lg bg-brand-50 text-brand-500 flex items-center justify-center">
@@ -587,7 +609,32 @@
     let selectedSlotEncValue = null;
     const dataEl = document.getElementById('appt-data');
     const apptId = dataEl.dataset.id;
+    const apptStatus = dataEl.dataset.status;
     const unidadeAtendimento = dataEl.dataset.unidade;
+
+    // Bloqueio de Edição se o Status for Finalizado/Cancelado
+    window.addEventListener('DOMContentLoaded', () => {
+        const statusBloqueados = ['Finalizado', 'Realizado', 'Cancelado', 'NAO_COMPARECEU'];
+        if (statusBloqueados.includes(apptStatus)) {
+            // Desabilita todos os campos de entrada
+            const forms = document.querySelectorAll('.ent-input, .ent-select, .ent-textarea, input[type="file"]');
+            forms.forEach(el => {
+                el.disabled = true;
+                el.style.opacity = '0.7';
+                el.style.cursor = 'not-allowed';
+            });
+
+            // Oculta área de upload
+            const uploadZone = document.querySelector('.upload-zone');
+            if (uploadZone) uploadZone.style.display = 'none';
+
+            // Oculta botões de ação (Salvar/Finalizar)
+            const btnRascunho = document.getElementById('btn-salvar-rascunho');
+            const btnFinalizar = document.getElementById('btn-finalizar');
+            if (btnRascunho) btnRascunho.style.display = 'none';
+            if (btnFinalizar) btnFinalizar.style.display = 'none';
+        }
+    });
 
     function handleDesfechoChange() {
         const tipo = document.getElementById('clin-desfecho-tipo').value;

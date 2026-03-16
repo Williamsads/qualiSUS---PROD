@@ -299,7 +299,7 @@
 
     <!-- FOOTER -->
     <div class="px-4 py-4 md:px-8 border-t border-gray-200 bg-gray-50 flex flex-col sm:flex-row gap-3 shrink-0">
-      <button onclick="enviarConfirmacao()"
+      <button id="btn-confirmar-whatsapp" onclick="enviarConfirmacao()"
         class="flex-1 px-4 py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg shadow-sm hover:shadow-md flex items-center justify-center gap-2 transition-all duration-200 order-1 md:order-none">
         <svg class="w-5 h-5 fill-current shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
           <path
@@ -631,7 +631,7 @@
             <div class="flex flex-col">
               <div class="flex items-center gap-1.5">
                 <span class="text-[10px] font-black text-slate-800 uppercase tracking-tight">${a.especialidade}</span>
-                ${a.especialidade === 'Acolhimento' ? '<i data-lucide="stethoscope" class="w-3.5 h-3.5 text-emerald-500"></i>' : ''}
+                ${a.especialidade === 'Acolhimento' ? '<i data-lucide="heart-handshake" class="w-3.5 h-3.5 text-emerald-500"></i>' : ''}
               </div>
               <span class="text-[10px] text-slate-400 font-bold uppercase tracking-tight">${a.medico}</span>
             </div>
@@ -646,7 +646,7 @@
               </button>
               ${a.especialidade === 'Acolhimento' ? `
               <button onclick="realizarAtendimento(${i})" class="w-9 h-9 flex items-center justify-center text-emerald-500 hover:text-emerald-700 hover:bg-emerald-50 transition-all rounded-xl" title="Realizar Atendimento">
-                <i data-lucide="stethoscope" class="w-4 h-4"></i>
+                <i data-lucide="heart-handshake" class="w-4 h-4"></i>
               </button>
               ` : ''}
               ${(a.status !== 'Cancelado' && a.status !== 'NAO_COMPARECEU' && a.status !== 'Finalizado') ? `
@@ -704,8 +704,17 @@
     }
 
     const whatsBadge = document.getElementById("det-whatsapp-badge");
+    const btnWhats = document.getElementById("btn-confirmar-whatsapp");
+
     if (a.whatsapp) whatsBadge.classList.remove('hidden');
     else whatsBadge.classList.add('hidden');
+
+    // Oculta botão de confirmação se estiver cancelado ou não compareceu
+    if (a.status === 'Cancelado' || a.status === 'NAO_COMPARECEU') {
+      btnWhats.classList.add('hidden');
+    } else {
+      btnWhats.classList.remove('hidden');
+    }
 
     const modal = document.getElementById("details-modal");
     modal.classList.remove("invisible", "opacity-0");

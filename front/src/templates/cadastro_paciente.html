@@ -28,14 +28,6 @@
         </div>
       </div>
     </div>
-
-    <div class="flex items-center gap-3">
-      <a href="{{ url_for('trabalhadores.lista_trabalhadores') }}"
-        class="flex items-center gap-2 px-6 py-3 bg-white dark:bg-gray-800 text-gray-500 hover:text-brand-600 font-bold rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm transition-all active:scale-95">
-        <i data-lucide="arrow-left" class="w-4 h-4"></i>
-        Cancelar
-      </a>
-    </div>
   </div>
 
   <form method="POST" class="space-y-12">
@@ -44,140 +36,167 @@
     {% endif %}
 
     <!-- AGRUPAMENTO: DADOS PESSOAIS E LOCALIZAÇÃO -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
       <!-- SEÇÃO 1: DADOS PESSOAIS -->
       <section
-        class="bg-white dark:bg-gray-900 shadow-soft border border-gray-100 dark:border-gray-800 rounded-[2.5rem] p-8 transition-all relative group">
-        <div class="flex items-center gap-4 mb-8 border-b border-gray-50 dark:border-gray-800 pb-5">
-          <div class="p-2.5 bg-brand-50 dark:bg-brand-900/40 rounded-2xl text-brand-600 shadow-inner">
+        class="bg-white dark:bg-gray-900 shadow-xl border border-slate-200 dark:border-gray-800 rounded-[2.5rem] p-8 transition-all relative group flex flex-col h-full">
+        <div class="flex items-center gap-4 mb-8 border-b border-slate-100 dark:border-gray-800 pb-5">
+          <div class="p-2.5 bg-brand-600 dark:bg-brand-900/40 rounded-2xl text-white shadow-lg shadow-brand-600/20">
             <i data-lucide="user" class="w-5 h-5"></i>
           </div>
           <div>
             <h3 class="text-sm font-black text-gray-800 dark:text-gray-200 uppercase tracking-widest">Identificação</h3>
-            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-tight mt-1">Dados básicos e contato</p>
+            <p class="text-[10px] text-slate-500 font-bold uppercase tracking-tight mt-1">Dados básicos e contato</p>
           </div>
         </div>
 
-        <div class="space-y-6">
+        <div class="space-y-6 flex-1">
           <div class="group/field">
             <label
-              class="block text-[9px] font-black text-gray-400 uppercase tracking-widest ml-2 mb-2 group-focus-within/field:text-brand-600">Nome
+              class="block text-[10px] font-bold text-slate-600 uppercase tracking-widest ml-2 mb-2 group-focus-within/field:text-brand-600">Nome
               Completo do Servidor *</label>
             <input name="nome" type="text" required placeholder="Digite o nome completo"
-              value="{{ trabalhador.nome_completo if trabalhador else '' }}"
-              class="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-transparent focus:border-brand-500 rounded-2xl outline-none text-xs font-bold transition-all">
+              value="{{ (trabalhador.nome_completo or '') if trabalhador else '' }}"
+              class="w-full px-5 py-3.5 bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 focus:border-brand-500 rounded-2xl outline-none text-xs font-bold transition-all shadow-sm">
           </div>
 
           <div class="grid grid-cols-2 gap-4">
             <div class="group/field">
               <label
-                class="block text-[9px] font-black text-gray-400 uppercase tracking-widest ml-2 mb-2 group-focus-within/field:text-brand-600">CPF
+                class="block text-[10px] font-bold text-slate-600 uppercase tracking-widest ml-2 mb-2 group-focus-within/field:text-brand-600">CPF
                 *</label>
               <input name="cpf" type="text" oninput="maskCPF(this)" placeholder="000.000.000-00"
-                value="{{ trabalhador.cpf if trabalhador else '' }}"
-                class="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-transparent focus:border-brand-500 rounded-2xl outline-none text-xs font-black font-mono transition-all">
+                value="{{ (trabalhador.cpf or '') if trabalhador else '' }}"
+                class="w-full px-5 py-3.5 bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 focus:border-brand-500 rounded-2xl outline-none text-xs font-black font-mono transition-all shadow-sm">
             </div>
             <div class="group/field">
               <label
-                class="block text-[9px] font-black text-gray-400 uppercase tracking-widest ml-2 mb-2 group-focus-within/field:text-brand-600">CNS
+                class="block text-[10px] font-bold text-slate-600 uppercase tracking-widest ml-2 mb-2 group-focus-within/field:text-brand-600">CNS
                 (Cartão SUS)</label>
-              <input name="cns" type="text" placeholder="000...000" value="{{ trabalhador.cns if trabalhador else '' }}"
-                class="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-transparent focus:border-brand-500 rounded-2xl outline-none text-xs font-bold transition-all">
+              <input name="cns" type="text" placeholder="000...000"
+                value="{{ (trabalhador.cns or '') if trabalhador else '' }}"
+                class="w-full px-5 py-3.5 bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 focus:border-brand-500 rounded-2xl outline-none text-xs font-bold transition-all shadow-sm">
             </div>
           </div>
 
           <div class="grid grid-cols-2 gap-4">
             <div class="group/field">
               <label
-                class="block text-[9px] font-black text-gray-400 uppercase tracking-widest ml-2 mb-2 group-focus-within/field:text-brand-600">Data
+                class="block text-[10px] font-bold text-slate-600 uppercase tracking-widest ml-2 mb-2 group-focus-within/field:text-brand-600">Data
                 Nascimento *</label>
               <input name="data_nascimento" type="date" required
-                value="{{ trabalhador.data_nascimento if trabalhador else '' }}"
-                class="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-transparent focus:border-brand-500 rounded-2xl outline-none text-xs font-bold transition-all">
+                value="{{ (trabalhador.data_nascimento or '') if trabalhador else '' }}"
+                class="w-full px-5 py-3.5 bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 focus:border-brand-500 rounded-2xl outline-none text-xs font-bold transition-all shadow-sm">
             </div>
             <div class="group/field">
               <label
-                class="block text-[9px] font-black text-gray-400 uppercase tracking-widest ml-2 mb-2 group-focus-within/field:text-brand-600">Telefone
+                class="block text-[10px] font-bold text-slate-600 uppercase tracking-widest ml-2 mb-2 group-focus-within/field:text-brand-600">Telefone
                 / WhatsApp *</label>
               <input name="telefone" type="text" placeholder="(81) 00000-0000" oninput="maskPhone(this)"
-                value="{{ trabalhador.telefone if trabalhador else '' }}"
-                class="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-transparent focus:border-brand-500 rounded-2xl outline-none text-xs font-bold transition-all">
+                value="{{ (trabalhador.telefone or '') if trabalhador else '' }}"
+                class="w-full px-5 py-3.5 bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 focus:border-brand-500 rounded-2xl outline-none text-xs font-bold transition-all shadow-sm">
             </div>
           </div>
 
           <div class="group/field">
             <label
-              class="block text-[9px] font-black text-gray-400 uppercase tracking-widest ml-2 mb-2 group-focus-within/field:text-brand-600">E-mail
+              class="block text-[10px] font-bold text-slate-600 uppercase tracking-widest ml-2 mb-2 group-focus-within/field:text-brand-600">E-mail
               Institucional *</label>
             <input name="email" type="email" placeholder="email@exemplo.com"
-              value="{{ trabalhador.email if trabalhador else '' }}"
-              class="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-transparent focus:border-brand-500 rounded-2xl outline-none text-xs font-bold transition-all">
+              value="{{ (trabalhador.email or '') if trabalhador else '' }}"
+              class="w-full px-5 py-3.5 bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 focus:border-brand-500 rounded-2xl outline-none text-xs font-bold transition-all shadow-sm">
           </div>
         </div>
       </section>
 
       <!-- SEÇÃO 2: LOCALIZAÇÃO -->
       <section
-        class="bg-white dark:bg-gray-900 shadow-soft border border-gray-100 dark:border-gray-800 rounded-[2.5rem] p-8 transition-all relative group h-full">
-        <div class="flex items-center gap-4 mb-8 border-b border-gray-50 dark:border-gray-800 pb-5">
-          <div class="p-2.5 bg-indigo-50 dark:bg-indigo-900/40 rounded-2xl text-indigo-600 shadow-inner">
+        class="bg-white dark:bg-gray-900 shadow-xl border border-slate-200 dark:border-gray-800 rounded-[2.5rem] p-8 transition-all relative group flex flex-col h-full">
+        <div class="flex items-center gap-4 mb-8 border-b border-slate-100 dark:border-gray-800 pb-5">
+          <div class="p-2.5 bg-indigo-600 dark:bg-indigo-900/40 rounded-2xl text-white shadow-lg shadow-indigo-600/20">
             <i data-lucide="map-pin" class="w-5 h-5"></i>
           </div>
           <div>
             <h3 class="text-sm font-black text-gray-800 dark:text-gray-200 uppercase tracking-widest">Endereço</h3>
-            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-tight mt-1">Localização residencial</p>
+            <p class="text-[10px] text-slate-500 font-bold uppercase tracking-tight mt-1">Localização residencial</p>
           </div>
         </div>
 
-        <div class="space-y-6">
-          <div class="group/field">
-            <label class="block text-[9px] font-black text-gray-400 uppercase tracking-widest ml-2 mb-2">CEP e
-              Logradouro</label>
-            <div class="grid grid-cols-3 gap-2 mb-4">
-              <div class="col-span-1">
+        <div class="space-y-6 flex-1">
+          <div class="grid grid-cols-12 gap-4">
+            <div class="col-span-12 sm:col-span-5 group/field">
+              <label
+                class="block text-[10px] font-bold text-slate-600 uppercase tracking-widest ml-2 mb-2 group-focus-within/field:text-indigo-600">CEP</label>
+              <div class="flex gap-2">
                 <input id="cep" name="cep" type="text" placeholder="55000-000" oninput="maskCEP(this)"
-                  value="{{ trabalhador.cep if trabalhador else '' }}"
-                  class="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-transparent focus:border-brand-500 rounded-2xl outline-none text-xs font-black transition-all">
-              </div>
-              <div class="col-span-1">
+                  value="{{ (trabalhador.cep or '') if trabalhador else '' }}"
+                  class="flex-1 px-5 py-3.5 bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 focus:border-brand-500 rounded-2xl outline-none text-xs font-black transition-all shadow-sm">
                 <button type="button" onclick="buscarCep()"
-                  class="w-full h-full bg-indigo-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-indigo-700 active:scale-95 shadow-lg shadow-indigo-600/20 transition-all flex items-center justify-center gap-2">
-                  <i data-lucide="search" class="w-4 h-4"></i> Buscar
+                  class="px-4 bg-indigo-600 text-white rounded-2xl hover:bg-indigo-700 active:scale-95 transition-all shadow-lg shadow-indigo-600/20">
+                  <i data-lucide="search" class="w-4 h-4"></i>
                 </button>
               </div>
-              <div class="col-span-1">
-                <input name="numero" type="text" placeholder="Número"
-                  value="{{ trabalhador.numero if trabalhador else '' }}"
-                  class="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-transparent focus:border-brand-500 rounded-2xl outline-none text-xs font-bold transition-all">
-              </div>
             </div>
-            <input id="logradouro" name="logradouro" type="text" placeholder="Rua, Avenida, Beco..."
-              value="{{ trabalhador.logradouro if trabalhador else '' }}"
-              class="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-transparent focus:border-brand-500 rounded-2xl outline-none text-xs font-medium transition-all">
+            <div class="col-span-12 sm:col-span-7 group/field">
+              <label
+                class="block text-[10px] font-bold text-slate-600 uppercase tracking-widest ml-2 mb-2 group-focus-within/field:text-indigo-600">Logradouro</label>
+              <input id="logradouro" name="logradouro" type="text" placeholder="Rua, Avenida, etc"
+                value="{{ (trabalhador.logradouro or '') if trabalhador else '' }}"
+                class="w-full px-5 py-3.5 bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 focus:border-brand-500 rounded-2xl outline-none text-xs font-semibold transition-all shadow-sm">
+            </div>
           </div>
 
-          <div class="grid grid-cols-2 gap-4">
-            <div class="group/field">
+          <div class="grid grid-cols-12 gap-4">
+            <div class="col-span-4 sm:col-span-3 group/field">
               <label
-                class="block text-[9px] font-black text-gray-400 uppercase tracking-widest ml-2 mb-2">Bairro</label>
-              <input id="bairro" name="bairro" type="text" placeholder="Nome do Bairro"
-                value="{{ trabalhador.bairro if trabalhador else '' }}"
-                class="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-transparent focus:border-brand-500 rounded-2xl outline-none text-xs font-bold transition-all">
+                class="block text-[10px] font-bold text-slate-600 uppercase tracking-widest ml-2 mb-2 group-focus-within/field:text-indigo-600">Número</label>
+              <input name="numero" type="text" placeholder="Nº"
+                value="{{ (trabalhador.numero or '') if trabalhador else '' }}"
+                class="w-full px-5 py-3.5 bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 focus:border-brand-500 rounded-2xl outline-none text-xs font-bold transition-all shadow-sm">
             </div>
-            <div class="group/field">
-              <label class="block text-[9px] font-black text-gray-400 uppercase tracking-widest ml-2 mb-2">Cidade /
-                UF</label>
-              <div class="flex gap-2">
-                <input id="cidade" name="cidade" type="text" placeholder="Cidade"
-                  value="{{ trabalhador.cidade if trabalhador else '' }}"
-                  class="flex-1 px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-transparent focus:border-brand-500 rounded-2xl outline-none text-xs font-bold transition-all">
-                <input id="uf" name="uf" type="text" placeholder="UF"
-                  value="{{ trabalhador.uf if trabalhador else '' }}"
-                  class="w-16 px-2 py-3.5 bg-gray-50 dark:bg-gray-800 border border-transparent focus:border-brand-500 rounded-2xl outline-none text-xs font-black text-center transition-all uppercase">
-              </div>
+            <div class="col-span-8 sm:col-span-9 group/field">
+              <label
+                class="block text-[10px] font-bold text-slate-600 uppercase tracking-widest ml-2 mb-2 group-focus-within/field:text-indigo-600">Bairro</label>
+              <input id="bairro" name="bairro" type="text" placeholder="Bairro"
+                value="{{ (trabalhador.bairro or '') if trabalhador else '' }}"
+                class="w-full px-5 py-3.5 bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 focus:border-brand-500 rounded-2xl outline-none text-xs font-bold transition-all shadow-sm">
             </div>
           </div>
-          <p id="cepStatus" class="text-[9px] font-black uppercase tracking-widest text-center mt-4 h-4"></p>
+
+          <div class="grid grid-cols-12 gap-4">
+            <div class="col-span-12 sm:col-span-8 group/field">
+              <label
+                class="block text-[10px] font-bold text-slate-600 uppercase tracking-widest ml-2 mb-2 group-focus-within/field:text-indigo-600">Complemento</label>
+              <input name="complemento" type="text" placeholder="Apto, Bloco, etc"
+                value="{{ (trabalhador.complemento or '') if trabalhador else '' }}"
+                class="w-full px-5 py-3.5 bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 focus:border-brand-500 rounded-2xl outline-none text-xs font-medium transition-all shadow-sm">
+            </div>
+            <div class="col-span-12 sm:col-span-4 group/field">
+              <label
+                class="block text-[10px] font-bold text-slate-600 uppercase tracking-widest ml-2 mb-2 group-focus-within/field:text-indigo-600">UF</label>
+              <input id="uf" name="uf" type="text" placeholder="UF" maxlength="2"
+                value="{{ (trabalhador.uf or '') if trabalhador else '' }}"
+                class="w-full px-5 py-3.5 bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 focus:border-brand-500 rounded-2xl outline-none text-xs font-black text-center transition-all uppercase shadow-sm">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="group/field">
+              <label
+                class="block text-[10px] font-bold text-slate-600 uppercase tracking-widest ml-2 mb-2 group-focus-within/field:text-indigo-600">Cidade</label>
+              <input id="cidade" name="cidade" type="text" placeholder="Cidade"
+                value="{{ (trabalhador.cidade or '') if trabalhador else '' }}"
+                class="w-full px-5 py-3.5 bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 focus:border-brand-500 rounded-2xl outline-none text-xs font-bold transition-all shadow-sm">
+            </div>
+            <div class="group/field">
+              <label
+                class="block text-[10px] font-bold text-slate-600 uppercase tracking-widest ml-2 mb-2 group-focus-within/field:text-indigo-600">Referência</label>
+              <input name="ponto_referencia" type="text" placeholder="Próximo a..."
+                value="{{ (trabalhador.ponto_referencia or '') if trabalhador else '' }}"
+                class="w-full px-5 py-3.5 bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 focus:border-brand-500 rounded-2xl outline-none text-xs font-medium transition-all shadow-sm">
+            </div>
+          </div>
+          <p id="cepStatus" class="text-[9px] font-black uppercase tracking-widest text-center mt-2 h-4"></p>
         </div>
       </section>
     </div>
@@ -185,21 +204,20 @@
     <!-- SEÇÃO 3: VIDA PROFISSIONAL -->
     <section
       class="bg-gray-50/50 dark:bg-gray-900/40 border border-gray-100 dark:border-gray-800 rounded-[2.5rem] p-8 sm:p-10 transition-all relative group">
-      <div class="flex items-center justify-between mb-10 border-b border-gray-100 dark:border-gray-800 pb-5">
-        <div class="flex items-center gap-4">
-          <div class="p-2.5 bg-brand-600 text-white rounded-2xl shadow-lg shadow-brand-600/20">
-            <i data-lucide="briefcase" class="w-5 h-5"></i>
-          </div>
-          <div>
+      <div class="flex items-center gap-4 mb-8">
+        <div class="p-2.5 bg-brand-600 text-white rounded-2xl shadow-lg shadow-brand-600/20">
+          <i data-lucide="briefcase" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-3">
             <h3 class="text-sm font-black text-gray-800 dark:text-gray-200 uppercase tracking-widest">Vida Profissional
             </h3>
-            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-tight mt-1">Registros de atuação e vínculos
-            </p>
+            <span
+              class="px-3 py-1 bg-brand-50 dark:bg-brand-900/40 text-brand-600 dark:text-brand-400 rounded-lg text-[8px] font-black uppercase tracking-widest border border-brand-100 dark:border-brand-800/50">Mínimo
+              1 Registro</span>
           </div>
-        </div>
-        <div
-          class="px-4 py-1.5 bg-brand-50 dark:bg-brand-900/20 text-brand-600 dark:text-brand-400 rounded-full text-[9px] font-black uppercase tracking-widest">
-          Mínimo 1 Registro
+          <p class="text-[10px] text-gray-400 font-bold uppercase tracking-tight mt-1">Registros de atuação e vínculos
+          </p>
         </div>
       </div>
 
@@ -309,7 +327,7 @@
                 class="block text-[9px] font-black text-gray-400 uppercase tracking-widest ml-2 mb-2 group-focus-within/field:text-brand-600">Matrícula
                 / ID</label>
               <input name="num_func_vinculo[]" type="text" placeholder="000000/0"
-                class="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-900 border border-transparent focus:border-brand-500 rounded-2xl outline-none text-xs font-black transition-all">
+                class="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-transparent focus:border-brand-500 rounded-2xl outline-none text-xs font-black transition-all">
             </div>
 
             <div class="group/field">
@@ -388,12 +406,17 @@
         <span class="text-[10px] font-black uppercase tracking-[0.2em]">Adicionar Nova Matrícula / Registro</span>
       </button>
     </section>
+
     <!-- ACTIONS -->
     <div
-      class="pt-10 flex flex-col sm:flex-row justify-end items-center gap-6 border-t border-gray-100 dark:border-gray-800 mt-12 transition-colors">
+      class="pt-10 flex flex-col sm:flex-row justify-end items-center gap-4 border-t border-gray-100 dark:border-gray-800 mt-12">
+      <a href="{{ url_for('trabalhadores.lista_trabalhadores') }}"
+        class="w-full sm:w-auto px-8 py-5 rounded-2xl font-black text-[11px] text-gray-400 hover:text-gray-600 hover:bg-gray-50 uppercase tracking-widest transition-all text-center">
+        Cancelar Operação
+      </a>
       <button type="reset"
-        class="px-8 py-4 rounded-2xl font-black text-[11px] text-gray-400 hover:text-red-500 uppercase tracking-widest transition-all">
-        Limpar Tudo
+        class="w-full sm:w-auto px-8 py-5 rounded-2xl font-black text-[11px] text-gray-400 hover:text-red-500 hover:bg-red-50/50 uppercase tracking-widest transition-all text-center">
+        Limpar Formulário
       </button>
       <button type="submit"
         class="w-full sm:w-auto px-16 py-5 rounded-2xl bg-brand-900 text-white font-black hover:bg-brand-800 shadow-xl shadow-brand-900/30 transition-all active:scale-95 flex items-center justify-center gap-3 uppercase text-xs tracking-[0.15em]">
@@ -426,10 +449,10 @@
       const data = await res.json();
 
       if (!data.erro) {
-        document.getElementById('logradouro').value = data.logradouro;
-        document.getElementById('bairro').value = data.bairro;
-        document.getElementById('cidade').value = data.localidade;
-        document.getElementById('uf').value = data.uf;
+        document.getElementById('logradouro').value = data.logradouro || '';
+        document.getElementById('bairro').value = data.bairro || '';
+        document.getElementById('cidade').value = data.localidade || '';
+        document.getElementById('uf').value = data.uf || '';
         status.textContent = 'Endereço Encontrado ✔';
         status.classList.remove('text-indigo-400');
         status.classList.add('text-emerald-500');

@@ -395,14 +395,16 @@
             background: rgba(255, 255, 255, 0.03);
         }
 
-        /* Utility to hide scrollbar but keep functional */
-        .scrollbar-hide::-webkit-scrollbar {
-            display: none;
-        }
+        /* Utility to hide scrollbar but keep functional - only for desktop */
+        @media (min-width: 1024px) {
+            .scrollbar-hide::-webkit-scrollbar {
+                display: none;
+            }
 
-        .scrollbar-hide {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
+            .scrollbar-hide {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
         }
 
         /* Skeleton Animation */

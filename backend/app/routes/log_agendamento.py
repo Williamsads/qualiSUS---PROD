@@ -224,10 +224,14 @@ def api_atualizar(id):
     cur = conn.cursor(cursor_factory=RealDictCursor)
     try:
         # Busca dados atuais do agendamento
-        cur.execute("SELECT * FROM agendamento_exames WHERE id = %s", (id,))
+        cur.execute("SELECT status, trabalhador_id, vinculo_id, funcionario_id, data_consulta, horario, unidade, especialidade FROM agendamento_exames WHERE id = %s", (id,))
         appt = cur.fetchone()
         if not appt:
             return jsonify({"success": False, "error": "Agendamento não encontrado"}), 404
+
+        # BLOQUEIO DE ALTERAÇÃO: Se já estiver encerrado ou cancelado, não permite editar
+        if appt['status'] in ['Finalizado', 'Realizado', 'Cancelado', 'NAO_COMPARECEU']:
+            return jsonify({"success": False, "error": "Este atendimento já foi encerrado e não pode mais ser alterado."}), 403
 
         user_email = session.get("email") or "Sistema"
         

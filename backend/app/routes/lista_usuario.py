@@ -30,9 +30,9 @@ def cadastro_usuario():
         tipo = request.form.get('tipo')
         cpf = request.form.get('cpf')
         num_func_vinculo = request.form.get('num_func_vinculo')
-        senha = request.form.get('senha')
-
-        if not all([nome, email, tipo, senha]):
+        senha = request.form.get('senha') or "Mudar@123" # Default password if not provided
+        
+        if not all([nome, email, tipo]): # Removed senha from required list
             flash("Preencha todos os campos obrigatórios!", "error")
             return redirect(url_for('usuarios.cadastro_usuario'))
 
@@ -92,7 +92,7 @@ def editar_usuario(id):
 
     nome = request.form.get('nome')
     email = request.form.get('email')
-    tipo = request.form.get('tipo', '').upper() # Match DB expected uppercase
+    tipo = request.form.get('tipo', '').lower() # Match DB expected lowercase enum values
     cpf = request.form.get('cpf')
     num_func_vinculo = request.form.get('num_func_vinculo')
     ativo = request.form.get('ativo') == 'on'

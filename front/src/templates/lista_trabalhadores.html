@@ -1,29 +1,47 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+  @keyframes fadeInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(10px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .animate-fade-in-left {
+    animation: fadeInLeft 0.3s ease-out forwards;
+  }
+</style>
 <div class="max-w-full mx-auto space-y-8 animate-fade-in-up">
 
   <!-- CABEÇALHO -->
-  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6 px-4">
+  <div class="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6 px-1">
     <div>
-      <h1 class="text-3xl font-black text-brand-900 dark:text-brand-500 mb-2 tracking-tight">
+      <h1 class="text-3xl font-black text-brand-900 dark:text-brand-500 tracking-tight transition-colors">
         Trabalhadores Cadastrados
       </h1>
-      <p class="text-sm text-gray-500 dark:text-gray-400 max-w-2xl font-medium">
-        Gerencie a base completa de profissionais e seus vínculos institucionais.
+      <p class="text-sm text-slate-500 font-medium mt-1">
+        Gerencie toda a base de profissionais de saúde e servidores municipais.
       </p>
     </div>
 
     <div class="flex items-center gap-3">
       <button onclick="exportToExcel()"
-        class="inline-flex items-center justify-center gap-2 bg-blue-600 text-white px-6 py-3.5 rounded-2xl font-bold hover:bg-blue-700 shadow-xl shadow-blue-600/20 transition-all active:scale-95 group">
-        <i data-lucide="file-spreadsheet" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
+        class="inline-flex items-center justify-center gap-2 bg-white dark:bg-gray-800 text-slate-700 dark:text-gray-200 px-6 py-3.5 rounded-2xl font-bold border border-slate-200 dark:border-gray-700 hover:bg-slate-50 shadow-sm transition-all active:scale-95 group">
+        <i data-lucide="file-spreadsheet"
+          class="w-5 h-5 text-emerald-600 group-hover:scale-110 transition-transform"></i>
         Exportar
       </button>
 
       <a href="{{ url_for('servidor.cadastro_paciente') }}"
-        class="inline-flex items-center justify-center gap-2 bg-brand-600 text-white px-8 py-3.5 rounded-2xl font-bold hover:bg-brand-700 shadow-xl shadow-brand-600/20 transition-all active:scale-95 group">
-        <i data-lucide="user-plus" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
+        class="inline-flex items-center justify-center gap-2 bg-brand-600 text-white px-8 py-3.5 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-brand-700 shadow-xl shadow-brand-600/20 transition-all active:scale-95 group">
+        <i data-lucide="user-plus" class="w-4 h-4 group-hover:scale-110 transition-transform"></i>
         Novo Cadastro
       </a>
     </div>
@@ -31,62 +49,74 @@
 
   <!-- FILTROS E BUSCA (PADRONIZADO) -->
   <div
-    class="bg-white dark:bg-gray-900/50 p-6 rounded-[2.5rem] shadow-soft border border-gray-100 dark:border-gray-800 transition-all mx-4">
-    <div class="flex justify-between items-center">
-      <div class="flex items-center gap-3">
-        <div class="p-3 bg-brand-50 dark:bg-brand-900/20 rounded-2xl text-brand-600 dark:text-brand-400">
+    class="bg-white dark:bg-gray-900 p-8 rounded-[2rem] shadow-xl border border-slate-200 dark:border-gray-800 transition-all relative overflow-hidden">
+    <div class="flex justify-between items-center relative z-10">
+      <div class="flex items-center gap-4">
+        <div class="p-3 bg-brand-600 rounded-2xl text-white shadow-lg shadow-brand-600/20">
           <i data-lucide="search" class="w-6 h-6"></i>
         </div>
         <div>
-          <h3 class="text-sm font-black text-gray-800 dark:text-gray-200 uppercase tracking-widest">Busca Avançada</h3>
-          <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Localize por qualquer termo ou dado pessoal.
-          </p>
+          <h3 class="text-lg font-black text-slate-800 dark:text-gray-200 tracking-tight">Pesquisa na Base</h3>
+          <p class="text-xs text-slate-500 dark:text-gray-400 font-medium font-mono uppercase tracking-widest">Localize
+            trabalhadores</p>
         </div>
       </div>
 
       <button onclick="toggleFilters()" id="btnToggleFilters"
-        class="flex items-center gap-2 px-6 py-2.5 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-xl transition-all text-[10px] font-black uppercase tracking-widest">
+        class="flex items-center gap-2 px-5 py-2.5 bg-slate-50 dark:bg-gray-800 hover:bg-slate-100 dark:hover:bg-gray-700 text-slate-600 dark:text-gray-300 rounded-xl transition-all text-[10px] font-black uppercase tracking-[0.2em] border border-slate-200 dark:border-gray-700">
         <span id="filterText">Mostrar Filtros</span>
-        <i data-lucide="chevron-down" id="filterIcon" class="w-4 h-4 transition-transform duration-300"></i>
+        <i data-lucide="chevron-down" id="filterIcon" class="w-4 h-4 transition-transform duration-500"></i>
       </button>
     </div>
 
     <!-- Collapsible Filters Area -->
-    <div id="filterArea" class="hidden transition-all duration-300 overflow-hidden">
+    <div id="filterArea" class="hidden transition-all duration-500 overflow-hidden">
       <form method="get" id="filterForm"
-        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 pt-6 border-t border-gray-50 dark:border-gray-800 mt-6">
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 pt-8 border-t border-slate-100 dark:border-gray-800 mt-8">
 
-        <div class="relative group">
-          <i data-lucide="user"
-            class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
-          <input name="nome" value="{{ filters.nome }}" placeholder="Nome do Servidor"
-            class="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-bold transition-all placeholder:font-normal">
+        <div class="space-y-2">
+          <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Nome</label>
+          <div class="relative group">
+            <i data-lucide="user"
+              class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-brand-600 transition-colors"></i>
+            <input name="nome" value="{{ filters.nome }}" placeholder="Ex: Maria Oliveira"
+              class="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-xs font-bold text-slate-700 transition-all dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 shadow-sm">
+          </div>
         </div>
 
-        <div class="relative group">
-          <i data-lucide="credit-card"
-            class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
-          <input name="cpf" value="{{ filters.cpf }}" placeholder="CPF"
-            class="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-bold transition-all placeholder:font-normal">
+        <div class="space-y-2">
+          <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">CPF</label>
+          <div class="relative group">
+            <i data-lucide="credit-card"
+              class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-brand-600 transition-colors"></i>
+            <input name="cpf" value="{{ filters.cpf }}" placeholder="000.000.000-00"
+              class="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-xs font-bold text-slate-700 transition-all dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 shadow-sm">
+          </div>
         </div>
 
-        <div class="relative group">
-          <i data-lucide="phone"
-            class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
-          <input name="telefone" value="{{ filters.telefone }}" placeholder="Telefone"
-            class="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-bold transition-all placeholder:font-normal">
+        <div class="space-y-2">
+          <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Telefone</label>
+          <div class="relative group">
+            <i data-lucide="phone"
+              class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-brand-600 transition-colors"></i>
+            <input name="telefone" value="{{ filters.telefone }}" placeholder="(00) 00000-0000"
+              class="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-xs font-bold text-slate-700 transition-all dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 shadow-sm">
+          </div>
         </div>
 
-        <div class="relative group">
-          <i data-lucide="map-pin"
-            class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
-          <input name="cidade" value="{{ filters.cidade }}" placeholder="Cidade"
-            class="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-gray-700 dark:text-gray-100 font-bold transition-all placeholder:font-normal">
+        <div class="space-y-2">
+          <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Cidade</label>
+          <div class="relative group">
+            <i data-lucide="map-pin"
+              class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-brand-600 transition-colors"></i>
+            <input name="cidade" value="{{ filters.cidade }}" placeholder="Ex: Recife"
+              class="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-xs font-bold text-slate-700 transition-all dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 shadow-sm">
+          </div>
         </div>
 
-        <div class="flex items-end">
+        <div class="flex items-end pt-4">
           <button type="submit"
-            class="w-full bg-brand-900 text-white px-4 py-3.5 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-brand-800 shadow-xl shadow-brand-900/20 transition-all flex items-center justify-center gap-2 group active:scale-95">
+            class="w-full bg-brand-900 text-white px-8 py-3.5 rounded-2xl font-black text-[11px] uppercase tracking-widest hover:bg-brand-800 shadow-xl shadow-brand-900/20 transition-all flex items-center justify-center gap-3 group active:scale-95 leading-none">
             <i data-lucide="filter" class="w-4 h-4 group-hover:rotate-12 transition-transform"></i>
             Filtrar Base
           </button>
@@ -144,29 +174,29 @@
 
   <!-- TABELA -->
   <div
-    class="bg-white dark:bg-clinical-surface rounded-[2.5rem] shadow-clinical-sm border border-gray-100 dark:border-gray-800 mb-8 transition-colors relative z-0">
+    class="bg-white dark:bg-clinical-surface rounded-[2rem] shadow-xl border border-slate-200 dark:border-gray-800 transition-all">
     <div class="overflow-x-auto custom-scrollbar">
       <table class="w-full text-left">
         <thead>
           <tr
-            class="bg-gray-50/50 dark:bg-clinical-bg/30 border-b border-gray-100 dark:border-gray-800 transition-colors">
+            class="bg-slate-50 dark:bg-clinical-bg/30 border-b border-slate-200 dark:border-gray-800 transition-colors">
             <th
-              class="px-6 py-5 text-[10px] font-extrabold text-gray-500 dark:text-gray-400 uppercase tracking-widest whitespace-nowrap">
+              class="px-8 py-6 text-[10px] font-black text-slate-500 dark:text-gray-400 uppercase tracking-[0.2em] whitespace-nowrap">
               Nome do Trabalhador</th>
             <th
-              class="px-6 py-5 text-[10px] font-extrabold text-gray-500 dark:text-gray-400 uppercase tracking-widest whitespace-nowrap">
-              Identificação (CPF)</th>
+              class="px-8 py-6 text-[10px] font-black text-slate-500 dark:text-gray-400 uppercase tracking-[0.2em] whitespace-nowrap">
+              Identificação</th>
             <th
-              class="px-6 py-5 text-[10px] font-extrabold text-gray-500 dark:text-gray-400 uppercase tracking-widest whitespace-nowrap">
+              class="px-8 py-6 text-[10px] font-black text-slate-500 dark:text-gray-400 uppercase tracking-[0.2em] whitespace-nowrap">
               Contatos</th>
             <th
-              class="px-6 py-5 text-[10px] font-extrabold text-gray-500 dark:text-gray-400 uppercase tracking-widest whitespace-nowrap">
+              class="px-8 py-6 text-[10px] font-black text-slate-500 dark:text-gray-400 uppercase tracking-[0.2em] whitespace-nowrap">
               Localização</th>
             <th
-              class="px-6 py-5 text-[10px] font-extrabold text-gray-500 dark:text-gray-400 uppercase tracking-widest text-center whitespace-nowrap">
+              class="px-8 py-6 text-[10px] font-black text-slate-500 dark:text-gray-400 uppercase tracking-[0.2em] text-center whitespace-nowrap">
               Vínculos Ativos</th>
             <th
-              class="sticky right-0 px-6 py-5 text-[10px] font-extrabold text-gray-500 dark:text-gray-400 uppercase tracking-widest text-center whitespace-nowrap bg-gray-50 dark:bg-gray-900 border-l border-gray-100 dark:border-gray-800 z-10 shadow-[-10px_0_15px_-5px_rgba(0,0,0,0.05)]">
+              class="sticky right-0 px-8 py-6 text-[10px] font-black text-slate-500 dark:text-gray-400 uppercase tracking-[0.2em] text-center whitespace-nowrap bg-slate-50 dark:bg-gray-900 border-l border-slate-200 dark:border-gray-800 z-10 shadow-[-10px_0_15px_-5px_rgba(0,0,0,0.02)]">
               Ações</th>
           </tr>
         </thead>
@@ -174,93 +204,99 @@
           {% for t in trabalhadores %}
           <tr
             class="trabalhador-row hover:bg-blue-50/40 dark:hover:bg-blue-900/10 even:bg-slate-50/30 dark:even:bg-gray-800/20 transition-all duration-200 group/row">
-            <td class="px-6 py-5">
+            <td class="px-8 py-6">
               <div class="flex items-center gap-4">
                 <div
-                  class="avatar-circle w-11 h-11 rounded-2xl flex items-center justify-center font-black text-sm transition-all shadow-sm group-hover/row:scale-105"
+                  class="avatar-circle w-11 h-11 rounded-2xl flex items-center justify-center font-black text-sm transition-all shadow-sm border border-black/5"
                   data-name="{{ t.nome_completo }}">
                   {{ t.nome_completo[:1] }}
                 </div>
                 <div class="flex flex-col">
-                  <span class="font-black text-gray-900 dark:text-gray-100 tracking-tight leading-tight">{{
+                  <span class="font-black text-slate-800 dark:text-gray-200 tracking-tight leading-none mb-1 text-sm">{{
                     t.nome_completo }}</span>
-                  <span class="text-[10px] text-gray-400 font-bold font-mono opacity-80 mt-0.5">ID: #{{ t.id }}</span>
+                  <span class="text-[10px] text-slate-400 font-bold font-mono uppercase tracking-widest">ID: #{{ t.id
+                    }}</span>
                 </div>
               </div>
             </td>
-            <td class="px-6 py-5">
-              <span class="text-xs font-black text-gray-700 dark:text-gray-300 font-mono tracking-tighter">{{ t.cpf
+            <td class="px-8 py-6">
+              <span class="text-xs font-black text-slate-700 dark:text-gray-300 font-mono tracking-tight">{{ t.cpf
                 }}</span>
             </td>
-            <td class="px-6 py-5 whitespace-nowrap">
+            <td class="px-8 py-6 whitespace-nowrap">
               <div class="flex flex-col gap-1.5">
-                <div class="flex items-center gap-2 text-xs font-bold text-gray-600 dark:text-gray-400">
-                  <i data-lucide="mail" class="w-3.5 h-3.5 opacity-50"></i>
+                <div class="flex items-center gap-2 text-[11px] font-bold text-slate-700 dark:text-gray-300">
+                  <i data-lucide="mail" class="w-3.5 h-3.5 text-slate-400"></i>
                   <span class="truncate max-w-[150px]">{{ t.email or '-' }}</span>
                 </div>
-                <div class="flex items-center gap-2 text-[10px] font-bold text-gray-400">
-                  <i data-lucide="phone" class="w-3.5 h-3.5 opacity-50"></i>
+                <div class="flex items-center gap-2 text-[10px] font-bold text-slate-500">
+                  <i data-lucide="phone" class="w-3.5 h-3.5 text-slate-400"></i>
                   {{ t.telefone or '-' }}
                 </div>
               </div>
             </td>
-            <td class="px-6 py-5">
+            <td class="px-8 py-6">
               <div class="flex flex-col">
-                <span class="text-xs font-bold text-gray-700 dark:text-gray-300">{{ t.cidade or '-' }}</span>
-                <span class="text-[9px] text-gray-400 font-black uppercase tracking-widest">{{ t.uf or '-' }}</span>
+                <span class="text-xs font-bold text-slate-700 dark:text-gray-300 leading-none mb-1">{{ t.cidade or '-'
+                  }}</span>
+                <span class="text-[9px] text-slate-400 font-black uppercase tracking-[0.2em]">{{ t.uf or '-' }}</span>
               </div>
             </td>
-            <td class="px-6 py-5">
+            <td class="px-8 py-6">
               {% if t.vinculos %}
               <div class="flex flex-wrap gap-2 justify-center">
                 {% for v in t.vinculos %}
                 <div
-                  class="flex flex-col items-center gap-1 p-2 rounded-2xl bg-white dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 min-w-[120px] shadow-sm hover:shadow-md transition-shadow">
-                  <span class="text-[8px] font-black tracking-[0.15em] uppercase px-2 py-1 rounded-lg 
+                  class="flex flex-col items-center gap-1.5 p-2.5 rounded-2xl bg-slate-50 dark:bg-gray-800/50 border border-slate-100 dark:border-gray-700 min-w-[130px] shadow-sm hover:shadow-md transition-shadow">
+                  <span class="text-[8px] font-black tracking-[0.2em] uppercase px-2.5 py-1 rounded-lg shadow-sm
                     {% if v.tipo_vinculo == 'EFETIVO' %} bg-emerald-50 text-emerald-600 border border-emerald-100 
                     {% elif v.tipo_vinculo in ['CONTRATO', 'CTD', 'Contratado'] %} bg-blue-50 text-blue-600 border border-blue-100 
                     {% elif v.tipo_vinculo == 'EST' %} bg-amber-50 text-amber-600 border border-amber-100
-                    {% else %} bg-slate-50 text-slate-600 border border-slate-100 {% endif %}">
+                    {% else %} bg-slate-100 text-slate-500 border border-slate-200 {% endif %}">
                     {{ v.tipo_vinculo }}
                   </span>
                   <span
-                    class="text-[10px] font-black text-gray-800 dark:text-gray-200 leading-tight text-center uppercase tracking-tighter">{{
+                    class="text-[10px] font-black text-slate-700 dark:text-gray-200 leading-tight text-center uppercase tracking-tight">{{
                     v.especialidade }}</span>
                 </div>
                 {% endfor %}
               </div>
               {% else %}
-              <div class="text-center italic text-[10px] font-bold text-gray-300 uppercase tracking-widest">Nenhum
-                vínculo</div>
+              <div class="text-center italic text-[10px] font-bold text-slate-300 uppercase tracking-widest">Sem
+                vínculos ativos</div>
               {% endif %}
             </td>
             <td
-              class="sticky right-0 px-6 py-5 bg-white/95 dark:bg-clinical-surface/95 backdrop-blur-sm border-l border-gray-100 dark:border-gray-800 z-10 shadow-[-10px_0_15px_-5px_rgba(0,0,0,0.05)] text-center overflow-visible">
+              class="sticky right-0 px-8 py-6 bg-white dark:bg-clinical-surface border-l border-slate-200 dark:border-gray-800 z-10 shadow-[-15px_0_20px_-10px_rgba(0,0,0,0.05)] text-center overflow-visible">
               <div class="flex justify-center relative dropdown-container">
                 <button type="button" onclick="toggleActionsMenu(event, 'menu-{{ t.id }}')"
-                  class="w-10 h-10 flex items-center justify-center rounded-2xl bg-gray-50/50 dark:bg-gray-800 text-gray-400 hover:text-brand-600 hover:bg-brand-50 dark:hover:bg-brand-900/30 transition-all active:scale-95 group/btn">
-                  <i data-lucide="more-horizontal" class="w-5 h-5 group-hover/btn:scale-110 transition-transform"></i>
+                  class="w-10 h-10 flex items-center justify-center rounded-2xl bg-slate-50 dark:bg-gray-800 text-slate-400 hover:text-brand-600 hover:bg-brand-50 dark:hover:bg-brand-900/30 transition-all active:scale-95 border border-slate-100 dark:border-gray-700">
+                  <i data-lucide="more-horizontal" class="w-5 h-5"></i>
                 </button>
 
-                <!-- DROPDOWN MENU -->
+                <!-- DROPDOWN MENU - CORREÇÃO: Abre para a esquerda (right-full) -->
                 <div id="menu-{{ t.id }}"
-                  class="hidden absolute right-4 top-full mt-3 w-80 max-w-[90vw] bg-white dark:bg-gray-900 rounded-[2rem] shadow-2xl border border-gray-100 dark:border-gray-800 z-[100] py-4 animate-fade-in-down">
+                  class="hidden absolute right-full top-0 mr-3 w-64 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-gray-700 z-[100] py-2 animate-fade-in-left overflow-hidden">
+                  <div class="px-4 py-2 border-b border-slate-50 dark:border-gray-700 mb-1">
+                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest text-left">Ficha do
+                      Trabalhador</p>
+                  </div>
                   <button
-                    class="btn-view-details w-full flex items-center gap-3 px-5 py-3 text-[11px] font-black text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all text-left uppercase tracking-tight whitespace-nowrap group/item"
+                    class="btn-view-details w-full flex items-center gap-3 px-4 py-3 text-[11px] font-bold text-slate-600 dark:text-gray-300 hover:bg-slate-50 dark:hover:bg-gray-700 transition-colors text-left group/item"
                     data-trabalhador='{{ t | tojson | forceescape }}'>
                     <div
-                      class="w-8 h-8 bg-brand-50 dark:bg-brand-900/40 rounded-xl flex items-center justify-center text-brand-600 shadow-sm group-hover/item:scale-110 transition-transform">
+                      class="w-8 h-8 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center shadow-sm group-hover/item:scale-110 transition-transform">
                       <i data-lucide="user" class="w-4 h-4"></i>
                     </div>
                     <span>Ver Detalhes Completo</span>
                   </button>
                   <a href="{{ url_for('servidor.cadastro_paciente', id=t.id) }}"
-                    class="w-full flex items-center gap-3 px-5 py-3 text-[11px] font-black text-gray-600 dark:text-gray-300 hover:bg-brand-50/50 dark:hover:bg-brand-900/20 hover:text-brand-600 transition-all text-left uppercase tracking-tight whitespace-nowrap group/item">
+                    class="w-full flex items-center gap-3 px-4 py-3 text-[11px] font-bold text-slate-600 dark:text-gray-300 hover:bg-brand-50/50 dark:hover:bg-brand-900/20 hover:text-brand-600 transition-colors text-left group/item">
                     <div
-                      class="w-8 h-8 bg-amber-50 dark:bg-amber-900/40 rounded-xl flex items-center justify-center text-amber-600 shadow-sm group-hover/item:scale-110 transition-transform">
+                      class="w-8 h-8 bg-brand-50 text-brand-600 rounded-xl flex items-center justify-center shadow-sm group-hover/item:scale-110 transition-transform">
                       <i data-lucide="edit-3" class="w-4 h-4"></i>
                     </div>
-                    <span>Editar Ficha Profissional</span>
+                    <span>Editar Ficha Funcional</span>
                   </a>
                 </div>
               </div>
@@ -309,67 +345,135 @@
 <div id="viewProfileModal"
   class="fixed inset-0 bg-gray-950/80 backdrop-blur-md hidden items-center justify-center z-50 p-4 transition-all duration-300">
   <div
-    class="bg-white dark:bg-gray-900 rounded-[2.5rem] shadow-2xl w-full max-w-3xl overflow-hidden border border-gray-100 dark:border-gray-800 animate-fade-in-up">
-    <div class="h-24 bg-gradient-to-r from-brand-600 to-indigo-600 relative">
+    class="bg-white dark:bg-gray-900 rounded-[2.5rem] shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto border border-gray-100 dark:border-gray-800 animate-fade-in-up custom-scrollbar">
+
+    <div
+      class="p-8 border-b border-gray-50 dark:border-gray-800 flex justify-between items-center bg-gray-50/30 dark:bg-gray-900/30">
+      <div>
+        <h2 class="text-2xl font-black text-brand-900 dark:text-brand-500">Consulta de Registro</h2>
+        <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Visualização detalhada dos dados cadastrais (Apenas
+          Leitura).</p>
+      </div>
       <button onclick="closeViewProfileModal()"
-        class="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/20 hover:bg-white/40 text-white flex items-center justify-center transition-all">
+        class="w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/20 transition-all">
         <i data-lucide="x" class="w-6 h-6"></i>
       </button>
     </div>
 
-    <div class="px-8 pb-8">
-      <div class="relative flex justify-between items-end -mt-10 mb-6">
-        <div id="profileAvatar"
-          class="w-20 h-20 rounded-2xl border-4 border-white dark:border-gray-900 shadow-xl flex items-center justify-center text-3xl font-black text-white">
-          ?
+    <div class="p-10 space-y-12">
+      <!-- DADOS PESSOAIS E ENDEREÇO (GRID) -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+
+        <!-- Identificação -->
+        <div class="space-y-6">
+          <h3 class="text-xs font-black text-brand-600 uppercase tracking-[0.2em] flex items-center gap-2">
+            <i data-lucide="user" class="w-4 h-4"></i> Identificação
+          </h3>
+          <div class="grid grid-cols-1 gap-5">
+            <div class="space-y-1.5">
+              <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nome Completo</label>
+              <input id="viewNome" disabled
+                class="w-full px-5 py-3.5 bg-slate-50 dark:bg-gray-800 border border-slate-100 dark:border-gray-700 rounded-2xl text-xs font-bold text-slate-600 dark:text-gray-300">
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="space-y-1.5">
+                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">CPF</label>
+                <input id="viewCPF" disabled
+                  class="w-full px-5 py-3.5 bg-slate-50 dark:bg-gray-800 border border-slate-100 dark:border-gray-700 rounded-2xl text-xs font-black font-mono text-slate-600 dark:text-gray-300">
+              </div>
+              <div class="space-y-1.5">
+                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">CNS (SUS)</label>
+                <input id="viewCNS" disabled
+                  class="w-full px-5 py-3.5 bg-slate-50 dark:bg-gray-800 border border-slate-100 dark:border-gray-700 rounded-2xl text-xs font-bold text-slate-600 dark:text-gray-300">
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="space-y-1.5">
+                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nascimento</label>
+                <input id="viewDataNasc" disabled
+                  class="w-full px-5 py-3.5 bg-slate-50 dark:bg-gray-800 border border-slate-100 dark:border-gray-700 rounded-2xl text-xs font-bold text-slate-600 dark:text-gray-300">
+              </div>
+              <div class="space-y-1.5">
+                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Telefone</label>
+                <input id="viewTelefone" disabled
+                  class="w-full px-5 py-3.5 bg-slate-50 dark:bg-gray-800 border border-slate-100 dark:border-gray-700 rounded-2xl text-xs font-bold text-slate-600 dark:text-gray-300">
+              </div>
+            </div>
+            <div class="space-y-1.5">
+              <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">E-mail</label>
+              <input id="viewEmail" disabled
+                class="w-full px-5 py-3.5 bg-slate-50 dark:bg-gray-800 border border-slate-100 dark:border-gray-700 rounded-2xl text-xs font-bold text-slate-600 dark:text-gray-300">
+            </div>
+          </div>
+        </div>
+
+        <!-- Endereço -->
+        <div class="space-y-6">
+          <h3 class="text-xs font-black text-indigo-600 uppercase tracking-[0.2em] flex items-center gap-2">
+            <i data-lucide="map-pin" class="w-4 h-4"></i> Endereço
+          </h3>
+          <div class="grid grid-cols-1 gap-5">
+            <div class="grid grid-cols-12 gap-4">
+              <div class="col-span-5 space-y-1.5">
+                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">CEP</label>
+                <input id="viewCEP" disabled
+                  class="w-full px-5 py-3.5 bg-slate-50 dark:bg-gray-800 border border-slate-100 dark:border-gray-700 rounded-2xl text-xs font-bold font-mono text-slate-600">
+              </div>
+              <div class="col-span-7 space-y-1.5">
+                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Logradouro</label>
+                <input id="viewLogradouro" disabled
+                  class="w-full px-5 py-3.5 bg-slate-50 dark:bg-gray-800 border border-slate-100 dark:border-gray-700 rounded-2xl text-xs font-bold text-slate-600">
+              </div>
+            </div>
+            <div class="grid grid-cols-12 gap-4">
+              <div class="col-span-4 space-y-1.5">
+                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Número</label>
+                <input id="viewNumero" disabled
+                  class="w-full px-5 py-3.5 bg-slate-50 dark:bg-gray-800 border border-slate-100 dark:border-gray-700 rounded-2xl text-xs font-bold text-slate-600">
+              </div>
+              <div class="col-span-8 space-y-1.5">
+                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Bairro</label>
+                <input id="viewBairro" disabled
+                  class="w-full px-5 py-3.5 bg-slate-50 dark:bg-gray-800 border border-slate-100 dark:border-gray-700 rounded-2xl text-xs font-bold text-slate-600">
+              </div>
+            </div>
+            <div class="grid grid-cols-12 gap-4">
+              <div class="col-span-8 space-y-1.5">
+                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Cidade</label>
+                <input id="viewCidade" disabled
+                  class="w-full px-5 py-3.5 bg-slate-50 dark:bg-gray-800 border border-slate-100 dark:border-gray-700 rounded-2xl text-xs font-bold text-slate-600">
+              </div>
+              <div class="col-span-4 space-y-1.5">
+                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">UF</label>
+                <input id="viewUF" disabled
+                  class="w-full px-5 py-3.5 bg-slate-50 dark:bg-gray-800 border border-slate-100 dark:border-gray-700 rounded-2xl text-xs font-black text-center text-slate-600">
+              </div>
+            </div>
+            <div class="space-y-1.5">
+              <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Ponto de
+                Referência</label>
+              <input id="viewRef" disabled
+                class="w-full px-5 py-3.5 bg-slate-50 dark:bg-gray-800 border border-slate-100 dark:border-gray-700 rounded-2xl text-xs font-medium text-slate-600 italic">
+            </div>
+          </div>
         </div>
       </div>
 
+      <!-- VIDA PROFISSIONAL -->
       <div class="space-y-6">
-        <div>
-          <h2 id="profileNome" class="text-2xl font-black text-gray-800 dark:text-gray-100 uppercase tracking-tight">
-            Nome do Trabalhador</h2>
-          <p id="profileLocal"
-            class="text-brand-600 dark:text-brand-400 font-bold uppercase text-xs tracking-widest mt-1">Cidade - UF</p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div
-            class="bg-gray-50 dark:bg-gray-800/50 p-6 rounded-[2rem] border border-gray-100 dark:border-gray-800 space-y-4">
-            <div class="space-y-1">
-              <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">CPF</span>
-              <p id="profileCPF" class="text-sm font-bold text-gray-700 dark:text-gray-300">-</p>
-            </div>
-            <div class="space-y-1">
-              <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">CNS</span>
-              <p id="profileCNS" class="text-sm font-bold text-gray-700 dark:text-gray-300">-</p>
-            </div>
-          </div>
-          <div
-            class="bg-gray-50 dark:bg-gray-800/50 p-6 rounded-[2rem] border border-gray-100 dark:border-gray-800 space-y-4">
-            <div class="space-y-1">
-              <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">E-mail</span>
-              <p id="profileEmail" class="text-sm font-bold text-gray-700 dark:text-gray-300">-</p>
-            </div>
-            <div class="space-y-1">
-              <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Telefone</span>
-              <p id="profileTelefone" class="text-sm font-bold text-gray-700 dark:text-gray-300">-</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="space-y-3">
-          <h4 class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Vínculos Institucionais</h4>
-          <div id="profileVinculosContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <!-- Vinculos injetados via JS -->
-          </div>
+        <h3 class="text-xs font-black text-emerald-600 uppercase tracking-[0.2em] flex items-center gap-2">
+          <i data-lucide="briefcase" class="w-4 h-4"></i> Vida Profissional
+        </h3>
+        <div id="viewVinculosContainer" class="grid grid-cols-1 gap-6">
+          <!-- Vínculos dinâmicos aqui -->
         </div>
       </div>
 
-      <div class="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800 flex justify-end">
+      <!-- FOOTER -->
+      <div class="pt-10 border-t border-slate-100 dark:border-gray-800 flex justify-end">
         <button onclick="closeViewProfileModal()"
-          class="px-10 py-3 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-2xl font-bold hover:bg-gray-200 dark:hover:bg-gray-700 transition-all uppercase text-[10px] tracking-widest">
-          Fechar Detalhes
+          class="px-12 py-4 bg-slate-900 text-white rounded-2xl font-black hover:bg-slate-800 transition-all uppercase text-[10px] tracking-widest shadow-xl shadow-slate-900/20 active:scale-95">
+          Fechar Visualização
         </button>
       </div>
     </div>
@@ -429,38 +533,54 @@
   });
 
   function verPerfil(t) {
-    document.getElementById('profileNome').innerText = t.nome_completo;
-    document.getElementById('profileLocal').innerText = `${t.cidade || 'Não informada'} - ${t.uf || 'UF'}`;
-    document.getElementById('profileCPF').innerText = t.cpf || '-';
-    document.getElementById('profileCNS').innerText = t.cns || '-';
-    document.getElementById('profileEmail').innerText = t.email || 'Não informado';
-    document.getElementById('profileTelefone').innerText = t.telefone || 'Não informado';
+    document.getElementById('viewNome').value = t.nome_completo || '';
+    document.getElementById('viewCPF').value = t.cpf || '';
+    document.getElementById('viewCNS').value = t.cns || '';
+    document.getElementById('viewEmail').value = t.email || '';
+    document.getElementById('viewTelefone').value = t.telefone || '';
+    document.getElementById('viewDataNasc').value = t.data_nascimento ? new Date(t.data_nascimento + 'T00:00:00').toLocaleDateString('pt-BR') : '';
 
-    // Avatar Color Logic
-    const colors = [
-      { bg: '#0369A1' }, { bg: '#15803D' }, { bg: '#A16207' }, { bg: '#7E22CE' },
-      { bg: '#BE123C' }, { bg: '#4338CA' }, { bg: '#C2410C' }, { bg: '#0F766E' }
-    ];
-    const hash = t.nome_completo.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    const color = colors[hash % colors.length];
-    const avatar = document.getElementById('profileAvatar');
-    avatar.innerText = t.nome_completo.charAt(0);
-    avatar.style.backgroundColor = color.bg;
+    // Endereço
+    document.getElementById('viewCEP').value = t.cep || '';
+    document.getElementById('viewLogradouro').value = t.logradouro || '';
+    document.getElementById('viewNumero').value = t.numero || '';
+    document.getElementById('viewBairro').value = t.bairro || '';
+    document.getElementById('viewCidade').value = t.cidade || '';
+    document.getElementById('viewUF').value = t.uf || '';
+    document.getElementById('viewRef').value = t.ponto_referencia || '';
 
     // Vinculos
-    const container = document.getElementById('profileVinculosContainer');
+    const container = document.getElementById('viewVinculosContainer');
     container.innerHTML = '';
     if (t.vinculos && t.vinculos.length > 0) {
-      t.vinculos.forEach(v => {
+      t.vinculos.forEach((v, idx) => {
         const div = document.createElement('div');
-        div.className = "p-4 bg-gray-50/50 dark:bg-gray-800/30 border border-gray-100 dark:border-gray-800 rounded-2xl flex flex-col gap-1";
+        div.className = "vinculo-card bg-slate-50/50 dark:bg-gray-800/20 p-8 rounded-[2rem] border border-slate-100 dark:border-gray-700 space-y-6";
         div.innerHTML = `
-          <div class="flex justify-between items-start mb-1">
-             <span class="text-[9px] font-black uppercase text-brand-600">${v.tipo_vinculo}</span>
-             <span class="text-[9px] font-bold text-gray-400">${v.situacao}</span>
+          <div class="flex items-center justify-between mb-4">
+             <span class="text-[9px] font-black uppercase text-brand-600 tracking-widest">Vínculo #${idx + 1}</span>
+             <span class="px-3 py-1 bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 rounded-lg text-[9px] font-black ${v.situacao === 'Ativo' ? 'text-emerald-500' : 'text-slate-400'} uppercase">
+                ${v.situacao || 'Ativo'}
+             </span>
           </div>
-          <p class="text-xs font-bold text-gray-700 dark:text-gray-300 transition-colors">${v.especialidade}</p>
-          <p class="text-[10px] text-gray-500 font-medium">${v.unidade_lotacao || 'Unidade não informada'}</p>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="space-y-1.5">
+              <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">Matrícula</label>
+              <input disabled value="${v.numero_funcional || v.num_func_vinculo || v.num_func_num_vinc || ''}" class="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-700 rounded-xl text-xs font-black text-slate-600">
+            </div>
+            <div class="space-y-1.5">
+              <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">Tipo Vínculo</label>
+              <input disabled value="${v.tipo_vinculo || ''}" class="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-700 rounded-xl text-xs font-bold text-slate-600">
+            </div>
+            <div class="space-y-1.5">
+              <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">Especialidade</label>
+              <input disabled value="${v.especialidade || ''}" class="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-700 rounded-xl text-xs font-bold text-slate-600">
+            </div>
+            <div class="space-y-1.5">
+              <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">Lotação</label>
+              <input disabled value="${v.unidade_lotacao || v.unidade_atendimento || ''}" class="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-700 rounded-xl text-xs font-bold text-slate-600">
+            </div>
+          </div>
         `;
         container.appendChild(div);
       });

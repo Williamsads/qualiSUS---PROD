@@ -314,32 +314,42 @@ def unidades_disponiveis():
     return jsonify({"unidades": unidades})
 
 
-@agendamento_bp.route("/api/agendar_exame/dias_disponiveis_especialidade")
+@agendamento_bp.route("/api/agendar_exame/datas_disponiveis_especialidade")
 def dias_disponiveis_especialidade():
     especialidade_id = request.args.get("especialidade_id")
-    unidade_nome = request.args.get("unidade_nome")
+    unidade_id = request.args.get("unidade_id")
     
-    if not especialidade_id or not unidade_nome:
+    if not especialidade_id or not unidade_id:
         return jsonify([])
 
     conn = get_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
     
+    # Busca todas as datas com pelo menos um horário livre nos próximos 60 dias
     cur.execute("""
-        SELECT DISTINCT hf.dia_semana 
-        FROM horarios_funcionarios hf
-        JOIN funcionarios f ON f.id = hf.funcionario_id
-        JOIN funcionarios_especialidades fe ON fe.funcionario_id = f.id
-        WHERE fe.especialidade_id = %s 
-          AND f.unidade_atendimento ILIKE %s
-          AND f.ativo = TRUE
-          AND f.atendimento = TRUE
-    """, (especialidade_id, unidade_nome))
+        SELECT DISTINCT d.data::TEXT as data
+        FROM generate_series(0, 60) i
+        CROSS JOIN LATERAL (SELECT CURRENT_DATE + i AS data) d
+        JOIN unidades_saude u ON u.id = %s
+        JOIN funcionarios f ON f.unidade_atendimento ILIKE u.nome AND f.ativo = TRUE AND f.atendimento = TRUE
+        JOIN funcionarios_especialidades fe ON fe.funcionario_id = f.id AND fe.especialidade_id = %s
+        JOIN horarios_funcionarios hf ON hf.funcionario_id = f.id
+        WHERE hf.dia_semana = CASE WHEN EXTRACT(ISODOW FROM d.data) = 7 THEN 0 ELSE CAST(EXTRACT(ISODOW FROM d.data) AS INTEGER) END
+          AND (d.data > CURRENT_DATE OR hf.horario > CURRENT_TIME)
+          AND NOT EXISTS (
+              SELECT 1 FROM agendamento_exames ae 
+              WHERE ae.data_consulta = d.data 
+                AND ae.funcionario_id = f.id 
+                AND ae.horario = hf.horario
+                AND ae.status != 'Cancelado'
+          )
+        ORDER BY d.data::TEXT
+    """, (unidade_id, especialidade_id))
     
-    dias = [row['dia_semana'] for row in cur.fetchall()]
+    datas = [row['data'] for row in cur.fetchall()]
     cur.close()
     conn.close()
-    return jsonify(dias)
+    return jsonify(datas)
 
 # ====================
 # Especialidades disponíveis
@@ -397,11 +407,7 @@ def check_acolhimento():
 
         # 2. Se exige acolhimento, verifica a flag no perfil do trabalhador
         if spec['exige_acolhimento_previo']:
-            # Se for profissional, libera sempre
-            if user_tipo not in perfil_paciente:
-                return jsonify({"blocked": False})
-
-            # Se for paciente, verifica a flag no banco
+            # Verifica a flag no banco diretamente (obrigatório para todos)
             cur.execute("SELECT acolhimento_realizado FROM trabalhadores WHERE id = %s", (trabalhador_id,))
             t_data = cur.fetchone()
             
@@ -484,12 +490,19 @@ def horarios_disponiveis():
     cur = conn.cursor(cursor_factory=RealDictCursor)
     
     # 1. Busca horários base do profissional para aquele dia da semana
-    cur.execute("""
+    query = """
         SELECT TO_CHAR(horario, 'HH24:MI') as horario 
         FROM horarios_funcionarios 
         WHERE funcionario_id = %s AND dia_semana = %s
-        ORDER BY horario
-    """, (medico_id, dia_semana_oficial))
+    """
+    params = [medico_id, dia_semana_oficial]
+    
+    # Se for hoje, filtra horários que já passaram
+    if data_obj.date() == datetime.now().date():
+        query += " AND horario > CURRENT_TIME"
+        
+    query += " ORDER BY horario"
+    cur.execute(query, params)
     
     todos_horarios = cur.fetchall()
     
@@ -579,11 +592,11 @@ def confirmar_agendamento():
             
             flag_realizado = t_data['acolhimento_realizado'] if t_data else False
             
-            # Se não fez acolhimento, pacientes são bloqueados. 
-            if not flag_realizado and (user_tipo in perfil_paciente):
+            # Se não fez acolhimento, o agendamento é bloqueado para todos os perfis. 
+            if not flag_realizado:
                 return jsonify({
                     "success": False, 
-                    "error": "Para agendar esta especialidade, é necessário realizar o Acolhimento primeiro."
+                    "error": "Para agendar esta especialidade, o paciente deve realizar o Acolhimento Social primeiro."
                 }), 403
 
         # --- [D] DEFINIÇÃO DE ORIGEM ---

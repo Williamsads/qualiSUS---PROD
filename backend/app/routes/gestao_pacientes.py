@@ -274,6 +274,13 @@ def api_dar_alta(tratamento_id):
             WHERE id = %s
         """, (func_id, observ, ciclo_id))
 
+        # 3. Reseta flag de acolhimento do trabalhador (Exige novo acolhimento para futuro tratamento)
+        cur.execute("""
+            UPDATE trabalhadores SET
+                acolhimento_realizado = FALSE
+            WHERE id = %s
+        """, (trabalhador_id,))
+
         conn.commit()
         return jsonify({"success": True})
 
@@ -347,74 +354,94 @@ def api_historico_paciente(trabalhador_id):
         """, (trabalhador_id,))
         tratamentos = cur.fetchall()
 
-        # Consolida e formata
-        eventos = []
-        for c in consultas:
-            desc = f"Consulta de {c['especialidade']}"
-            icon = "calendar"
-            color = "blue"
-            
-            if c['origem_agendamento'] == 'ENCAMINHAMENTO':
-                desc = f"Encaminhamento para {c['especialidade']}"
-                icon = "send"
-                color = "indigo"
-            elif c['especialidade'] == 'Acolhimento':
-                desc = "Consulta de Acolhimento"
-                icon = "stethoscope"
-                color = "emerald"
-            
-            # Hora do agendamento para ordenação dentro do dia
-            # Se não tiver hora, assume 00:00
-            h = c['detalhe_horario'] or "00:00"
-            sort_dt = f"{c['data_evento']} {h}"
-            
-            eventos.append({
-                "data": c['data_evento'].strftime("%d/%m/%Y"),
-                "horario": c['detalhe_horario'],
-                "titulo": desc,
-                "profissional": c['medico'],
-                "status": c['status'],
-                "obs": c['observacao'],
-                "tipo": "consulta",
-                "icon": icon,
-                "color": color,
-                "raw_date": sort_dt
-            })
+    # Consolida e formata
+    eventos = []
+    
+    # 4. Busca Desfechos Clínicos (Para enriquecer as consultas)
+    cur.execute("""
+        SELECT atendimento_id, tipo_desfecho, conduta, TO_CHAR(criado_em, 'DD/MM/YYYY HH24:MI') as data_reg
+        FROM desfechos_clinicos
+        WHERE paciente_id = %s
+    """, (trabalhador_id,))
+    desfechos = {d['atendimento_id']: d for d in cur.fetchall()}
 
-        for cc in ciclos:
-            eventos.append({
-                "data": cc['data_evento'].strftime("%d/%m/%Y"),
-                "horario": "--:--",
-                "titulo": "Início do Ciclo de Cuidado",
-                "profissional": "QualiVida",
-                "status": cc['status'],
-                "obs": "Paciente ingressou no fluxo de acolhimento.",
-                "tipo": "sistema",
-                "icon": "activity",
-                "color": "sky",
-                "raw_date": f"{cc['data_evento']} 00:00"
-            })
-
-        for pt in tratamentos:
-            eventos.append({
-                "data": pt['data_evento'].strftime("%d/%m/%Y"),
-                "horario": pt['detalhe_horario'],
-                "titulo": "Início de Tratamento Especializado",
-                "profissional": pt['medico'],
-                "status": pt['status'],
-                "obs": "Paciente vinculado para acompanhamento clínico contínuo.",
-                "tipo": "clinico",
-                "icon": "heart-pulse",
-                "color": "amber",
-                "raw_date": f"{pt['data_evento']} {pt['detalhe_horario']}"
-            })
-
-        # Ordena por data e hora decrescente (mais recente primeiro)
-        eventos.sort(key=lambda x: x['raw_date'], reverse=True)
+    for c in consultas:
+        # PULA agendamentos cancelados de regulação que não tiveram desfecho (Limpeza de ruído)
+        if c['status'] == 'Cancelado' and c['origem_agendamento'] == 'REGULACAO' and not c['observacao']:
+            continue
+            
+        desc = f"Consulta de {c['especialidade']}"
+        icon = "calendar"
+        color = "blue"
         
-        # Remove a chave raw_date antes de enviar
-        for e in eventos:
-            e.pop('raw_date')
+        if c['origem_agendamento'] == 'ENCAMINHAMENTO':
+            desc = f"Encaminhamento para {c['especialidade']}"
+            icon = "send"
+            color = "indigo"
+        elif c['especialidade'] == 'Acolhimento':
+            desc = "Consulta de Acolhimento"
+            icon = "heart-handshake"
+            color = "emerald"
+        
+        # Enriquece com o desfecho se existir
+        obs_timeline = c['observacao'] or ""
+        df = desfechos.get(c['id'])
+        if df:
+            obs_timeline = f"<b>Conduta:</b> {df['conduta']}"
+            if df['tipo_desfecho'] == 'encaminhar':
+                desc += " (C/ Encaminhamento)"
+        
+        h = c['detalhe_horario'] or "00:00"
+        sort_dt = f"{c['data_evento']} {h}"
+        
+        eventos.append({
+            "id": c['id'],
+            "data": c['data_evento'].strftime("%d/%m/%Y"),
+            "horario": c['detalhe_horario'],
+            "titulo": desc,
+            "profissional": c['medico'],
+            "status": c['status'],
+            "obs": obs_timeline,
+            "tipo": "consulta",
+            "icon": icon,
+            "color": color,
+            "raw_date": sort_dt
+        })
+
+    for cc in ciclos:
+        eventos.append({
+            "data": cc['data_evento'].strftime("%d/%m/%Y"),
+            "horario": "--:--",
+            "titulo": "Início do Ciclo de Cuidado",
+            "profissional": "QualiVida",
+            "status": cc['status'],
+            "obs": "Paciente ingressou no fluxo de acolhimento.",
+            "tipo": "sistema",
+            "icon": "activity",
+            "color": "sky",
+            "raw_date": f"{cc['data_evento']} 00:00"
+        })
+
+    for pt in tratamentos:
+        eventos.append({
+            "data": pt['data_evento'].strftime("%d/%m/%Y"),
+            "horario": pt['detalhe_horario'],
+            "titulo": "Início de Tratamento Especializado",
+            "profissional": pt['medico'],
+            "status": pt['status'],
+            "obs": "Paciente vinculado para acompanhamento clínico contínuo.",
+            "tipo": "clinico",
+            "icon": "heart-pulse",
+            "color": "amber",
+            "raw_date": f"{pt['data_evento']} {pt['detalhe_horario']}"
+        })
+
+    # Ordena por data e hora decrescente (mais recente primeiro)
+    eventos.sort(key=lambda x: x['raw_date'], reverse=True)
+    
+    # Remove a chave raw_date antes de enviar
+    for e in eventos:
+        e.pop('raw_date')
 
         return jsonify(eventos)
     except Exception as e:

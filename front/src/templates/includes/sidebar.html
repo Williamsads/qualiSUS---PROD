@@ -46,9 +46,9 @@
                 class="nav-link {% if request.endpoint == 'home' %} nav-item-active {% endif %}"
                 title="Painel de Monitoramento">
                 <div class="nav-icon-tile">
-                    <i data-lucide="layout-dashboard"></i>
+                    <i data-lucide="home"></i>
                 </div>
-                <span>Painel Principal</span>
+                <span>Home</span>
             </a>
             <a href="{{ url_for('dashboard.index') }}"
                 class="nav-link {% if 'dashboard' in request.endpoint %} nav-item-active {% endif %}"
@@ -92,7 +92,7 @@
                                 <i data-lucide="history"></i>
                             </div>
                             <span>Histórico</span>
-                            <span class="nav-badge badge-warning" title="Consultas para hoje">{{ count_agendamentos_hoje
+                            <span class="nav-badge badge-warning" title="Agendamentos Ativos">{{ count_agendamentos_hoje
                                 }}</span>
                         </a>
                         <a href="{{ url_for('gerenciamento.index') }}"

@@ -130,7 +130,7 @@ def inject_sidebar_stats():
         cursor = conn.cursor()
         
         # Agendamentos de Hoje (Real)
-        cursor.execute("SELECT COUNT(*) FROM agendamento_exames WHERE data_consulta = CURRENT_DATE AND status != 'Cancelado'")
+        cursor.execute("SELECT COUNT(*) FROM agendamento_exames WHERE status IN ('Agendado', 'No Acolhimento')")
         atendimentos_hoje = cursor.fetchone()[0]
         
         # Total de Trabalhadores (para os indicadores se quiser usar)
@@ -214,7 +214,7 @@ def home():
     worker_trend = f"+{((novos_30_dias / total_raw) * 100):.1f}%" if total_raw > 0 else "+0.0%"
     
     # Atendimentos de Hoje
-    cursor.execute("SELECT COUNT(*) FROM agendamento_exames WHERE data_consulta = CURRENT_DATE AND status != 'Cancelado'")
+    cursor.execute("SELECT COUNT(*) FROM agendamento_exames WHERE status IN ('Agendado', 'No Acolhimento')")
     atendimentos_hoje = cursor.fetchone()[0]
     
     cursor.close()

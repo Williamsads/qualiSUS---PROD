@@ -8,78 +8,71 @@
         <nav class="flex items-center text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
             <a href="{{ url_for('home') }}"
                 class="breadcrumb-item hover:text-royal transition-all after:content-['/'] after:mx-3 after:text-slate-300">QualiSUS</a>
-            <span class="text-royal">Dashboard Central</span>
+            <span class="text-royal">Home</span>
         </nav>
 
     </div>
 
-    <!-- HERO SECTION: ELITE REFINED -->
-    <section class="card-elite overflow-hidden relative group">
+    <!-- HERO SECTION: REVITALIZED BLUE -->
+    <section
+        class="rounded-[2rem] overflow-hidden relative group bg-gradient-to-r from-blue-600 to-blue-500 shadow-xl shadow-blue-500/20">
         <!-- Ambient Background Glow -->
-        <div
-            class="absolute -right-20 -top-20 w-64 h-64 bg-royal/5 rounded-full blur-3xl group-hover:bg-royal/10 transition-all duration-700">
+        <div class="absolute -right-20 -top-20 w-64 h-64 bg-white/10 rounded-full blur-3xl transition-all duration-700">
         </div>
 
-        <div class="p-8 sm:p-12 flex flex-col lg:flex-row items-stretch justify-between gap-10 relative z-10">
-            <div class="flex-1 flex flex-col justify-center">
-                <div class="flex items-center gap-3 mb-6">
-                    <span
-                        class="px-3 py-1 rounded-lg bg-royal/10 text-royal text-[10px] font-black uppercase tracking-[0.15em] border border-royal/20">
-                        Overview Operacional
-                    </span>
-                </div>
-
-                <h2 class="heading-elite text-4xl mb-4 leading-tight">
-                    Bom dia, <span class="bg-gradient-to-r from-royal to-indigo-500 bg-clip-text text-transparent">{{
-                        session.get('nome', 'Servidor').split(' ')[0] }}</span>
+        <div class="flex flex-col lg:flex-row items-stretch min-h-[300px] relative z-10">
+            <!-- Left Info Side -->
+            <div class="flex-1 p-8 sm:p-12 flex flex-col justify-center">
+                <h2 class="text-4xl sm:text-5xl mb-4 leading-tight tracking-tight text-white font-light">
+                    Bom dia, <span class="font-bold">{{ session.get('nome', 'Servidor').split(' ')[0] }}</span>
                 </h2>
-                <p class="text-slate-500 max-w-lg text-lg font-medium leading-relaxed opacity-80">
-                    Existem <span
-                        class="text-royal font-black tracking-tight underline decoration-royal/30 underline-offset-4">{{
-                        atendimentos_hoje }} pacientes</span> aguardando na sua agenda de hoje.
+                <p class="text-blue-50 max-w-lg text-xl font-medium leading-relaxed opacity-90">
+                    Você tem <span class="text-white font-black underline decoration-white/30 underline-offset-4">{{
+                        atendimentos_hoje }} pacientes</span> aguardando na sua fila de atendimentos.
                 </p>
-
             </div>
 
-            <!-- Metrics Grid: Ultra Modern -->
-            <div class="flex-shrink-0 flex items-center">
-                <!-- Atendimentos de Hoje Card -->
+            <!-- Right Metrics Side (Integrated) -->
+            <div
+                class="w-full lg:w-[320px] bg-white/5 backdrop-blur-sm border-l border-white/10 flex flex-col items-center justify-center p-8 text-center group/agenda translate-x-0">
+                <div class="mb-6 relative">
+                    <div
+                        class="w-16 h-16 rounded-2xl bg-white/10 text-white flex items-center justify-center border border-white/20 shadow-lg group-hover/agenda:scale-110 transition-transform duration-500">
+                        <i data-lucide="calendar" class="w-8 h-8"></i>
+                    </div>
+                    <div class="absolute -top-2 -right-2 flex h-5 w-5">
+                        <span
+                            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span
+                            class="relative inline-flex rounded-full h-5 w-5 bg-emerald-500 border-2 border-blue-600"></span>
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <span class="text-7xl font-black text-white tracking-tighter leading-none block">{{
+                        atendimentos_hoje }}</span>
+                    <span class="text-blue-100/60 font-black text-[10px] uppercase tracking-[0.3em] block mt-2">Fila de
+                        Espera</span>
+                </div>
+
                 <div
-                    class="bg-royal border border-royal shadow-glow rounded-[2rem] p-8 min-w-[280px] flex flex-col justify-between group/card hover:shadow-2xl hover:shadow-royal/30 transition-all duration-500">
-                    <div class="flex justify-between items-start mb-6">
-                        <div
-                            class="w-12 h-12 rounded-2xl bg-white/10 text-white flex items-center justify-center backdrop-blur-md border border-white/20">
-                            <i data-lucide="calendar" class="w-6 h-6"></i>
-                        </div>
-                        <span
-                            class="text-[10px] font-black text-white/80 uppercase tracking-[0.15em] bg-white/10 px-3 py-1 rounded-full border border-white/10">Ao
-                            Vivo</span>
-                    </div>
-                    <div>
-                        <span
-                            class="text-4xl font-black text-white tracking-tighter block leading-none mb-2 heading-elite">
-                            {{ atendimentos_hoje }}
-                        </span>
-                        <span class="text-[10px] text-white/70 font-black uppercase tracking-[0.15em]">Agenda de
-                            Hoje</span>
-                    </div>
+                    class="mt-8 px-4 py-1.5 rounded-full bg-white/10 border border-white/10 text-[9px] font-black text-white/80 uppercase tracking-widest">
+                    Status: Agenda Aberta
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- QUICK ACTIONS: NEW CARDS -->
+    <!-- QUICK ACTIONS -->
     <section class="animate-slide-up" style="animation-delay: 0.1s;">
         <div class="flex items-center justify-between mb-8 px-4">
-            <h3 class="heading-elite text-xl flex items-center gap-4">
-                <span class="w-8 h-8 rounded-lg bg-royal/10 flex items-center justify-center">
-                    <i data-lucide="zap" class="w-4 h-4 text-royal"></i>
-                </span>
+            <h3 class="text-gray-700 font-semibold text-lg flex items-center gap-3">
+                <i data-lucide="zap" class="w-5 h-5 text-blue-500"></i>
                 Ações Governamentais
             </h3>
         </div>
 
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {% set actions = [
             {'url': 'servidor.adicionar_funcionario', 'icon': 'user-plus', 'title': 'Admissão', 'subtitle': 'CADASTRAR
             SERVIDOR'},
@@ -93,60 +86,68 @@
 
             {% for action in actions %}
             <a href="{{ url_for(action.url) }}"
-                class="card-elite p-8 flex flex-col items-center justify-center text-center h-60 hover:border-royal/30 group">
+                class="bg-white border border-slate-200 shadow-md rounded-2xl p-8 flex flex-col items-center justify-center text-center h-56 hover:shadow-xl hover:border-blue-300 transition-all duration-300 cursor-pointer group active:scale-95">
                 <div
-                    class="w-16 h-16 bg-slate-50 text-slate-400 rounded-3xl flex items-center justify-center mb-6 group-hover:bg-royal/10 group-hover:text-royal group-hover:scale-110 transition-all duration-500 shadow-sm group-hover:shadow-glow">
-                    <i data-lucide="{{ action.icon }}" class="w-8 h-8"></i>
+                    class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mb-6 text-blue-600 transition-all duration-300 group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white">
+                    <i data-lucide="{{ action.icon }}" class="w-7 h-7"></i>
                 </div>
-                <span class="heading-elite text-sm group-hover:text-royal transition-colors">{{ action.title }}</span>
-                <span class="text-[9px] text-slate-400 mt-2.5 font-black uppercase tracking-[0.2em] opacity-60">{{
-                    action.subtitle }}</span>
+                <span class="text-gray-800 font-semibold text-base transition-colors group-hover:text-blue-600">{{
+                    action.title }}</span>
+                <span class="text-gray-400 text-xs uppercase tracking-wide mt-2 font-medium">{{ action.subtitle
+                    }}</span>
             </a>
             {% endfor %}
         </div>
     </section>
 
-    <!-- MODULES: REFINED GRID -->
+    <!-- MODULES -->
     <section class="animate-slide-up" style="animation-delay: 0.2s;">
         <div class="flex items-center justify-between mb-8 px-4">
-            <h3 class="heading-elite text-xl flex items-center gap-4">
-                <span class="w-8 h-8 rounded-lg bg-royal/10 flex items-center justify-center">
-                    <i data-lucide="layers" class="w-4 h-4 text-royal"></i>
-                </span>
+            <h3 class="text-gray-700 font-semibold text-lg flex items-center gap-3">
+                <i data-lucide="layers" class="w-5 h-5 text-blue-500"></i>
                 Módulos de Gestão
             </h3>
             <button
-                class="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-royal transition-colors">Ver
-                todos os módulos</button>
+                class="text-xs font-bold uppercase tracking-widest text-blue-500 hover:text-blue-700 transition-colors">
+                Ver todos os módulos
+            </button>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {% set modules = [
-            {'icon': 'users', 'title': 'Gestão de Servidores', 'desc': 'Estrutura de fichas funcionais SES.', 'color':
-            'royal'},
-            {'icon': 'activity', 'title': 'Saúde e Perícia', 'desc': 'Ações de agendamento e ASO.', 'color': 'emerald'},
-            {'icon': 'briefcase', 'title': 'Equipes e Unidades', 'desc': 'Organização de setores e lotação.', 'color':
-            'royal'},
-            {'icon': 'bar-chart-3', 'title': 'Indicadores BI', 'desc': 'Vida dos dados e exportação.', 'color':
-            'indigo'}
+            {'url': 'trabalhadores.lista_trabalhadores', 'icon': 'users', 'title': 'Gestão de Servidores', 'desc':
+            'Estrutura de fichas funcionais SES.'},
+            {'url': 'agendamento_bp.pagina_agendamento', 'icon': 'activity', 'title': 'Saúde e Perícia', 'desc': 'Ações
+            de agendamento e ASO.'},
+            {'url': 'servidor.lista_funcionarios', 'icon': 'briefcase', 'title': 'Equipes e Unidades', 'desc':
+            'Organização de setores e lotação.'},
+            {'url': 'dashboard.index', 'icon': 'bar-chart-3', 'title': 'Indicadores BI', 'desc': 'Vida dos dados e
+            exportação.'},
+            {'url': 'gerenciamento.index', 'icon': 'calendar-range', 'title': 'Gestão de Agendas', 'desc': 'Configuração
+            de turnos e lotação.'},
+            {'url': 'gestao_pacientes.index', 'icon': 'clipboard-list', 'title': 'Em Tratamento', 'desc':
+            'Acompanhamento de evolução clínica.'},
+            {'url': 'ppp.gestao_ppp', 'icon': 'file-text', 'title': 'Gestão de PPP', 'desc': 'Emissão de histórico para
+            previdência.'},
+            {'url': 'usuarios.lista_usuarios', 'icon': 'key-round', 'title': 'Controle de Acessos', 'desc': 'Gestão de
+            segurança e permissões.'}
             ] %}
 
             {% for module in modules %}
             <div
-                class="card-elite p-6 flex items-start gap-5 hover:border-{{ module.color }}-500/30 cursor-pointer group">
+                class="bg-white border border-gray-200 shadow-sm rounded-xl p-6 flex items-start gap-5 transition-all group">
                 <div
-                    class="w-14 h-14 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:scale-110 group-hover:bg-{{ module.color }}/10 group-hover:text-royal transition-all flex-shrink-0">
+                    class="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600 flex-shrink-0">
                     <i data-lucide="{{ module.icon }}" class="w-7 h-7"></i>
                 </div>
                 <div>
-                    <h4 class="heading-elite text-xs group-hover:text-royal transition-colors">{{ module.title }}</h4>
-                    <p class="text-[10px] text-slate-500 mt-2 leading-relaxed font-semibold opacity-70">{{ module.desc
-                        }}</p>
+                    <h4 class="text-gray-800 font-semibold text-sm mb-1.5">{{ module.title }}</h4>
+                    <p class="text-gray-500 text-[11px] mt-1.5 leading-relaxed font-medium opacity-80">{{ module.desc }}
+                    </p>
                 </div>
             </div>
             {% endfor %}
         </div>
     </section>
-
 </div>
 {% endblock %}
