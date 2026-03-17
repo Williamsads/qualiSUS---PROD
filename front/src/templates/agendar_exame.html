@@ -512,7 +512,7 @@
             Buscar <i data-lucide="search" class="w-5 h-5"></i>
           </button>
         </div>
-        <p class="text-xs text-dark-600 mt-2 font-medium dark:text-dark-400">Exemplos: CPF&nbsp;Nº Funcional / Nº
+        <p class="text-xs text-dark-600 mt-2 font-medium dark:text-dark-400">Exemplos: CPF&nbsp;
           Matrícula</p>
       </div>
 
@@ -2234,10 +2234,32 @@
           const confHora = timeInput.value;
           const userEmail = pacienteGlobal.email || 'seu e-mail';
 
-          // Auto-reload after success instead of showing the full-screen modal
-          setTimeout(() => {
-            window.location.reload();
-          }, 2000);
+          // Show a simple and clean success message in the container
+          step5.innerHTML = `
+            <div class="py-16 flex flex-col items-center text-center animate-fade-in">
+              <div class="w-20 h-20 bg-green-50 text-green-500 rounded-full flex items-center justify-center mb-6 border border-green-100 shadow-sm animate-bounce-slow">
+                <i data-lucide="check-circle" class="w-12 h-12"></i>
+              </div>
+              <h2 class="text-3xl font-black text-pe-navy mb-2 tracking-tighter italic uppercase">Confirmado!</h2>
+              <p class="text-gray-500 font-semibold mb-8">Seu agendamento foi finalizado com sucesso.</p>
+              
+              <div class="bg-gray-50 border border-gray-100 rounded-3xl p-6 mb-10 w-full max-w-sm shadow-inner">
+                <p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] mb-2">Número do Protocolo</p>
+                <p class="text-xl font-black text-pe-navy">#${data.agendamento_id}</p>
+              </div>
+
+              <div class="flex flex-col gap-3 w-full max-w-sm">
+                <button onclick="window.location.reload()" class="w-full bg-pe-navy text-white px-8 py-4 rounded-2xl font-black uppercase text-[11px] tracking-widest hover:bg-pe-navy/90 hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-pe-navy/20 flex items-center justify-center gap-3">
+                  <i data-lucide="calendar-plus" class="w-5 h-5"></i>
+                  Novo Agendamento
+                </button>
+                <button onclick="window.location.href='/'" class="w-full bg-white border-2 border-gray-100 text-gray-400 px-8 py-4 rounded-2xl font-black uppercase text-[11px] tracking-widest hover:border-pe-navy hover:text-pe-navy transition-all">
+                  Voltar ao Painel
+                </button>
+              </div>
+            </div>
+          `;
+
 
           if (typeof lucide !== 'undefined') lucide.createIcons();
         } else {
