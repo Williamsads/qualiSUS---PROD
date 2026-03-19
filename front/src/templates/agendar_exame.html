@@ -1446,6 +1446,19 @@
     const modal = document.getElementById('modalCadastro');
     const formModal = document.getElementById('formCadastroPaciente');
 
+    // ===============================
+    // SEGURANÇA: Função Anti-XSS
+    // Escapa caracteres HTML especiais de qualquer string
+    // vinda do servidor antes de inserir no DOM via innerHTML.
+    // ===============================
+    function escapeHTML(str) {
+      if (str === null || str === undefined) return '';
+      return String(str).replace(/[&<>"']/g, tag => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;',
+        '"': '&quot;', "'": '&#39;'
+      }[tag]));
+    }
+
     // Toast Function
     window.showToast = function (message, type = 'success') {
       const container = document.getElementById('toast-container');
@@ -1858,13 +1871,13 @@
 
           return `
             <div 
-              onclick="selecionarEspecialidade(${s.id}, '${s.nome}', ${s.exige_acolhimento_previo || false}, '${s.tipo_fluxo || 'CONSULTA'}')"
+              onclick="selecionarEspecialidade(${s.id}, '${escapeHTML(s.nome)}', ${s.exige_acolhimento_previo || false}, '${escapeHTML(s.tipo_fluxo || 'CONSULTA')}')"
               class="specialty-card cursor-pointer group flex flex-col items-center p-6 rounded-2xl border-2 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl ${isSelected ? 'border-pe-royal bg-pe-royal/5 shadow-md ring-4 ring-pe-royal/20' : 'border-gray-50 bg-white hover:border-pe-sky shadow-sm'}"
             >
               <div class="w-16 h-16 rounded-2xl ${isSelected ? 'bg-gradient-to-br from-pe-royal to-pe-navy text-white shadow-lg' : 'bg-pe-royal/5 text-pe-royal'} flex items-center justify-center mb-4 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
-                <i data-lucide="${iconName}" class="w-8 h-8"></i>
+                <i data-lucide="${escapeHTML(iconName)}" class="w-8 h-8"></i>
               </div>
-              <h3 class="text-sm font-black text-gray-800 text-center uppercase tracking-tight group-hover:text-pe-navy transition-colors">${s.nome}</h3>
+              <h3 class="text-sm font-black text-gray-800 text-center uppercase tracking-tight group-hover:text-pe-navy transition-colors">${escapeHTML(s.nome)}</h3>
               ${isSelected ? '<div class="mt-3 py-1 px-4 bg-pe-royal text-white text-[10px] font-black rounded-full uppercase shadow-sm animate-pulse">Selecionado</div>' : '<div class="mt-3 h-6"></div>'}
             </div>
           `;
@@ -2007,17 +2020,17 @@
 
           return `
             <div 
-              onclick="selecionarMedico(${p.id}, '${p.nome}')"
+              onclick="selecionarMedico(${p.id}, '${escapeHTML(p.nome)}')"
               class="doctor-card cursor-pointer group flex items-center p-4 rounded-2xl border-2 transition-all duration-300 transform hover:scale-[1.01] ${isSelected ? 'border-pe-royal bg-pe-royal/5 shadow-md ring-4 ring-pe-royal/20' : 'border-gray-50 bg-white hover:border-pe-royal/20 hover:shadow-sm'}"
             >
               <div class="relative">
                 <div class="w-14 h-14 rounded-full ${isSelected ? 'bg-pe-royal text-white shadow-lg' : 'bg-pe-royal/10 text-pe-royal'} flex-shrink-0 flex items-center justify-center font-bold text-lg transition-all duration-300 group-hover:bg-pe-royal group-hover:text-white">
-                  ${initials}
+                  ${escapeHTML(initials)}
                 </div>
                 ${isSelected ? '<div class="absolute -top-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-white flex items-center justify-center"><i data-lucide="check" class="w-3 h-3 text-white"></i></div>' : ''}
               </div>
               <div class="ml-4 flex-1">
-                <h4 class="font-bold text-gray-800 text-base leading-tight group-hover:text-pe-navy">${p.nome}</h4>
+                <h4 class="font-bold text-gray-800 text-base leading-tight group-hover:text-pe-navy">${escapeHTML(p.nome)}</h4>
               </div>
               <i data-lucide="chevron-right" class="w-5 h-5 text-gray-300 group-hover:text-pe-royal transition-colors"></i>
             </div>
@@ -2475,21 +2488,21 @@
                         <div class="w-8 h-8 bg-white rounded-lg flex items-center justify-center text-pe-royal shadow-sm">
                           <i data-lucide="calendar" class="w-4.5 h-4.5"></i>
                         </div>
-                        <span class="text-sm md:text-base font-bold underline decoration-pe-royal/30 underline-offset-4">${dataFmt} às ${a.horario}</span>
+                        <span class="text-sm md:text-base font-bold underline decoration-pe-royal/30 underline-offset-4">${escapeHTML(dataFmt)} às ${escapeHTML(a.horario)}</span>
                       </div>
 
                       <div class="flex items-center gap-3 text-gray-600">
                         <div class="w-8 h-8 bg-white rounded-lg flex items-center justify-center text-pe-royal shadow-sm">
                           <i data-lucide="user" class="w-4.5 h-4.5"></i>
                         </div>
-                        <span class="text-sm md:text-base font-bold"><span class="text-pe-navy">${a.especialidade}</span> - ${a.medico}</span>
+                        <span class="text-sm md:text-base font-bold"><span class="text-pe-navy">${escapeHTML(a.especialidade)}</span> - ${escapeHTML(a.medico)}</span>
                       </div>
 
                       <div class="flex items-center gap-3 text-gray-500">
                         <div class="w-8 h-8 bg-white rounded-lg flex items-center justify-center text-pe-red shadow-sm">
                           <i data-lucide="map-pin" class="w-4.5 h-4.5"></i>
                         </div>
-                        <span class="text-sm font-bold">${a.unidade}</span>
+                        <span class="text-sm font-bold">${escapeHTML(a.unidade)}</span>
                       </div>
                     </div>
 
