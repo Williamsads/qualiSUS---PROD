@@ -58,6 +58,9 @@ app = Flask(
     static_folder=STATIC_DIR
 )
 
+from app.extensions import limiter
+limiter.init_app(app)
+
 app.register_blueprint(servidor_bp)
 app.register_blueprint(bp_agendamento)
 app.register_blueprint(agendamento_bp)
@@ -72,9 +75,33 @@ app.register_blueprint(dashboard_bp)
 app.secret_key = os.getenv("SECRET_KEY", "fallback-key-se-nao-definido")
 
 # --------------------------
-# CONEXÃO COM postgreSQL
+# CONFIGURAÇÃO DO COOKIE DE SESSÃO
 # --------------------------
-# A conexão agora é gerenciada por app.database.get_connection
+app.config.update(
+    SESSION_COOKIE_HTTPONLY=True,    # Impede que JS acesse o cookie (Anti-XSS)
+    SESSION_COOKIE_SAMESITE='Lax',  # Bloqueia CSRF em requisições cross-site
+    # SESSION_COOKIE_SECURE=True,   # Ativar em produção com HTTPS obrigatório
+)
+
+# --------------------------
+# SECURITY HEADERS
+# --------------------------
+@app.after_request
+def set_security_headers(response):
+    # Evita que o site seja embutido em iframes de terceiros (Anti-Clickjacking)
+    response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+    # Impede que o browser "adivinhe" o tipo do conteúdo (Anti-MIME Sniffing)
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    # Habilita proteção XSS do browser (legado, mas ainda útil)
+    response.headers['X-XSS-Protection'] = '1; mode=block'
+    # Oculta tecnologias do servidor de atacantes curiosos
+    response.headers['Server'] = 'QualiSUS'
+    response.headers['X-Powered-By'] = 'SESPE'
+    # Remove referrer desnecessário ao navegar para outros sites
+    response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+    # Política de permissões: desabilita acesso à câmera, microfone, etc.
+    response.headers['Permissions-Policy'] = 'camera=(), microphone=(), geolocation=()'
+    return response
 
 # --------------------------
 # ROTA RAIZ
@@ -153,6 +180,7 @@ def inject_sidebar_stats():
         }
 
 @app.route("/login", methods=["GET", "POST"])
+@limiter.limit("10 per minute; 50 per hour", methods=["POST"])
 def login():
     if request.method == "POST":
         email = request.form["email"]

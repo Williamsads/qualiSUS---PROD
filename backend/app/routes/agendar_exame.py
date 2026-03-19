@@ -5,6 +5,7 @@ import os
 from datetime import datetime, timedelta
 from app.utils import validar_cpf
 from app.database import get_connection
+from app.extensions import limiter
 
 # ----------------------
 # CONFIGURAÇÃO DO FLASK
@@ -33,6 +34,7 @@ def pagina_agendamento():
 # VALIDAR TRABALHADOR
 # ====================
 @agendamento_bp.route("/api/agendar_exame/trabalhador/validar")
+@limiter.limit("15 per minute", error_message="Muitas tentativas de busca consecutivas. Aguarde um minuto para tentar novamente.")
 def validar_trabalhador():
     doc = request.args.get("doc", "").strip()
     # Limpa apenas para o CPF (que no banco geralmente é numérico)
@@ -967,11 +969,14 @@ def agendamentos_por_trabalhador():
 def cancelar_agendamento():
     data = request.json
     agendamento_id = data.get("agendamento_id")
+    trabalhador_id_req = data.get("trabalhador_id") # Recebido do frontend
     motivo = data.get("motivo", "Não informado")
     notas = data.get("observacao", "")
     
     if not agendamento_id:
         return jsonify({"success": False, "error": "ID do agendamento não informado."}), 400
+
+    user_tipo = session.get("tipo", "").upper()
 
     conn = get_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
@@ -980,7 +985,8 @@ def cancelar_agendamento():
         # Busca detalhes do agendamento para validar prazo e pegar dados para o e-mail
         cur.execute("""
             SELECT ae.data_consulta, ae.horario, ae.especialidade, ae.unidade,
-                   f.nome as medico_nome, t.nome_completo as paciente_nome, t.email as paciente_email
+                   f.nome as medico_nome, t.nome_completo as paciente_nome, t.email as paciente_email,
+                   ae.trabalhador_id
             FROM agendamento_exames ae
             JOIN trabalhadores t ON ae.trabalhador_id = t.id
             JOIN funcionarios f ON ae.funcionario_id = f.id
@@ -990,6 +996,11 @@ def cancelar_agendamento():
         
         if not agendamento:
             return jsonify({"success": False, "error": "Agendamento não encontrado."}), 404
+            
+        # VALIDAÇÃO CONTRA IDOR: Se não for ADMIN/ACOLHIMENTO/GESTOR, verifica autoria
+        if user_tipo not in ["ADMIN", "GESTOR", "ACOLHIMENTO", "DESENVOLVEDOR"]:
+            if not trabalhador_id_req or str(agendamento['trabalhador_id']) != str(trabalhador_id_req):
+                return jsonify({"success": False, "error": "Acesso negado. Apenas o próprio paciente ou um administrador pode cancelar este agendamento."}), 403
             
         # Combina data e hora
         consulta_datetime = datetime.combine(agendamento['data_consulta'], agendamento['horario'])

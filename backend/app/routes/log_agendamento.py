@@ -229,16 +229,27 @@ def api_atualizar(id):
         if not appt:
             return jsonify({"success": False, "error": "Agendamento não encontrado"}), 404
 
+        if "user_id" not in session:
+            return jsonify({"success": False, "error": "Acesso negado. Usuário não autenticado no painel."}), 401
+            
         # BLOQUEIO DE ALTERAÇÃO: Se já estiver encerrado ou cancelado, não permite editar
         if appt['status'] in ['Finalizado', 'Realizado', 'Cancelado', 'NAO_COMPARECEU']:
             return jsonify({"success": False, "error": "Este atendimento já foi encerrado e não pode mais ser alterado."}), 403
 
-        user_email = session.get("email") or "Sistema"
+        user_email = session.get("email")
+        user_tipo = session.get("tipo", "").upper()
         
         # Busca ID do profissional atual para vincular se for Acolhimento Livre (-1)
         cur.execute("SELECT id FROM funcionarios WHERE email = %s", (user_email,))
         func_row = cur.fetchone()
         real_funcionario_id = func_row['id'] if func_row else None
+
+        # Validação extra de IDOR: Somente o profissional alocado, ou ADMIN/ACOLHIMENTO
+        # Como a base tem id `-1` para acolhimento livre, se for ADMIN / ACOLHIMENTO a gente pula a restrição.
+        if user_tipo not in ["ADMIN", "GESTOR", "ACOLHIMENTO", "DESENVOLVEDOR"]:
+            if appt['funcionario_id'] != -1 and appt['funcionario_id'] != real_funcionario_id:
+                 return jsonify({"success": False, "error": "Você não tem permissão para editar um agendamento atribuído a outro médico."}), 403
+
         
         # --- REGRAS DE NEGÓCIO DE ACOLHIMENTO E DESFECHO ---
         final_status = status

@@ -2229,6 +2229,7 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                   agendamento_id: id,
+                  trabalhador_id: pacienteGlobal ? pacienteGlobal.id : null,
                   motivo: "Cancelamento imediato",
                   notas: "Cancelado pelo usuário logo após confirmar"
                 })
@@ -2633,6 +2634,7 @@
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             agendamento_id: tempCancelId,
+            trabalhador_id: pacienteGlobal ? pacienteGlobal.id : null,
             motivo: motivo,
             observacao: notas
           })
