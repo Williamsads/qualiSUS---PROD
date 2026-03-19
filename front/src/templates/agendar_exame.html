@@ -1126,7 +1126,6 @@
               Carregando unidades...
             </div>
           </div>
-          <input type="hidden" id="selected_unidade_id" required>
         </div>
 
         <!-- Right Column: Date Selection (Calendar) -->
@@ -1173,14 +1172,13 @@
               <!-- Days injected via JS -->
             </div>
           </div>
-          <input type="hidden" id="selected_data_consulta" required>
         </div>
       </div>
 
       <!-- Hidden Inputs -->
       <div class="hidden">
         <input type="hidden" id="selected_unidade_id" value="">
-        <input type="hidden" id="selected_unidade_nome" value=""> <!-- Added for Summary -->
+        <input type="hidden" id="selected_unidade_nome" value="">
         <input type="hidden" id="selected_data_consulta" value="">
       </div>
 
@@ -1493,6 +1491,7 @@
     let pacienteGlobal = null;
     let vinculoGlobal = null;
     let availableDates = [];
+    let fluxoAcolhimentoObrigatorio = false; // Novo: rastreia se o acolhimento é fruto de redirecionamento
 
     async function carregarDatasDisponiveis(unidadeId, especialidadeId) {
       if (!unidadeId || !especialidadeId) {
@@ -1500,7 +1499,8 @@
         return;
       }
       try {
-        const res = await fetch(`/api/agendar_exame/datas_disponiveis_especialidade?unidade_id=${unidadeId}&especialidade_id=${especialidadeId}`);
+        const isRedir = fluxoAcolhimentoObrigatorio ? 'true' : 'false';
+        const res = await fetch(`/api/agendar_exame/datas_disponiveis_especialidade?unidade_id=${unidadeId}&especialidade_id=${especialidadeId}&is_redirection=${isRedir}`);
         availableDates = await res.json();
       } catch (err) {
         console.error("Erro ao carregar datas disponíveis:", err);
@@ -1655,6 +1655,7 @@
       try {
         const res = await fetch(`/api/agendar_exame/trabalhador/validar?doc=${encodeURIComponent(doc)}`);
         const data = await res.json();
+        console.log("Validar result:", data);
 
         btn.innerText = originalText;
         btn.disabled = false;
@@ -1880,9 +1881,27 @@
       }
     }
 
-    async function selecionarEspecialidade(id, nome, exigeAcolhimento = false, tipoFluxo = 'CONSULTA') {
+    async function selecionarEspecialidade(id, nome, exigeAcolhimento = false, tipoFluxo = 'CONSULTA', isObrigatorio = false) {
+      // 🔄 LIMPEZA DE ESTADO AGRESSIVA: Reseta tudo para evitar vazamento entre especialidades
+      if (doctorInput) doctorInput.value = "";
+      if (doctorIdInput) doctorIdInput.value = "";
+      if (timeInput) timeInput.value = "";
+
+      const medContainer = document.getElementById('medicos-container');
+      if (medContainer) medContainer.innerHTML = "";
+
+      const timeContainer = document.getElementById('time-slots');
+      if (timeContainer) {
+        timeContainer.innerHTML = '<div class="col-span-4 text-center py-4 text-gray-500 italic">Selecione um profissional para ver os horários</div>';
+      }
+
+      if (unitIdInput) unitIdInput.value = "";
+      if (unitNameInput) unitNameInput.value = "";
+      if (dateInput) dateInput.value = "";
+
       specialtyInput.value = nome;
       specialtyIdInput.value = id;
+      fluxoAcolhimentoObrigatorio = isObrigatorio; // Define o contexto do acolhimento
       document.getElementById('step2-error-alt').classList.add('hidden');
 
       // --- REGRA DE NEGÓCIO: BLOQUEIO VIA BACKEND SE EXIGIR ACOLHIMENTO ---
@@ -1920,8 +1939,8 @@
               const acolhimentoSpec = (specsData.especialidades || []).find(s => s.tipo_fluxo === 'ACOLHIMENTO');
 
               if (acolhimentoSpec) {
-                // 3. Seleciona ela (garantindo que não vai travar no check de acolhimento de novo)
-                await selecionarEspecialidade(acolhimentoSpec.id, acolhimentoSpec.nome, false, 'ACOLHIMENTO');
+                // 3. Seleciona ela (agora marcando que é fluxo obrigatório/redirecionado)
+                await selecionarEspecialidade(acolhimentoSpec.id, acolhimentoSpec.nome, false, 'ACOLHIMENTO', true);
 
                 // 4. Clica no botão "Próximo" do Passo 2 (que leva para o Passo 3 - Unidade/Data)
                 const btnNext = document.getElementById('btnStep2Next');
@@ -1971,7 +1990,8 @@
       }
 
       try {
-        const res = await fetch(`/api/agendar_exame/profissionais?especialidade_id=${especialidadeId}&unidade=${encodeURIComponent(unidadeNome)}`);
+        const isRedir = fluxoAcolhimentoObrigatorio ? 'true' : 'false';
+        const res = await fetch(`/api/agendar_exame/profissionais?especialidade_id=${especialidadeId}&unidade=${encodeURIComponent(unidadeNome)}&is_redirection=${isRedir}`);
         const data = await res.json();
         const profs = data.profissionais || [];
 
@@ -2017,6 +2037,7 @@
     function selecionarMedico(id, nome) {
       doctorInput.value = nome;
       doctorIdInput.value = id;
+      if (timeInput) timeInput.value = ""; // 🔄 Reseta horário ao mudar de médico
       carregarHorarios(id);
       checkStep4Validity();
 
@@ -2041,23 +2062,13 @@
       container.innerHTML = '<div class="col-span-4 text-center py-4 text-gray-500">Buscando horários...</div>';
 
       try {
-        const res = await fetch(`/api/gerenciamento/horarios/${profId}?dia=${diaSemana}`);
+        const unidade = encodeURIComponent(unitNameInput.value);
+        const res = await fetch(`/api/agendar_exame/horarios?medico_id=${profId}&data=${dataStr}&unidade=${unidade}`);
         const data = await res.json();
         let slots = data || [];
 
-        // Filtra horários passados se a data for hoje
         const agora = new Date();
         const hojeStr = agora.toISOString().split('T')[0];
-
-        if (dataStr === hojeStr) {
-          const horaAtual = agora.getHours();
-          const minAtual = agora.getMinutes();
-
-          slots = slots.filter(s => {
-            const [h, m] = s.horario.split(':').map(Number);
-            return (h > horaAtual) || (h === horaAtual && m > minAtual);
-          });
-        }
 
         if (slots.length === 0) {
           const msg = dataStr === hojeStr ? 'Não há mais horários disponíveis para hoje.' : 'Nenhum horário disponível para este profissional neste dia da semana.';
@@ -2102,10 +2113,11 @@
     const btnStep4Next = document.getElementById('btnStep4Next');
     if (btnStep4Next) {
       btnStep4Next.onclick = () => {
-        const doc = doctorInput ? doctorInput.value : '';
+        const docId = doctorIdInput ? doctorIdInput.value : '';
         const time = timeInput ? timeInput.value : '';
 
-        if (!doc || !time) {
+        if (!docId || !time) {
+          showToast("Selecione um profissional e um horário antes de continuar.", "warning");
           document.getElementById('step4-error').classList.remove('hidden');
           return;
         }
@@ -2161,7 +2173,8 @@
         horario: timeInput.value,
         unidade: unitNameInput.value,
         especialidade: specialtyInput.value,
-        origem_agendamento: new URLSearchParams(window.location.search).get('origem') || null
+        origem_agendamento: new URLSearchParams(window.location.search).get('origem') || null,
+        is_redirection: fluxoAcolhimentoObrigatorio
       };
 
       try {
@@ -2662,7 +2675,9 @@
       }
 
       try {
-        const url = especialidadeId ? `/api/agendar_exame/unidades_disponiveis?especialidade_id=${especialidadeId}` : '/api/agendar_exame/unidades_disponiveis';
+        const isRedir = fluxoAcolhimentoObrigatorio ? 'true' : 'false';
+        let url = `/api/agendar_exame/unidades_disponiveis?is_redirection=${isRedir}`;
+        if (especialidadeId) url += `&especialidade_id=${especialidadeId}`;
         const res = await fetch(url);
         const data = await res.json();
         const unidades = data.unidades || [];

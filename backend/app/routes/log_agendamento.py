@@ -235,6 +235,11 @@ def api_atualizar(id):
 
         user_email = session.get("email") or "Sistema"
         
+        # Busca ID do profissional atual para vincular se for Acolhimento Livre (-1)
+        cur.execute("SELECT id FROM funcionarios WHERE email = %s", (user_email,))
+        func_row = cur.fetchone()
+        real_funcionario_id = func_row['id'] if func_row else None
+        
         # --- REGRAS DE NEGÓCIO DE ACOLHIMENTO E DESFECHO ---
         final_status = status
         validado = False
@@ -340,11 +345,21 @@ def api_atualizar(id):
             """, (new_desfecho_id, user_email, json.dumps(data, default=str)))
 
         # Atualiza o agendamento atual
-        cur.execute("""
-            UPDATE agendamento_exames 
-            SET status = %s, observacao = %s, validado_para_psico = %s, atualizado_em = NOW(), atualizado_por = %s
-            WHERE id = %s
-        """, (final_status, observacao, validado, user_email, id))
+        # Se o médico original era -1 (Acolhimento Virtual), assume o médico que está salvando agora
+        if appt.get('funcionario_id') == -1 and real_funcionario_id:
+             cur.execute("""
+                UPDATE agendamento_exames 
+                SET status = %s, observacao = %s, validado_para_psico = %s, 
+                    atualizado_em = NOW(), atualizado_por = %s,
+                    funcionario_id = %s
+                WHERE id = %s
+            """, (final_status, observacao, validado, user_email, real_funcionario_id, id))
+        else:
+            cur.execute("""
+                UPDATE agendamento_exames 
+                SET status = %s, observacao = %s, validado_para_psico = %s, atualizado_em = NOW(), atualizado_por = %s
+                WHERE id = %s
+            """, (final_status, observacao, validado, user_email, id))
         
         conn.commit()
         return jsonify({"success": True})
@@ -358,11 +373,19 @@ def api_atualizar(id):
 
 @bp_agendamento.route("/api/lista")
 def api_lista():
+    user_tipo = str(session.get("tipo", "")).upper()
+    user_email = session.get("email")
+    
     conn = get_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
     
     try:
-        cur.execute("""
+        # Busca ID do funcionário logado
+        cur.execute("SELECT id FROM funcionarios WHERE email = %s", (user_email,))
+        func_row = cur.fetchone()
+        funcionario_id_logado = func_row['id'] if func_row else None
+
+        query = """
             SELECT 
                 ae.id,
                 ae.status,
@@ -388,8 +411,24 @@ def api_lista():
             JOIN funcionarios f ON ae.funcionario_id = f.id
             LEFT JOIN vinculos_trabalhadores vt ON ae.vinculo_id = vt.id
             LEFT JOIN desfechos_clinicos dc ON ae.id = dc.atendimento_id
-            ORDER BY ae.data_consulta DESC, ae.horario DESC
-        """)
+            WHERE 1=1
+        """
+        params = []
+
+        # REGRA DE VISIBILIDADE:
+        # Medico vê: dele OU acolhimento.
+        # Admin / Dev vê: tudo.
+        if user_tipo == 'MEDICO' and funcionario_id_logado:
+            query += " AND (ae.funcionario_id = %s OR ae.especialidade = 'Acolhimento')"
+            params.append(funcionario_id_logado)
+        elif user_tipo != 'ADMIN' and user_tipo != 'DESENVOLVEDOR' and user_tipo != 'DEV':
+            # Outros tipos (se houver) veem apenas o que for deles ou nada por padrão
+            query += " AND (ae.funcionario_id = %s)"
+            params.append(funcionario_id_logado)
+
+        query += " ORDER BY ae.data_consulta DESC, ae.horario DESC"
+        
+        cur.execute(query, params)
         rows = cur.fetchall()
         return jsonify(rows)
     except Exception as e:

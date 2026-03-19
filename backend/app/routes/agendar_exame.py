@@ -37,9 +37,11 @@ def validar_trabalhador():
     doc = request.args.get("doc", "").strip()
     # Limpa apenas para o CPF (que no banco geralmente é numérico)
     doc_limpo = "".join(filter(str.isdigit, doc))
+    print(f"DEBUG: Validar trabalhador - Recv doc: '{doc}', Limpo: '{doc_limpo}'")
     
     # Validação de CPF se o documento tiver 11 dígitos
     if len(doc_limpo) == 11 and not validar_cpf(doc_limpo):
+        print("DEBUG: CPF matematicamente inválido")
         return jsonify({"found": False, "error": "CPF mathematicamente inválido."}), 400
     
     conn = get_connection()
@@ -77,9 +79,12 @@ def validar_trabalhador():
     resultado = cur.fetchone()
 
     if not resultado:
+        print(f"DEBUG: Trabalhador NOT FOUND para doc '{doc_limpo}'")
         cur.close()
         conn.close()
         return jsonify({"found": False})
+
+    print(f"DEBUG: Trabalhador FOUND: {resultado['nome_completo']} (ID: {resultado['id']})")
 
     # Busca todas as unidades onde o trabalhador está lotado
     cur.execute("""
@@ -278,11 +283,23 @@ def atualizar_cadastro():
 @agendamento_bp.route("/api/agendar_exame/unidades_disponiveis")
 def unidades_disponiveis():
     especialidade_id = request.args.get("especialidade_id")
+    is_redirection = request.args.get("is_redirection", "false").lower() == "true"
     conn = get_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
     
     if especialidade_id:
-        cur.execute("""
+        # Acolhimento obrigatório (redirecionamento): exibe unidades com profissionais REAIS.
+        # Acolhimento livre ou outras especialidades: comportamento padrão.
+        if is_redirection:
+            nome_filter = "AND f.nome NOT ILIKE 'Acolhimento - %%'"
+        else:
+            nome_filter = "AND (f.nome NOT ILIKE 'Acolhimento%%' OR (SELECT nome FROM especialidades WHERE id = %s) ILIKE 'Acolhimento%%')"
+
+        params = [especialidade_id]
+        if not is_redirection:
+            params.append(especialidade_id)  # segundo %s do nome_filter padrão
+
+        cur.execute(f"""
             SELECT DISTINCT u.id, u.nome, u.endereco 
             FROM unidades_saude u
             JOIN unidades_especialidades ue ON ue.unidade_id = u.id
@@ -290,6 +307,7 @@ def unidades_disponiveis():
             JOIN funcionarios_especialidades fe ON fe.funcionario_id = f.id AND fe.especialidade_id = ue.especialidade_id
             JOIN horarios_funcionarios hf ON hf.funcionario_id = f.id
             WHERE ue.especialidade_id = %s
+              {nome_filter}
               AND EXISTS (
                   SELECT 1 
                   FROM generate_series(0, 30) i
@@ -304,7 +322,7 @@ def unidades_disponiveis():
                     )
               )
             ORDER BY u.nome
-        """, (especialidade_id,))
+        """, params)
     else:
         cur.execute("SELECT id, nome, endereco FROM unidades_saude ORDER BY nome")
         
@@ -318,15 +336,24 @@ def unidades_disponiveis():
 def dias_disponiveis_especialidade():
     especialidade_id = request.args.get("especialidade_id")
     unidade_id = request.args.get("unidade_id")
+    is_redirection = request.args.get("is_redirection", "false").lower() == "true"
     
     if not especialidade_id or not unidade_id:
         return jsonify([])
 
     conn = get_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
+
+    # Acolhimento obrigatório: considera apenas profissionais REAIS (exclui virtuais).
+    # Demais casos: comportamento original.
+    if is_redirection:
+        nome_filter = "AND f.nome NOT ILIKE 'Acolhimento - %%'"
+        params = (unidade_id, especialidade_id)
+    else:
+        nome_filter = "AND (f.nome NOT ILIKE 'Acolhimento%%' OR (SELECT nome FROM especialidades WHERE id = %s) ILIKE 'Acolhimento%%')"
+        params = (unidade_id, especialidade_id, especialidade_id)
     
-    # Busca todas as datas com pelo menos um horário livre nos próximos 60 dias
-    cur.execute("""
+    cur.execute(f"""
         SELECT DISTINCT d.data::TEXT as data
         FROM generate_series(0, 60) i
         CROSS JOIN LATERAL (SELECT CURRENT_DATE + i AS data) d
@@ -336,6 +363,7 @@ def dias_disponiveis_especialidade():
         JOIN horarios_funcionarios hf ON hf.funcionario_id = f.id
         WHERE hf.dia_semana = CASE WHEN EXTRACT(ISODOW FROM d.data) = 7 THEN 0 ELSE CAST(EXTRACT(ISODOW FROM d.data) AS INTEGER) END
           AND (d.data > CURRENT_DATE OR hf.horario > CURRENT_TIME)
+          {nome_filter}
           AND NOT EXISTS (
               SELECT 1 FROM agendamento_exames ae 
               WHERE ae.data_consulta = d.data 
@@ -344,7 +372,7 @@ def dias_disponiveis_especialidade():
                 AND ae.status != 'Cancelado'
           )
         ORDER BY d.data::TEXT
-    """, (unidade_id, especialidade_id))
+    """, params)
     
     datas = [row['data'] for row in cur.fetchall()]
     cur.close()
@@ -414,7 +442,7 @@ def check_acolhimento():
             flag_realizado = t_data['acolhimento_realizado'] if t_data else False
 
             if not flag_realizado:
-                msg = "Para agendar esta especialidade, é necessário realizar o Acolhimento Social primeiro."
+                msg = "Para agendar esta especialidade é necessário passar primeiro pelo acolhimento da unidade."
                 return jsonify({
                     "blocked": True,
                     "reason": "necessita_acolhimento",
@@ -442,7 +470,34 @@ def profissionais_por_especialidade():
     conn = get_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
     
-    query = """
+    cur.execute("SELECT id, nome FROM especialidades WHERE id = %s", (especialidade_id,))
+    spec_info = cur.fetchone()
+
+    is_redirection = request.args.get("is_redirection", "false").lower() == "true"
+    
+    if spec_info and spec_info['nome'].lower() == 'acolhimento' and not is_redirection:
+        cur.close()
+        conn.close()
+        return jsonify({
+            "profissionais": [{
+                "id": -1, 
+                "nome": f"Acolhimento - {unidade_atendimento or 'Geral'}",
+                "especialidade": "Acolhimento",
+                "unidade_atendimento": unidade_atendimento
+            }]
+        })
+
+    # Acolhimento obrigatório (redirecionamento): mostra profissionais reais,
+    # excluindo apenas o profissional virtual "Acolhimento - [Unidade]".
+    # Outras especialidades: exclui qualquer profissional com nome iniciando em
+    # 'Acolhimento%' para evitar vazamento do profissional virtual.
+    if is_redirection:
+        # %% é necessário para escapar o % do psycopg2 (não é um placeholder)
+        nome_filter = "AND f.nome NOT ILIKE 'Acolhimento - %%'"
+    else:
+        nome_filter = "AND f.nome NOT ILIKE 'Acolhimento%%'"
+
+    query = f"""
         SELECT f.id, f.nome, f.especialidade, f.unidade_atendimento 
         FROM funcionarios f
         JOIN funcionarios_especialidades fe ON fe.funcionario_id = f.id
@@ -450,6 +505,7 @@ def profissionais_por_especialidade():
           AND f.ativo = TRUE 
           AND f.atendimento = TRUE 
           AND COALESCE(f.situacao, 'Ativo') = 'Ativo'
+          {nome_filter}
     """
     params = [especialidade_id]
     
@@ -470,9 +526,65 @@ def profissionais_por_especialidade():
 def horarios_disponiveis():
     medico_id = request.args.get("medico_id")
     data_str = request.args.get("data")
+    unidade_nome = request.args.get("unidade")
     
     if not medico_id or not data_str:
         return jsonify([])
+
+    if str(medico_id) == "-1":
+        # FLUXO ACOLHIMENTO INTEGRADO (Usando agendamento_exames)
+        conn = get_connection()
+        cur = conn.cursor(cursor_factory=RealDictCursor)
+        
+        try:
+            # 1. Busca o usuário virtual de acolhimento desta unidade
+            nome_virtual = f"Acolhimento - {unidade_nome}"
+            cur.execute("""
+                SELECT f.id 
+                FROM funcionarios f
+                WHERE f.nome = %s AND f.unidade_atendimento ILIKE %s
+            """, (nome_virtual, unidade_nome))
+            prof = cur.fetchone()
+            
+            if not prof:
+                return jsonify([])
+            
+            prof_id = prof['id']
+            data_obj = datetime.strptime(data_str, '%Y-%m-%d')
+            dia_semana = data_obj.weekday() + 1 # 1-7
+            
+            # 2. Busca todos os horários configurados para este usuário virtual
+            cur.execute("""
+                SELECT TO_CHAR(horario, 'HH24:MI') as horario 
+                FROM horarios_funcionarios 
+                WHERE funcionario_id = %s AND dia_semana = %s
+                ORDER BY horario
+            """, (prof_id, dia_semana))
+            configurados = [row['horario'] for row in cur.fetchall()]
+            
+            # 3. Busca horários já ocupados para este usuário virtual
+            cur.execute("""
+                SELECT TO_CHAR(horario, 'HH24:MI') as horario 
+                FROM agendamento_exames 
+                WHERE funcionario_id = %s AND data_consulta = %s AND status != 'Cancelado'
+            """, (prof_id, data_str))
+            ocupados = [row['horario'] for row in cur.fetchall()]
+            
+            # 4. Filtra horários passados se for hoje
+            agora = datetime.now()
+            hoje_str = agora.strftime('%Y-%m-%d')
+            hora_atual = agora.strftime('%H:%M')
+
+            disponiveis = []
+            for h in configurados:
+                if h not in ocupados:
+                    if data_str > hoje_str or h > hora_atual:
+                        disponiveis.append({"horario": h})
+            
+            return jsonify(disponiveis)
+        finally:
+            cur.close()
+            conn.close()
 
     try:
         data_obj = datetime.strptime(data_str, '%Y-%m-%d')
@@ -596,7 +708,7 @@ def confirmar_agendamento():
             if not flag_realizado:
                 return jsonify({
                     "success": False, 
-                    "error": "Para agendar esta especialidade, o paciente deve realizar o Acolhimento Social primeiro."
+                    "error": "Para agendar esta especialidade é necessário passar primeiro pelo acolhimento da unidade."
                 }), 403
 
         # --- [D] DEFINIÇÃO DE ORIGEM ---
@@ -623,6 +735,54 @@ def confirmar_agendamento():
         cur.execute("SELECT id FROM agendamento_exames WHERE funcionario_id = %s AND data_consulta = %s AND horario = %s AND status != 'Cancelado'", (funcionario_id, data_consulta, horario))
         if cur.fetchone():
             return jsonify({"success": False, "error": "Agenda do profissional ocupada."}), 400
+
+        if str(funcionario_id) == "-1":
+            # Busca o usuário virtual desta unidade agora que ele existe fisicamente
+            nome_virtual = f"Acolhimento - {unidade}"
+            cur.execute("""
+                SELECT f.id 
+                FROM funcionarios f
+                WHERE f.nome = %s AND f.unidade_atendimento ILIKE %s
+                LIMIT 1
+            """, (nome_virtual, unidade))
+            real_prof = cur.fetchone()
+            if not real_prof:
+                return jsonify({"success": False, "error": f"Usuário '{nome_virtual}' não encontrado para agendamento."}), 404
+            funcionario_id = real_prof['id']
+
+        # --- [E] VALIDAÇÃO DE INTEGRIDADE: PROFISSIONAL x ESPECIALIDADE x HORÁRIO ---
+        # Verifica se o profissional realmente atende à especialidade selecionada
+        cur.execute("""
+            SELECT 1 FROM funcionarios_especialidades 
+            WHERE funcionario_id = %s AND especialidade_id = %s
+        """, (funcionario_id, especialidade_id))
+        
+        if not cur.fetchone():
+            return jsonify({"success": False, "error": "Inconsistência identificada: O profissional selecionado não atende a esta especialidade."}), 400
+
+        # Verifica se o profissional pertence à unidade selecionada (Segurança Extra)
+        cur.execute("""
+            SELECT 1 FROM funcionarios 
+            WHERE id = %s AND unidade_atendimento ILIKE %s
+        """, (funcionario_id, unidade))
+        if not cur.fetchone():
+            return jsonify({"success": False, "error": f"Inconsistência identificada: O profissional não atende na unidade '{unidade}'."}), 400
+
+        # Valida se o horário existe na escala do profissional para o dia da semana específico
+        try:
+            data_obj_val = datetime.strptime(data_consulta, '%Y-%m-%d')
+            dia_semana_val = data_obj_val.isoweekday()
+            if dia_semana_val == 7: dia_semana_val = 0 # Domingo = 0 no banco (Padrão JS)
+            
+            cur.execute("""
+                SELECT 1 FROM horarios_funcionarios 
+                WHERE funcionario_id = %s AND dia_semana = %s AND TO_CHAR(horario, 'HH24:MI') = %s
+            """, (funcionario_id, dia_semana_val, horario))
+            
+            if not cur.fetchone():
+                return jsonify({"success": False, "error": "Inconsistência identificada: Este horário não está disponível na escala oficial do profissional."}), 400
+        except Exception as e:
+            return jsonify({"success": False, "error": "Erro ao validar escala do profissional."}), 400
 
         # --- INSERÇÃO COM AUDITORIA COMPLETA ---
         cur.execute("""

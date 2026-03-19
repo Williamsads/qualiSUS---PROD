@@ -68,6 +68,7 @@ app.register_blueprint(gestao_pacientes_bp)
 app.register_blueprint(ppp_bp)
 app.register_blueprint(dashboard_bp)
 
+
 app.secret_key = os.getenv("SECRET_KEY", "fallback-key-se-nao-definido")
 
 # --------------------------

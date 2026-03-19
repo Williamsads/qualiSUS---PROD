@@ -709,8 +709,9 @@
     if (a.whatsapp) whatsBadge.classList.remove('hidden');
     else whatsBadge.classList.add('hidden');
 
-    // Oculta botão de confirmação se estiver cancelado ou não compareceu
-    if (a.status === 'Cancelado' || a.status === 'NAO_COMPARECEU') {
+    // Oculta botão de confirmação se o atendimento não estiver mais ativo (Cancelado, Faltou ou já Finalizado)
+    const statusFinalizados = ['Cancelado', 'NAO_COMPARECEU', 'Finalizado', 'Realizado', 'Atendido', 'Concluído'];
+    if (statusFinalizados.includes(a.status)) {
       btnWhats.classList.add('hidden');
     } else {
       btnWhats.classList.remove('hidden');
