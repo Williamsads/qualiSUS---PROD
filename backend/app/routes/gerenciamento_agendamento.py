@@ -465,3 +465,83 @@ def delete_horario(id):
         cur.close()
         conn.close()
 
+
+# --- BLOQUEIOS DE AGENDA ---
+@gerenciamento_bp.route("/api/gerenciamento/bloqueios", methods=["GET"])
+def list_bloqueios():
+    conn = get_connection()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    try:
+        # Tenta criar a tabela se não existir (auto-migration simples)
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS bloqueios_agenda (
+                id SERIAL PRIMARY KEY,
+                data DATE NOT NULL,
+                unidade_id INTEGER REFERENCES unidades_saude(id) ON DELETE CASCADE,
+                funcionario_id INTEGER REFERENCES funcionarios(id) ON DELETE CASCADE,
+                motivo TEXT,
+                criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+        conn.commit()
+
+        cur.execute("""
+            SELECT b.*, u.nome as unidade_nome, f.nome as funcionario_nome
+            FROM bloqueios_agenda b
+            LEFT JOIN unidades_saude u ON b.unidade_id = u.id
+            LEFT JOIN funcionarios f ON b.funcionario_id = f.id
+            ORDER BY b.data DESC
+        """)
+        rows = cur.fetchall()
+        # Tratamento de data para JSON
+        for r in rows:
+            if r['data']:
+                r['data'] = r['data'].strftime('%Y-%m-%d')
+        return jsonify(rows)
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+    finally:
+        cur.close()
+        conn.close()
+
+@gerenciamento_bp.route("/api/gerenciamento/bloqueios", methods=["POST"])
+def add_bloqueio():
+    data = request.json
+    data_bloqueio = data.get("data")
+    unidade_id = data.get("unidade_id") 
+    funcionario_id = data.get("funcionario_id")
+    motivo = data.get("motivo", "Feriado ou Manutenção")
+    
+    if not data_bloqueio:
+        return jsonify({"success": False, "error": "A data é obrigatória."}), 400
+
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("""
+            INSERT INTO bloqueios_agenda (data, unidade_id, funcionario_id, motivo) 
+            VALUES (%s, %s, %s, %s)
+        """, (data_bloqueio, unidade_id or None, funcionario_id or None, motivo))
+        conn.commit()
+        return jsonify({"success": True})
+    except Exception as e:
+        conn.rollback()
+        return jsonify({"success": False, "error": str(e)}), 500
+    finally:
+        cur.close()
+        conn.close()
+
+@gerenciamento_bp.route("/api/gerenciamento/bloqueios/<int:id>", methods=["DELETE"])
+def delete_bloqueio(id):
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("DELETE FROM bloqueios_agenda WHERE id = %s", (id,))
+        conn.commit()
+        return jsonify({"success": True})
+    except Exception as e:
+        conn.rollback()
+        return jsonify({"success": False, "error": str(e)}), 500
+    finally:
+        cur.close()
+        conn.close()

@@ -373,6 +373,13 @@ def dias_disponiveis_especialidade():
                 AND ae.horario = hf.horario
                 AND ae.status != 'Cancelado'
           )
+          -- 🚩 REGRA DE BLOQUEIO MANUAL
+          AND NOT EXISTS (
+              SELECT 1 FROM bloqueios_agenda ba
+              WHERE ba.data = d.data
+                AND (ba.unidade_id IS NULL OR ba.unidade_id = u.id)
+                AND (ba.funcionario_id IS NULL OR ba.funcionario_id = f.id)
+          )
         ORDER BY d.data::TEXT
     """, params)
     
@@ -380,6 +387,30 @@ def dias_disponiveis_especialidade():
     cur.close()
     conn.close()
     return jsonify(datas)
+
+@agendamento_bp.route("/api/agendar_exame/bloqueios_info")
+def get_bloqueios_info():
+    unidade_id = request.args.get("unidade_id")
+    if not unidade_id:
+        return jsonify({})
+        
+    conn = get_connection()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    
+    # Pegamos bloqueios gerais ou específicos da unidade que NÃO sejam de um funcionário específico
+    # (Pois se for de um funcionário só, a data ainda pode estar disponível para outros)
+    cur.execute("""
+        SELECT data::TEXT as data, motivo 
+        FROM bloqueios_agenda 
+        WHERE (unidade_id IS NULL OR unidade_id = %s)
+          AND funcionario_id IS NULL
+    """, (unidade_id,))
+    
+    rows = cur.fetchall()
+    cur.close()
+    conn.close()
+    
+    return jsonify({row['data']: row['motivo'] for row in rows})
 
 # ====================
 # Especialidades disponíveis
@@ -577,6 +608,17 @@ def horarios_disponiveis():
             hoje_str = agora.strftime('%Y-%m-%d')
             hora_atual = agora.strftime('%H:%M')
 
+            # --- 🚩 VERIFICA BLOQUEIO MANUAL ---
+            cur.execute("""
+                SELECT 1 FROM bloqueios_agenda 
+                WHERE data = %s 
+                  AND (unidade_id IS NULL OR unidade_id = (SELECT id FROM unidades_saude WHERE nome ILIKE %s LIMIT 1))
+                  AND (funcionario_id IS NULL OR funcionario_id = %s)
+                LIMIT 1
+            """, (data_str, unidade_nome, prof_id))
+            if cur.fetchone():
+                return jsonify([])
+
             disponiveis = []
             for h in configurados:
                 if h not in ocupados:
@@ -603,6 +645,19 @@ def horarios_disponiveis():
     conn = get_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
     
+    # --- 🚩 VERIFICA BLOQUEIO MANUAL ---
+    cur.execute("""
+        SELECT 1 FROM bloqueios_agenda 
+        WHERE data = %s 
+          AND (unidade_id IS NULL OR unidade_id = (SELECT id FROM unidades_saude WHERE nome ILIKE %s LIMIT 1))
+          AND (funcionario_id IS NULL OR funcionario_id = %s)
+        LIMIT 1
+    """, (data_str, unidade_nome, medico_id))
+    if cur.fetchone():
+        cur.close()
+        conn.close()
+        return jsonify([])
+
     # 1. Busca horários base do profissional para aquele dia da semana
     query = """
         SELECT TO_CHAR(horario, 'HH24:MI') as horario 
@@ -753,6 +808,17 @@ def confirmar_agendamento():
             funcionario_id = real_prof['id']
 
         # --- [E] VALIDAÇÃO DE INTEGRIDADE: PROFISSIONAL x ESPECIALIDADE x HORÁRIO ---
+        # 🚩 VERIFICA BLOQUEIO MANUAL (LAST GATE)
+        cur.execute("""
+            SELECT 1 FROM bloqueios_agenda 
+            WHERE data = %s 
+              AND (unidade_id IS NULL OR unidade_id = (SELECT id FROM unidades_saude WHERE nome ILIKE %s LIMIT 1))
+              AND (funcionario_id IS NULL OR funcionario_id = %s)
+            LIMIT 1
+        """, (data_consulta, unidade, funcionario_id))
+        if cur.fetchone():
+            return jsonify({"success": False, "error": "Este dia foi bloqueado para novos agendamentos nesta unidade/profissional."}), 403
+
         # Verifica se o profissional realmente atende à especialidade selecionada
         cur.execute("""
             SELECT 1 FROM funcionarios_especialidades 

@@ -27,6 +27,10 @@
             class="px-8 py-3 text-xs font-black uppercase tracking-widest transition-all rounded-[1.25rem] tab-btn border-transparent text-slate-500 hover:text-slate-700 hover:bg-white/50">
             Unidades
         </button>
+        <button onclick="switchTab('bloqueios')" id="tab-btn-bloqueios"
+            class="px-8 py-3 text-xs font-black uppercase tracking-widest transition-all rounded-[1.25rem] tab-btn border-transparent text-slate-500 hover:text-slate-700 hover:bg-white/50">
+            Bloqueios
+        </button>
     </div>
 
     <!-- Tab: Especialidades -->
@@ -313,6 +317,93 @@
             </div>
         </div>
     </div>
+
+    <!-- Tab: Bloqueios -->
+    <div id="tab-bloqueios" class="tab-content hidden transition-all duration-300">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Form Card -->
+            <div class="lg:col-span-1">
+                <div
+                    class="bg-white dark:bg-gray-900 rounded-[2rem] p-8 shadow-xl border border-slate-200 dark:border-gray-800 ">
+                    <h2 class="text-lg font-black mb-8 flex items-center gap-3 text-slate-800">
+                        <div class="p-2 bg-slate-800 rounded-xl text-white shadow-lg shadow-slate-800/20">
+                            <i data-lucide="calendar-off" class="w-5 h-5"></i>
+                        </div>
+                        Novo Bloqueio
+                    </h2>
+                    <form id="form-bloqueio" onsubmit="saveBloqueio(event)">
+                        <div class="space-y-4">
+                            <div>
+                                <label
+                                    class="block text-[10px] font-bold text-slate-600 uppercase tracking-widest ml-1 mb-2">Data
+                                    do Bloqueio</label>
+                                <input type="date" id="bloq-data" required
+                                    class="w-full px-5 py-3.5 bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 rounded-2xl focus:border-brand-500 outline-none transition-all text-xs font-bold shadow-sm">
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-[10px] font-bold text-slate-600 uppercase tracking-widest ml-1 mb-2">Unidade
+                                    (Opcional)</label>
+                                <select id="bloq-unidade" onchange="renderBloqProfSelect()"
+                                    class="w-full px-5 py-3.5 bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 rounded-2xl focus:border-brand-500 outline-none transition-all text-xs font-bold shadow-sm appearance-none cursor-pointer">
+                                    <option value="">Todas as Unidades</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-[10px] font-bold text-slate-600 uppercase tracking-widest ml-1 mb-2">Profissional
+                                    (Opcional)</label>
+                                <select id="bloq-prof"
+                                    class="w-full px-5 py-3.5 bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 rounded-2xl focus:border-brand-500 outline-none transition-all text-xs font-bold shadow-sm appearance-none cursor-pointer">
+                                    <option value="">Todos os Profissionais</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-[10px] font-bold text-slate-600 uppercase tracking-widest ml-1 mb-2">Motivo</label>
+                                <input type="text" id="bloq-motivo" placeholder="Ex: Feriado Municipal"
+                                    class="w-full px-5 py-3.5 bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 rounded-2xl focus:border-brand-500 outline-none transition-all text-xs font-bold shadow-sm">
+                            </div>
+                            <div class="pt-4">
+                                <button type="submit"
+                                    class="w-full bg-slate-800 text-white font-bold py-3 rounded-xl hover:bg-slate-900 shadow-lg active:scale-95 transition-all">
+                                    Bloquear Data
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- List Card -->
+            <div class="lg:col-span-2">
+                <div
+                    class="bg-white dark:bg-gray-900 rounded-3xl shadow-soft border border-gray-100 dark:border-gray-800 overflow-hidden">
+                    <table class="w-full text-left">
+                        <thead class="bg-slate-50 dark:bg-gray-800/50 border-b border-slate-200/60">
+                            <tr>
+                                <th class="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
+                                    Data</th>
+                                <th class="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
+                                    Alvo / Unidade</th>
+                                <th class="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
+                                    Motivo</th>
+                                <th
+                                    class="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 text-right">
+                                    Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lista-bloqueios" class="divide-y divide-slate-200/60 dark:divide-gray-800">
+                            <tr>
+                                <td colspan="4" class="px-6 py-8 text-center text-gray-500">Carregando
+                                    bloqueios...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Modal Horários -->
@@ -480,15 +571,17 @@
     let especialidades = [];
     let profissionais = [];
     let unidades = [];
+    let bloqueios = [];
 
     async function loadData() {
         console.log("Iniciando carregamento de dados...");
         try {
             // Fetch em paralelo
-            const [respEsp, respProf, respUni] = await Promise.all([
+            const [respEsp, respProf, respUni, respBloq] = await Promise.all([
                 fetch('/api/gerenciamento/especialidades'),
                 fetch('/api/gerenciamento/profissionais'),
-                fetch('/api/gerenciamento/unidades')
+                fetch('/api/gerenciamento/unidades'),
+                fetch('/api/gerenciamento/bloqueios')
             ]);
 
             // Validar respostas
@@ -500,14 +593,17 @@
             especialidades = respEsp.ok ? await respEsp.json() : [];
             profissionais = respProf.ok ? await respProf.json() : [];
             unidades = respUni.ok ? await respUni.json() : [];
+            bloqueios = respBloq.ok ? await respBloq.json() : [];
 
             console.log("Dados carregados:", { esp: especialidades.length, prof: profissionais.length, uni: unidades.length });
 
             renderEspecialidades();
             renderProfissionais();
             renderUnidades();
+            renderBloqueios();
             renderProfSpecsList();
             renderUniSelect();
+            renderBloqSelects();
 
             lucide.createIcons();
         } catch (err) {
@@ -1161,6 +1257,104 @@
                 }
             }
         });
+    }
+
+    function renderBloqueios(list = bloqueios) {
+        const tbody = document.getElementById('lista-bloqueios');
+        if (!tbody) return;
+        if (!Array.isArray(list) || list.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" class="px-6 py-8 text-center text-gray-400">Nenhum bloqueio cadastrado.</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = list.map(b => {
+            const dataFmt = b.data.split('-').reverse().join('/');
+            const alvo = b.funcionario_id ? `<span class="text-indigo-600 font-bold">${b.funcionario_nome}</span>` :
+                (b.unidade_id ? `<span class="text-rose-600 font-bold">${b.unidade_nome}</span>` :
+                    '<span class="text-slate-400 font-bold">Geral (Todas)</span>');
+
+            return `
+                <tr class="hover:bg-slate-50/50 transition-all">
+                    <td class="px-8 py-5 text-sm font-black text-slate-700">${dataFmt}</td>
+                    <td class="px-8 py-5 text-xs font-bold uppercase tracking-tight">${alvo}</td>
+                    <td class="px-8 py-5 text-xs text-slate-500 font-medium">${b.motivo || '-'}</td>
+                    <td class="px-8 py-5 text-right">
+                        <button onclick="deleteBloqueio(${b.id})" class="p-2 text-rose-500 hover:bg-rose-50 rounded-lg transition-all">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+        lucide.createIcons();
+    }
+
+    function renderBloqSelects() {
+        const uniSel = document.getElementById('bloq-unidade');
+        if (!uniSel) return;
+        uniSel.innerHTML = '<option value="">Todas as Unidades</option>' +
+            unidades.map(u => `<option value="${u.id}">${u.nome}</option>`).join('');
+
+        renderBloqProfSelect();
+    }
+
+    function renderBloqProfSelect() {
+        const uniId = document.getElementById('bloq-unidade').value;
+        const profSel = document.getElementById('bloq-prof');
+        if (!profSel) return;
+
+        let filtered = profissionais;
+        if (uniId) {
+            const uniNome = unidades.find(u => u.id == uniId)?.nome;
+            filtered = profissionais.filter(p => p.unidade_atendimento == uniNome);
+        }
+
+        profSel.innerHTML = '<option value="">Todos os Profissionais</option>' +
+            filtered.map(p => `<option value="${p.id}">${p.nome}</option>`).join('');
+    }
+
+    async function saveBloqueio(e) {
+        e.preventDefault();
+        const payload = {
+            data: document.getElementById('bloq-data').value,
+            unidade_id: document.getElementById('bloq-unidade').value || null,
+            funcionario_id: document.getElementById('bloq-prof').value || null,
+            motivo: document.getElementById('bloq-motivo').value
+        };
+
+        try {
+            const res = await fetch('/api/gerenciamento/bloqueios', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (data.success) {
+                showToast('Bloqueio inserido com sucesso!', 'success');
+                document.getElementById('form-bloqueio').reset();
+                loadData();
+            } else {
+                showToast(data.error, 'error');
+            }
+        } catch (err) {
+            console.error(err);
+            showToast('Erro ao salvar bloqueio.', 'error');
+        }
+    }
+
+    async function deleteBloqueio(id) {
+        if (!confirm("Deseja remover este bloqueio? A data voltará a ficar disponível para agendamento.")) return;
+        try {
+            const res = await fetch(`/api/gerenciamento/bloqueios/${id}`, { method: 'DELETE' });
+            const data = await res.json();
+            if (data.success) {
+                showToast('Bloqueio removido.', 'success');
+                loadData();
+            }
+        } catch (err) {
+            console.error(err);
+            showToast('Erro ao excluir.', 'error');
+        }
     }
 
     // Initialize

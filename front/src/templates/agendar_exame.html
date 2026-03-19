@@ -1504,20 +1504,31 @@
     let pacienteGlobal = null;
     let vinculoGlobal = null;
     let availableDates = [];
+    let blockedDatesReasons = {};
     let fluxoAcolhimentoObrigatorio = false; // Novo: rastreia se o acolhimento é fruto de redirecionamento
 
     async function carregarDatasDisponiveis(unidadeId, especialidadeId) {
       if (!unidadeId || !especialidadeId) {
         availableDates = [];
+        blockedDatesReasons = {};
         return;
       }
       try {
         const isRedir = fluxoAcolhimentoObrigatorio ? 'true' : 'false';
-        const res = await fetch(`/api/agendar_exame/datas_disponiveis_especialidade?unidade_id=${unidadeId}&especialidade_id=${especialidadeId}&is_redirection=${isRedir}`);
-        availableDates = await res.json();
+
+        // Fetch datas e motivos em paralelo
+        const [resDatas, resBloq] = await Promise.all([
+          fetch(`/api/agendar_exame/datas_disponiveis_especialidade?unidade_id=${unidadeId}&especialidade_id=${especialidadeId}&is_redirection=${isRedir}`),
+          fetch(`/api/agendar_exame/bloqueios_info?unidade_id=${unidadeId}`)
+        ]);
+
+        availableDates = await resDatas.json();
+        blockedDatesReasons = await resBloq.json();
+
       } catch (err) {
-        console.error("Erro ao carregar datas disponíveis:", err);
+        console.error("Erro ao carregar datas e bloqueios:", err);
         availableDates = [];
+        blockedDatesReasons = {};
       }
     }
 
@@ -2833,8 +2844,24 @@
 
         if (isDisabled) {
           dayEl.classList.add("text-gray-300", "cursor-not-allowed");
-          if (isWeekend && !unitId) dayEl.title = "Fim de semana indisponível";
-          if (unitId && !availableDates.includes(dateStr) && !isPast) dayEl.title = "Sem horários disponíveis";
+
+          if (blockedDatesReasons[dateStr]) {
+            const reason = blockedDatesReasons[dateStr];
+            dayEl.title = reason;
+            // Visualmente diferente para feriados/bloqueios - Mais retangular para caber texto
+            dayEl.classList.remove("rounded-full");
+            dayEl.classList.add("bg-red-50", "text-red-600", "flex-col", "gap-0", "border", "border-red-200", "rounded-xl", "shadow-sm");
+            dayEl.innerHTML = `
+                <span class="leading-none text-[11px] font-bold mt-1">${i}</span>
+                <span class="text-[8px] font-black uppercase tracking-tighter leading-tight text-red-500 truncate w-full text-center px-1" title="${reason}">
+                  ${reason.substring(0, 12)}
+                </span>
+            `;
+          } else if (isWeekend && !unitId) {
+            dayEl.title = "Fim de semana indisponível";
+          } else if (unitId && !availableDates.includes(dateStr) && !isPast) {
+            dayEl.title = "Sem horários disponíveis";
+          }
         } else {
           dayEl.classList.add("cursor-pointer", "text-gray-700", "hover:bg-blue-50", "hover:text-pe-royal");
 
