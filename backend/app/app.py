@@ -58,8 +58,9 @@ app = Flask(
     static_folder=STATIC_DIR
 )
 
-from app.extensions import limiter
+from app.extensions import limiter, csrf
 limiter.init_app(app)
+csrf.init_app(app)
 
 app.register_blueprint(servidor_bp)
 app.register_blueprint(bp_agendamento)
@@ -71,6 +72,22 @@ app.register_blueprint(gestao_pacientes_bp)
 app.register_blueprint(ppp_bp)
 app.register_blueprint(dashboard_bp)
 
+# CSRF: Estratégia de migração segura
+# Isentar os blueprints de API JSON por agora — eles consomem e retornam JSON,
+# não formulários HTML. O CSRF fica ativo nos form POSTs tradicionais (login, etc).
+# À medida que o JS for atualizado para enviar X-CSRFToken, esta linha pode ser
+# removida gradualmente por blueprint.
+from app.routes.agendar_exame import agendamento_bp as _abp
+from app.routes.log_agendamento import bp_agendamento as _labp
+from app.routes.gerenciamento_agendamento import gerenciamento_bp as _gbp
+from app.routes.gestao_pacientes import gestao_pacientes_bp as _gpbp
+from app.routes.ppp import ppp_bp as _pbp
+from app.routes.dashboard import dashboard_bp as _dbp
+from app.routes.lista_trabalhador import trabalhadores_bp as _tbp
+
+for _bp in [_abp, _labp, _gbp, _gpbp, _pbp, _dbp, _tbp]:
+    csrf.exempt(_bp)
+
 
 app.secret_key = os.getenv("SECRET_KEY", "fallback-key-se-nao-definido")
 
@@ -81,7 +98,22 @@ app.config.update(
     SESSION_COOKIE_HTTPONLY=True,    # Impede que JS acesse o cookie (Anti-XSS)
     SESSION_COOKIE_SAMESITE='Lax',  # Bloqueia CSRF em requisições cross-site
     # SESSION_COOKIE_SECURE=True,   # Ativar em produção com HTTPS obrigatório
+    WTF_CSRF_TIME_LIMIT=3600,        # Token expira em 1 hora
+    WTF_CSRF_SSL_STRICT=False,       # Não obrigar HTTPS em HML
 )
+
+# --------------------------
+# ENDPOINT: CSRF token para JavaScript (fetch)
+# --------------------------
+from flask_wtf.csrf import generate_csrf
+
+@app.route("/api/csrf-token", methods=["GET"])
+@csrf.exempt  # O próprio endpoint de gerar token não precisa de CSRF
+def get_csrf_token():
+    """Entrega o token CSRF para o JavaScript usar nas requisições POST/PUT/DELETE."""
+    token = generate_csrf()
+    return jsonify({"csrf_token": token})
+
 
 # --------------------------
 # SECURITY HEADERS

@@ -194,6 +194,7 @@
 
                 <!-- Form -->
                 <form id="formLogin" autocomplete="off" method="POST" action="/login" class="space-y-6">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
                     <!-- Email -->
                     <div class="space-y-2 animate-slide-up" style="animation-delay: 0.3s;">
@@ -375,6 +376,7 @@
 
                                     <form method="POST" action="/recuperar-senha" id="formRecovery"
                                         class="mt-6 space-y-4">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                         <div>
                                             <div class="relative group">
                                                 <div

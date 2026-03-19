@@ -96,6 +96,7 @@
         <!-- Main Content: Forms -->
         <div class="lg:col-span-8">
             <form action="{{ url_for('perfil') }}" method="POST" class="space-y-8">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <!-- Informações Pessoais -->
                 <div
                     class="bg-white rounded-[2.5rem] p-10 shadow-xl-premium border border-slate-100 relative overflow-hidden">

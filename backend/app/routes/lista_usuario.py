@@ -170,8 +170,8 @@ def alterar_status_usuario(id):
 def excluir_usuario(id):
     # Trava de Segurança: Apenas desenvolvedores podem excluir
     user_tipo = str(session.get("tipo", "")).upper()
-    if user_tipo not in ["DESENVOLVEDOR", "DEV"]:
-        flash("Acesso negado: Apenas desenvolvedores podem excluir usuários.", "error")
+    if user_tipo not in ["DESENVOLVEDOR", "DEV", "ADMIN"]:
+        flash("Acesso negado: Permissão insuficiente para excluir usuários.", "error")
         return redirect(url_for('usuarios.lista_usuarios'))
 
     conn = get_connection()

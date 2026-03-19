@@ -109,7 +109,7 @@
             </div>
 
             <!-- PACIENTES (accordion - condicional médico/dev) -->
-            {% if session.get('tipo', '').upper() in ['MEDICO', 'DESENVOLVEDOR', 'DEV'] %}
+            {% if session.get('tipo', '').upper() in ['MEDICO', 'DESENVOLVEDOR', 'DEV', 'ADMIN'] %}
             <div class="nav-accordion" id="acc-pacientes">
                 <button class="nav-accordion-trigger" onclick="toggleAccordion('acc-pacientes');">
                     <div class="flex items-center gap-3">
@@ -175,7 +175,7 @@
             </div>
 
             <!-- SAÚDE OCUPACIONAL (accordion) -->
-            {% if session.get('email') == 'adm@gmail.com' %}
+            {% if session.get('tipo', '').upper() in ['DESENVOLVEDOR', 'DEV'] %}
             <div class="nav-accordion" id="acc-ocupacional">
                 <button class="nav-accordion-trigger" onclick="toggleAccordion('acc-ocupacional');">
                     <div class="flex items-center gap-3">
@@ -204,7 +204,7 @@
         </div>
 
         <!-- SECTION: ADMINISTRAÇÃO -->
-        {% if session.get('tipo', '').upper() in ['DESENVOLVEDOR', 'DEV'] %}
+        {% if session.get('tipo', '').upper() in ['DESENVOLVEDOR', 'DEV', 'ADMIN'] %}
         <div class="space-y-1">
             <a href="{{ url_for('usuarios.lista_usuarios') }}"
                 class="nav-link {% if 'usuarios' in request.endpoint %} nav-item-active {% endif %}"
@@ -233,14 +233,6 @@
             <div class="flex-1 user-info overflow-hidden">
                 <p class="text-[11px] font-black text-slate-900 truncate leading-none mb-1">{{ session.get('nome',
                     'Usuário') }}</p>
-                <p class="text-[8px] font-bold text-blue-600 uppercase tracking-widest truncate">
-                    {% set role = session.get('tipo', '').upper() %}
-                    {% if role == 'MEDICO' %} Especialista
-                    {% elif role == 'ADMIN' %} Diretor Adm
-                    {% elif role == 'DESENVOLVEDOR' or role == 'DEV' %} Eng. Software
-                    {% else %} Operacional
-                    {% endif %}
-                </p>
             </div>
             <button onclick="event.stopPropagation(); window.location.href='{{ url_for('logout') }}';"
                 class="p-2 text-slate-300 hover:text-red-500 transition-colors user-info">

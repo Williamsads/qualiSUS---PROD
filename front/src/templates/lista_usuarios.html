@@ -399,6 +399,7 @@
         </div>
 
         <form method="POST" id="editUsuarioForm" class="p-8 space-y-8 overflow-y-auto">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <input type="hidden" id="editUsuarioId">
 
             <!-- Section: Identificação -->

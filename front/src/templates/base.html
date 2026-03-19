@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" type="image/png"
         href="{{ url_for('static', filename='img/Logo da QualiSUS com pinwheel colorido.png') }}">
 
@@ -1141,6 +1142,29 @@
                 }
             });
         }
+
+        // --- GLOBAL CSRF AJAX SETUP ---
+        // Intercepta fetch para adicionar automaticamente o cabeçalho X-CSRFToken
+        const originalFetch = window.fetch;
+        window.fetch = async function (input, init) {
+            const config = init || {};
+            if (config.method && ['POST', 'PUT', 'PATCH', 'DELETE'].includes(config.method.toUpperCase())) {
+                config.headers = config.headers || {};
+                const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                if (token) {
+                    if (config.headers instanceof Headers) {
+                        if (!config.headers.has('X-CSRFToken')) {
+                            config.headers.append('X-CSRFToken', token);
+                        }
+                    } else if (typeof config.headers === 'object') {
+                        if (!config.headers['X-CSRFToken']) {
+                            config.headers['X-CSRFToken'] = token;
+                        }
+                    }
+                }
+            }
+            return originalFetch(input, config);
+        };
     </script>
 
     {% block extra_js %}{% endblock %}

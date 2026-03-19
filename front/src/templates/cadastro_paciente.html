@@ -31,6 +31,7 @@
   </div>
 
   <form method="POST" class="space-y-12">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     {% if trabalhador %}
     <input type="hidden" name="trabalhador_id" value="{{ trabalhador.id }}">
     {% endif %}

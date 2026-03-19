@@ -37,6 +37,7 @@
     <form method="POST"
       action="{{ url_for('servidor.editar_funcionario', id=funcionario.id) if funcionario else url_for('servidor.adicionar_funcionario') }}"
       class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
       <!-- Nome -->
       <div class="space-y-2">
