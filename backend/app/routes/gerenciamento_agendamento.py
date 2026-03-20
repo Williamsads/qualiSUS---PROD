@@ -149,11 +149,6 @@ def add_especialidade():
     try:
         cur.execute("INSERT INTO especialidades (nome, icone) VALUES (%s, %s) RETURNING id", (nome, icone))
         new_id = cur.fetchone()[0]
-        
-        if vincular_todas:
-            # Vincula a todas as unidades existentes
-            cur.execute("INSERT INTO unidades_especialidades (unidade_id, especialidade_id) SELECT id, %s FROM unidades_saude", (new_id,))
-            
         conn.commit()
         return jsonify({"success": True, "id": new_id})
     except Exception as e:

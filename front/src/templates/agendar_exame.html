@@ -1378,9 +1378,8 @@
             </div>
             <p class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.3em]">Qualivida • PE</p>
           </div>
-          <p class="text-[10px] text-slate-400 font-medium text-center">Tire um print ou foto desta tela para
-            apresentar
-            na recepção.</p>
+          <p class="text-[10px] text-slate-400 font-medium text-center">
+          </p>
         </div>
       </div>
 
@@ -1910,6 +1909,8 @@
       if (doctorInput) doctorInput.value = "";
       if (doctorIdInput) doctorIdInput.value = "";
       if (timeInput) timeInput.value = "";
+      // Reset da data ao mudar de especialidade para garantir agenda limpa
+      if (dateInput) dateInput.value = "";
 
       const medContainer = document.getElementById('medicos-container');
       if (medContainer) medContainer.innerHTML = "";
@@ -2168,7 +2169,8 @@
         document.getElementById('conf-especialidade').innerText = spec;
 
         // 4. Doctor
-        document.getElementById('conf-medico').innerText = doc;
+        const docName = doctorInput ? doctorInput.value : 'Não informado';
+        document.getElementById('conf-medico').innerText = docName;
 
         // 5. Date & Time
         const dateRaw = dateInput.value;
@@ -2753,6 +2755,18 @@
 
       if (hiddenInput) hiddenInput.value = id;
       if (nameInput) nameInput.value = nome;
+
+      // 🔄 LIMPEZA DE ESTADO AO MUDAR UNIDADE: Evita que profissional da unidade anterior permaneça
+      if (doctorInput) doctorInput.value = "";
+      if (doctorIdInput) doctorIdInput.value = "";
+      if (timeInput) timeInput.value = "";
+      if (dateInput) dateInput.value = "";
+
+      // Limpa containers de UI para forçar nova seleção
+      const medContainer = document.getElementById('medicos-container');
+      if (medContainer) medContainer.innerHTML = "";
+      const timeContainer = document.getElementById('time-slots');
+      if (timeContainer) timeContainer.innerHTML = '<div class="col-span-4 text-center py-4 text-gray-500 italic">Selecione um profissional para ver os horários</div>';
 
       const specId = document.getElementById('especialidadeIdEscolha').value;
 

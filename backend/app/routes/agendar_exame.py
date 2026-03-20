@@ -428,12 +428,11 @@ def especialidades_disponiveis():
 
     if unidade_id:
         cur.execute(f"""
-            SELECT e.id, e.nome, e.icone, e.tipo_fluxo, e.exige_acolhimento_previo 
-            FROM especialidades e
-            JOIN unidades_especialidades ue ON ue.especialidade_id = e.id
-            WHERE ue.unidade_id = %s {visivel_filter}
-            ORDER BY e.nome
-        """, (unidade_id,))
+            SELECT id, nome, icone, tipo_fluxo, exige_acolhimento_previo 
+            FROM especialidades 
+            WHERE visivel = true
+            ORDER BY nome
+        """)
     else:
         # Corrigido: Se não for para incluir ocultos, usa WHERE (ou 1=1 se for para incluir)
         query = f"SELECT id, nome, icone, tipo_fluxo, exige_acolhimento_previo FROM especialidades {visivel_filter_no_alias} ORDER BY nome"
