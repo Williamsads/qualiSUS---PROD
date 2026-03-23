@@ -15,7 +15,7 @@ def get_connection():
     )
 
 def main():
-    print("Iniciando Limpeza de Dados de Pacientes (HML)...")
+    print("Iniciando Limpeza de Dados de Pacientes...")
     print("Conectando ao banco de dados...")
     
     try:

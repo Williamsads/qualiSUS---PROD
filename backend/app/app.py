@@ -13,7 +13,7 @@ if sys.path and (sys.path[0] == current_dir or sys.path[0] == ''):
 if parent_dir not in sys.path:
     sys.path.insert(0, parent_dir)
 
-from flask import Flask, render_template, request, redirect, session, flash, url_for
+from flask import Flask, render_template, request, redirect, session, flash, url_for, jsonify
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import hashlib
@@ -99,7 +99,7 @@ app.config.update(
     SESSION_COOKIE_SAMESITE='Lax',  # Bloqueia CSRF em requisições cross-site
     # SESSION_COOKIE_SECURE=True,   # Ativar em produção com HTTPS obrigatório
     WTF_CSRF_TIME_LIMIT=3600,        # Token expira em 1 hora
-    WTF_CSRF_SSL_STRICT=False,       # Não obrigar HTTPS em HML
+    WTF_CSRF_SSL_STRICT=False,       # Não obrigar HTTPS em desenvolvimento
 )
 
 # --------------------------
