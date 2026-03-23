@@ -103,19 +103,12 @@ def validar_trabalhador():
     # 🔐 salva na sessão
     session["trabalhador_id"] = resultado["id"]
 
-    cadastro_incompleto = (
-        not resultado["cns"]
-        or not resultado["data_nascimento"]
-        or not resultado["telefone"]
-    )
-
-    proxima_etapa = not cadastro_incompleto
-
+    # Modal de cadastro sempre aparece para permitir atualização de dados
     return jsonify({
         "found": True,
         "trabalhador": resultado,
         "unidades_lotadas": unidades_lotadas,
-        "proxima_etapa": proxima_etapa
+        "proxima_etapa": False
     })
 
 

@@ -1,0 +1,65 @@
+version: '3.3'
+services:
+  evolution-api:
+    image: evolutionapi/evolution-api:v2.1.1
+    container_name: evolution-api
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      # CORE
+      - SERVER_URL=http://localhost:8080
+      - DOCKER_ENV=true
+      - LOG_LEVEL=ERROR
+      
+      # AUTHENTICATION
+      - AUTHENTICATION_TYPE=apikey
+      - AUTHENTICATION_API_KEY=senha-secreta-qualivida
+      - AUTHENTICATION_EXPOSE_IN_REQUEST=true
+      
+      # DATABASE
+      - DATABASE_PROVIDER=postgresql
+      - DATABASE_URL=postgresql://postgres:postgres@evolution-postgres:5432/evolution
+      
+      # REDIS
+      - REDIS_ENABLED=true
+      - REDIS_URI=redis://evolution-redis:6379
+      - CACHE_REDIS_ENABLED=true
+      - CACHE_REDIS_URI=redis://evolution-redis:6379
+      - CACHE_LOCAL_ENABLED=false
+      
+      # WEBSOCKET
+      - WEBSOCKET_ENABLED=false
+      
+      # RABBITMQ
+      - RABBITMQ_ENABLED=false
+      
+      # SQS
+      - SQS_ENABLED=false
+
+    depends_on:
+      - evolution-postgres
+      - evolution-redis
+
+  evolution-postgres:
+    image: postgres:15
+    container_name: evolution-postgres
+    restart: always
+    environment:
+      - POSTGRES_DB=evolution
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - evolution_pg_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432" # Utilizando a porta 5433 para não conflitar com a 5432 do QualiVida
+
+  evolution-redis:
+    image: redis:7
+    container_name: evolution-redis
+    restart: always
+    ports:
+      - "6380:6379" # Porta 6380 para evitar conflitos
+
+volumes:
+  evolution_pg_data:

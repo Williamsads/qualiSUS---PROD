@@ -17,7 +17,54 @@
   .animate-fade-in-left {
     animation: fadeInLeft 0.3s ease-out forwards;
   }
+
+  /* Responsividade das Ações da Tabela */
+  @media (max-width: 1024px) {
+    .sticky-action-column {
+      position: static !important;
+      border-left: none !important;
+      box-shadow: none !important;
+      background: transparent !important;
+    }
+
+    .dropdown-menu-responsive {
+      position: fixed !important;
+      top: 50% !important;
+      left: 50% !important;
+      transform: translate(-50%, -50%) !important;
+      right: auto !important;
+      width: 90% !important;
+      max-width: 320px !important;
+      z-index: 1000 !important;
+      margin: 0 !important;
+      animation: zoomIn 0.2s ease-out forwards;
+    }
+
+    .dropdown-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      z-index: 999;
+      display: none;
+    }
+  }
+
+  @keyframes zoomIn {
+    from {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.95);
+    }
+
+    to {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+  }
 </style>
+<div id="dropdownOverlay" class="dropdown-overlay"
+  onclick="document.querySelectorAll('[id^=\'menu-\']').forEach(m => m.classList.add('hidden')); this.style.display='none';">
+</div>
 <div class="max-w-full mx-auto space-y-8 animate-fade-in-up">
 
   <!-- CABEÇALHO -->
@@ -180,125 +227,77 @@
         <thead>
           <tr
             class="bg-slate-50 dark:bg-clinical-bg/30 border-b border-slate-200 dark:border-gray-800 transition-colors">
-            <th
-              class="px-8 py-6 text-[10px] font-black text-slate-500 dark:text-gray-400 uppercase tracking-[0.2em] whitespace-nowrap">
-              Nome do Trabalhador</th>
-            <th
-              class="px-8 py-6 text-[10px] font-black text-slate-500 dark:text-gray-400 uppercase tracking-[0.2em] whitespace-nowrap">
-              Identificação</th>
-            <th
-              class="px-8 py-6 text-[10px] font-black text-slate-500 dark:text-gray-400 uppercase tracking-[0.2em] whitespace-nowrap">
-              Contatos</th>
-            <th
-              class="px-8 py-6 text-[10px] font-black text-slate-500 dark:text-gray-400 uppercase tracking-[0.2em] whitespace-nowrap">
-              Localização</th>
-            <th
-              class="px-8 py-6 text-[10px] font-black text-slate-500 dark:text-gray-400 uppercase tracking-[0.2em] text-center whitespace-nowrap">
+            <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">
+              Trabalhador / Identificação</th>
+            <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">
+              Contato / Localização</th>
+            <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">
               Vínculos Ativos</th>
-            <th
-              class="sticky right-0 px-8 py-6 text-[10px] font-black text-slate-500 dark:text-gray-400 uppercase tracking-[0.2em] text-center whitespace-nowrap bg-slate-50 dark:bg-gray-900 border-l border-slate-200 dark:border-gray-800 z-10 shadow-[-10px_0_15px_-5px_rgba(0,0,0,0.02)]">
+            <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">
               Ações</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-slate-200/60 dark:divide-gray-800">
-          {% for t in trabalhadores %}
           <tr
-            class="trabalhador-row hover:bg-blue-50/40 dark:hover:bg-blue-900/10 even:bg-slate-50/30 dark:even:bg-gray-800/20 transition-all duration-200 group/row">
-            <td class="px-8 py-6">
-              <div class="flex items-center gap-4">
+            class="trabalhador-row hover:bg-blue-50/30 dark:hover:bg-blue-900/10 even:bg-slate-50/20 dark:even:bg-gray-800/10 transition-all duration-150 group/row">
+            <td class="px-6 py-3">
+              <div class="flex items-center gap-3">
                 <div
-                  class="avatar-circle w-11 h-11 rounded-2xl flex items-center justify-center font-black text-sm transition-all shadow-sm border border-black/5"
+                  class="avatar-circle w-10 h-10 rounded-xl flex items-center justify-center font-black text-xs transition-all shadow-sm border border-black/5"
                   data-name="{{ t.nome_completo }}">
                   {{ t.nome_completo[:1] }}
                 </div>
                 <div class="flex flex-col">
-                  <span class="font-black text-slate-800 dark:text-gray-200 tracking-tight leading-none mb-1 text-sm">{{
+                  <span class="font-bold text-slate-800 dark:text-gray-200 tracking-tight leading-none mb-1 text-sm">{{
                     t.nome_completo }}</span>
-                  <span class="text-[10px] text-slate-400 font-bold font-mono uppercase tracking-widest">ID: #{{ t.id
-                    }}</span>
+                  <div class="flex items-center gap-2">
+                    <span class="text-[9px] text-slate-400 font-bold font-mono uppercase tracking-widest">ID #{{ t.id
+                      }}</span>
+                    <span class="text-slate-300 text-[9px]">•</span>
+                    <span class="text-[9px] text-slate-400 font-bold font-mono uppercase tracking-widest">CPF: {{ t.cpf
+                      }}</span>
+                  </div>
                 </div>
               </div>
             </td>
-            <td class="px-8 py-6">
-              <span class="text-xs font-black text-slate-700 dark:text-gray-300 font-mono tracking-tight">{{ t.cpf
-                }}</span>
-            </td>
-            <td class="px-8 py-6 whitespace-nowrap">
-              <div class="flex flex-col gap-1.5">
-                <div class="flex items-center gap-2 text-[11px] font-bold text-slate-700 dark:text-gray-300">
-                  <i data-lucide="mail" class="w-3.5 h-3.5 text-slate-400"></i>
-                  <span class="truncate max-w-[150px]">{{ t.email or '-' }}</span>
-                </div>
-                <div class="flex items-center gap-2 text-[10px] font-bold text-slate-500">
-                  <i data-lucide="phone" class="w-3.5 h-3.5 text-slate-400"></i>
-                  {{ t.telefone or '-' }}
-                </div>
-              </div>
-            </td>
-            <td class="px-8 py-6">
+            <td class="px-6 py-3">
               <div class="flex flex-col">
-                <span class="text-xs font-bold text-slate-700 dark:text-gray-300 leading-none mb-1">{{ t.cidade or '-'
-                  }}</span>
-                <span class="text-[9px] text-slate-400 font-black uppercase tracking-[0.2em]">{{ t.uf or '-' }}</span>
+                <span class="text-[11px] font-bold text-slate-600 dark:text-gray-400 leading-none mb-1">{{ t.email or
+                  '-' }}</span>
+                <span class="text-[9px] text-slate-400 font-black uppercase tracking-widest">{{ t.cidade or '-' }} - {{
+                  t.uf or '-' }}</span>
               </div>
             </td>
-            <td class="px-8 py-6">
+            <td class="px-6 py-3">
               {% if t.vinculos %}
-              <div class="flex flex-wrap gap-2 justify-center">
+              <div class="flex flex-wrap gap-1 justify-center">
                 {% for v in t.vinculos %}
-                <div
-                  class="flex flex-col items-center gap-1.5 p-2.5 rounded-2xl bg-slate-50 dark:bg-gray-800/50 border border-slate-100 dark:border-gray-700 min-w-[130px] shadow-sm hover:shadow-md transition-shadow">
-                  <span class="text-[8px] font-black tracking-[0.2em] uppercase px-2.5 py-1 rounded-lg shadow-sm
-                    {% if v.tipo_vinculo == 'EFETIVO' %} bg-emerald-50 text-emerald-600 border border-emerald-100 
-                    {% elif v.tipo_vinculo in ['CONTRATO', 'CTD', 'Contratado'] %} bg-blue-50 text-blue-600 border border-blue-100 
-                    {% elif v.tipo_vinculo == 'EST' %} bg-amber-50 text-amber-600 border border-amber-100
-                    {% else %} bg-slate-100 text-slate-500 border border-slate-200 {% endif %}">
-                    {{ v.tipo_vinculo }}
-                  </span>
-                  <span
-                    class="text-[10px] font-black text-slate-700 dark:text-gray-200 leading-tight text-center uppercase tracking-tight">{{
-                    v.especialidade }}</span>
-                </div>
+                <span class="px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest border border-current/10
+                    {% if v.tipo_vinculo == 'EFETIVO' %} bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20
+                    {% elif v.tipo_vinculo in ['CONTRATO', 'CTD', 'Contratado'] %} bg-blue-50 text-blue-600 dark:bg-blue-900/20
+                    {% elif v.tipo_vinculo == 'EST' %} bg-amber-50 text-amber-600 dark:bg-amber-900/20
+                    {% else %} bg-slate-100 text-slate-500 {% endif %}">
+                  {{ v.tipo_vinculo }}
+                </span>
                 {% endfor %}
               </div>
               {% else %}
-              <div class="text-center italic text-[10px] font-bold text-slate-300 uppercase tracking-widest">Sem
-                vínculos ativos</div>
+              <div class="text-center italic text-[9px] font-bold text-slate-300 uppercase tracking-widest">Sem vínculos
+              </div>
               {% endif %}
             </td>
-            <td
-              class="sticky right-0 px-8 py-6 bg-white dark:bg-clinical-surface border-l border-slate-200 dark:border-gray-800 z-10 shadow-[-15px_0_20px_-10px_rgba(0,0,0,0.05)] text-center overflow-visible">
-              <div class="flex justify-center relative dropdown-container">
-                <button type="button" onclick="toggleActionsMenu(event, 'menu-{{ t.id }}')"
-                  class="w-10 h-10 flex items-center justify-center rounded-2xl bg-slate-50 dark:bg-gray-800 text-slate-400 hover:text-brand-600 hover:bg-brand-50 dark:hover:bg-brand-900/30 transition-all active:scale-95 border border-slate-100 dark:border-gray-700">
-                  <i data-lucide="more-horizontal" class="w-5 h-5"></i>
+            <td class="px-6 py-3 text-right">
+              <div class="flex justify-end gap-1 opacity-60 group-hover:opacity-100 transition-opacity">
+                <button type="button"
+                  class="btn-view-details p-2 text-slate-400 hover:text-brand-600 hover:bg-brand-50 dark:hover:bg-brand-900/30 rounded-lg transition-all"
+                  data-trabalhador='{{ t | tojson | forceescape }}' title="Ver Detalhes">
+                  <i data-lucide="eye" class="w-4 h-4"></i>
                 </button>
-
-                <!-- DROPDOWN MENU - CORREÇÃO: Abre para a esquerda (right-full) -->
-                <div id="menu-{{ t.id }}"
-                  class="hidden absolute right-full top-0 mr-3 w-64 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-gray-700 z-[100] py-2 animate-fade-in-left overflow-hidden">
-                  <div class="px-4 py-2 border-b border-slate-50 dark:border-gray-700 mb-1">
-                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest text-left">Ficha do
-                      Trabalhador</p>
-                  </div>
-                  <button
-                    class="btn-view-details w-full flex items-center gap-3 px-4 py-3 text-[11px] font-bold text-slate-600 dark:text-gray-300 hover:bg-slate-50 dark:hover:bg-gray-700 transition-colors text-left group/item"
-                    data-trabalhador='{{ t | tojson | forceescape }}'>
-                    <div
-                      class="w-8 h-8 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center shadow-sm group-hover/item:scale-110 transition-transform">
-                      <i data-lucide="user" class="w-4 h-4"></i>
-                    </div>
-                    <span>Ver Detalhes Completo</span>
-                  </button>
-                  <a href="{{ url_for('servidor.cadastro_paciente', id=t.id) }}"
-                    class="w-full flex items-center gap-3 px-4 py-3 text-[11px] font-bold text-slate-600 dark:text-gray-300 hover:bg-brand-50/50 dark:hover:bg-brand-900/20 hover:text-brand-600 transition-colors text-left group/item">
-                    <div
-                      class="w-8 h-8 bg-brand-50 text-brand-600 rounded-xl flex items-center justify-center shadow-sm group-hover/item:scale-110 transition-transform">
-                      <i data-lucide="edit-3" class="w-4 h-4"></i>
-                    </div>
-                    <span>Editar Ficha Funcional</span>
-                  </a>
-                </div>
+                <a href="{{ url_for('servidor.cadastro_paciente', id=t.id) }}"
+                  class="p-2 text-slate-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/40 rounded-lg transition-all"
+                  title="Editar Ficha">
+                  <i data-lucide="edit-3" class="w-4 h-4"></i>
+                </a>
               </div>
             </td>
           </tr>
@@ -501,16 +500,19 @@
   function toggleActionsMenu(event, menuId) {
     event.stopPropagation();
     const targetMenu = document.getElementById(menuId);
-    const row = event.currentTarget.closest('.trabalhador-row');
     const isHidden = targetMenu.classList.contains('hidden');
 
-    // Close all menus and reset z-index
+    // Close other menus
     document.querySelectorAll('[id^="menu-"]').forEach(m => m.classList.add('hidden'));
-    document.querySelectorAll('.trabalhador-row').forEach(r => r.style.zIndex = '1');
+
+    // Toggle overlay on mobile
+    const overlay = document.getElementById('dropdownOverlay');
 
     if (isHidden) {
       targetMenu.classList.remove('hidden');
-      if (row) row.style.zIndex = '50';
+      if (window.innerWidth <= 1024 && overlay) overlay.style.display = 'block';
+    } else {
+      if (overlay) overlay.style.display = 'none';
     }
   }
 

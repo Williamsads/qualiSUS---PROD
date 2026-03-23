@@ -194,8 +194,8 @@
                         <select id="filterStatus" onchange="filterUsuariosTable()"
                             class="w-full pl-10 pr-8 py-3 bg-gray-50 dark:bg-gray-800 border border-transparent focus:bg-white dark:focus:bg-gray-900 focus:border-brand-200 dark:focus:border-brand-700 rounded-2xl outline-none text-sm transition-all font-semibold text-gray-600 dark:text-gray-300 appearance-none cursor-pointer">
                             <option value="">Todos</option>
-                            <option value="true">Ativo</option>
-                            <option value="false">Inativo</option>
+                            <option value="ativo">Ativo</option>
+                            <option value="inativo">Inativo</option>
                         </select>
                         <i data-lucide="chevron-down"
                             class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"></i>
@@ -245,108 +245,103 @@
                     <tr
                         class="bg-gray-50/50 dark:bg-gray-800/30 border-b border-gray-100 dark:border-gray-800 transition-colors">
                         <th
-                            class="px-6 py-5 text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
-                            Informações do Usuário</th>
+                            class="px-6 py-4 text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
+                            Usuário / Identificação</th>
                         <th
-                            class="px-6 py-5 text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
-                            Contato e Matrícula</th>
+                            class="px-6 py-4 text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
+                            Contato / Matrícula</th>
                         <th
-                            class="px-6 py-5 text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
+                            class="px-6 py-4 text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
                             Acesso / Perfil</th>
                         <th
-                            class="px-6 py-5 text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
+                            class="px-6 py-4 text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest text-center">
                             Status</th>
                         <th
-                            class="px-6 py-5 text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest text-center">
-                            Ações</th>
+                            class="px-6 py-4 text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-widest text-right">
+                            Gerenciar</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-200/60 dark:divide-gray-800">
                     {% for user in usuarios %}
-                    <tr class="usuario-row hover:bg-gray-50/80 dark:hover:bg-gray-800/40 border-b border-gray-50 dark:border-gray-800/50 transition-all duration-200 group"
+                    <tr class="usuario-row hover:bg-gray-50/80 dark:hover:bg-gray-800/40 border-b border-gray-50 dark:border-gray-800/50 transition-all duration-150 group"
                         data-status="{{ 'ativo' if user.ativo else 'inativo' }}">
-                        <td class="px-6 py-5">
-                            <div class="flex items-center gap-4">
+                        <td class="px-6 py-3">
+                            <div class="flex items-center gap-3">
                                 <div class="relative">
-                                    <div class="w-12 h-12 rounded-2xl flex items-center justify-center font-black text-lg transition-transform group-hover:scale-110 duration-300 shadow-sm
+                                    <div class="w-10 h-10 rounded-xl flex items-center justify-center font-black text-xs transition-transform group-hover:scale-105 duration-300 shadow-sm
                                         {% set colors = ['bg-blue-50 text-blue-600', 'bg-emerald-50 text-emerald-600', 'bg-indigo-50 text-indigo-600', 'bg-amber-50 text-amber-600', 'bg-rose-50 text-rose-600'] %}
                                         {{ colors[loop.index0 % 5] }}">
                                         {{ user.nome[:1] }}
                                     </div>
                                     {% if user.ativo %}
                                     <div
-                                        class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-white dark:border-gray-900 rounded-full shadow-sm">
+                                        class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 border-2 border-white dark:border-gray-900 rounded-full shadow-sm">
                                     </div>
                                     {% endif %}
                                 </div>
                                 <div class="flex flex-col">
                                     <span
-                                        class="font-black text-gray-900 dark:text-gray-100 tracking-tight leading-snug">{{
+                                        class="font-bold text-gray-900 dark:text-gray-100 tracking-tight leading-none mb-1 text-sm">{{
                                         user.nome }}</span>
-                                    <span class="text-[10px] text-gray-400 font-black uppercase tracking-wider">Cod: #{{
-                                        1000 + user.id }}</span>
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">CPF:
+                                            {{ user.cpf or '---' }}</span>
+                                        <span class="text-gray-300 text-[9px]">•</span>
+                                        <span class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">ID
+                                            #{{ 1000 + user.id }}</span>
+                                    </div>
                                 </div>
                             </div>
                         </td>
-                        <td class="px-6 py-5">
-                            <div class="space-y-1.5">
-                                <div class="flex items-center gap-2">
-                                    <i data-lucide="mail" class="w-3 h-3 text-gray-400"></i>
-                                    <span class="text-xs font-bold text-gray-600 dark:text-gray-400">{{ user.email
-                                        }}</span>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <i data-lucide="badge-check" class="w-3 h-3 text-brand-400"></i>
-                                    <span class="text-[10px] text-gray-400 font-black tracking-widest uppercase">CPF: {{
-                                        user.cpf or '---' }}</span>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <i data-lucide="hash" class="w-3 h-3 text-gray-300"></i>
-                                    <span class="text-[10px] text-gray-400 font-black tracking-widest uppercase">Mat: {{
-                                        user.num_func_vinculo or '---' }}</span>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-5">
-                            <div class="flex flex-col gap-1.5">
+                        <td class="px-6 py-3">
+                            <div class="flex flex-col">
                                 <span
-                                    class="w-fit inline-flex items-center px-3 py-1 bg-brand-100/50 dark:bg-brand-900/40 text-brand-600 dark:text-brand-400 text-[9px] font-black rounded-full uppercase tracking-widest border border-brand-200/30 dark:border-brand-800/50">
+                                    class="text-[11px] font-bold text-gray-600 dark:text-gray-400 leading-none mb-1">{{
+                                    user.email }}</span>
+                                <span class="text-[9px] text-gray-400 font-black uppercase tracking-widest">Matrícula:
+                                    {{ user.num_func_vinculo or '---' }}</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-3">
+                            <div class="flex flex-col">
+                                <span
+                                    class="inline-flex items-center w-fit px-2 py-0.5 bg-brand-50 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 text-[8px] font-black rounded uppercase tracking-widest border border-brand-100 dark:border-brand-800 mb-1">
                                     {{ user.tipo }}
                                 </span>
                                 <span
-                                    class="text-[9px] text-gray-400 font-bold px-2 uppercase tracking-tight">Privilégios
+                                    class="text-[8px] text-gray-400 font-bold px-1 uppercase tracking-tight">Privilégios
                                     Nível {{ '1' if user.tipo|lower == 'usuario' else '3' }}</span>
                             </div>
                         </td>
-                        <td class="px-6 py-5">
+                        <td class="px-6 py-3 text-center">
                             <div class="relative group inline-block">
                                 <select onchange="alterarStatusUsuario(this.getAttribute('data-user-id'), this.value)"
-                                    data-user-id="{{ user.id }}" class="status-select appearance-none text-[10px] font-black px-4 py-1.5 pr-8 rounded-full border-none ring-1 transition-all cursor-pointer outline-none uppercase tracking-widest
+                                    data-user-id="{{ user.id }}" class="status-select appearance-none text-[9px] font-black px-3 py-1 pr-7 rounded-lg border-none ring-1 transition-all cursor-pointer outline-none uppercase tracking-widest
                                            {% if user.ativo %} 
-                                                bg-emerald-50 text-emerald-600 ring-emerald-100 hover:bg-emerald-100
+                                                bg-emerald-50 text-emerald-600 ring-emerald-100/50
                                            {% else %} 
-                                                bg-red-50 text-red-500 ring-red-100 hover:bg-red-100
+                                                bg-red-50 text-red-500 ring-red-100/50
                                            {% endif %}">
                                     <option value="ativo" {% if user.ativo %}selected{% endif %}>Ativo</option>
                                     <option value="inativo" {% if not user.ativo %}selected{% endif %}>Inativo</option>
                                 </select>
-                                <i data-lucide="chevron-down" class="absolute right-2.5 top-1/2 -translate-y-1/2 w-3 h-3 transition-colors pointer-events-none 
+                                <i data-lucide="chevron-down" class="absolute right-2 top-1/2 -translate-y-1/2 w-2.5 h-2.5 transition-colors pointer-events-none 
                                    {% if user.ativo %} text-emerald-400 {% else %} text-red-300 {% endif %}"></i>
                             </div>
                         </td>
-                        <td class="px-6 py-5">
-                            <div class="flex justify-center gap-2">
+                        <td class="px-6 py-3 text-right">
+                            <div class="flex justify-end gap-1 opacity-60 group-hover:opacity-100 transition-opacity">
                                 <button type="button"
-                                    class="btn-edit-user w-9 h-9 flex items-center justify-center rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-400 hover:text-brand-600 hover:bg-brand-50 dark:hover:bg-brand-900/30 transition-all"
-                                    data-user='{{ user | tojson | forceescape }}'>
-                                    <i data-lucide="edit-3" class="w-4.5 h-4.5"></i>
+                                    class="btn-edit-user p-2 text-gray-400 hover:text-brand-600 hover:bg-brand-50 dark:hover:bg-brand-900/30 rounded-lg transition-all"
+                                    data-user='{{ user | tojson | forceescape }}' title="Editar Usuário">
+                                    <i data-lucide="edit-3" class="w-4 h-4"></i>
                                 </button>
 
                                 {% if session.get('tipo', '').upper() in ['DESENVOLVEDOR', 'DEV'] %}
                                 <button type="button" onclick="confirmarExclusao('{{ user.id }}', '{{ user.nome }}')"
-                                    class="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 transition-all"
+                                    class="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-all"
                                     title="Excluir Usuário">
-                                    <i data-lucide="trash-2" class="w-4.5 h-4.5"></i>
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
                                 </button>
                                 {% endif %}
                             </div>

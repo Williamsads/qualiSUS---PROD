@@ -592,8 +592,8 @@
               <i data-lucide="user-plus" class="w-8 h-8"></i>
             </div>
             <div>
-              <h2 class="text-2xl font-black text-pe-navy">Completar Cadastro</h2>
-              <p class="text-sm text-gray-500 font-medium mt-1">Atualize seus dados para o agendamento.</p>
+              <h2 class="text-2xl font-black text-pe-navy">Confirmar Dados</h2>
+              <p class="text-sm text-gray-500 font-medium mt-1">Verifique e atualize seus dados antes de continuar.</p>
             </div>
           </div>
           <button type="button" id="btnFecharModalTop"
@@ -742,8 +742,8 @@
           <!-- Actions -->
           <div class="flex items-center justify-between pt-6 border-t border-gray-100 dark:border-gray-800">
             <button type="button" id="btnCancelarModal"
-              class="px-8 py-4 rounded-2xl text-gray-400 font-bold hover:bg-gray-50 transition-all transform active:scale-95">
-              Cancelar
+              class="px-8 py-4 rounded-2xl text-gray-600 font-bold border border-gray-200 hover:bg-gray-50 hover:border-gray-300 transition-all transform active:scale-95">
+              Continuar sem alterar
             </button>
             <button type="submit"
               class="px-10 py-4 bg-pe-navy text-white font-black rounded-2xl hover:bg-pe-navy/90 shadow-xl shadow-pe-navy/30 transition-all transform hover:scale-[1.02] active:scale-95 flex items-center gap-3">
@@ -1743,36 +1743,24 @@
       btnStep1Next.onclick = () => {
         if (!pacienteGlobal) return showToast("Valide um paciente primeiro.", "warning");
 
-        // 👉 CADASTRO INCOMPLETO → ABRE MODAL
-        if (!isDataComplete) {
-          const t = pacienteGlobal;
-          const v = vinculoGlobal || {};
+        // 👉 SEMPRE abre o modal para confirmar/atualizar dados
+        const t = pacienteGlobal;
 
-          // TRABALHADOR
-          if (window.modal_nome) modal_nome.value = t.nome_completo || '';
-          if (window.modal_cns) modal_cns.value = t.cns || '';
-          if (window.modal_nascimento) modal_nascimento.value = t.data_nascimento || '';
-          if (window.modal_telefone) modal_telefone.value = t.telefone || '';
-          if (window.modal_email) modal_email.value = t.email || '';
-          if (window.modal_cep) modal_cep.value = t.cep || '';
-          if (window.modal_logradouro) modal_logradouro.value = t.logradouro || '';
-          if (window.modal_numero) modal_numero.value = t.numero || '';
-          if (window.modal_bairro) modal_bairro.value = t.bairro || '';
-          if (window.modal_cidade) modal_cidade.value = t.cidade || '';
-          if (window.modal_uf) modal_uf.value = t.uf || '';
+        if (window.modal_nome) modal_nome.value = t.nome_completo || '';
+        if (window.modal_cns) modal_cns.value = t.cns || '';
+        if (window.modal_nascimento) modal_nascimento.value = t.data_nascimento || '';
+        if (window.modal_telefone) modal_telefone.value = t.telefone || '';
+        if (window.modal_email) modal_email.value = t.email || '';
+        if (window.modal_cep) modal_cep.value = t.cep || '';
+        if (window.modal_logradouro) modal_logradouro.value = t.logradouro || '';
+        if (window.modal_numero) modal_numero.value = t.numero || '';
+        if (window.modal_bairro) modal_bairro.value = t.bairro || '';
+        if (window.modal_cidade) modal_cidade.value = t.cidade || '';
+        if (window.modal_uf) modal_uf.value = t.uf || '';
 
-
-          const modal = document.getElementById('modalCadastro');
-          modal.classList.remove('hidden');
-          modal.classList.add('flex');
-          return;
-        }
-
-        // 👉 OK → STEP 2 (Especialidade)
-        carregarEspecialidades(); // Pre-load specialties
-        step1.classList.add('hidden');
-        step2.classList.remove('hidden');
-        updateStepProgress(1);
+        const modal = document.getElementById('modalCadastro');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
       }
     }
 
@@ -2343,8 +2331,17 @@
     const btnFecharTop = document.getElementById('btnFecharModalTop');
     if (btnFecharTop) btnFecharTop.onclick = fecharModal;
 
+    // Botão "Continuar sem alterar" fecha o modal e avança para o Step 2
     const btnCancelar = document.getElementById('btnCancelarModal');
-    if (btnCancelar) btnCancelar.onclick = fecharModal;
+    if (btnCancelar) btnCancelar.onclick = () => {
+      const modal = document.getElementById('modalCadastro');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      carregarEspecialidades();
+      step1.classList.add('hidden');
+      step2.classList.remove('hidden');
+      updateStepProgress(1);
+    };
 
     // ===============================
     // VIA CEP INTEGRATION

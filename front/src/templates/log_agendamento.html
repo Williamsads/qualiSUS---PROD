@@ -346,6 +346,143 @@
   </div>
 </div>
 
+<!-- MODAL REAGENDAMENTO -->
+<div id="modal-reagendar"
+  class="fixed inset-0 z-[120] hidden items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+  <div id="modal-reagendar-content"
+    class="bg-white rounded-3xl shadow-2xl w-full max-w-md border border-slate-100 flex flex-col transform scale-95 opacity-0 transition-all duration-300 overflow-hidden max-h-[95vh] sm:max-h-[90vh]">
+
+    <!-- Barra decorativa topo -->
+    <div class="h-1.5 bg-gradient-to-r from-amber-400 to-orange-500"></div>
+
+    <!-- Header -->
+    <div class="flex items-center justify-between px-8 py-6 border-b border-slate-100">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-amber-50 rounded-2xl flex items-center justify-center text-amber-500">
+          <i data-lucide="calendar-clock" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <h3 class="text-lg font-black text-slate-900 tracking-tight">Reagendar Atendimento</h3>
+          <p class="text-xs text-slate-400 font-medium mt-0.5">Selecione a nova data para o paciente</p>
+        </div>
+      </div>
+      <button onclick="fecharModalReagendar()"
+        class="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-slate-400 hover:bg-slate-200 transition-all">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+    </div>
+
+    <!-- Corpo (Scrollable) -->
+    <div class="px-5 sm:px-8 py-4 sm:py-6 space-y-4 sm:space-y-5 overflow-y-auto custom-scrollbar">
+
+      <!-- Card resumo do paciente -->
+      <div class="bg-slate-50 border border-slate-100 rounded-2xl p-4 flex items-center gap-4">
+        <div id="reagendar-avatar"
+          class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 text-white flex items-center justify-center font-black text-lg shrink-0">
+          A
+        </div>
+        <div>
+          <p id="reagendar-paciente" class="text-sm font-black text-slate-900">—</p>
+          <p id="reagendar-info" class="text-xs text-slate-400 font-medium mt-0.5">—</p>
+        </div>
+      </div>
+
+      <!-- Alerta de aviso -->
+      <div class="flex items-start gap-3 bg-amber-50 border border-amber-100 rounded-xl p-3">
+        <i data-lucide="info" class="w-4 h-4 text-amber-500 mt-0.5 shrink-0"></i>
+        <p class="text-[10px] text-amber-700 font-medium leading-relaxed">
+          O novo agendamento será criado para o profissional e data selecionados.
+        </p>
+      </div>
+
+      <!-- Seleção de Profissional -->
+      <div>
+        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1.5 ml-1">Profissional
+          Responsável*</label>
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+            <i data-lucide="user-cog" class="w-4 h-4 text-slate-400"></i>
+          </div>
+          <select id="reagendar-profissional-select" onchange="handleProfissionalChange()"
+            class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 focus:ring-4 focus:ring-amber-500/10 focus:border-amber-400 focus:bg-white outline-none transition-all cursor-pointer appearance-none">
+            <!-- Populado via JS -->
+          </select>
+        </div>
+      </div>
+
+      <!-- Calendário de Reagendamento -->
+      <div class="space-y-2">
+        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block ml-1">Selecione a Nova
+          Data*</label>
+        <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+          <div class="flex items-center justify-between px-4 py-2.5 bg-slate-50 border-b border-slate-200">
+            <button type="button" onclick="mudarMesReagendar(-1)"
+              class="p-1 hover:bg-slate-200 rounded-lg text-slate-500 transition-all">
+              <i data-lucide="chevron-left" class="w-4 h-4"></i>
+            </button>
+            <h4 id="reagendar-calendar-month" class="text-[10px] font-black text-slate-700 uppercase tracking-wider">---
+            </h4>
+            <button type="button" onclick="mudarMesReagendar(1)"
+              class="p-1 hover:bg-slate-200 rounded-lg text-slate-500 transition-all">
+              <i data-lucide="chevron-right" class="w-4 h-4"></i>
+            </button>
+          </div>
+
+          <div class="p-2">
+            <div class="grid grid-cols-7 text-center mb-1">
+              <span class="text-[8px] font-bold text-slate-400 uppercase">Dom</span>
+              <span class="text-[8px] font-bold text-slate-400 uppercase">Seg</span>
+              <span class="text-[8px] font-bold text-slate-400 uppercase">Ter</span>
+              <span class="text-[8px] font-bold text-slate-400 uppercase">Qua</span>
+              <span class="text-[8px] font-bold text-slate-400 uppercase">Qui</span>
+              <span class="text-[8px] font-bold text-slate-400 uppercase">Sex</span>
+              <span class="text-[8px] font-bold text-slate-400 uppercase">Sáb</span>
+            </div>
+            <div id="reagendar-calendar-days" class="grid grid-cols-7 gap-1">
+              <!-- JS -->
+            </div>
+          </div>
+        </div>
+        <input type="hidden" id="reagendar-nova-data" onchange="handleDataChangeReagendar()">
+        <p id="reagendar-data-erro" class="text-[10px] text-rose-500 font-bold hidden font-mono">⚠️ Selecione uma data
+          válida.</p>
+      </div>
+
+      <!-- Grade de Horários -->
+      <div id="reagendar-horarios-container" class="hidden animate-fade-in">
+        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 ml-1">Horário
+          disponível*</label>
+        <div id="reagendar-horarios-grid" class="grid grid-cols-4 gap-2">
+          <!-- Populado via JS -->
+        </div>
+        <input type="hidden" id="reagendar-horario-selecionado">
+      </div>
+
+      <!-- Campo de Motivo -->
+      <div>
+        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1.5 ml-1">Motivo do
+          Reagendamento*</label>
+        <textarea id="reagendar-motivo" rows="2"
+          class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-700 focus:ring-4 focus:ring-amber-500/10 focus:border-amber-400 focus:bg-white outline-none transition-all placeholder:text-slate-300"
+          placeholder="Descreva brevemente o motivo..."></textarea>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="px-8 py-5 border-t border-slate-100 bg-slate-50/50 flex items-center justify-between gap-3">
+      <button onclick="fecharModalReagendar()"
+        class="px-6 py-3 rounded-xl text-slate-500 font-bold border border-slate-200 hover:bg-slate-100 transition-all text-sm">
+        Cancelar
+      </button>
+      <button id="btn-confirmar-reagendar" onclick="confirmarReagendamento()"
+        class="flex-1 px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white font-black rounded-xl shadow-lg shadow-amber-500/20 transition-all text-sm flex items-center justify-center gap-2 active:scale-95">
+        <i data-lucide="calendar-check" class="w-4 h-4"></i>
+        Confirmar Reagendamento
+      </button>
+    </div>
+  </div>
+</div>
+
 <script>
   const loggedUserTipo = "{{ user_tipo|safe }}";
   const loggedServidorId = JSON.parse('{{ servidor_id | tojson | safe }}');
@@ -592,6 +729,290 @@
     });
   }
 
+  // ===========================
+  // REAGENDAMENTO
+  // ===========================
+  let reagendarIndex = null;
+  let currentMonthReagendar = new Date().getMonth();
+  let currentYearReagendar = new Date().getFullYear();
+  let availableDatesReagendar = [];
+
+  const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+
+  function abrirModalReagendar(i) {
+    const a = listaFiltrada[i];
+    if (!a) return;
+    reagendarIndex = i;
+
+    document.getElementById('reagendar-avatar').textContent = (a.paciente || 'P').charAt(0).toUpperCase();
+    document.getElementById('reagendar-paciente').textContent = a.paciente || 'Paciente';
+    document.getElementById('reagendar-info').textContent = `${a.especialidade || '—'}`;
+
+    // Reset de estado
+    document.getElementById('reagendar-nova-data').value = '';
+    document.getElementById('reagendar-horario-selecionado').value = '';
+    document.getElementById('reagendar-horarios-container').classList.add('hidden');
+    document.getElementById('reagendar-motivo').value = '';
+    document.getElementById('reagendar-data-erro').classList.add('hidden');
+
+    // Inicializa calendário
+    currentMonthReagendar = new Date().getMonth();
+    currentYearReagendar = new Date().getFullYear();
+    availableDatesReagendar = [];
+
+    const modal = document.getElementById('modal-reagendar');
+    const content = document.getElementById('modal-reagendar-content');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    setTimeout(() => {
+      content.classList.remove('scale-95', 'opacity-0');
+      content.classList.add('scale-100', 'opacity-100');
+    }, 10);
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+
+    // Carregar Profissionais e depois a agenda
+    carregarProfissionaisReagendar(a);
+  }
+
+  async function carregarProfissionaisReagendar(appt) {
+    const select = document.getElementById('reagendar-profissional-select');
+    select.innerHTML = '<option value="">Carregando...</option>';
+
+    try {
+      // Precisamos do ID da especialidade. O appt tem o nome. 
+      // Vamos buscar o ID da especialidade pelo nome se não tivermos.
+      // No log_agendamento/api/lista, a especialidade é o nome.
+      // Vamos buscar o ID da especialidade
+      const resSpec = await fetch(`/api/agendar_exame/especialidades`);
+      const dataSpec = await resSpec.json();
+      const spec = dataSpec.especialidades.find(e => e.nome.toLowerCase() === appt.especialidade.toLowerCase());
+
+      if (!spec) {
+        select.innerHTML = `<option value="${appt.funcionario_id}">${appt.medico}</option>`;
+        carregarAgendaPorProfissional(appt.funcionario_id, appt.unidade);
+        return;
+      }
+
+      const resProf = await fetch(`/api/agendar_exame/profissionais?especialidade_id=${spec.id}&unidade=${encodeURIComponent(appt.unidade)}`);
+      const dataProf = await resProf.json();
+      const profissionais = dataProf.profissionais || [];
+
+      select.innerHTML = profissionais.map(p => `
+            <option value="${p.id}" ${p.id == appt.funcionario_id ? 'selected' : ''}>${p.nome}</option>
+        `).join('');
+
+      carregarAgendaPorProfissional(select.value, appt.unidade);
+    } catch (err) {
+      console.error(err);
+      select.innerHTML = `<option value="${appt.funcionario_id}">${appt.medico}</option>`;
+      carregarAgendaPorProfissional(appt.funcionario_id, appt.unidade);
+    }
+  }
+
+  function handleProfissionalChange() {
+    const appt = listaFiltrada[reagendarIndex];
+    const profId = document.getElementById('reagendar-profissional-select').value;
+
+    // Reset data
+    document.getElementById('reagendar-nova-data').value = '';
+    document.getElementById('reagendar-horarios-container').classList.add('hidden');
+
+    carregarAgendaPorProfissional(profId, appt.unidade);
+  }
+
+  async function carregarAgendaPorProfissional(profId, unidade) {
+    const grid = document.getElementById('reagendar-calendar-days');
+    grid.innerHTML = '<div class="col-span-7 py-8 flex flex-col items-center justify-center gap-2 animate-pulse"><div class="w-6 h-6 border-2 border-amber-500 border-t-transparent rounded-full animate-spin"></div><span class="text-[8px] font-black text-slate-400 uppercase tracking-widest">Buscando Agenda...</span></div>';
+
+    try {
+      const res = await fetch(`/log_agendamento/api/datas-disponiveis?funcionario_id=${profId}&unidade=${encodeURIComponent(unidade)}`);
+      availableDatesReagendar = await res.json();
+      renderCalendarReagendar();
+    } catch (err) {
+      console.error(err);
+      grid.innerHTML = '<div class="col-span-7 text-center text-rose-500 text-[9px] font-bold p-4">Erro ao carregar datas.</div>';
+    }
+  }
+
+  function fecharModalReagendar() {
+    const modal = document.getElementById('modal-reagendar');
+    const content = document.getElementById('modal-reagendar-content');
+    content.classList.remove('scale-100', 'opacity-100');
+    content.classList.add('scale-95', 'opacity-0');
+    setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 250);
+    reagendarIndex = null;
+  }
+
+  async function carregarDatasDisponiveisReagendar(appt) {
+    const grid = document.getElementById('reagendar-calendar-days');
+    grid.innerHTML = '<div class="col-span-7 py-8 flex flex-col items-center justify-center gap-2 animate-pulse"><div class="w-6 h-6 border-2 border-amber-500 border-t-transparent rounded-full animate-spin"></div><span class="text-[8px] font-black text-slate-400 uppercase tracking-widest">Buscando Agenda...</span></div>';
+
+    try {
+      const res = await fetch(`/log_agendamento/api/datas-disponiveis?funcionario_id=${appt.funcionario_id}&unidade=${encodeURIComponent(appt.unidade)}`);
+      availableDatesReagendar = await res.json();
+      renderCalendarReagendar();
+    } catch (err) {
+      console.error(err);
+      grid.innerHTML = '<div class="col-span-7 text-center text-rose-500 text-[9px] font-bold p-4">Erro ao carregar datas.</div>';
+    }
+  }
+
+  function mudarMesReagendar(delta) {
+    currentMonthReagendar += delta;
+    if (currentMonthReagendar < 0) { currentMonthReagendar = 11; currentYearReagendar--; }
+    if (currentMonthReagendar > 11) { currentMonthReagendar = 0; currentYearReagendar++; }
+    renderCalendarReagendar();
+  }
+
+  function renderCalendarReagendar() {
+    const grid = document.getElementById('reagendar-calendar-days');
+    const monthLabel = document.getElementById('reagendar-calendar-month');
+    const selectedData = document.getElementById('reagendar-nova-data').value;
+
+    if (!grid) return;
+
+    monthLabel.innerText = `${monthNames[currentMonthReagendar]} ${currentYearReagendar}`;
+    grid.innerHTML = '';
+
+    const firstDay = new Date(currentYearReagendar, currentMonthReagendar, 1).getDay();
+    const daysInMonth = new Date(currentYearReagendar, currentMonthReagendar + 1, 0).getDate();
+
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+
+    for (let i = 0; i < firstDay; i++) {
+      grid.innerHTML += '<div></div>';
+    }
+
+    for (let d = 1; d <= daysInMonth; d++) {
+      const isoDate = `${currentYearReagendar}-${String(currentMonthReagendar + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+      const isAvailable = availableDatesReagendar.includes(isoDate);
+      const isSelected = selectedData === isoDate;
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.innerText = d;
+
+      let baseClass = "w-full aspect-square text-[10px] font-bold rounded-lg transition-all flex items-center justify-center ";
+
+      if (isSelected) {
+        btn.className = baseClass + "bg-amber-500 text-white shadow-md shadow-amber-500/20 scale-110 z-10";
+      } else if (isAvailable) {
+        btn.className = baseClass + "hover:bg-amber-100 hover:text-amber-600 text-slate-700 bg-amber-50/50 border border-amber-200/50";
+        btn.onclick = () => {
+          document.getElementById('reagendar-nova-data').value = isoDate;
+          renderCalendarReagendar();
+          handleDataChangeReagendar();
+        };
+      } else {
+        btn.className = baseClass + "text-slate-200 cursor-not-allowed pointer-events-none";
+      }
+
+      grid.appendChild(btn);
+    }
+  }
+
+  async function handleDataChangeReagendar() {
+    const dataStr = document.getElementById('reagendar-nova-data').value;
+    const a = listaFiltrada[reagendarIndex];
+    if (!a || !dataStr) return;
+
+    const grid = document.getElementById('reagendar-horarios-grid');
+    const container = document.getElementById('reagendar-horarios-container');
+
+    container.classList.remove('hidden');
+    grid.innerHTML = '<div class="col-span-4 py-2 text-slate-400 text-[10px] font-bold uppercase animate-pulse">Buscando horários...</div>';
+
+    try {
+      const profId = document.getElementById('reagendar-profissional-select').value;
+      const res = await fetch(`/api/agendar_exame/horarios?medico_id=${profId}&data=${dataStr}&unidade=${encodeURIComponent(a.unidade)}`);
+      const slots = await res.json();
+
+      if (!slots || slots.length === 0) {
+        grid.innerHTML = '<div class="col-span-4 py-3 px-4 bg-amber-50 text-amber-600 rounded-xl text-[10px] font-black uppercase text-center border border-amber-100">Sem horários para este dia</div>';
+        return;
+      }
+
+      grid.innerHTML = slots.map(s => `
+        <button type="button" 
+          onclick="selecionarHorarioReagendar(this, '${s.horario}')"
+          class="reagendar-slot p-2 rounded-lg border border-slate-200 text-[11px] font-black text-slate-600 hover:border-amber-400 hover:text-amber-600 transition-all">
+          ${s.horario}
+        </button>
+      `).join('');
+    } catch (err) {
+      grid.innerHTML = '<div class="col-span-4 text-rose-500 text-[10px] font-bold p-2">Erro ao carregar</div>';
+    }
+  }
+
+  function selecionarHorarioReagendar(btn, horario) {
+    document.querySelectorAll('.reagendar-slot').forEach(b => {
+      b.classList.remove('bg-amber-500', 'text-white', 'border-amber-500', 'shadow-md');
+      b.classList.add('border-slate-200', 'text-slate-600');
+    });
+    btn.classList.add('bg-amber-500', 'text-white', 'border-amber-500', 'shadow-md');
+    btn.classList.remove('border-slate-200', 'text-slate-600');
+    document.getElementById('reagendar-horario-selecionado').value = horario;
+  }
+
+  async function confirmarReagendamento() {
+    const novaData = document.getElementById('reagendar-nova-data').value;
+    const novoHorario = document.getElementById('reagendar-horario-selecionado').value;
+    const motivo = document.getElementById('reagendar-motivo').value.trim();
+    const erroEl = document.getElementById('reagendar-data-erro');
+
+    if (!novaData || !novoHorario || !motivo) {
+      showToast("Aviso", "Preencha a data, escolha um horário e informe o motivo.", "warning");
+      return;
+    }
+
+    const hoje = new Date().toISOString().split('T')[0];
+    if (novaData < hoje) { erroEl.classList.remove('hidden'); return; }
+    erroEl.classList.add('hidden');
+
+    const a = listaFiltrada[reagendarIndex];
+    if (!a) return;
+
+    const btn = document.getElementById('btn-confirmar-reagendar');
+    const originalHTML = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Processando...';
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+
+    try {
+      const profId = document.getElementById('reagendar-profissional-select').value;
+      const res = await fetch(`/log_agendamento/api/atualizar/${a.id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          status: 'Reagendado',
+          desfecho: 'reagendar',
+          nova_data_reagendamento: novaData,
+          novo_horario: novoHorario,
+          funcionario_id: profId,
+          motivo: motivo,
+          observacao: `Reagendado para ${novaData} às ${novoHorario}. Profissional ID: ${profId}. Motivo: ${motivo}`
+        })
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        const dataFmt = novaData.split('-').reverse().join('/');
+        showToast("Sucesso", `Atendimento reagendado para ${dataFmt} às ${novoHorario}!`, "success");
+        fecharModalReagendar();
+        await fetchAppointments();
+      } else {
+        showToast("Erro", data.error || "Não foi possível reagendar.", "error");
+      }
+    } catch (err) {
+      console.error(err);
+      showToast("Erro", "Erro de conexão ao reagendar.", "error");
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = originalHTML;
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+  }
 
   function loadTable() {
     const tbody = document.getElementById("table-body");
@@ -650,6 +1071,9 @@
               </button>
               ` : ''}
               ${(a.status !== 'Cancelado' && a.status !== 'NAO_COMPARECEU' && a.status !== 'Finalizado') ? `
+              <button onclick="abrirModalReagendar(${i})" class="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-amber-600 hover:bg-amber-50 transition-all rounded-xl" title="Reagendar Atendimento">
+                <i data-lucide="calendar-clock" class="w-4 h-4"></i>
+              </button>
               <button onclick="cancelarAgendamento(${i})" class="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-all rounded-xl" title="Cancelar Atendimento">
                 <i data-lucide="calendar-x" class="w-4 h-4"></i>
               </button>

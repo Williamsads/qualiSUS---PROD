@@ -223,8 +223,17 @@ def api_atualizar(id):
     conn = get_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
     try:
-        # Busca dados atuais do agendamento
-        cur.execute("SELECT status, trabalhador_id, vinculo_id, funcionario_id, data_consulta, horario, unidade, especialidade FROM agendamento_exames WHERE id = %s", (id,))
+        # Busca dados atuais do agendamento + info do paciente para e-mail
+        cur.execute("""
+            SELECT ae.status, ae.trabalhador_id, ae.vinculo_id, ae.funcionario_id,
+                   ae.data_consulta, ae.horario, ae.unidade, ae.especialidade,
+                   t.nome_completo as paciente_nome, t.email as paciente_email,
+                   f.nome as medico_nome
+            FROM agendamento_exames ae
+            JOIN trabalhadores t ON ae.trabalhador_id = t.id
+            JOIN funcionarios f ON ae.funcionario_id = f.id
+            WHERE ae.id = %s
+        """, (id,))
         appt = cur.fetchone()
         if not appt:
             return jsonify({"success": False, "error": "Agendamento não encontrado"}), 404
@@ -257,19 +266,28 @@ def api_atualizar(id):
 
         # 1. TRATAMENTO DE REAGENDAMENTO (COM DATA ESPECÍFICA)
         if desfecho == 'reagendar':
-            nova_data = data.get("nova_data_reagendamento")
+            nova_data    = data.get("nova_data_reagendamento")
+            novo_horario = data.get("novo_horario")  # Novo horário escolhido
+            motivo       = data.get("motivo", "Não informado")
+
             if not nova_data:
-                # Fallback para +7 dias se não informada
                 nova_data = appt['data_consulta'] + timedelta(days=7)
-            
+
+            # Usa o novo horário se fornecido, caso contrário mantém o original
+            horario_final = novo_horario if novo_horario else appt['horario']
+            obs_reagendamento = f"Reagendamento do ID {id}. Motivo: {motivo}"
+
+            # Novo profissional?
+            novo_func_id = data.get("funcionario_id") or appt['funcionario_id']
+
             cur.execute("""
-                INSERT INTO agendamento_exames 
+                INSERT INTO agendamento_exames
                 (trabalhador_id, vinculo_id, funcionario_id, data_consulta, horario, unidade, especialidade, status, observacao, atualizado_por, origem_agendamento)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, 'Agendado', %s, %s, 'REAGENDAMENTO')
             """, (
-                appt['trabalhador_id'], appt['vinculo_id'], appt['funcionario_id'], 
-                nova_data, appt['horario'], appt['unidade'], appt['especialidade'], 
-                f"Reagendamento do ID {id}", user_email
+                appt['trabalhador_id'], appt['vinculo_id'], novo_func_id,
+                nova_data, horario_final, appt['unidade'], appt['especialidade'],
+                obs_reagendamento, user_email
             ))
 
         # 2. TRATAMENTO DE ENCAMINHAMENTO (DURANTE O ATENDIMENTO)
@@ -373,6 +391,87 @@ def api_atualizar(id):
             """, (final_status, observacao, validado, user_email, id))
         
         conn.commit()
+
+        # --- E-MAIL DE REAGENDAMENTO ---
+        if desfecho == 'reagendar' and appt.get('paciente_email'):
+            try:
+                import os, smtplib
+                from email.mime.text import MIMEText
+                from email.mime.multipart import MIMEMultipart
+
+                nova_data_fmt = str(nova_data)
+                try:
+                    from datetime import date as date_type
+                    if isinstance(nova_data, str):
+                        nova_data_fmt = datetime.strptime(nova_data, '%Y-%m-%d').strftime('%d/%m/%Y')
+                    else:
+                        nova_data_fmt = nova_data.strftime('%d/%m/%Y')
+                except: pass
+
+                horario_fmt = str(horario_final) if horario_final else ''
+                try:
+                    if hasattr(horario_final, 'strftime'):
+                        horario_fmt = horario_final.strftime('%H:%M')
+                    elif isinstance(horario_final, str) and len(horario_final) >= 5:
+                        horario_fmt = horario_final[:5]
+                except: pass
+
+                msg = MIMEMultipart()
+                msg['From']    = f"QualiVida PE <{os.getenv('MAIL_DEFAULT_SENDER')}>"
+                msg['To']      = appt['paciente_email']
+                msg['Subject'] = f"📅 Seu Atendimento foi Reagendado – {appt['especialidade']}"
+
+                html_body = f"""
+                <div style="font-family:'Inter','Segoe UI',sans-serif;max-width:600px;margin:0 auto;padding:20px;background:#f8fafc;">
+                  <div style="background:#fff;border-radius:16px;padding:40px;box-shadow:0 4px 6px -1px rgba(0,0,0,0.05);">
+                    <div style="text-align:center;margin-bottom:24px;">
+                      <h2 style="color:#0f172a;margin:0;font-size:22px;font-weight:800;">QualiVida <span style="color:#f59e0b;">PE</span></h2>
+                    </div>
+                    <div style="background:#fffbeb;color:#92400e;padding:10px 18px;border-radius:999px;font-weight:700;font-size:12px;display:inline-block;margin-bottom:24px;">
+                      📅 ATENDIMENTO REAGENDADO
+                    </div>
+                    <p style="font-size:15px;color:#1e293b;margin-bottom:6px;">Olá, <strong>{appt['paciente_nome']}</strong>,</p>
+                    <p style="font-size:13px;color:#64748b;margin-bottom:28px;">Seu atendimento foi reagendado para uma nova data. Confira os detalhes abaixo.</p>
+                    <div style="border:1px solid #e2e8f0;border-radius:12px;padding:24px;margin-bottom:20px;">
+                      <table width="100%" cellpadding="0" cellspacing="0">
+                        <tr><td style="padding:8px 0;border-bottom:1px dashed #e2e8f0;">
+                          <span style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;">Especialidade</span><br>
+                          <span style="font-size:15px;font-weight:800;color:#0f172a;">{appt['especialidade']}</span>
+                        </td></tr>
+                        <tr><td style="padding:8px 0;border-bottom:1px dashed #e2e8f0;">
+                          <span style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;">Profissional</span><br>
+                          <span style="font-size:14px;font-weight:600;color:#1e293b;">{appt['medico_nome']}</span>
+                        </td></tr>
+                        <tr><td style="padding:8px 0;border-bottom:1px dashed #e2e8f0;">
+                          <span style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;">Nova Data e Horário</span><br>
+                          <span style="font-size:16px;font-weight:800;color:#f59e0b;">{nova_data_fmt} às {horario_fmt}</span>
+                        </td></tr>
+                        <tr><td style="padding:8px 0;border-bottom:1px dashed #e2e8f0;">
+                          <span style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;">Local</span><br>
+                          <span style="font-size:14px;font-weight:600;color:#475569;">{appt['unidade']}</span>
+                        </td></tr>
+                        <tr><td style="padding:8px 0;">
+                          <span style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;">Motivo do Reagendamento</span><br>
+                          <span style="font-size:13px;font-weight:600;color:#64748b;font-style:italic;">{motivo}</span>
+                        </td></tr>
+                      </table>
+                    </div>
+                    <div style="background:#f8fafc;border-radius:8px;padding:14px;border:1px solid #f1f5f9;text-align:center;">
+                      <p style="margin:0;font-size:12px;color:#64748b;">⚠️ <strong>Lembre-se:</strong> Chegue com 15 minutos de antecedência e porte seu documento original.</p>
+                    </div>
+                  </div>
+                </div>"""
+
+                msg.attach(MIMEText(html_body, 'html', 'utf-8'))
+                server = smtplib.SMTP(os.getenv("SMTP_SERVER"), int(os.getenv("SMTP_PORT", 587)))
+                server.starttls()
+                server.login(os.getenv("SMTP_USER"), os.getenv("SMTP_PASSWORD"))
+                server.sendmail(os.getenv("MAIL_DEFAULT_SENDER"), appt['paciente_email'], msg.as_string())
+                server.quit()
+                print(f">>> E-mail de reagendamento enviado para {appt['paciente_email']}")
+            except Exception as mail_err:
+                print(f"Erro ao enviar e-mail de reagendamento: {mail_err}")
+
         return jsonify({"success": True})
 
     except Exception as e:
@@ -498,3 +597,48 @@ def api_cancelar(id):
         cur.close()
         conn.close()
 
+@bp_agendamento.route("/api/datas-disponiveis")
+def datas_disponiveis_reagendar():
+    funcionario_id = request.args.get("funcionario_id")
+    unidade = request.args.get("unidade")
+    especialidade_id = request.args.get("especialidade_id")
+
+    if not funcionario_id or not unidade:
+        return jsonify([])
+
+    conn = get_connection()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+
+    try:
+        cur.execute("""
+            SELECT DISTINCT d.data::TEXT as data
+            FROM generate_series(0, 90) i
+            CROSS JOIN LATERAL (SELECT CURRENT_DATE + i AS data) d
+            JOIN funcionarios f ON f.id = %s
+            JOIN horarios_funcionarios hf ON hf.funcionario_id = f.id
+            WHERE hf.dia_semana = CASE WHEN EXTRACT(ISODOW FROM d.data) = 7 THEN 0 ELSE CAST(EXTRACT(ISODOW FROM d.data) AS INTEGER) END
+              AND (d.data > CURRENT_DATE OR hf.horario > CURRENT_TIME)
+              AND NOT EXISTS (
+                  SELECT 1 FROM agendamento_exames ae 
+                  WHERE ae.data_consulta = d.data 
+                    AND ae.funcionario_id = f.id 
+                    AND ae.horario = hf.horario
+                    AND ae.status != 'Cancelado'
+              )
+              AND NOT EXISTS (
+                  SELECT 1 FROM bloqueios_agenda ba
+                  WHERE ba.data = d.data
+                    AND (ba.unidade_id IS NULL OR (SELECT id FROM unidades_saude WHERE nome ILIKE %s LIMIT 1) = ba.unidade_id)
+                    AND (ba.funcionario_id IS NULL OR ba.funcionario_id = f.id)
+              )
+            ORDER BY d.data::TEXT
+        """, (funcionario_id, unidade))
+        
+        datas = [row['data'] for row in cur.fetchall()]
+        return jsonify(datas)
+    except Exception as e:
+        print(f"Erro ao buscar datas reagendar: {e}")
+        return jsonify([])
+    finally:
+        cur.close()
+        conn.close()
