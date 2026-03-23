@@ -59,6 +59,12 @@ def validar_trabalhador():
             t.data_nascimento,
             t.telefone,
             t.email,
+            t.cep,
+            t.logradouro,
+            t.numero,
+            t.bairro,
+            t.cidade,
+            t.uf,
             t.acolhimento_realizado,
             vt.id AS vinculo_id,
             vt.numero_funcional,
@@ -123,7 +129,10 @@ def get_trabalhador_by_id():
     cur = conn.cursor(cursor_factory=RealDictCursor)
     try:
         cur.execute("""
-            SELECT t.*, vt.id AS vinculo_id, vt.numero_funcional 
+            SELECT 
+                t.id, t.nome_completo, t.cpf, t.data_nascimento, t.telefone, t.email,
+                t.cep, t.logradouro, t.numero, t.bairro, t.cidade, t.uf,
+                vt.id AS vinculo_id, vt.numero_funcional 
             FROM trabalhadores t 
             LEFT JOIN vinculos_trabalhadores vt ON vt.trabalhador_id = t.id 
             WHERE t.id = %s LIMIT 1
@@ -989,36 +998,47 @@ def confirmar_agendamento():
 # ====================
 @agendamento_bp.route("/api/agendar_exame/trabalhador/agendamentos")
 def agendamentos_por_trabalhador():
-    trabalhador_id = request.args.get("trabalhador_id") or session.get("trabalhador_id")
+    trabalhador_id_raw = request.args.get("trabalhador_id") or session.get("trabalhador_id")
     
-    if not trabalhador_id:
+    # Validação básica para evitar erros de casting no Postgres
+    if not trabalhador_id_raw or str(trabalhador_id_raw).lower() == 'undefined':
         return jsonify({"agendamentos": []})
 
-    conn = get_connection()
-    cur = conn.cursor(cursor_factory=RealDictCursor)
-    
     try:
+        trabalhador_id = int(trabalhador_id_raw)
+    except (ValueError, TypeError):
+        return jsonify({"agendamentos": [], "error": "ID de trabalhador inválido"}), 400
+
+    conn = None
+    try:
+        conn = get_connection()
+        cur = conn.cursor(cursor_factory=RealDictCursor)
+        
+        # Usamos LEFT JOIN para garantir que o agendamento apareça mesmo se o funcionário
+        # tiver sido removido ou houver inconsistência nos dados.
         cur.execute("""
             SELECT 
                 ae.id,
                 ae.status,
                 ae.especialidade,
-                f.nome as medico,
+                COALESCE(f.nome, 'Profissional não identificado') as medico,
                 TO_CHAR(ae.data_consulta, 'YYYY-MM-DD') as data,
                 TO_CHAR(ae.horario, 'HH24:MI') as horario,
                 ae.unidade
             FROM agendamento_exames ae
-            JOIN funcionarios f ON ae.funcionario_id = f.id
+            LEFT JOIN funcionarios f ON ae.funcionario_id = f.id
             WHERE ae.trabalhador_id = %s AND ae.status = 'Agendado'
             ORDER BY ae.data_consulta DESC, ae.horario DESC
         """, (trabalhador_id,))
         rows = cur.fetchall()
         return jsonify({"agendamentos": rows})
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        print(f"ERRO ao buscar agendamentos: {e}")
+        return jsonify({"agendamentos": [], "error": str(e)}), 500
     finally:
-        cur.close()
-        conn.close()
+        if conn:
+            cur.close()
+            conn.close()
 
 # ====================
 # Cancelar Agendamento

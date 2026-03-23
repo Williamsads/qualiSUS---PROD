@@ -604,8 +604,8 @@
                 Pessoais</span>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-6 gap-5">
-              <div class="md:col-span-4">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-x-4 gap-y-5">
+              <div class="md:col-span-8">
                 <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 ml-1">Nome Completo
                   (Conforme Identidade)*</label>
                 <div class="relative group">
@@ -618,7 +618,7 @@
                 </div>
               </div>
 
-              <div class="md:col-span-2">
+              <div class="md:col-span-4">
                 <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 ml-1">Data
                   Nascimento*</label>
                 <div class="relative group">
@@ -630,20 +630,7 @@
                 </div>
               </div>
 
-              <div class="md:col-span-3">
-                <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 ml-1">Cartão SUS
-                  (CNS)*</label>
-                <div class="relative group">
-                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
-                    <i data-lucide="id-card" class="w-4 h-4 text-pe-navy"></i>
-                  </div>
-                  <input type="text" id="modal_cns"
-                    class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-gray-800 transition-all focus:ring-4 focus:ring-pe-navy/10 focus:border-pe-navy focus:bg-white outline-none"
-                    placeholder="000.0000.0000.0000">
-                </div>
-              </div>
-
-              <div class="md:col-span-3">
+              <div class="md:col-span-5">
                 <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 ml-1">Telefone /
                   WhatsApp*</label>
                 <div class="relative group">
@@ -656,7 +643,7 @@
                 </div>
               </div>
 
-              <div class="md:col-span-6">
+              <div class="md:col-span-7">
                 <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 ml-1">E-mail para
                   Notificações*</label>
                 <div class="relative group">
@@ -678,57 +665,84 @@
                 Residência</span>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-6 gap-5">
-              <div class="md:col-span-2">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-x-4 gap-y-5">
+              <div class="md:col-span-4 max-w-[220px]">
                 <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 ml-1">CEP*</label>
                 <div class="flex gap-2">
                   <div class="relative flex-1 group">
-                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
                       <i data-lucide="map-pin" class="w-4 h-4 text-pe-navy"></i>
                     </div>
                     <input type="text" id="modal_cep"
-                      class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-gray-800 transition-all focus:ring-4 focus:ring-pe-navy/10 focus:border-pe-navy focus:bg-white outline-none"
+                      class="w-full pl-10 pr-2 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-gray-800 transition-all focus:ring-4 focus:ring-pe-navy/10 focus:border-pe-navy focus:bg-white outline-none"
                       placeholder="00000-000">
                   </div>
                   <button type="button" id="btnBuscarCep"
-                    class="px-3.5 bg-pe-navy text-white rounded-xl hover:bg-pe-navy/90 transition-all shadow-md active:scale-95 group">
+                    class="px-3.5 bg-pe-navy text-white rounded-xl hover:bg-pe-navy/90 transition-all shadow-md active:scale-95 group flex items-center flex-shrink-0">
                     <i data-lucide="search" class="w-5 h-5 transition-transform group-hover:scale-110"></i>
                   </button>
                 </div>
               </div>
 
-              <div class="md:col-span-3">
+              <div class="md:col-span-6">
                 <label
                   class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 ml-1">Logradouro*</label>
-                <input type="text" id="modal_logradouro"
-                  class="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-gray-800 transition-all focus:ring-4 focus:ring-pe-navy/10 focus:border-pe-navy focus:bg-white outline-none"
-                  placeholder="Rua, Avenida...">
-              </div>
-
-              <div class="md:col-span-1">
-                <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 ml-1">Nº*</label>
-                <input type="text" id="modal_numero"
-                  class="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-gray-800 transition-all focus:ring-4 focus:ring-pe-navy/10 focus:border-pe-navy focus:bg-white outline-none"
-                  placeholder="S/N">
+                <div class="relative group">
+                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
+                    <i data-lucide="route" class="w-4 h-4 text-pe-navy"></i>
+                  </div>
+                  <input type="text" id="modal_logradouro"
+                    class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-gray-800 transition-all focus:ring-4 focus:ring-pe-navy/10 focus:border-pe-navy focus:bg-white outline-none"
+                    placeholder="Rua, Avenida...">
+                </div>
               </div>
 
               <div class="md:col-span-2">
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 ml-1">Nº*</label>
+                <div class="relative group">
+                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
+                    <i data-lucide="hash" class="w-4 h-4 text-pe-navy"></i>
+                  </div>
+                  <input type="text" id="modal_numero"
+                    class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-gray-800 transition-all focus:ring-4 focus:ring-pe-navy/10 focus:border-pe-navy focus:bg-white outline-none"
+                    placeholder="S/N">
+                </div>
+              </div>
+
+              <div class="md:col-span-5">
                 <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 ml-1">Bairro*</label>
-                <input type="text" id="modal_bairro"
-                  class="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-gray-800 transition-all focus:ring-4 focus:ring-pe-navy/10 focus:border-pe-navy focus:bg-white outline-none">
+                <div class="relative group">
+                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
+                    <i data-lucide="map" class="w-4 h-4 text-pe-navy"></i>
+                  </div>
+                  <input type="text" id="modal_bairro"
+                    class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-gray-800 transition-all focus:ring-4 focus:ring-pe-navy/10 focus:border-pe-navy focus:bg-white outline-none"
+                    placeholder="Bairro">
+                </div>
               </div>
 
-              <div class="md:col-span-3">
+              <div class="md:col-span-5">
                 <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 ml-1">Cidade*</label>
-                <input type="text" id="modal_cidade"
-                  class="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-gray-800 transition-all focus:ring-4 focus:ring-pe-navy/10 focus:border-pe-navy focus:bg-white outline-none">
+                <div class="relative group">
+                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
+                    <i data-lucide="building" class="w-4 h-4 text-pe-navy"></i>
+                  </div>
+                  <input type="text" id="modal_cidade"
+                    class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-gray-800 transition-all focus:ring-4 focus:ring-pe-navy/10 focus:border-pe-navy focus:bg-white outline-none"
+                    placeholder="Cidade">
+                </div>
               </div>
 
-              <div class="md:col-span-1">
+              <div class="md:col-span-2">
                 <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 ml-1">UF*</label>
-                <input type="text" id="modal_uf"
-                  class="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-gray-800 transition-all focus:ring-4 focus:ring-pe-navy/10 focus:border-pe-navy focus:bg-white outline-none"
-                  maxlength="2">
+                <div class="relative group">
+                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
+                    <i data-lucide="flag" class="w-4 h-4 text-pe-navy"></i>
+                  </div>
+                  <input type="text" id="modal_uf"
+                    class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-gray-800 transition-all focus:ring-4 focus:ring-pe-navy/10 focus:border-pe-navy focus:bg-white outline-none"
+                    maxlength="2" placeholder="UF">
+                </div>
               </div>
             </div>
           </div>
@@ -1741,17 +1755,31 @@
         // 👉 SEMPRE abre o modal para confirmar/atualizar dados
         const t = pacienteGlobal;
 
-        if (window.modal_nome) modal_nome.value = t.nome_completo || '';
-        if (window.modal_cns) modal_cns.value = t.cns || '';
-        if (window.modal_nascimento) modal_nascimento.value = t.data_nascimento || '';
-        if (window.modal_telefone) modal_telefone.value = t.telefone || '';
-        if (window.modal_email) modal_email.value = t.email || '';
-        if (window.modal_cep) modal_cep.value = t.cep || '';
-        if (window.modal_logradouro) modal_logradouro.value = t.logradouro || '';
-        if (window.modal_numero) modal_numero.value = t.numero || '';
-        if (window.modal_bairro) modal_bairro.value = t.bairro || '';
-        if (window.modal_cidade) modal_cidade.value = t.cidade || '';
-        if (window.modal_uf) modal_uf.value = t.uf || '';
+        // Função auxiliar para formatar data para o input (YYYY-MM-DD)
+        const formatForInput = (dateVal) => {
+          if (!dateVal) return '';
+          try {
+            const d = new Date(dateVal);
+            if (isNaN(d.getTime())) return '';
+            return d.toISOString().split('T')[0];
+          } catch (e) { return ''; }
+        };
+
+        const setVal = (id, val) => {
+          const el = document.getElementById(id);
+          if (el) el.value = val || '';
+        };
+
+        setVal('modal_nome', t.nome_completo);
+        setVal('modal_nascimento', formatForInput(t.data_nascimento));
+        setVal('modal_telefone', t.telefone);
+        setVal('modal_email', t.email);
+        setVal('modal_cep', t.cep);
+        setVal('modal_logradouro', t.logradouro);
+        setVal('modal_numero', t.numero);
+        setVal('modal_bairro', t.bairro);
+        setVal('modal_cidade', t.cidade);
+        setVal('modal_uf', t.uf);
 
         const modal = document.getElementById('modalCadastro');
         modal.classList.remove('hidden');
@@ -1768,12 +1796,11 @@
 
       // Validação de Campos Obrigatórios
       const mNome = document.getElementById('modal_nome').value;
-      const mCns = document.getElementById('modal_cns').value;
       const mNasc = document.getElementById('modal_nascimento').value;
       const mTel = document.getElementById('modal_telefone').value;
 
-      if (!mNome || !mCns || !mNasc || !mTel) {
-        showToast("Por favor, preencha os campos obrigatórios: Nome, CNS, Data de Nascimento e Telefone.", "warning");
+      if (!mNome || !mNasc || !mTel) {
+        showToast("Por favor, preencha os campos obrigatórios: Nome, Data de Nascimento e Telefone.", "warning");
         return;
       }
 
@@ -1782,7 +1809,6 @@
         trabalhador_id: pacienteGlobal.id,
         trabalhador: {
           nome_completo: document.getElementById('modal_nome').value,
-          cns: document.getElementById('modal_cns').value,
           data_nascimento: document.getElementById('modal_nascimento').value,
           telefone: document.getElementById('modal_telefone').value,
           email: document.getElementById('modal_email').value,
@@ -1814,12 +1840,24 @@
           return;
         }
 
+        // 👉 ATUALIZA O ESTADO GLOBAL COM OS NOVOS DADOS
+        if (pacienteGlobal) {
+          Object.assign(pacienteGlobal, payload.trabalhador);
+        }
+
+        // 👉 ATUALIZA A UI (CARD DO PASSO 1) SE ELE AINDA ESTIVER VISÍVEL OU PARA QUANDO VOLTAR
+        if (document.getElementById('found-name')) {
+          document.getElementById('found-name').innerText = payload.trabalhador.nome_completo;
+        }
+
         modal.classList.add("hidden");
         modal.classList.remove("flex");
 
+        // Avança para o próximo passo
         step1.classList.add("hidden");
         step2.classList.remove("hidden");
         updateStepProgress(1);
+        carregarEspecialidades(); // Carrega as especialidades para o passo 2
 
       } catch (err) {
         console.error(err);
@@ -2270,9 +2308,6 @@
                   <i data-lucide="calendar-plus" class="w-5 h-5"></i>
                   Novo Agendamento
                 </button>
-                <button onclick="window.location.href='/'" class="w-full bg-white border-2 border-gray-100 text-gray-400 px-8 py-4 rounded-2xl font-black uppercase text-[11px] tracking-widest hover:border-pe-navy hover:text-pe-navy transition-all">
-                  Voltar ao Painel
-                </button>
               </div>
             </div>
           `;
@@ -2442,29 +2477,44 @@
     // ===============================
     // AGENDAMENTOS DO PACIENTE
     // ===============================
+    let agendamentosAtuais = []; // Cache global para evitar quebra de aspas no HTML
+
     async function carregarAgendamentos(trabalhadorId) {
       const section = document.getElementById('appointments-section');
       if (!section) return;
 
+      // Validação básica do ID
+      if (!trabalhadorId || String(trabalhadorId).toLowerCase() === 'undefined') {
+        section.classList.add('hidden');
+        return;
+      }
+
       section.innerHTML = '<div class="py-4 text-gray-500">Buscando seus agendamentos...</div>';
       section.className = "mt-6 bg-white rounded-xl border border-gray-100 p-4 transition-all";
+      section.classList.remove('hidden');
 
       try {
         const res = await fetch(`/api/agendar_exame/trabalhador/agendamentos?trabalhador_id=${trabalhadorId}`);
+
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({}));
+          throw new Error(errorData.error || `Erro HTTP: ${res.status}`);
+        }
+
         const data = await res.json();
         const lista = data.agendamentos || [];
+        agendamentosAtuais = lista; // Atualiza cache global
 
         if (lista.length === 0) {
           section.className = "mt-6 bg-white rounded-xl border-2 border-dashed border-gray-200 p-8 flex flex-col items-center justify-center text-center";
           section.innerHTML = `
             <div class="bg-gray-50 p-3 rounded-2xl mb-3">
-              <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-              </svg>
+              <i data-lucide="calendar-x" class="w-8 h-8 text-gray-400"></i>
             </div>
             <h4 class="text-base font-bold text-gray-800">Nenhuma consulta agendada</h4>
             <p class="text-sm text-gray-500 mt-1">As consultas agendadas aparecerão aqui</p>
           `;
+          if (typeof lucide !== 'undefined') lucide.createIcons();
           return;
         }
 
@@ -2473,12 +2523,16 @@
             <i data-lucide="calendar" class="w-4 h-4"></i> Meus Agendamentos
           </h4>
           <div class="space-y-3">
-            ${lista.map(a => {
+            ${lista.map((a, index) => {
+          // Proteção contra dados nulos/errados
+          if (!a.data || !a.horario) return '';
+
           const [y, m, d] = a.data.split('-');
           const dataFmt = `${d}/${m}/${y}`;
 
-          // Verifica se falta menos de 12h para o cancelamento (apenas visual)
-          const consultaTime = new Date(`${a.data}T${a.horario}`).getTime();
+          // Parser de data mais robusto pra evitar NaNs
+          // Adicionamos :00 para garantir o formato ISO completo
+          const consultaTime = new Date(`${a.data}T${a.horario}:00`).getTime();
           const agora = new Date().getTime();
           const diffHoras = (consultaTime - agora) / (1000 * 60 * 60);
           const podeCancelar = diffHoras >= 12;
@@ -2487,7 +2541,7 @@
                 <div class="relative bg-blue-50/50 border-2 border-dashed border-blue-200 rounded-3xl p-6 md:p-8 transition-all hover:bg-blue-50 group">
                   <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div class="space-y-3">
-                      <h4 class="text-lg font-black text-pe-navy mb-4">Sua Consulta Agendada</h4>
+                      <h4 class="text-lg font-black text-pe-navy">Agendamento Confirmado</h4>
                       
                       <div class="flex items-center gap-3 text-gray-700">
                         <div class="w-8 h-8 bg-white rounded-lg flex items-center justify-center text-pe-royal shadow-sm">
@@ -2513,10 +2567,11 @@
 
                     <div class="flex md:flex-col items-center gap-3">
                       <button 
-                        onclick='cancelarAgendamento(${JSON.stringify(a)})'
+                        onclick="abrirCancelamentoCache(${index})"
                         ${podeCancelar ? '' : 'disabled title="Cancelamento permitido apenas com 12h de antecedência"'}
                         class="w-full md:w-auto px-8 py-3.5 bg-red-600 text-white font-black rounded-2xl hover:bg-red-700 shadow-xl shadow-red-600/20 transition-all transform hover:scale-[1.05] active:scale-95 disabled:opacity-30 disabled:grayscale disabled:cursor-not-allowed flex items-center justify-center gap-2"
                       >
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
                         Cancelar
                       </button>
                     </div>
@@ -2529,8 +2584,21 @@
         if (typeof lucide !== 'undefined') lucide.createIcons();
 
       } catch (err) {
-        console.error(err);
-        section.innerHTML = '<div class="py-4 text-pe-red text-sm font-bold">Erro ao carregar agendamentos.</div>';
+        console.error("Erro no carregarAgendamentos:", err);
+        section.innerHTML = `
+          <div class="py-6 px-4 bg-red-50 border border-red-100 rounded-2xl text-center">
+            <p class="text-red-600 text-sm font-bold mb-1">Houve um problema ao carregar seus agendamentos.</p>
+            <p class="text-red-400 text-xs italic">${escapeHTML(err.message)}</p>
+          </div>
+        `;
+      }
+    }
+
+    // Função ponte para evitar quebra de aspas
+    function abrirCancelamentoCache(index) {
+      const agendamento = agendamentosAtuais[index];
+      if (agendamento && typeof cancelarAgendamento === 'function') {
+        cancelarAgendamento(agendamento);
       }
     }
 

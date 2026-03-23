@@ -107,261 +107,152 @@
 </head>
 
 <body
-    class="bg-gray-50 dark:bg-gray-950 min-h-screen w-full flex font-sans text-gray-800 dark:text-gray-100 transition-colors duration-500">
+    class="bg-brand-900 min-h-screen w-full flex items-center justify-center font-sans text-gray-800 transition-colors duration-500 relative overflow-hidden">
 
-    <!-- ======================= LEFT: RESET FORM ======================= -->
-    <div
-        class="w-full md:w-[480px] lg:w-[550px] solid-panel min-h-screen flex flex-col relative z-20 shadow-xl flex-shrink-0 animate-fade-in transition-colors duration-500">
+    <!-- Background -->
+    <div class="absolute inset-0 z-0">
+        <img src="{{ url_for('static', filename='img/centro_recife.jpg') }}"
+            class="w-full h-full object-cover opacity-40 scale-105 animate-[kenburns_20s_infinite] blur-md object-center">
+        <div class="absolute inset-0 bg-gradient-to-br from-[#001931]/90 to-[#004b90]/80 mix-blend-multiply z-10"></div>
+        <div class="absolute inset-0 bg-brand-900/60 z-20"></div>
+    </div>
 
-        <!-- Header / Logo -->
-        <div class="px-10 py-8 flex flex-col items-center flex-none">
-            <!-- Logo Light Mode -->
-            <img src="{{ url_for('static', filename='img/Logo_QUALISUS_COR_PRETO.png') }}" alt="Logo QualiSUS"
-                class="h-20 md:h-28 mb-4 drop-shadow-xl hover:scale-105 transition-all duration-500 w-auto object-contain block dark:hidden">
+    <!-- Center Content -->
+    <div class="relative z-30 w-full max-w-md p-4 sm:p-8 animate-fade-in flex flex-col items-center">
 
-            <!-- Logo Dark Mode -->
+        <!-- Logo -->
+        <a href="/login" class="block mb-8 hover:scale-105 transition-transform duration-300">
             <img src="{{ url_for('static', filename='img/Logo da QualiSUS com pinwheel colorido.png') }}"
                 alt="Logo QualiSUS"
-                class="h-20 md:h-28 mb-4 drop-shadow-xl hover:scale-105 transition-all duration-500 w-auto object-contain hidden dark:block">
-            <!-- Arco-íris da Bandeira de PE -->
-            <div class="flex h-1.5 w-24 rounded-full overflow-hidden shadow-sm">
+                class="h-16 sm:h-20 w-auto object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]">
+        </a>
+
+        <!-- Glass Card -->
+        <div
+            class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-[2rem] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.5)] p-8 sm:p-10 w-full relative overflow-hidden">
+            <!-- Decorative accent -->
+            <div class="absolute top-0 left-0 w-full h-1.5 flex opacity-90">
                 <div class="flex-1 bg-pe-blue"></div>
                 <div class="flex-1 bg-pe-gold"></div>
                 <div class="flex-1 bg-pe-red"></div>
                 <div class="flex-1 bg-pe-green"></div>
             </div>
-        </div>
 
-
-        <!-- Scrollable Content Area -->
-        <div class="flex-1 px-10 flex flex-col justify-center">
-
-            <div class="w-full max-w-sm mx-auto space-y-8">
-
-                <div class="text-center space-y-2 animate-slide-up" style="animation-delay: 0.1s;">
-                    <h2 class="text-3xl font-extrabold text-white tracking-tight">Nova Senha
-                    </h2>
-                    <p class="text-sm text-slate-400 font-medium">
-                        Crie uma credencial robusta para a sua segurança.
-                    </p>
+            <div class="text-center space-y-3 mb-8 mt-2">
+                <div
+                    class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-white/10 text-white shadow-inner mb-2 border border-white/10">
+                    <i data-lucide="shield-check" class="w-7 h-7"></i>
                 </div>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Nova Senha</h2>
+                <p class="text-sm text-blue-100/80 font-medium">
+                    Digite sua nova credencial de acesso.
+                </p>
+            </div>
 
-                <!-- Flash Messages -->
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                <div class="space-y-3 animate-slide-up" style="animation-delay: 0.2s;">
-                    {% for categoria, mensagem in messages %}
-                    <div
-                        class="flex items-center gap-3 p-4 rounded-2xl border text-sm font-bold shadow-sm backdrop-blur-md
-                                    {% if categoria == 'erro' %} bg-red-50/80 border-red-200 text-red-700 dark:bg-red-900/20 dark:border-red-800 dark:text-red-400
-                                    {% elif categoria == 'sucesso' %} bg-green-50/80 border-green-200 text-green-700 dark:bg-green-900/20 dark:border-green-800 dark:text-green-400
-                                    {% else %} bg-blue-50/80 border-blue-200 text-blue-700 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-400 {% endif %}">
-                        <i data-lucide="{% if categoria == 'erro' %}alert-circle{% elif categoria == 'sucesso' %}check-circle{% else %}info{% endif %}"
-                            class="w-5 h-5"></i>
-                        <span>{{ mensagem }}</span>
-                    </div>
-                    {% endfor %}
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="space-y-3 mb-6">
+                {% for categoria, mensagem in messages %}
+                <div class="flex items-center gap-3 p-4 rounded-xl border text-[13px] font-bold backdrop-blur-md
+                            {% if categoria == 'erro' %} bg-red-500/20 border-red-500/30 text-red-200
+                            {% elif categoria == 'sucesso' %} bg-emerald-500/20 border-emerald-500/30 text-emerald-200
+                            {% else %} bg-blue-500/20 border-blue-500/30 text-blue-200 {% endif %}">
+                    <i data-lucide="{% if categoria == 'erro' %}alert-circle{% elif categoria == 'sucesso' %}check-circle{% else %}info{% endif %}"
+                        class="w-5 h-5 flex-shrink-0"></i>
+                    <span>{{ mensagem }}</span>
                 </div>
-                {% endif %}
-                {% endwith %}
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
 
-                <!-- Form -->
-                <form autocomplete="off" method="POST" class="space-y-6">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <input type="hidden" name="token" value="{{ token }}">
+            <!-- Form -->
+            <form autocomplete="off" method="POST" class="space-y-5">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="token" value="{{ token }}">
 
-                    <div class="space-y-4">
-                        <!-- Password -->
-                        <div class="space-y-2 animate-slide-up" style="animation-delay: 0.3s;">
-                            <div class="ml-1">
-                                <label for="senha"
-                                    class="block text-xs font-black uppercase tracking-widest text-slate-500">Nova
-                                    Senha</label>
-                            </div>
-                            <div class="relative group">
-                                <div
-                                    class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-600 transition-colors">
-                                    <i data-lucide="lock" class="w-5 h-5"></i>
-                                </div>
-                                <input type="password" id="senha" name="senha" placeholder="••••••••" required
-                                    class="w-full pl-12 pr-12 py-4 input-solid rounded-2xl outline-none placeholder-slate-400 font-bold tracking-tight">
-
-                                <button type="button" id="toggleSenha1" data-target="senha"
-                                    class="toggle-btn absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-blue-600 cursor-pointer transition-colors"
-                                    tabindex="-1">
-                                    <i data-lucide="eye" class="w-5 h-5 hidden eye-open"></i>
-                                    <i data-lucide="eye-off" class="w-5 h-5 eye-closed"></i>
-                                </button>
-                            </div>
+                <!-- Nova Senha -->
+                <div class="space-y-2">
+                    <label for="senha"
+                        class="block text-[13px] font-bold uppercase tracking-widest text-blue-50 ml-1">Nova
+                        Senha</label>
+                    <div class="relative group">
+                        <div
+                            class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-white/40 group-focus-within:text-pe-blue transition-colors">
+                            <i data-lucide="lock" class="w-5 h-5"></i>
                         </div>
-
-                        <!-- Confirm Password -->
-                        <div class="space-y-2 animate-slide-up" style="animation-delay: 0.4s;">
-                            <div class="ml-1">
-                                <label for="confirmar_senha"
-                                    class="block text-xs font-black uppercase tracking-widest text-slate-500">Confirmar
-                                    Senha</label>
-                            </div>
-                            <div class="relative group">
-                                <div
-                                    class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-600 transition-colors">
-                                    <i data-lucide="shield-check" class="w-5 h-5"></i>
-                                </div>
-                                <input type="password" id="confirmar_senha" name="confirmar_senha"
-                                    placeholder="••••••••" required
-                                    class="w-full pl-12 pr-12 py-4 input-solid rounded-2xl outline-none placeholder-slate-400 font-bold tracking-tight">
-
-                                <button type="button" id="toggleSenha2" data-target="confirmar_senha"
-                                    class="toggle-btn absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-blue-600 cursor-pointer transition-colors"
-                                    tabindex="-1">
-                                    <i data-lucide="eye" class="w-5 h-5 hidden eye-open"></i>
-                                    <i data-lucide="eye-off" class="w-5 h-5 eye-closed"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Submit Button -->
-                    <div class="pt-4 animate-slide-up" style="animation-delay: 0.5s;">
-                        <button type="submit" id="btnSubmit"
-                            class="group w-full bg-system-blue hover:brightness-110 text-white py-4 rounded-2xl font-black text-lg shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/30 hover:-translate-y-1 active:scale-95 transition-all duration-300 flex items-center justify-center gap-3">
-                            <span>Confirmar Alteração</span>
-                            <i data-lucide="check-circle-2"
-                                class="w-6 h-6 group-hover:scale-110 transition-transform"></i>
+                        <input type="password" id="senha" name="senha" placeholder="••••••••" required
+                            class="w-full pl-12 pr-12 py-4 bg-black/20 border border-white/10 rounded-xl outline-none text-white placeholder-white/30 text-base font-bold focus:bg-black/40 focus:border-pe-blue focus:ring-4 focus:ring-pe-blue/30 transition-all">
+                        <button type="button" data-target="senha"
+                            class="toggle-btn absolute inset-y-0 right-0 pr-4 flex items-center text-white/40 hover:text-white cursor-pointer transition-colors"
+                            tabindex="-1">
+                            <i data-lucide="eye" class="w-5 h-5 hidden eye-open"></i>
+                            <i data-lucide="eye-off" class="w-5 h-5 eye-closed"></i>
                         </button>
                     </div>
-                </form>
-
-                <div class="text-center animate-slide-up" style="animation-delay: 0.6s;">
-                    <a href="/login"
-                        class="text-[10px] font-black uppercase tracking-widest text-blue-400 hover:text-blue-300 transition-all">
-                        Voltar para o login
-                    </a>
                 </div>
+
+                <!-- Confirmar Senha -->
+                <div class="space-y-2">
+                    <label for="confirmar_senha"
+                        class="block text-[13px] font-bold uppercase tracking-widest text-blue-50 ml-1">Confirmar
+                        Senha</label>
+                    <div class="relative group">
+                        <div
+                            class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-white/40 group-focus-within:text-pe-blue transition-colors">
+                            <i data-lucide="check-square" class="w-5 h-5"></i>
+                        </div>
+                        <input type="password" id="confirmar_senha" name="confirmar_senha" placeholder="••••••••"
+                            required
+                            class="w-full pl-12 pr-12 py-4 bg-black/20 border border-white/10 rounded-xl outline-none text-white placeholder-white/30 text-base font-bold focus:bg-black/40 focus:border-pe-blue focus:ring-4 focus:ring-pe-blue/30 transition-all">
+                        <button type="button" data-target="confirmar_senha"
+                            class="toggle-btn absolute inset-y-0 right-0 pr-4 flex items-center text-white/40 hover:text-white cursor-pointer transition-colors"
+                            tabindex="-1">
+                            <i data-lucide="eye" class="w-5 h-5 hidden eye-open"></i>
+                            <i data-lucide="eye-off" class="w-5 h-5 eye-closed"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="pt-4">
+                    <button type="submit" id="btnSubmit"
+                        class="w-full bg-pe-blue hover:bg-blue-500 text-white py-4 rounded-xl font-black text-base md:text-lg shadow-[0_10px_20px_-10px_rgba(0,153,255,0.5)] hover:-translate-y-1 active:scale-95 transition-all duration-300 flex items-center justify-center gap-3 group">
+                        <span>Atualizar Senha</span>
+                        <i data-lucide="check-circle-2" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
+                    </button>
+                </div>
+            </form>
+
+            <div class="mt-8 pt-6 border-t border-white/10 text-center">
+                <a href="/login"
+                    class="text-xs sm:text-sm font-black uppercase tracking-widest text-blue-200 hover:text-white transition-all flex items-center justify-center gap-2">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    Voltar para o Login
+                </a>
             </div>
         </div>
 
         <!-- Footer -->
-        <div class="p-10 text-center flex-none">
-            <div
-                class="flex items-center justify-center gap-4 mb-4 opacity-40 brightness-0 invert transition-all hover:opacity-100 duration-500">
-                <img src="{{ url_for('static', filename='img/GOV-JPG-1024x452-removebg-preview.png') }}" class="h-8"
-                    alt="Gov PE">
-            </div>
-            <p class="text-[10px] text-slate-500 font-black uppercase tracking-[0.3em] leading-relaxed">
-                © 2026 • QualiSUS PE<br>
-                <span class="font-medium normal-case tracking-normal opacity-50">Secretaria Estadual de Saúde</span>
+        <div class="mt-10 text-center flex flex-col items-center gap-4">
+            <img src="{{ url_for('static', filename='img/GOV-JPG-1024x452-removebg-preview.png') }}"
+                class="h-6 brightness-0 invert opacity-40 hover:opacity-100 transition-opacity" alt="Gov PE">
+            <p class="text-[10px] text-blue-100/40 font-black uppercase tracking-[0.2em] drop-shadow-md">
+                © 2026 • QualiSUS PE
             </p>
         </div>
     </div>
 
-    <!-- ======================= RIGHT: IMAGE SLIDER ======================= -->
-    <div class="fixed inset-0 md:relative md:block z-0 md:flex-1 min-h-screen bg-brand-900 overflow-hidden">
-
-        <!-- Overlay Gradient -->
-        <div
-            class="absolute inset-0 bg-gradient-to-t from-brand-900 via-brand-900/60 to-transparent z-10 pointer-events-none">
-        </div>
-
-        <!-- Images -->
-        <div id="sliderWrapper" class="relative w-full h-full">
-            <img id="imgSlide" src="{{ url_for('static', filename='img/Rua_do_Bom_Jesus,_Recife_antigo.jpg') }}"
-                class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out opacity-100 z-0 scale-105 animate-[kenburns_20s_infinite]">
-        </div>
-
-        <!-- Caption Area -->
-        <div class="absolute bottom-0 left-0 w-full p-12 z-20 text-white hidden md:block">
-            <div class="max-w-xl animate-slide-up" style="animation-delay: 0.3s;">
-                <span
-                    class="inline-block px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-semibold tracking-wide uppercase mb-3 border border-white/30">
-                    Pernambuco
-                </span>
-                <h2 id="captionTitle" class="text-4xl lg:text-5xl font-bold leading-tight mb-2 drop-shadow-lg">
-                    Cuidando de quem cuida da nossa gente.
-                </h2>
-                <p id="captionDesc" class="text-lg text-blue-100/90 font-light max-w-md drop-shadow-md">
-                    Sistema integrado para gestão e acompanhamento da saúde dos servidores estaduais.
-                </p>
-
-                <!-- Dots -->
-                <div class="flex gap-2 mt-8">
-                    <button class="w-10 h-1.5 rounded-full bg-white transition-all duration-300 opacity-100"
-                        data-slide="0"></button>
-                    <button class="w-2 h-2 rounded-full bg-white/50 hover:bg-white transition-all duration-300"
-                        data-slide="1"></button>
-                    <button class="w-2 h-2 rounded-full bg-white/50 hover:bg-white transition-all duration-300"
-                        data-slide="2"></button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ======================= SCRIPTS ======================= -->
+    <!-- Init Scripts -->
     <script>
-        // Init Icons
         lucide.createIcons();
-
-        // Staggered Animations Logic
-        document.querySelectorAll('.animate-slide-up').forEach((el, i) => {
-            el.style.animationDelay = `${0.1 + (i * 0.08)}s`;
-        });
-
-        // --- Slider Logic ---
-        const slides = [
-            {
-                img: "{{ url_for('static', filename='img/Rua_do_Bom_Jesus,_Recife_antigo.jpg') }}",
-                title: "Cuidando de quem cuida.",
-                desc: "Sistema integrado para gestão e acompanhamento da saúde dos servidores."
-            },
-            {
-                img: "{{ url_for('static', filename='img/bairros-mais-caros-de-recife.jpg') }}",
-                title: "Modernidade e Eficiência.",
-                desc: "Acesso rápido e seguro a todas as informações que você precisa."
-            },
-            {
-                img: "{{ url_for('static', filename='img/centro_recife.jpg') }}",
-                title: "Pernambuco Mais Forte.",
-                desc: "Tecnologia a serviço da saúde pública do nosso estado."
-            },
-        ];
-
-        let currentSlide = 0;
-        const imgSlide = document.getElementById("imgSlide");
-        const captionTitle = document.getElementById("captionTitle");
-        const captionDesc = document.getElementById("captionDesc");
-        const dots = document.querySelectorAll("[data-slide]");
-
-        function showSlide(i) {
-            currentSlide = i;
-            imgSlide.style.opacity = '0';
-            setTimeout(() => {
-                imgSlide.src = slides[i].img;
-                imgSlide.style.opacity = '1';
-                if (captionTitle) captionTitle.innerText = slides[i].title;
-                if (captionDesc) captionDesc.innerText = slides[i].desc;
-                dots.forEach((d, idx) => {
-                    if (idx === i) {
-                        d.classList.remove("w-2", "bg-white/50", "hover:bg-white");
-                        d.classList.add("w-10", "bg-white");
-                    } else {
-                        d.classList.add("w-2", "bg-white/50", "hover:bg-white");
-                        d.classList.remove("w-10", "bg-white");
-                    }
-                });
-            }, 200);
-        }
-
-        dots.forEach((dot, i) => dot.addEventListener("click", () => showSlide(i)));
-        setInterval(() => showSlide((currentSlide + 1) % slides.length), 6000);
-
-        // --- Password Toggle ---
         document.querySelectorAll('.toggle-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
+            btn.addEventListener('click', () => {
                 const targetId = btn.getAttribute('data-target');
                 const input = document.getElementById(targetId);
                 const iconOpen = btn.querySelector('.eye-open');
                 const iconClosed = btn.querySelector('.eye-closed');
-
                 if (input.type === 'password') {
                     input.type = 'text';
                     iconOpen.classList.remove('hidden');

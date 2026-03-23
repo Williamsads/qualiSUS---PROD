@@ -1273,6 +1273,18 @@
     if (e.target.id === 'details-modal') closeDetails();
   });
 
+  // Polling em tempo real (atualiza a cada 10 segundos)
+  setInterval(() => {
+    // Só atualiza se a aba estiver visível e se não houver modal aberto impedindo a visão
+    const isModalOpen = !document.getElementById('details-modal').classList.contains('invisible') ||
+      !document.getElementById('modal-historico').classList.contains('hidden') ||
+      !document.getElementById('modal-reagendar').classList.contains('hidden');
+
+    if (document.visibilityState === 'visible' && !isModalOpen) {
+      fetchAppointments();
+    }
+  }, 10000);
+
   fetchAppointments();
   carregarUnidadesFilters(); // Carrega dinamicamente a lista no boot da tela
 </script>
