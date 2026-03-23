@@ -318,15 +318,15 @@
                                 <select onchange="alterarStatusUsuario(this.getAttribute('data-user-id'), this.value)"
                                     data-user-id="{{ user.id }}" class="status-select appearance-none text-[9px] font-black px-3 py-1 pr-7 rounded-lg border-none ring-1 transition-all cursor-pointer outline-none uppercase tracking-widest
                                            {% if user.ativo %} 
-                                                bg-emerald-50 text-emerald-600 ring-emerald-100/50
+                                                bg-emerald-100 text-emerald-800 ring-emerald-200
                                            {% else %} 
-                                                bg-red-50 text-red-500 ring-red-100/50
+                                                bg-red-100 text-red-800 ring-red-200
                                            {% endif %}">
                                     <option value="ativo" {% if user.ativo %}selected{% endif %}>Ativo</option>
                                     <option value="inativo" {% if not user.ativo %}selected{% endif %}>Inativo</option>
                                 </select>
                                 <i data-lucide="chevron-down" class="absolute right-2 top-1/2 -translate-y-1/2 w-2.5 h-2.5 transition-colors pointer-events-none 
-                                   {% if user.ativo %} text-emerald-400 {% else %} text-red-300 {% endif %}"></i>
+                                   {% if user.ativo %} text-emerald-600 {% else %} text-red-600 {% endif %}"></i>
                             </div>
                         </td>
                         <td class="px-6 py-3 text-right">

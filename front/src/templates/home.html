@@ -14,52 +14,57 @@
     </div>
 
     <!-- HERO SECTION: REVITALIZED BLUE -->
+    <!-- HERO SECTION: VIBRANT WELCOME BANNER (V2.2) -->
     <section
-        class="rounded-[2rem] overflow-hidden relative group bg-gradient-to-r from-blue-600 to-blue-500 shadow-xl shadow-blue-500/20">
-        <!-- Ambient Background Glow -->
-        <div class="absolute -right-20 -top-20 w-64 h-64 bg-white/10 rounded-full blur-3xl transition-all duration-700">
+        class="rounded-[2.5rem] overflow-hidden relative group shadow-2xl shadow-blue-900/10 py-[28px] px-[32px] text-white"
+        style="background: linear-gradient(135deg, #1a3faa 0%, #2563eb 60%, #3b82f6 100%)">
+
+        <!-- Decoration Circles -->
+        <div class="absolute -right-[40px] -top-[60px] w-[220px] h-[220px] bg-white/5 rounded-full pointer-events-none">
+        </div>
+        <div
+            class="absolute right-[100px] top-[40px] w-[120px] h-[120px] bg-white opacity-[0.04] rounded-full pointer-events-none">
         </div>
 
-        <div class="flex flex-col lg:flex-row items-stretch min-h-[300px] relative z-10">
-            <!-- Left Info Side -->
-            <div class="flex-1 p-8 sm:p-12 flex flex-col justify-center">
-                <h2 class="text-4xl sm:text-5xl mb-4 leading-tight tracking-tight text-white font-light">
-                    Bom dia, <span class="font-bold">{{ session.get('nome', 'Servidor').split(' ')[0] }}</span>
+        <div class="flex flex-col lg:flex-row items-center justify-between gap-12 relative z-10">
+            <!-- Zone 1: Greeting & Context -->
+            <div class="flex-1 text-center lg:text-left space-y-2">
+                <h2 class="text-[26px] font-bold leading-tight tracking-tight">
+                    Bom dia, {{ session.get('nome', 'Servidor').split(' ')[0] }}
                 </h2>
-                <p class="text-blue-50 max-w-lg text-xl font-medium leading-relaxed opacity-90">
-                    Você tem <span class="text-white font-black underline decoration-white/30 underline-offset-4">{{
-                        atendimentos_hoje }} pacientes</span> aguardando na sua fila de atendimentos.
+                <p class="text-[14px] font-normal opacity-[0.85] max-w-sm mx-auto lg:mx-0 leading-relaxed">
+                    {% if atendimentos_hoje > 0 %}
+                    Você tem <span class="font-bold underline decoration-white/40 decoration-2 underline-offset-4">{{
+                        atendimentos_hoje }} pacientes</span> aguardando atendimento.
+                    {% else %}
+                    Fila vazia. Aproveite para organizar sua agenda.
+                    {% endif %}
                 </p>
             </div>
 
-            <!-- Right Metrics Side (Integrated) -->
-            <div
-                class="w-full lg:w-[320px] bg-white/5 backdrop-blur-sm border-l border-white/10 flex flex-col items-center justify-center p-8 text-center group/agenda translate-x-0">
-                <div class="mb-6 relative">
-                    <div
-                        class="w-16 h-16 rounded-2xl bg-white/10 text-white flex items-center justify-center border border-white/20 shadow-lg group-hover/agenda:scale-110 transition-transform duration-500">
-                        <i data-lucide="calendar" class="w-8 h-8"></i>
-                    </div>
-                    <div class="absolute -top-2 -right-2 flex h-5 w-5">
-                        <span
-                            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                        <span
-                            class="relative inline-flex rounded-full h-5 w-5 bg-emerald-500 border-2 border-blue-600"></span>
-                    </div>
-                </div>
-
-                <div class="space-y-1">
-                    <span class="text-7xl font-black text-white tracking-tighter leading-none block">{{
+            <!-- Zone 2: Main Metric (Central) -->
+            <div class="flex flex-col items-center justify-center text-center min-w-[200px]">
+                <span class="text-[10px] font-black uppercase tracking-[0.4em] opacity-40 mb-2">FILA DE ESPERA</span>
+                <div class="relative">
+                    {% if atendimentos_hoje > 0 %}
+                    <span class="text-[56px] font-black tracking-tighter leading-none block text-[#facc15]">{{
                         atendimentos_hoje }}</span>
-                    <span class="text-blue-100/60 font-black text-[10px] uppercase tracking-[0.3em] block mt-2">Fila de
-                        Espera</span>
+                    <span
+                        class="absolute -top-1 -right-4 h-3 w-3 bg-[#facc15] rounded-full animate-ping opacity-40"></span>
+                    {% else %}
+                    <span class="text-[32px] font-black tracking-tighter leading-none block opacity-50">{{
+                        atendimentos_hoje }}</span>
+                    {% endif %}
                 </div>
-
-                <div
-                    class="mt-8 px-4 py-1.5 rounded-full bg-white/10 border border-white/10 text-[9px] font-black text-white/80 uppercase tracking-widest">
-                    Status: Agenda Aberta
-                </div>
+                <span class="text-[11px] font-medium opacity-60 mt-3 tracking-wide text-center">
+                    {% if atendimentos_hoje > 0 %}
+                    PACIENTES AGUARDANDO
+                    {% else %}
+                    SEM PACIENTES NO MOMENTO
+                    {% endif %}
+                </span>
             </div>
+
         </div>
     </section>
 
@@ -75,25 +80,29 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {% set actions = [
             {'url': 'servidor.adicionar_funcionario', 'icon': 'user-plus', 'title': 'Admissão', 'subtitle': 'CADASTRAR
-            SERVIDOR'},
+            SERVIDOR', 'color': 'blue', 'rgb': '37, 99, 235'},
             {'url': 'agendamento_bp.pagina_agendamento', 'icon': 'calendar-plus', 'title': 'Novo Exame', 'subtitle':
-            'AGENDAMENTO CLÍNICO'},
+            'AGENDAMENTO CLÍNICO', 'color': 'indigo', 'rgb': '99, 102, 241'},
             {'url': 'trabalhadores.lista_trabalhadores', 'icon': 'search', 'title': 'Consultar', 'subtitle': 'BASE DE
-            DADOS SES'},
+            DADOS SES', 'color': 'emerald', 'rgb': '16, 185, 129'},
             {'url': 'log_agendamento.index', 'icon': 'file-text', 'title': 'Relatórios', 'subtitle': 'INTELIGÊNCIA DE
-            DADOS'}
+            DADOS', 'color': 'amber', 'rgb': '245, 158, 11'}
             ] %}
 
             {% for action in actions %}
             <a href="{{ url_for(action.url) }}"
-                class="bg-white border border-slate-200 shadow-md rounded-2xl p-8 flex flex-col items-center justify-center text-center h-56 hover:shadow-xl hover:border-blue-300 transition-all duration-300 cursor-pointer group active:scale-95">
-                <div
-                    class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mb-6 text-blue-600 transition-all duration-300 group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white">
-                    <i data-lucide="{{ action.icon }}" class="w-7 h-7"></i>
+                class="vibrant-card flex flex-col items-center justify-center text-center h-56 group"
+                style="--vibrant-rgb: {{ action.rgb }};">
+                <div class="mb-6 relative">
+                    <div
+                        class="w-16 h-16 bg-{{ action.color }}-50 text-{{ action.color }}-600 rounded-2xl flex items-center justify-center icon-glow border border-{{ action.color }}-100/50 shadow-sm transition-all duration-500 group-hover:bg-{{ action.color }}-600 group-hover:text-white group-hover:scale-110">
+                        <i data-lucide="{{ action.icon }}" class="w-7 h-7"></i>
+                    </div>
                 </div>
-                <span class="text-gray-800 font-semibold text-base transition-colors group-hover:text-blue-600">{{
+                <span
+                    class="text-gray-800 font-black text-lg tracking-tight group-hover:text-gradient-{{ action.color }}">{{
                     action.title }}</span>
-                <span class="text-gray-400 text-xs uppercase tracking-wide mt-2 font-medium">{{ action.subtitle
+                <span class="text-gray-400 text-[10px] font-black uppercase tracking-[0.2em] mt-2">{{ action.subtitle
                     }}</span>
             </a>
             {% endfor %}
@@ -135,15 +144,16 @@
 
             {% for module in modules %}
             <div
-                class="bg-white border border-gray-200 shadow-sm rounded-xl p-6 flex items-start gap-5 transition-all group">
+                class="bg-white/80 backdrop-blur-sm border border-slate-200 shadow-sm rounded-3xl p-6 flex items-start gap-5 transition-all hover:shadow-xl hover:border-blue-100 group cursor-default">
                 <div
-                    class="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600 flex-shrink-0">
+                    class="w-14 h-14 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400 flex-shrink-0 group-hover:bg-blue-50 group-hover:text-blue-600 transition-all group-hover:scale-110">
                     <i data-lucide="{{ module.icon }}" class="w-7 h-7"></i>
                 </div>
                 <div>
-                    <h4 class="text-gray-800 font-semibold text-sm mb-1.5">{{ module.title }}</h4>
-                    <p class="text-gray-500 text-[11px] mt-1.5 leading-relaxed font-medium opacity-80">{{ module.desc }}
-                    </p>
+                    <h4
+                        class="text-slate-800 font-black text-sm mb-1 tracking-tight group-hover:text-blue-600 transition-colors">
+                        {{ module.title }}</h4>
+                    <p class="text-slate-500 text-[11px] leading-relaxed font-medium opacity-70">{{ module.desc }}</p>
                 </div>
             </div>
             {% endfor %}

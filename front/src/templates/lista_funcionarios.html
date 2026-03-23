@@ -17,54 +17,7 @@
   .animate-fade-in-left {
     animation: fadeInLeft 0.3s ease-out forwards;
   }
-
-  /* Responsividade das Ações da Tabela */
-  @media (max-width: 1024px) {
-    .sticky-action-column {
-      position: static !important;
-      border-left: none !important;
-      box-shadow: none !important;
-      background: transparent !important;
-    }
-
-    .dropdown-menu-responsive {
-      position: fixed !important;
-      top: 50% !important;
-      left: 50% !important;
-      transform: translate(-50%, -50%) !important;
-      right: auto !important;
-      width: 90% !important;
-      max-width: 320px !important;
-      z-index: 1000 !important;
-      margin: 0 !important;
-      animation: zoomIn 0.2s ease-out forwards;
-    }
-
-    .dropdown-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(4px);
-      z-index: 999;
-      display: none;
-    }
-  }
-
-  @keyframes zoomIn {
-    from {
-      opacity: 0;
-      transform: translate(-50%, -50%) scale(0.95);
-    }
-
-    to {
-      opacity: 1;
-      transform: translate(-50%, -50%) scale(1);
-    }
-  }
 </style>
-<div id="dropdownOverlay" class="dropdown-overlay"
-  onclick="document.querySelectorAll('[id^=\'menu-\']').forEach(m => m.classList.add('hidden')); this.style.display='none';">
-</div>
 <div class="max-w-full mx-auto space-y-8 animate-fade-in-up">
 
   <!-- CABEÇALHO -->
@@ -176,7 +129,7 @@
           </div>
         </div>
 
-        <div class="space-y-2 lg:col-span-2 xl:col-span-1">
+        <div class="space-y-2 xl:col-span-1">
           <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Acesso</label>
           <div class="relative group">
             <i data-lucide="shield-check"
@@ -186,20 +139,6 @@
               <option value="">Todos Status</option>
               <option value="ativo">Habilitado</option>
               <option value="inativo">Bloqueado</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="space-y-2 lg:col-span-2 xl:col-span-1">
-          <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Agenda</label>
-          <div class="relative group">
-            <i data-lucide="calendar"
-              class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-brand-600 transition-colors"></i>
-            <select id="filterAtendimento" onchange="filterTable()"
-              class="w-full pl-11 pr-10 py-3 bg-white border border-slate-200 rounded-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 outline-none text-xs font-bold text-slate-700 transition-all dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 appearance-none cursor-pointer shadow-sm">
-              <option value="">Todos</option>
-              <option value="sim">Sim</option>
-              <option value="não">Não</option>
             </select>
           </div>
         </div>
@@ -234,88 +173,155 @@
             class="bg-slate-50 dark:bg-clinical-bg/30 border-b border-slate-200 dark:border-gray-800 transition-colors">
             <th
               class="px-8 py-6 text-[10px] font-black text-slate-500 dark:text-gray-400 uppercase tracking-[0.2em] whitespace-nowrap">
-              class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">
-              Profissional / Identificação</th>
-            <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">
-              Especialidade / Unidade</th>
+              Nome do Profissional</th>
             <th
-              class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center whitespace-nowrap">
-              Vínculo / Agenda</th>
+              class="px-8 py-6 text-[10px] font-black text-slate-500 dark:text-gray-400 uppercase tracking-[0.2em] whitespace-nowrap">
+              Identificação</th>
             <th
-              class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right whitespace-nowrap">
+              class="px-8 py-6 text-[10px] font-black text-slate-500 dark:text-gray-400 uppercase tracking-[0.2em] whitespace-nowrap">
+              Atuação</th>
+            <th
+              class="px-8 py-6 text-[10px] font-black text-slate-500 dark:text-gray-400 uppercase tracking-[0.2em] whitespace-nowrap">
+              Unidade</th>
+            <th
+              class="px-8 py-6 text-[10px] font-black text-slate-500 dark:text-gray-400 uppercase tracking-[0.2em] whitespace-nowrap">
+              Contatos</th>
+            <th
+              class="px-8 py-6 text-[10px] font-black text-slate-500 dark:text-gray-400 uppercase tracking-[0.2em] whitespace-nowrap">
+              Agenda</th>
+            <th
+              class="px-8 py-6 text-[10px] font-black text-slate-500 dark:text-gray-400 uppercase tracking-[0.2em] whitespace-nowrap">
+              Habilitação</th>
+            <th
+              class="sticky right-0 px-8 py-6 text-[10px] font-black text-slate-500 dark:text-gray-400 uppercase tracking-[0.2em] text-center whitespace-nowrap bg-slate-50 dark:bg-gray-900 border-l border-slate-200 dark:border-gray-800 z-10 shadow-[-10px_0_15px_-5px_rgba(0,0,0,0.02)]">
               Gerenciar</th>
           </tr>
         </thead>
         <tbody id="tableBody" class="divide-y divide-slate-200/60 dark:divide-gray-800">
           {% for f in funcionarios %}
           <tr
-            class="funcionario-row hover:bg-blue-50/30 dark:hover:bg-blue-900/10 even:bg-slate-50/20 dark:even:bg-gray-800/10 transition-all duration-150 group"
+            class="funcionario-row hover:bg-blue-50/40 dark:hover:bg-blue-900/10 even:bg-slate-50/30 dark:even:bg-gray-800/20 transition-all duration-200"
             data-status="{{ 'ativo' if f.ativo else 'inativo' }}"
             data-atendimento="{{ 'sim' if f.atendimento else 'não' }}">
-            <td class="px-6 py-3">
-              <div class="flex items-center gap-3">
+            <td class="px-8 py-6">
+              <div class="flex items-center gap-4">
                 <div
-                  class="avatar-circle w-10 h-10 rounded-xl flex items-center justify-center font-black text-xs transition-all shadow-sm border border-black/5"
+                  class="avatar-circle w-11 h-11 rounded-2xl flex items-center justify-center font-black text-sm transition-all shadow-sm border border-black/5"
                   data-name="{{ f.nome }}">
                   {{ f.nome[:1] }}
                 </div>
                 <div class="flex flex-col">
-                  <span class="font-bold text-slate-800 dark:text-gray-200 tracking-tight leading-none mb-1 text-sm">{{
+                  <span class="font-black text-slate-800 dark:text-gray-200 tracking-tight leading-none mb-1 text-sm">{{
                     f.nome }}</span>
-                  <div class="flex items-center gap-2">
-                    <span class="text-[9px] text-slate-400 font-bold uppercase tracking-widest font-mono">CPF: {{ f.cpf
-                      }}</span>
-                    <span class="text-slate-300 text-[9px]">•</span>
-                    <span class="text-[9px] text-slate-400 font-bold uppercase tracking-widest font-mono">Mat: {{
-                      f.num_func_num_vinc or '—' }}</span>
-                  </div>
+                  <span class="inline-flex items-center px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest w-fit
+                    {% if f.situacao == 'Ativo' %} bg-emerald-100 text-emerald-700
+                    {% elif f.situacao == 'Férias' %} bg-indigo-100 text-indigo-700
+                    {% elif f.situacao == 'Licença' %} bg-amber-100 text-amber-700
+                    {% elif f.situacao == 'Afastado' %} bg-rose-100 text-rose-700
+                    {% else %} bg-slate-200 text-slate-700
+                    {% endif %}">
+                    {{ f.situacao or 'Ativo' }}
+                  </span>
                 </div>
               </div>
             </td>
-            <td class="px-6 py-3">
-              <p
-                class="text-[11px] font-black text-slate-700 dark:text-gray-300 uppercase tracking-tight leading-none mb-1">
-                {{ f.especialidade or 'N/I' }}
-              </p>
-              <p class="text-[9px] text-slate-400 font-medium truncate max-w-[180px]">
-                {{ f.unidade_atendimento or 'Sem Unidade' }}
-              </p>
-            </td>
-            <td class="px-6 py-3">
-              <div class="flex items-center justify-center gap-2">
-                <!-- Status Badge Compact -->
-                <span class="inline-flex items-center px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-widest
-                    {% if f.situacao == 'Ativo' %} bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20
-                    {% elif f.situacao in ['Férias', 'Licença', 'Afastado'] %} bg-amber-50 text-amber-600 dark:bg-amber-900/20
-                    {% else %} bg-slate-100 text-slate-500 {% endif %} border border-current/10">
-                  {{ f.situacao or 'Ativo' }}
-                </span>
-
-                <!-- Agenda Badge Compact -->
-                <span class="inline-flex items-center px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-widest
-                    {% if f.atendimento %} bg-blue-50 text-blue-600 dark:bg-blue-900/20
-                    {% else %} bg-slate-50 text-slate-400 {% endif %} border border-current/10">
-                  {{ 'Agenda ON' if f.atendimento else 'Agenda OFF' }}
+            <td class="px-8 py-6">
+              <div class="flex flex-col gap-1">
+                <span class="text-xs font-black text-slate-700 dark:text-gray-300 tracking-tight">{{ f.cpf }}</span>
+                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest flex items-center gap-1">
+                  <i data-lucide="hash" class="w-3 h-3"></i> {{ f.num_func_num_vinc }}
                 </span>
               </div>
             </td>
-            <td class="px-6 py-3 text-right">
-              <div class="flex justify-end gap-1 opacity-60 group-hover:opacity-100 transition-opacity">
-                <button type="button"
-                  class="btn-view-profile p-2 text-slate-400 hover:text-brand-600 hover:bg-brand-50 dark:hover:bg-brand-900/30 rounded-lg transition-all"
-                  data-funcionario='{{ f | tojson | forceescape }}' title="Ver Perfil">
-                  <i data-lucide="eye" class="w-4 h-4"></i>
+            <td class="px-8 py-6">
+              <span
+                class="inline-flex items-center px-3 py-1 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-400 text-[10px] font-black rounded-lg uppercase tracking-wider border border-indigo-100 shadow-sm">
+                {{ f.especialidade }}
+              </span>
+            </td>
+            <td class="px-8 py-6 whitespace-nowrap">
+              <span class="text-xs text-slate-600 dark:text-gray-400 font-bold tracking-tight">
+                {{ f.unidade_atendimento or '-' }}
+              </span>
+            </td>
+            <td class="px-8 py-6 whitespace-nowrap">
+              <div class="flex flex-col gap-1.5">
+                <div class="flex items-center gap-1.5 text-[11px] font-bold text-slate-700 dark:text-gray-300">
+                  <i data-lucide="mail" class="w-3.5 h-3.5 text-slate-400"></i>
+                  {{ f.email or '-' }}
+                </div>
+                <div class="flex items-center gap-1.5 text-[10px] font-bold text-slate-500">
+                  <i data-lucide="phone" class="w-3.5 h-3.5 text-slate-400"></i>
+                  {{ f.telefone or '-' }}
+                </div>
+              </div>
+            </td>
+            <td class="px-8 py-6 whitespace-nowrap">
+              {% if f.atendimento %}
+              <span
+                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-200 shadow-sm">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                Sim
+              </span>
+              {% else %}
+              <span
+                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-slate-200 text-slate-600 border border-slate-300">
+                <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                Não
+              </span>
+              {% endif %}
+            </td>
+            <td class="px-8 py-6">
+              <div class="relative group/access">
+                <select onchange="alterarStatus(this.getAttribute('data-id'), this.value)" data-id="{{ f.id }}" class="text-[10px] font-black uppercase px-4 py-2 rounded-xl border border-slate-200 dark:border-gray-800 focus:ring-4 focus:ring-brand-500/10 focus:border-brand-600 bg-white dark:bg-gray-800 outline-none cursor-pointer transition-all tracking-widest shadow-sm appearance-none pr-8
+                  {{ 'text-emerald-600' if f.ativo else 'text-rose-500' }}">
+                  <option value="ativo" {% if f.ativo %}selected{% endif %}>Habilitado</option>
+                  <option value="inativo" {% if not f.ativo %}selected{% endif %}>Bloqueado</option>
+                </select>
+                <i data-lucide="chevron-down"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-400 pointer-events-none"></i>
+              </div>
+            </td>
+            <td
+              class="sticky right-0 px-8 py-6 bg-white dark:bg-clinical-surface border-l border-slate-200 dark:border-gray-800 z-10 shadow-[-15px_0_20px_-10px_rgba(0,0,0,0.05)]">
+              <div class="flex justify-center relative dropdown-container">
+                <button type="button" onclick="toggleActionsMenu(event, 'menu-{{ f.id }}')"
+                  class="w-10 h-10 flex items-center justify-center rounded-2xl bg-slate-50 dark:bg-gray-800 text-slate-400 hover:text-brand-600 hover:bg-brand-50 dark:hover:bg-brand-900/30 transition-all active:scale-95 border border-slate-100 dark:border-gray-700">
+                  <i data-lucide="more-horizontal" class="w-5 h-5"></i>
                 </button>
-                <button type="button"
-                  class="btn-edit-funcionario p-2 text-slate-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/40 rounded-lg transition-all"
-                  data-funcionario='{{ f | tojson | forceescape }}' title="Editar">
-                  <i data-lucide="edit-3" class="w-4 h-4"></i>
-                </button>
-                <button type="button" onclick="alterarStatus('{{ f.id }}', '{{ 'inativo' if f.ativo else 'ativo' }}')"
-                  class="p-2 {{ 'text-rose-400 hover:bg-rose-50' if f.ativo else 'text-emerald-400 hover:bg-emerald-50' }} rounded-lg transition-all"
-                  title="{{ 'Desabilitar' if f.ativo else 'Habilitar' }}">
-                  <i data-lucide="{{ 'user-minus' if f.ativo else 'user-check' }}" class="w-4 h-4"></i>
-                </button>
+
+                <!-- DROPDOWN MENU - CORREÇÃO: Abre para a esquerda (right-full) para não ser cortado -->
+                <div id="menu-{{ f.id }}"
+                  class="hidden absolute right-full top-0 mr-3 w-56 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-gray-700 z-[100] py-2 animate-fade-in-left overflow-hidden">
+                  <div class="px-4 py-2 border-b border-slate-50 dark:border-gray-700 mb-1">
+                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Opções de Gestão</p>
+                  </div>
+                  <button type="button"
+                    class="btn-view-profile w-full flex items-center gap-3 px-4 py-3 text-[11px] font-bold text-slate-600 dark:text-gray-300 hover:bg-slate-50 dark:hover:bg-gray-700 transition-colors text-left"
+                    data-funcionario='{{ f | tojson | forceescape }}'>
+                    <div class="w-7 h-7 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center">
+                      <i data-lucide="user" class="w-4 h-4"></i>
+                    </div>
+                    Ver Perfil Completo
+                  </button>
+                  <button type="button"
+                    class="btn-edit-funcionario w-full flex items-center gap-3 px-4 py-3 text-[11px] font-bold text-slate-600 dark:text-gray-300 hover:bg-brand-50 dark:hover:bg-brand-900/30 hover:text-brand-600 transition-colors text-left"
+                    data-funcionario='{{ f | tojson | forceescape }}'>
+                    <div class="w-7 h-7 bg-brand-50 text-brand-600 rounded-lg flex items-center justify-center">
+                      <i data-lucide="edit-3" class="w-4 h-4"></i>
+                    </div>
+                    Editar Cadastro
+                  </button>
+                  <div class="h-px bg-slate-100 dark:bg-gray-700 my-1 mx-2"></div>
+                  <button type="button" onclick="alterarStatus('{{ f.id }}', '{{ 'inativo' if f.ativo else 'ativo' }}')"
+                    class="w-full flex items-center gap-3 px-4 py-3 text-[11px] font-black {{ 'text-rose-500 hover:bg-rose-50' if f.ativo else 'text-emerald-500 hover:bg-emerald-50' }} transition-colors text-left uppercase tracking-widest">
+                    <div
+                      class="w-7 h-7 {{ 'bg-rose-50 text-rose-500' if f.ativo else 'bg-emerald-50 text-emerald-500' }} rounded-lg flex items-center justify-center">
+                      <i data-lucide="{{ 'user-minus' if f.ativo else 'user-check' }}" class="w-4 h-4"></i>
+                    </div>
+                    {{ 'Bloquear Acesso' if f.ativo else 'Habilitar Acesso' }}
+                  </button>
+                </div>
               </div>
             </td>
           </tr>
@@ -777,36 +783,35 @@
     const filterAtendimento = document.getElementById('filterAtendimento').value.toLowerCase();
 
     const tbody = document.getElementById('tableBody');
-    const tr = tbody.getElementsByClassName('funcionario-row');
+    const tr = tbody.getElementsByTagName('tr');
     let count = 0;
 
     for (let i = 0; i < tr.length; i++) {
-      const row = tr[i];
-      const tdNome = row.cells[0].textContent.toLowerCase();
-      const tdIdentificacao = row.cells[1].textContent.toLowerCase();
-      const tdEspecialidade = row.cells[2].textContent.toLowerCase();
-      const tdUnidade = row.cells[3].textContent.toLowerCase();
+      // Ensure these indices match the actual column order in your HTML table
+      const tdNome = tr[i].cells[0].textContent.toLowerCase();
+      const tdCPF = tr[i].cells[1].textContent.toLowerCase();
+      const tdMatricula = tr[i].cells[1].textContent.toLowerCase(); // CPF and Matricula are in the same cell, need to adjust
+      const tdEspecialidade = tr[i].cells[2].textContent.toLowerCase();
+      const tdUnidade = tr[i].cells[3].textContent.toLowerCase();
+      const tdAtendimento = tr[i].cells[4].textContent.toLowerCase();
+      const tdStatus = tr[i].cells[5].textContent.toLowerCase().includes('ativo') ? 'ativo' : 'inativo';
 
-      const statusRow = row.getAttribute('data-status') || '';
-      const atendimentoRow = row.getAttribute('data-atendimento') || '';
-
-      const matchesNome = tdNome.includes(filterNome);
-      const matchesCPF = tdIdentificacao.includes(filterCPF);
-      const matchesMatricula = tdIdentificacao.includes(filterMatricula);
-      const matchesEspecialidade = tdEspecialidade.includes(filterEspecialidade);
-      const matchesUnidade = tdUnidade.includes(filterUnidade);
-      const matchesStatus = filterStatus === '' || statusRow === filterStatus;
-      const matchesAtendimento = filterAtendimento === '' || atendimentoRow === filterAtendimento;
+      const matchesNome = tdNome.indexOf(filterNome) > -1;
+      const matchesCPF = tdCPF.indexOf(filterCPF) > -1;
+      const matchesMatricula = tdMatricula.indexOf(filterMatricula) > -1; // This will check both CPF and Matricula in the same cell
+      const matchesEspecialidade = tdEspecialidade.indexOf(filterEspecialidade) > -1;
+      const matchesUnidade = tdUnidade.indexOf(filterUnidade) > -1;
+      const matchesStatus = filterStatus === '' || tdStatus === filterStatus;
+      const matchesAtendimento = filterAtendimento === '' || tdAtendimento.trim() === filterAtendimento;
 
       if (matchesNome && matchesCPF && matchesMatricula && matchesEspecialidade && matchesUnidade && matchesStatus && matchesAtendimento) {
-        row.style.display = "";
+        tr[i].style.display = "";
         count++;
       } else {
-        row.style.display = "none";
+        tr[i].style.display = "none";
       }
     }
-    const totalEl = document.getElementById('totalRegistros');
-    if (totalEl) totalEl.innerText = count;
+    document.getElementById('totalRegistros').innerText = count;
   }
 
   // Initial icon create
@@ -876,14 +881,8 @@
     // Close other menus
     document.querySelectorAll('[id^="menu-"]').forEach(m => m.classList.add('hidden'));
 
-    // Toggle overlay on mobile
-    const overlay = document.getElementById('dropdownOverlay');
-
     if (isHidden) {
       targetMenu.classList.remove('hidden');
-      if (window.innerWidth <= 1024 && overlay) overlay.style.display = 'block';
-    } else {
-      if (overlay) overlay.style.display = 'none';
     }
   }
 
